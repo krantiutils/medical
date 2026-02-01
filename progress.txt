@@ -179,3 +179,18 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Fallback to og-default.png for professionals without photo_url - this image needs to be created later
   - Meta description should include credentials, location, and registration number for SEO authority
 ---
+
+## 2026-02-02 12:00 +0545 - US-012
+- **What was implemented**: JSON-LD structured data for professional detail page
+- **Files changed**:
+  - `apps/web/src/app/[lang]/doctor/[slug]/page.tsx` - Added generateJsonLd function and JSON-LD script tag
+  - `prd.json` - Marked US-012 as passes: true
+- **Learnings for future iterations:**
+  - Use schema.org Physician type for doctors, Dentist type for dentists
+  - For pharmacists, use Person with hasOccupation since there's no Pharmacist type in schema.org
+  - JSON-LD identifier uses PropertyValue with propertyID (e.g., "NMC Number") and value
+  - Address uses PostalAddress with addressLocality and addressCountry
+  - Use `dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}` for script tags in React
+  - medicalSpecialty falls back to degree if specialties array is empty
+  - Include @id and url for proper entity identification in rich results
+---
