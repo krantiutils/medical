@@ -36,8 +36,8 @@
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": "Reference: tasks/design-system.md"
+      "passes": true,
+      "notes": "Implemented: Tailwind CSS configured with Bauhaus tokens, Outfit font via next/font, hard shadows, off-white background. Typecheck passes."
     },
     {
       "id": "US-003",
@@ -52,8 +52,8 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified: Professional model with all fields, unique constraint on registration_number, indexes on slug and type, migration created and applied, typecheck passes"
     },
     {
       "id": "US-004",

@@ -6,6 +6,11 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
 - Turborepo tasks that need DATABASE_URL must have the symlink in place
 - @types/node is required in packages/database for process.env type support
 - Run `pnpm db:generate` before typecheck to ensure Prisma client is generated
+- Bauhaus design tokens: primary-red (#D02020), primary-blue (#1040C0), primary-yellow (#F0C020), background (#F0F0F0), foreground (#121212)
+- Hard shadows use `shadow-[Xpx_Xpx_0_0_#121212]` format (never blurred)
+- Use next/font/google for fonts, set CSS variable via className on <html>
+- For Prisma migrations in non-interactive env: use `prisma migrate diff --from-empty --to-schema-datamodel` to generate SQL, then `prisma migrate resolve --applied` after db push
+- Use `docker-compose` (v1 syntax) not `docker compose` on this system
 ---
 
 ## 2026-02-02 01:52 +0545 - US-001
@@ -20,4 +25,35 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Turbo 2.x uses `globalEnv` not `globalDotEnv` for env var declaration
   - The scaffolding was mostly pre-existing, this iteration verified it works
   - Docker needs sudo on this machine (password in CLAUDE.md)
+---
+
+## 2026-02-02 02:15 +0545 - US-002
+- **What was implemented**: Design system setup with Bauhaus tokens and base components
+- **Files changed**:
+  - `apps/web/package.json` - Added tailwindcss, postcss, autoprefixer
+  - `apps/web/tailwind.config.ts` - Created with Bauhaus color tokens, hard shadows, custom font sizes
+  - `apps/web/postcss.config.js` - Created PostCSS configuration
+  - `apps/web/src/app/globals.css` - Created with CSS variables, hard shadow utilities
+  - `apps/web/src/app/layout.tsx` - Updated with Outfit font via next/font/google, imports globals.css
+  - `prd.json` - Marked US-002 as passes: true
+- **Learnings for future iterations:**
+  - Use `next/font/google` for font loading (removes @import from CSS, better performance)
+  - Bauhaus colors are: primary-red (#D02020), primary-blue (#1040C0), primary-yellow (#F0C020)
+  - Background is off-white #F0F0F0, foreground is stark black #121212
+  - Hard shadows use format: `shadow-[Xpx_Xpx_0_0_#121212]` (no blur, just offset)
+  - Custom utility classes like `shadow-hard-xl` defined in globals.css @layer utilities
+  - Font CSS variable `--font-outfit` set on <html> via className={outfit.variable}
+---
+
+## 2026-02-02 03:00 +0545 - US-003
+- **What was implemented**: Database schema for Professional model
+- **Files changed**:
+  - `packages/database/prisma/migrations/20260202000000_create_professional_model/migration.sql` - Created migration with Professional table, enum, and indexes
+  - `prd.json` - Marked US-003 as passes: true
+- **Learnings for future iterations:**
+  - Schema was pre-existing, this iteration added the migration file and verified sync
+  - `prisma migrate dev` requires interactive terminal; use `prisma db push` for dev sync or create migration manually
+  - Use `prisma migrate resolve --applied <name>` to mark migration as applied when schema already synced
+  - Use `docker-compose` (v1) not `docker compose` (v2) on this system
+  - Professional model fields: id, type (enum), registration_number (unique), full_name, full_name_ne, photo_url, gender, address, degree, specialties[], registration_date, remarks, verified, slug (indexed), created_at, updated_at, last_synced_at, meta (Json)
 ---
