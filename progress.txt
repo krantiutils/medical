@@ -103,3 +103,45 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Same slug pattern as doctors: `dr-{slugified-name}-{nmc_no}`
   - npm script `pnpm import:dentists` was already defined in package.json
 ---
+
+## 2026-02-02 07:15 +0545 - US-007
+- **What was implemented**: Data import script for pharmacists CSV
+- **Files changed**:
+  - `packages/database/scripts/import-pharmacists.ts` - Created import script following dentists pattern
+  - `prd.json` - Marked US-007 as passes: true
+- **Learnings for future iterations:**
+  - Pharmacists CSV has columns: reg_no, name, reg_date, category, scraped_at
+  - Different slug pattern for pharmacists: `pharmacist-{slugified-name}-{regNo}` (no "dr-" prefix since they're not doctors)
+  - category field (e.g., "Graduate Pharmacist") stored in `meta.category`
+  - reg_date is in YYYY-MM-DD format, parsed and stored in `registration_date` field
+  - npm script `pnpm import:pharmacists` was already defined in package.json
+---
+
+## 2026-02-02 08:00 +0545 - US-008
+- **What was implemented**: Button component with Bauhaus design system styling
+- **Files changed**:
+  - `apps/web/src/components/ui/button.tsx` - Created Button component with variants, sizes, and Bauhaus styling
+  - `prd.json` - Marked US-008 as passes: true
+- **Learnings for future iterations:**
+  - Component structure: `apps/web/src/components/ui/` for UI primitives
+  - Button uses forwardRef for proper ref forwarding to underlying button element
+  - Variants are defined as Record types for type-safe variant maps
+  - Tailwind arbitrary values like `shadow-[4px_4px_0_0_#121212]` work inline for hard shadows
+  - Active state uses `active:translate-x-[2px] active:translate-y-[2px] active:shadow-none` for pressed effect
+  - Ghost variant has transparent border that appears on hover for subtle interaction
+  - Export types alongside component for consumers to type props properly
+---
+
+## 2026-02-02 09:00 +0545 - US-009
+- **What was implemented**: Card component with Bauhaus design system styling
+- **Files changed**:
+  - `apps/web/src/components/ui/card.tsx` - Created Card component with subcomponents (CardHeader, CardContent, CardFooter)
+  - `prd.json` - Marked US-009 as passes: true
+- **Learnings for future iterations:**
+  - Card uses shadow-xl from tailwind config which is `8px 8px 0 0 #121212` - matches Bauhaus hard shadow pattern
+  - Geometric decorator is optional via `decorator` prop (red/blue/yellow/none) and `decoratorPosition` prop
+  - Decorator is a 4x4 (w-4 h-4) square with aria-hidden="true" for accessibility
+  - CardFooter has border-t-2 border-foreground/20 for subtle section separation
+  - Use forwardRef pattern consistently for all UI primitives to allow proper ref forwarding
+  - Component structure follows Button pattern: Record types for variant maps, export types alongside component
+---

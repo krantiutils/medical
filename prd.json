@@ -124,8 +124,8 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": "CSV at data/npc_pharmacists.csv"
+      "passes": true,
+      "notes": "Implemented: scripts/import-pharmacists.ts created with CSV parsing, slug generation (pharmacist-name-regno format), registration_date parsing, category stored in meta field, upsert by registration_number. npm script pnpm import:pharmacists works. Typecheck passes."
     },
     {
       "id": "US-008",
@@ -142,8 +142,8 @@
         "Typecheck passes"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Button component with primary/secondary/outline/ghost variants, border-2 border-black, hard shadows, active pressed state with translate+shadow-none, uppercase font-bold tracking-wider, sm/md/lg sizes. Typecheck passes."
     },
     {
       "id": "US-009",
@@ -159,8 +159,8 @@
         "Typecheck passes"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Card component with white background, border-4 border-black, shadow-xl (8px hard shadow), hover:-translate-y-1 effect, optional geometric decorator with color/position options, CardHeader/CardContent/CardFooter subcomponents. Typecheck passes."
     },
     {
       "id": "US-010",
