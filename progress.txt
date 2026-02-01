@@ -11,6 +11,8 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
 - Use next/font/google for fonts, set CSS variable via className on <html>
 - For Prisma migrations in non-interactive env: use `prisma migrate diff --from-empty --to-schema-datamodel` to generate SQL, then `prisma migrate resolve --applied` after db push
 - Use `docker-compose` (v1 syntax) not `docker compose` on this system
+- Don't set `rootDir` in packages/database/tsconfig.json - scripts are outside src/ and need to be typechecked too
+- Import scripts in packages/database/scripts/ use `tsx` to run TypeScript directly
 ---
 
 ## 2026-02-02 01:52 +0545 - US-001
@@ -56,4 +58,35 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Use `prisma migrate resolve --applied <name>` to mark migration as applied when schema already synced
   - Use `docker-compose` (v1) not `docker compose` (v2) on this system
   - Professional model fields: id, type (enum), registration_number (unique), full_name, full_name_ne, photo_url, gender, address, degree, specialties[], registration_date, remarks, verified, slug (indexed), created_at, updated_at, last_synced_at, meta (Json)
+---
+
+## 2026-02-02 04:15 +0545 - US-004
+- **What was implemented**: User and VerificationRequest models for authentication and profile claiming
+- **Files changed**:
+  - `packages/database/prisma/schema.prisma` - Added User model, VerificationRequest model, UserRole enum, VerificationStatus enum, and relations
+  - `packages/database/prisma/migrations/20260202010000_add_user_and_verification_models/migration.sql` - Created migration SQL
+  - `prd.json` - Marked US-004 as passes: true
+- **Learnings for future iterations:**
+  - User model has relations to VerificationRequest (two: as requester and as reviewer) and Professional (claimed_by)
+  - Use named relations (`@relation("UserRequests")`, `@relation("ReviewedBy")`, `@relation("ClaimedBy")`) when a model has multiple relations to the same target
+  - VerificationRequest has FK to both User (user_id for requester, reviewed_by_id for admin reviewer) and Professional (professional_id)
+  - Professional now has optional claimed_by_id to track who has claimed/verified ownership
+  - Use `prisma db push` followed by manual migration file creation and `prisma migrate resolve --applied <name>` in non-interactive environments
+---
+
+## 2026-02-02 05:00 +0545 - US-005
+- **What was implemented**: Data import script for doctors CSV
+- **Files changed**:
+  - `packages/database/scripts/import-doctors.ts` - Created import script with CSV parsing, slug generation, upsert logic
+  - `packages/database/package.json` - Added csv-parse dependency
+  - `packages/database/tsconfig.json` - Removed rootDir to allow scripts/ to be typechecked
+  - `pnpm-lock.yaml` - Updated with csv-parse
+  - `prd.json` - Marked US-005 as passes: true
+- **Learnings for future iterations:**
+  - CSV has columns: nmc_no, full_name, address, gender, degree, remarks, scraped_at (extra scraped_at not in PRD)
+  - Slug format: `dr-{slugified-name}-{nmc_no}` (removes "Dr." prefix, lowercases, replaces non-alphanumeric with hyphens)
+  - Use csv-parse with `columns: true` to get objects keyed by header names
+  - Use batch processing (Promise.all on batches of 100) for 38k+ records
+  - Upsert determines created vs updated by comparing created_at and updated_at timestamps (within 1 second = created)
+  - Don't set rootDir in tsconfig if you have scripts/ outside src/ that need typechecking
 ---

@@ -18,7 +18,8 @@
     "import:pharmacists": "tsx scripts/import-pharmacists.ts"
   },
   "dependencies": {
-    "@prisma/client": "^5.10.0"
+    "@prisma/client": "^5.10.0",
+    "csv-parse": "^6.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

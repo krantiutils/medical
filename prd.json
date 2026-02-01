@@ -68,8 +68,8 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified: User model with all fields and UserRole enum, VerificationRequest with all fields and VerificationStatus enum, User has many VerificationRequests (via user_id and reviewed_by_id), Professional has optional claimed_by User, migration created and applied, typecheck passes"
     },
     {
       "id": "US-005",
@@ -87,8 +87,8 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": "CSV at data/nmc_doctors.csv with 38k+ records"
+      "passes": true,
+      "notes": "Implemented: scripts/import-doctors.ts created with csv-parse, slug generation (dr-name-nmcno format), upsert by registration_number, progress logging. npm script pnpm import:doctors works. Typecheck passes."
     },
     {
       "id": "US-006",
