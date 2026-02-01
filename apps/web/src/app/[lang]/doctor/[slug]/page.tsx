@@ -86,8 +86,87 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
   };
 }
 
+function generateJsonLd(professional: NonNullable<Awaited<ReturnType<typeof getProfessional>>>, lang: string) {
+  const isDoctor = professional.type === "DOCTOR";
+  const isDentist = professional.type === "DENTIST";
+  const isPharmacist = professional.type === "PHARMACIST";
+
+  const displayName = isPharmacist
+    ? professional.full_name
+    : `Dr. ${professional.full_name}`;
+
+  // Base structure for all types
+  const baseJsonLd = {
+    "@context": "https://schema.org",
+    "@id": `${SITE_URL}/${lang}/doctor/${professional.slug}`,
+    name: displayName,
+    url: `${SITE_URL}/${lang}/doctor/${professional.slug}`,
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: isDoctor ? "NMC Number" : isDentist ? "NDA Number" : "NPC Number",
+      value: professional.registration_number,
+    },
+  };
+
+  // Add image if available
+  const imageData = professional.photo_url
+    ? { image: professional.photo_url }
+    : {};
+
+  // Add address if available
+  const addressData = professional.address
+    ? {
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: professional.address,
+          addressCountry: "NP",
+        },
+      }
+    : {};
+
+  if (isDoctor) {
+    // Use Physician schema for doctors
+    return {
+      ...baseJsonLd,
+      "@type": "Physician",
+      ...imageData,
+      ...addressData,
+      medicalSpecialty: professional.specialties && professional.specialties.length > 0
+        ? professional.specialties[0]
+        : professional.degree || undefined,
+      ...(professional.degree && { qualification: professional.degree }),
+    };
+  } else if (isDentist) {
+    // Use Dentist schema for dentists
+    return {
+      ...baseJsonLd,
+      "@type": "Dentist",
+      ...imageData,
+      ...addressData,
+      medicalSpecialty: professional.specialties && professional.specialties.length > 0
+        ? professional.specialties[0]
+        : "Dentistry",
+      ...(professional.degree && { qualification: professional.degree }),
+    };
+  } else {
+    // Use Person with hasOccupation for pharmacists (no Pharmacist type in schema.org)
+    return {
+      ...baseJsonLd,
+      "@type": "Person",
+      ...imageData,
+      ...addressData,
+      hasOccupation: {
+        "@type": "Occupation",
+        name: "Pharmacist",
+        occupationalCategory: "Healthcare",
+      },
+      ...(professional.degree && { qualification: professional.degree }),
+    };
+  }
+}
+
 export default async function DoctorPage({ params }: DoctorPageProps) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const professional = await getProfessional(slug);
 
   if (!professional) {
@@ -98,8 +177,15 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
     ? professional.full_name
     : `Dr. ${professional.full_name}`;
 
+  const jsonLd = generateJsonLd(professional, lang);
+
   return (
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-4xl mx-auto">
         {/* Main Profile Card */}
         <Card decorator="blue" decoratorPosition="top-right" className="mb-6">
