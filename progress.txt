@@ -90,3 +90,16 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Upsert determines created vs updated by comparing created_at and updated_at timestamps (within 1 second = created)
   - Don't set rootDir in tsconfig if you have scripts/ outside src/ that need typechecking
 ---
+
+## 2026-02-02 06:30 +0545 - US-006
+- **What was implemented**: Data import script for dentists CSV
+- **Files changed**:
+  - `packages/database/scripts/import-dentists.ts` - Created import script following doctors pattern
+  - `prd.json` - Marked US-006 as passes: true
+- **Learnings for future iterations:**
+  - Dentists CSV has columns: nmc_no, nda_id, name, location, scraped_at (note: `name` not `full_name`)
+  - nda_id is mostly empty in the dataset but stored in `meta` field when present
+  - location field maps to address (also mostly empty)
+  - Same slug pattern as doctors: `dr-{slugified-name}-{nmc_no}`
+  - npm script `pnpm import:dentists` was already defined in package.json
+---

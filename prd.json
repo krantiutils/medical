@@ -105,8 +105,8 @@
         "Typecheck passes"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": "CSV at data/nda_dentists.csv with 1k+ records"
+      "passes": true,
+      "notes": "Implemented: scripts/import-dentists.ts created with CSV parsing, slug generation (dr-name-nmcno format), upsert by registration_number, NDA ID stored in meta field. npm script pnpm import:dentists works. Typecheck passes."
     },
     {
       "id": "US-007",
