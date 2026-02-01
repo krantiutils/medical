@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(# Check pharmacy scraper progress first echo \"\"=== Pharmacy Scraper Status ===\"\" cat data/npc_progress.json)",
+      "Bash(python3:*)",
+      "Bash(__NEW_LINE_ac5d1bdeddc93ee5__ echo \"\")",
+      "Bash(__NEW_LINE_0acbd4e633e5e671__ echo \"\")",
+      "Bash(__NEW_LINE_3fd54b4056f6c18d__ echo \"\")",
+      "Bash(__NEW_LINE_1a76a30d049c3471__ echo \"\")",
+      "Bash(curl:*)",
+      "Bash(__NEW_LINE_7410ade51360cd48__ echo \"\")",
+      "Bash(source:*)",
+      "Bash(python:*)",
+      "Bash(__NEW_LINE_faa15369b2819c20__ echo \"\")",
+      "Bash(__NEW_LINE_17a25d18ac62c915__ echo \"\")"
+    ]
+  }
+}

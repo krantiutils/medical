@@ -1,0 +1,23 @@
+# Ralph Progress Log
+Started: Mon Feb  2 01:28:58 AM +0545 2026
+
+## Codebase Patterns
+- Use symlink for .env in packages/database (`ln -sf ../../.env packages/database/.env`) to allow Prisma to access root .env
+- Turborepo tasks that need DATABASE_URL must have the symlink in place
+- @types/node is required in packages/database for process.env type support
+- Run `pnpm db:generate` before typecheck to ensure Prisma client is generated
+---
+
+## 2026-02-02 01:52 +0545 - US-001
+- **What was implemented**: Verified and completed project setup
+- **Files changed**:
+  - `turbo.json` - Added globalEnv for DATABASE_URL
+  - `packages/database/.env` - Created symlink to root .env
+  - `packages/database/package.json` - Added @types/node devDependency
+  - `prd.json` - Marked US-001 as passes: true
+- **Learnings for future iterations:**
+  - Prisma needs .env file accessible - symlink is cleaner than dotenv-cli
+  - Turbo 2.x uses `globalEnv` not `globalDotEnv` for env var declaration
+  - The scaffolding was mostly pre-existing, this iteration verified it works
+  - Docker needs sudo on this machine (password in CLAUDE.md)
+---

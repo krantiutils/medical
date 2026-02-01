@@ -1,0 +1,527 @@
+{
+  "project": "Swasthya",
+  "branchName": "ralph/phase1-healthcare-directory",
+  "description": "Phase 1: Healthcare Directory MVP - SEO-optimized directory with 40k+ auto-populated professional profiles from scraped NMC/NDA/NPC data. Bauhaus design system.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Project setup: Next.js + Turborepo + Prisma",
+      "description": "As a developer, I need the project scaffolded with Next.js 14 (App Router), Turborepo monorepo, Prisma ORM, and basic configuration.",
+      "acceptanceCriteria": [
+        "Create monorepo structure with apps/web directory",
+        "Initialize Next.js 14 with App Router in apps/web",
+        "Add Prisma with PostgreSQL provider",
+        "Add docker-compose.yml with postgres service",
+        "Add packages/database with Prisma schema location",
+        "Add turbo.json with build/dev/lint tasks",
+        "Add .env.example with DATABASE_URL",
+        "pnpm dev starts successfully",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Verified: monorepo structure exists, Next.js 14 with App Router, Prisma with PostgreSQL, docker-compose, turbo.json, .env.example, pnpm dev starts, typecheck passes"
+    },
+    {
+      "id": "US-002",
+      "title": "Design system setup: Bauhaus tokens and base components",
+      "description": "As a developer, I need the Bauhaus design system configured with Tailwind tokens, Outfit font, and base component styles.",
+      "acceptanceCriteria": [
+        "Install and configure Tailwind CSS",
+        "Add Outfit font from Google Fonts",
+        "Configure tailwind.config with Bauhaus colors (#D02020, #1040C0, #F0C020, #F0F0F0, #121212)",
+        "Add hard shadow utilities (shadow-[4px_4px_0_0_black])",
+        "Create globals.css with base styles",
+        "Background is off-white #F0F0F0",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": "Reference: tasks/design-system.md"
+    },
+    {
+      "id": "US-003",
+      "title": "Database schema: Professional model",
+      "description": "As a developer, I need the Professional database model to store doctors, dentists, and pharmacists.",
+      "acceptanceCriteria": [
+        "Create Professional model with fields: id (uuid), type (enum: DOCTOR/DENTIST/PHARMACIST), registration_number, full_name, full_name_ne (Nepali), photo_url, gender, address, degree, specialties (string[]), registration_date, remarks, verified (bool), slug, created_at, updated_at, last_synced_at, meta (Json)",
+        "Add unique constraint on registration_number",
+        "Add index on slug",
+        "Add index on type",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Database schema: User and VerificationRequest models",
+      "description": "As a developer, I need User and VerificationRequest models for authentication and profile claiming.",
+      "acceptanceCriteria": [
+        "Create User model with: id, email, phone, password_hash, name, role (enum: USER/PROFESSIONAL/ADMIN), created_at, updated_at",
+        "Create VerificationRequest model with: id, user_id (FK), professional_id (FK), status (enum: PENDING/APPROVED/REJECTED), government_id_url, certificate_url, submitted_at, reviewed_at, reviewed_by",
+        "Add relation: User has many VerificationRequests",
+        "Add relation: Professional has optional claimed_by User",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Data import script: Doctors CSV",
+      "description": "As a developer, I need a script to import doctors from nmc_doctors.csv into the database.",
+      "acceptanceCriteria": [
+        "Create scripts/import-doctors.ts",
+        "Read data/nmc_doctors.csv file",
+        "Parse CSV columns: nmc_no, full_name, address, gender, degree, remarks",
+        "Generate slug from name and nmc_no (e.g., dr-ram-sharma-12345)",
+        "Upsert Professional records with type=DOCTOR",
+        "Handle duplicates by registration_number",
+        "Log import statistics (created, updated, errors)",
+        "Add npm script: pnpm import:doctors",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": "CSV at data/nmc_doctors.csv with 38k+ records"
+    },
+    {
+      "id": "US-006",
+      "title": "Data import script: Dentists CSV",
+      "description": "As a developer, I need a script to import dentists from nda_dentists.csv.",
+      "acceptanceCriteria": [
+        "Create scripts/import-dentists.ts",
+        "Read data/nda_dentists.csv file",
+        "Parse CSV columns: nmc_no, nda_id, name, location",
+        "Generate slug from name and nmc_no",
+        "Upsert Professional records with type=DENTIST",
+        "Log import statistics",
+        "Add npm script: pnpm import:dentists",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": "CSV at data/nda_dentists.csv with 1k+ records"
+    },
+    {
+      "id": "US-007",
+      "title": "Data import script: Pharmacists CSV",
+      "description": "As a developer, I need a script to import pharmacists from npc_pharmacists.csv.",
+      "acceptanceCriteria": [
+        "Create scripts/import-pharmacists.ts",
+        "Read data/npc_pharmacists.csv file",
+        "Parse CSV columns: reg_no, name, reg_date, category",
+        "Generate slug from name and reg_no",
+        "Upsert Professional records with type=PHARMACIST",
+        "Store category in meta JSON field",
+        "Log import statistics",
+        "Add npm script: pnpm import:pharmacists",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": "CSV at data/npc_pharmacists.csv"
+    },
+    {
+      "id": "US-008",
+      "title": "UI Components: Button variants",
+      "description": "As a developer, I need Button components following Bauhaus design system.",
+      "acceptanceCriteria": [
+        "Create components/ui/button.tsx",
+        "Variants: primary (red #D02020), secondary (blue #1040C0), outline (white), ghost",
+        "All buttons have border-2 border-black",
+        "Primary/secondary/outline have shadow-[4px_4px_0_0_black]",
+        "Active state: translate-x-[2px] translate-y-[2px] shadow-none",
+        "Font: uppercase, font-bold, tracking-wider",
+        "Sizes: sm, md, lg",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "UI Components: Card component",
+      "description": "As a developer, I need a Card component with Bauhaus styling for professional listings.",
+      "acceptanceCriteria": [
+        "Create components/ui/card.tsx",
+        "White background, border-4 border-black",
+        "shadow-[8px_8px_0_0_black]",
+        "Hover effect: -translate-y-1",
+        "Optional geometric decorator (small colored square in corner)",
+        "Subcomponents: CardHeader, CardContent, CardFooter",
+        "Typecheck passes"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Professional detail page: Basic route and layout",
+      "description": "As a patient, I want to view a doctor's profile page at /doctor/[slug].",
+      "acceptanceCriteria": [
+        "Create app/[lang]/doctor/[slug]/page.tsx with dynamic route",
+        "Fetch Professional from database by slug",
+        "Return 404 if not found",
+        "Display: name, photo (placeholder if none), registration number, degree, address",
+        "Use Card component for content sections",
+        "Page is mobile responsive",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "Professional detail page: SEO meta tags",
+      "description": "As a patient, I want professional pages to appear in Google search results with proper metadata.",
+      "acceptanceCriteria": [
+        "Add generateMetadata function to doctor/[slug]/page.tsx",
+        "Set title: 'Dr. [Name] - [Specialty] in [Location] | Swasthya'",
+        "Set description with credentials and location",
+        "Add OpenGraph tags: og:title, og:description, og:image, og:type",
+        "Add Twitter card tags",
+        "Add canonical URL",
+        "Typecheck passes"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Professional detail page: JSON-LD structured data",
+      "description": "As a patient, I want Google to understand doctor profiles as structured data.",
+      "acceptanceCriteria": [
+        "Add JSON-LD script to professional detail page",
+        "Use schema.org Physician type for doctors",
+        "Include: name, image, medicalSpecialty, address, identifier (NMC number)",
+        "Validate with Google Rich Results Test format",
+        "Typecheck passes"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Professional detail page: Styled with design system",
+      "description": "As a patient, I want the doctor profile page to look polished with clear typography hierarchy.",
+      "acceptanceCriteria": [
+        "Name is text-4xl font-bold (clear hierarchy)",
+        "Specialty label is text-xs uppercase tracking-widest in primary-blue",
+        "Registration number is text-sm text-gray-600",
+        "Sections separated by border-t-2 border-black/20 dividers",
+        "Verified badge is green with Check icon in circle",
+        "Background is off-white #F0F0F0, cards are white",
+        "Icons use accent colors, not same as text",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": "Reference tasks/design-system.md for exact specs"
+    },
+    {
+      "id": "US-014",
+      "title": "Homepage: Hero section",
+      "description": "As a patient, I want a compelling homepage hero to search for doctors.",
+      "acceptanceCriteria": [
+        "Create app/[lang]/page.tsx homepage",
+        "Hero section with display text: 'FIND YOUR DOCTOR' (text-6xl lg:text-8xl font-black uppercase)",
+        "Subtitle explaining the platform",
+        "Search input with border-4 border-black",
+        "Primary red search button",
+        "Color blocking: right panel with blue #1040C0 background and geometric shapes",
+        "Mobile responsive",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "Search results page: Basic listing",
+      "description": "As a patient, I want to see search results for doctors.",
+      "acceptanceCriteria": [
+        "Create app/[lang]/search/page.tsx",
+        "Accept query param: ?q=searchterm",
+        "Query database with ILIKE on full_name, degree, address",
+        "Display results in responsive grid (1 col mobile, 2 tablet, 4 desktop)",
+        "Each result is a Card with: name, degree, address, view button",
+        "Show 'No results found' if empty",
+        "Pagination (limit 20 per page)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Search results page: Filters",
+      "description": "As a patient, I want to filter search results by type, specialty, and location.",
+      "acceptanceCriteria": [
+        "Add filter dropdowns: Type (Doctor/Dentist/Pharmacist), Location",
+        "Filters update URL params and re-query",
+        "Filters have border-2 border-black styling",
+        "Active filters shown as tags that can be removed",
+        "Results count displayed: 'X professionals found'",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Navigation header",
+      "description": "As a patient, I want a consistent navigation header across pages.",
+      "acceptanceCriteria": [
+        "Create components/layout/header.tsx",
+        "Logo on left (geometric shapes: circle, square, triangle in primary colors)",
+        "Nav links: Home, Doctors, Dentists, Pharmacists",
+        "Language switcher (EN/NE) on right",
+        "Login button (outline style) on right",
+        "Border-b-4 border-black",
+        "Mobile: hamburger menu",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "Footer component",
+      "description": "As a patient, I want a footer with links and information.",
+      "acceptanceCriteria": [
+        "Create components/layout/footer.tsx",
+        "Background: black #121212, text white",
+        "Sections: About, For Doctors, For Clinics, Legal",
+        "Copyright notice",
+        "Social links with icons",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 18,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "Sitemap generation",
+      "description": "As the system, I need to generate sitemaps for Google to discover all professional pages.",
+      "acceptanceCriteria": [
+        "Create app/sitemap.ts using Next.js sitemap convention",
+        "Generate URLs for all professionals (doctor, dentist, pharmacist pages)",
+        "Include lastmod, changefreq (weekly), priority",
+        "Split into multiple sitemaps if >50k URLs (sitemap index)",
+        "Accessible at /sitemap.xml",
+        "Typecheck passes"
+      ],
+      "priority": 19,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "robots.txt and SEO basics",
+      "description": "As the system, I need robots.txt and basic SEO configuration.",
+      "acceptanceCriteria": [
+        "Create app/robots.ts with Next.js convention",
+        "Allow all crawlers",
+        "Reference sitemap URL",
+        "Add default metadata in layout.tsx",
+        "Typecheck passes"
+      ],
+      "priority": 20,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-021",
+      "title": "i18n setup: next-intl configuration",
+      "description": "As a developer, I need internationalization configured for English and Nepali.",
+      "acceptanceCriteria": [
+        "Install and configure next-intl",
+        "Create messages/en.json with common translations",
+        "Create messages/ne.json with Nepali translations",
+        "Add middleware for locale detection",
+        "URL structure: /en/doctor/... and /ne/doctor/...",
+        "Default locale is 'en'",
+        "Typecheck passes"
+      ],
+      "priority": 21,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-022",
+      "title": "Category page: Doctors listing",
+      "description": "As a patient, I want to browse all doctors at /doctors with pagination.",
+      "acceptanceCriteria": [
+        "Create app/[lang]/doctors/page.tsx",
+        "List all professionals with type=DOCTOR",
+        "Display in grid of Cards",
+        "Pagination with page numbers",
+        "SEO: title 'Doctors in Nepal | Swasthya', description",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 22,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-023",
+      "title": "Category page: Dentists listing",
+      "description": "As a patient, I want to browse all dentists at /dentists.",
+      "acceptanceCriteria": [
+        "Create app/[lang]/dentists/page.tsx",
+        "List all professionals with type=DENTIST",
+        "Display in grid of Cards with red accent color",
+        "Pagination",
+        "SEO optimized",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 23,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-024",
+      "title": "Category page: Pharmacists listing",
+      "description": "As a patient, I want to browse all pharmacists at /pharmacists.",
+      "acceptanceCriteria": [
+        "Create app/[lang]/pharmacists/page.tsx",
+        "List all professionals with type=PHARMACIST",
+        "Display in grid of Cards with yellow accent color",
+        "Show category (Graduate/Assistant) badge",
+        "Pagination",
+        "SEO optimized",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 24,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-025",
+      "title": "Authentication: NextAuth setup",
+      "description": "As a developer, I need authentication configured for user login.",
+      "acceptanceCriteria": [
+        "Install and configure NextAuth.js",
+        "Add credentials provider (email + password)",
+        "Add Google OAuth provider",
+        "Create auth API routes",
+        "Session stored in database",
+        "Typecheck passes"
+      ],
+      "priority": 25,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-026",
+      "title": "Authentication: Login and Register pages",
+      "description": "As a user, I want to login or register on the platform.",
+      "acceptanceCriteria": [
+        "Create app/[lang]/login/page.tsx",
+        "Create app/[lang]/register/page.tsx",
+        "Forms with email, password inputs (Bauhaus styled)",
+        "Google sign-in button",
+        "Error messages displayed",
+        "Redirect to home after login",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 26,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-027",
+      "title": "Claim profile: Claim button and search",
+      "description": "As a doctor, I want to search for and claim my profile.",
+      "acceptanceCriteria": [
+        "Add 'Claim this profile' button on unclaimed professional pages (only shown if user logged in)",
+        "Create app/[lang]/claim/page.tsx with search by registration number",
+        "Search input for NMC/NDA/NPC number",
+        "Display matching professional for confirmation",
+        "Button to start claim process",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 27,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-028",
+      "title": "Claim profile: Verification request form",
+      "description": "As a doctor, I want to submit verification documents for my claim.",
+      "acceptanceCriteria": [
+        "Create claim form after professional selected",
+        "Upload fields: Government ID, NMC certificate (file upload)",
+        "Submit creates VerificationRequest in database with status=PENDING",
+        "Show success message with 'pending review' status",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 28,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-029",
+      "title": "Admin: Claims dashboard",
+      "description": "As an admin, I want to review and approve/reject profile claims.",
+      "acceptanceCriteria": [
+        "Create app/[lang]/admin/claims/page.tsx (protected, admin only)",
+        "List pending VerificationRequests with: user email, professional name, submitted date",
+        "View uploaded documents",
+        "Approve button: sets status=APPROVED, links professional.claimed_by to user",
+        "Reject button: sets status=REJECTED",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 29,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-030",
+      "title": "Profile edit: Edit form for verified professionals",
+      "description": "As a verified doctor, I want to edit my profile details.",
+      "acceptanceCriteria": [
+        "Create app/[lang]/dashboard/profile/page.tsx (protected, must have claimed profile)",
+        "Editable fields: bio, consultation_fee, languages, education details (stored in meta)",
+        "Form validation",
+        "Save updates Professional record",
+        "Show success toast on save",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 30,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
