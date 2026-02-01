@@ -214,29 +214,40 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
 
               {/* Basic Info */}
               <div className="flex-1">
-                <h1 className="text-4xl font-bold text-foreground mb-2">
+                {/* Specialty Label - text-xs uppercase tracking-widest in primary-blue */}
+                <span className="text-xs font-bold uppercase tracking-widest text-primary-blue">
+                  {professional.specialties && professional.specialties.length > 0
+                    ? professional.specialties[0]
+                    : professional.degree || professional.type.toLowerCase()}
+                </span>
+
+                {/* Name - text-4xl font-bold (clear hierarchy) */}
+                <h1 className="text-4xl font-bold text-foreground mt-1 mb-2">
                   {displayName}
                 </h1>
 
+                {/* Divider */}
+                <div className="border-t-2 border-black/20 my-3" />
+
+                {/* Registration number - text-sm text-gray-600 */}
+                <p className="text-sm text-gray-600 mb-3">
+                  Registration No: {professional.registration_number}
+                </p>
+
                 {professional.degree && (
-                  <p className="text-lg text-foreground/80 mb-3">
+                  <p className="text-base text-foreground/80 mb-3">
                     {professional.degree}
                   </p>
                 )}
 
-                <div className="flex items-center gap-2 text-sm text-foreground/60 mb-2">
-                  <span className="uppercase tracking-wider font-medium text-primary-blue">
-                    {professional.type}
-                  </span>
-                  <span>|</span>
-                  <span>Reg. No: {professional.registration_number}</span>
-                </div>
-
+                {/* Verified badge - green with Check icon in circle */}
                 {professional.verified && (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-verified/10 text-verified border-2 border-verified rounded-full text-sm font-medium">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+                  <div className="inline-flex items-center gap-2 bg-verified text-white px-3 py-1.5 text-sm font-bold border-2 border-black">
+                    <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                      <svg className="w-3 h-3 text-verified" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
                     Verified
                   </div>
                 )}
@@ -250,39 +261,55 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
           <CardContent>
             <h2 className="text-2xl font-bold mb-4">Details</h2>
 
-            <dl className="space-y-4">
+            {/* Divider after title */}
+            <div className="border-t-2 border-black/20 mb-6" />
+
+            <dl className="divide-y-2 divide-black/10">
               {professional.address && (
-                <div>
-                  <dt className="text-sm uppercase tracking-wider font-medium text-foreground/60 mb-1">
+                <div className="py-4 first:pt-0">
+                  <dt className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
                     Address
                   </dt>
-                  <dd className="text-foreground">
-                    {professional.address}
+                  <dd className="flex items-center gap-3 text-foreground">
+                    {/* Icon with accent color in circle */}
+                    <div className="w-8 h-8 bg-primary-blue rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                    <span>{professional.address}</span>
                   </dd>
                 </div>
               )}
 
               {professional.gender && (
-                <div>
-                  <dt className="text-sm uppercase tracking-wider font-medium text-foreground/60 mb-1">
+                <div className="py-4">
+                  <dt className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
                     Gender
                   </dt>
-                  <dd className="text-foreground capitalize">
-                    {professional.gender.toLowerCase()}
+                  <dd className="flex items-center gap-3 text-foreground capitalize">
+                    {/* Icon with accent color in circle */}
+                    <div className="w-8 h-8 bg-primary-yellow rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <span>{professional.gender.toLowerCase()}</span>
                   </dd>
                 </div>
               )}
 
               {professional.specialties && professional.specialties.length > 0 && (
-                <div>
-                  <dt className="text-sm uppercase tracking-wider font-medium text-foreground/60 mb-1">
+                <div className="py-4">
+                  <dt className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
                     Specialties
                   </dt>
-                  <dd className="flex flex-wrap gap-2">
+                  <dd className="flex flex-wrap gap-2 mt-2">
                     {professional.specialties.map((specialty, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-primary-blue/10 text-primary-blue border-2 border-primary-blue text-sm font-medium"
+                        className="px-3 py-1 bg-primary-blue/10 text-primary-blue border-2 border-primary-blue text-sm font-bold"
                       >
                         {specialty}
                       </span>
@@ -292,27 +319,41 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
               )}
 
               {professional.registration_date && (
-                <div>
-                  <dt className="text-sm uppercase tracking-wider font-medium text-foreground/60 mb-1">
+                <div className="py-4">
+                  <dt className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
                     Registration Date
                   </dt>
-                  <dd className="text-foreground">
-                    {new Date(professional.registration_date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                  <dd className="flex items-center gap-3 text-foreground">
+                    {/* Icon with accent color in circle */}
+                    <div className="w-8 h-8 bg-primary-red rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <span>
+                      {new Date(professional.registration_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
                   </dd>
                 </div>
               )}
 
               {professional.remarks && (
-                <div>
-                  <dt className="text-sm uppercase tracking-wider font-medium text-foreground/60 mb-1">
+                <div className="py-4 last:pb-0">
+                  <dt className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
                     Remarks
                   </dt>
-                  <dd className="text-foreground">
-                    {professional.remarks}
+                  <dd className="flex items-start gap-3 text-foreground">
+                    {/* Icon with accent color in circle */}
+                    <div className="w-8 h-8 bg-primary-blue rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <span>{professional.remarks}</span>
                   </dd>
                 </div>
               )}
