@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { prisma } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
 interface DoctorPageProps {
   params: Promise<{
@@ -14,6 +17,73 @@ async function getProfessional(slug: string) {
     where: { slug },
   });
   return professional;
+}
+
+export async function generateMetadata({ params }: DoctorPageProps): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const professional = await getProfessional(slug);
+
+  if (!professional) {
+    return {
+      title: "Professional Not Found | Swasthya",
+      description: "The requested healthcare professional could not be found.",
+    };
+  }
+
+  const isDoctor = professional.type === "DOCTOR" || professional.type === "DENTIST";
+  const displayName = isDoctor
+    ? `Dr. ${professional.full_name}`
+    : professional.full_name;
+
+  // Build specialty text from specialties array or degree
+  const specialty = professional.specialties && professional.specialties.length > 0
+    ? professional.specialties[0]
+    : professional.degree || professional.type.toLowerCase();
+
+  // Build location text
+  const location = professional.address || "Nepal";
+
+  // Build title: 'Dr. [Name] - [Specialty] in [Location] | Swasthya'
+  const title = `${displayName} - ${specialty} in ${location} | Swasthya`;
+
+  // Build description with credentials and location
+  const description = `${displayName} is a registered ${professional.type.toLowerCase()}${professional.degree ? ` with ${professional.degree}` : ""} practicing in ${location}. Registration No: ${professional.registration_number}. Find verified healthcare professionals on Swasthya.`;
+
+  const canonicalUrl = `${SITE_URL}/${lang}/doctor/${slug}`;
+  const ogImageUrl = professional.photo_url || `${SITE_URL}/og-default.png`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        en: `${SITE_URL}/en/doctor/${slug}`,
+        ne: `${SITE_URL}/ne/doctor/${slug}`,
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "Swasthya",
+      type: "profile",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 400,
+          height: 400,
+          alt: displayName,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+      images: [ogImageUrl],
+    },
+  };
 }
 
 export default async function DoctorPage({ params }: DoctorPageProps) {
