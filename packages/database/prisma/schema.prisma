@@ -13,26 +13,83 @@ enum ProfessionalType {
   PHARMACIST
 }
 
+enum UserRole {
+  USER
+  PROFESSIONAL
+  ADMIN
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  phone         String?
+  password_hash String?
+  name          String?
+  role          UserRole  @default(USER)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  // Relations
+  verification_requests  VerificationRequest[] @relation("UserRequests")
+  reviewed_verifications VerificationRequest[] @relation("ReviewedBy")
+  claimed_professionals  Professional[]        @relation("ClaimedBy")
+}
+
 model Professional {
-  id                String           @id @default(uuid())
-  type              ProfessionalType
-  registration_number String         @unique
-  full_name         String
-  full_name_ne      String?
-  photo_url         String?
-  gender            String?
-  address           String?
-  degree            String?
-  specialties       String[]
-  registration_date DateTime?
-  remarks           String?
-  verified          Boolean          @default(false)
-  slug              String
-  created_at        DateTime         @default(now())
-  updated_at        DateTime         @updatedAt
-  last_synced_at    DateTime?
-  meta              Json?
+  id                  String           @id @default(uuid())
+  type                ProfessionalType
+  registration_number String           @unique
+  full_name           String
+  full_name_ne        String?
+  photo_url           String?
+  gender              String?
+  address             String?
+  degree              String?
+  specialties         String[]
+  registration_date   DateTime?
+  remarks             String?
+  verified            Boolean          @default(false)
+  slug                String
+  created_at          DateTime         @default(now())
+  updated_at          DateTime         @updatedAt
+  last_synced_at      DateTime?
+  meta                Json?
+
+  // Claimed by relation (optional)
+  claimed_by_id String?
+  claimed_by    User?   @relation("ClaimedBy", fields: [claimed_by_id], references: [id])
+
+  // Verification requests for this professional
+  verification_requests VerificationRequest[]
 
   @@index([slug])
   @@index([type])
+  @@index([claimed_by_id])
+}
+
+model VerificationRequest {
+  id                String             @id @default(uuid())
+  status            VerificationStatus @default(PENDING)
+  government_id_url String?
+  certificate_url   String?
+  submitted_at      DateTime           @default(now())
+  reviewed_at       DateTime?
+
+  // Relations
+  user_id        String
+  user           User         @relation("UserRequests", fields: [user_id], references: [id])
+  professional_id String
+  professional   Professional @relation(fields: [professional_id], references: [id])
+  reviewed_by_id String?
+  reviewed_by    User?        @relation("ReviewedBy", fields: [reviewed_by_id], references: [id])
+
+  @@index([status])
+  @@index([user_id])
+  @@index([professional_id])
 }
