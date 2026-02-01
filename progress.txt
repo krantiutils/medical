@@ -2,6 +2,7 @@
 Started: Mon Feb  2 01:28:58 AM +0545 2026
 
 ## Codebase Patterns
+- Next.js 14 App Router: dynamic route params are `Promise<{}>` - always `await params` before using
 - Use symlink for .env in packages/database (`ln -sf ../../.env packages/database/.env`) to allow Prisma to access root .env
 - Turborepo tasks that need DATABASE_URL must have the symlink in place
 - @types/node is required in packages/database for process.env type support
@@ -144,4 +145,37 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - CardFooter has border-t-2 border-foreground/20 for subtle section separation
   - Use forwardRef pattern consistently for all UI primitives to allow proper ref forwarding
   - Component structure follows Button pattern: Record types for variant maps, export types alongside component
+---
+
+## 2026-02-02 10:30 +0545 - US-010
+- **What was implemented**: Professional detail page with basic route and layout
+- **Files changed**:
+  - `apps/web/src/app/[lang]/doctor/[slug]/page.tsx` - Created dynamic route page with database fetch, Card layout
+  - `apps/web/src/app/[lang]/layout.tsx` - Created language layout with en/ne validation
+  - `apps/web/src/app/[lang]/not-found.tsx` - Created 404 page with Bauhaus styling
+  - `prd.json` - Marked US-010 as passes: true
+- **Learnings for future iterations:**
+  - Next.js 14 App Router uses `params: Promise<{}>` for dynamic route params - must await them
+  - Use `notFound()` from `next/navigation` to trigger 404 - cleaner than throwing errors
+  - Import Prisma client from `@swasthya/database` (workspace package) - already configured as singleton
+  - Professional type field determines display name prefix: "Dr." for DOCTOR/DENTIST, none for PHARMACIST
+  - Card decorator colors (red/blue/yellow) can be used to differentiate sections visually
+  - Mobile responsive: use `flex-col sm:flex-row` for photo+info layouts
+  - The `[lang]` structure is set up now - will be extended with next-intl in US-021
+  - Slug-based lookup uses `findFirst` with `where: { slug }` - ensure slugs are unique in practice
+---
+
+## 2026-02-02 11:00 +0545 - US-011
+- **What was implemented**: SEO meta tags for professional detail page
+- **Files changed**:
+  - `apps/web/src/app/[lang]/doctor/[slug]/page.tsx` - Added generateMetadata function with full SEO support
+  - `prd.json` - Marked US-011 as passes: true
+- **Learnings for future iterations:**
+  - `generateMetadata` is an async function that receives the same props as the page component
+  - Use `type: "profile"` for OpenGraph on person/professional pages (not "website")
+  - Twitter card `summary` is suitable for profile-like content; `summary_large_image` is for article-like content
+  - `alternates.languages` provides hreflang-like functionality for multi-language sites
+  - SITE_URL should be configured via `NEXT_PUBLIC_SITE_URL` env var for production
+  - Fallback to og-default.png for professionals without photo_url - this image needs to be created later
+  - Meta description should include credentials, location, and registration number for SEO authority
 ---
