@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core */
+    --background: #F0F0F0;
+    --foreground: #121212;
+
+    /* Bauhaus Primaries */
+    --primary-red: #D02020;
+    --primary-blue: #1040C0;
+    --primary-yellow: #F0C020;
+
+    /* Neutral */
+    --muted: #E0E0E0;
+    --border: #121212;
+
+    /* Semantic */
+    --success: #2E7D32;
+    --warning: #F0C020;
+    --error: #D02020;
+    --info: #1040C0;
+
+    /* Healthcare Specific */
+    --verified: #2E7D32;
+    --doctor: #1040C0;
+    --dentist: #D02020;
+    --pharmacist: #F0C020;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  /* Hard shadow utilities - Bauhaus style */
+  .shadow-hard-sm {
+    box-shadow: 3px 3px 0 0 #121212;
+  }
+
+  .shadow-hard {
+    box-shadow: 4px 4px 0 0 #121212;
+  }
+
+  .shadow-hard-lg {
+    box-shadow: 6px 6px 0 0 #121212;
+  }
+
+  .shadow-hard-xl {
+    box-shadow: 8px 8px 0 0 #121212;
+  }
+
+  /* Colored hard shadows */
+  .shadow-hard-red {
+    box-shadow: 4px 4px 0 0 #D02020;
+  }
+
+  .shadow-hard-blue {
+    box-shadow: 4px 4px 0 0 #1040C0;
+  }
+
+  .shadow-hard-yellow {
+    box-shadow: 4px 4px 0 0 #F0C020;
+  }
+
+  /* Active state for buttons - pressed look */
+  .active-pressed:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+}
