@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -53,7 +53,7 @@ interface Admission {
   attending_doctor: Doctor | null;
 }
 
-export default function AdmissionDetailPage() {
+function AdmissionDetailPageContent() {
   const { data: session, status } = useSession();
   const params = useParams<{ lang: string; id: string }>();
   const searchParams = useSearchParams();
@@ -536,5 +536,13 @@ export default function AdmissionDetailPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function AdmissionDetailPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary-blue border-t-transparent rounded-full animate-spin" /></div>}>
+      <AdmissionDetailPageContent />
+    </Suspense>
   );
 }

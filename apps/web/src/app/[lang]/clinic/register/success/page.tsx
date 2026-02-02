@@ -1,10 +1,11 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function ClinicRegisterSuccessPage() {
+function ClinicRegisterSuccessPageContent() {
   const searchParams = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
   const isNepali = lang === "ne";
@@ -219,5 +220,13 @@ export default function ClinicRegisterSuccessPage() {
         <div className="flex-1 bg-primary-blue" />
       </div>
     </main>
+  );
+}
+
+export default function ClinicRegisterSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary-blue border-t-transparent rounded-full animate-spin" /></div>}>
+      <ClinicRegisterSuccessPageContent />
+    </Suspense>
   );
 }

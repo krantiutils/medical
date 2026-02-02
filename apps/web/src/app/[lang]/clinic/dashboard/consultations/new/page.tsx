@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -34,7 +34,7 @@ const translations = {
   },
 };
 
-export default function NewConsultationPage() {
+function NewConsultationPageContent() {
   const { data: session, status } = useSession();
   const params = useParams<{ lang: string }>();
   const router = useRouter();
@@ -200,4 +200,12 @@ export default function NewConsultationPage() {
   }
 
   return null;
+}
+
+export default function NewConsultationPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary-blue border-t-transparent rounded-full animate-spin" /></div>}>
+      <NewConsultationPageContent />
+    </Suspense>
+  );
 }

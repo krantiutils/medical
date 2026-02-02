@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -80,7 +80,7 @@ const DEFAULT_SCHEDULE: DaySchedule = {
   max_patients_per_slot: 1,
 };
 
-export default function ClinicSchedulesPage() {
+function ClinicSchedulesContent() {
   const { data: session, status } = useSession();
   const params = useParams<{ lang: string }>();
   const searchParams = useSearchParams();
@@ -1292,5 +1292,23 @@ export default function ClinicSchedulesPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function ClinicSchedulesPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-background py-8 px-4">
+        <div className="max-w-6xl mx-auto">
+          <Card>
+            <CardContent className="py-12 text-center">
+              <div className="w-8 h-8 border-4 border-primary-blue border-t-transparent rounded-full animate-spin mx-auto" />
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    }>
+      <ClinicSchedulesContent />
+    </Suspense>
   );
 }

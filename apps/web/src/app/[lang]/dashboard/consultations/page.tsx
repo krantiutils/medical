@@ -30,11 +30,13 @@ interface Consultation {
 
 const STATUS_COLORS: Record<string, string> = {
   SCHEDULED: "bg-primary-yellow text-foreground",
+  PENDING_ACCEPTANCE: "bg-primary-yellow text-foreground animate-pulse",
   CONFIRMED: "bg-primary-blue text-white",
   WAITING: "bg-verified text-white",
   IN_PROGRESS: "bg-verified text-white animate-pulse",
   COMPLETED: "bg-foreground/20 text-foreground",
   CANCELLED: "bg-primary-red/20 text-primary-red",
+  REJECTED: "bg-primary-red/20 text-primary-red",
   NO_SHOW: "bg-foreground/40 text-white",
   EXPIRED: "bg-foreground/40 text-white",
 };
@@ -42,21 +44,25 @@ const STATUS_COLORS: Record<string, string> = {
 const STATUS_LABELS: Record<string, Record<string, string>> = {
   en: {
     SCHEDULED: "Scheduled",
+    PENDING_ACCEPTANCE: "Waiting for Doctor",
     CONFIRMED: "Confirmed",
     WAITING: "Waiting",
     IN_PROGRESS: "In Progress",
     COMPLETED: "Completed",
     CANCELLED: "Cancelled",
+    REJECTED: "Rejected",
     NO_SHOW: "No Show",
     EXPIRED: "Expired",
   },
   ne: {
     SCHEDULED: "तालिकाबद्ध",
+    PENDING_ACCEPTANCE: "डाक्टरको प्रतीक्षामा",
     CONFIRMED: "पुष्टि भयो",
     WAITING: "प्रतीक्षामा",
     IN_PROGRESS: "जारी छ",
     COMPLETED: "सम्पन्न",
     CANCELLED: "रद्द",
+    REJECTED: "अस्वीकृत",
     NO_SHOW: "उपस्थित भएनन्",
     EXPIRED: "म्याद सकियो",
   },
@@ -155,7 +161,7 @@ export default function ConsultationsPage() {
   const filteredConsultations = consultations.filter((c) => {
     if (filter === "all") return true;
     if (filter === "upcoming") {
-      return ["SCHEDULED", "CONFIRMED", "WAITING", "IN_PROGRESS"].includes(c.status);
+      return ["SCHEDULED", "PENDING_ACCEPTANCE", "CONFIRMED", "WAITING", "IN_PROGRESS"].includes(c.status);
     }
     if (filter === "past") {
       return ["COMPLETED", "CANCELLED", "NO_SHOW", "EXPIRED"].includes(c.status);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -163,7 +163,7 @@ function StarRating({
   );
 }
 
-export default function ReviewPage({ params }: ReviewPageProps) {
+function ReviewPageContent({ params }: ReviewPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -578,5 +578,13 @@ export default function ReviewPage({ params }: ReviewPageProps) {
         )}
       </div>
     </main>
+  );
+}
+
+export default function ReviewPage({ params }: ReviewPageProps) {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary-blue border-t-transparent rounded-full animate-spin" /></div>}>
+      <ReviewPageContent params={params} />
+    </Suspense>
   );
 }

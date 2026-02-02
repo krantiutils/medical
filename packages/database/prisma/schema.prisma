@@ -1106,6 +1106,7 @@ model Admission {
 
 enum VideoConsultationStatus {
   SCHEDULED // Patient has booked, awaiting confirmation
+  PENDING_ACCEPTANCE // Instant consultation: waiting for doctor to accept (timeout 60s)
   CONFIRMED // Doctor confirmed the booking
   WAITING // Patient is in waiting room
   IN_PROGRESS // Video call is active
@@ -1113,6 +1114,7 @@ enum VideoConsultationStatus {
   CANCELLED // Cancelled by either party
   NO_SHOW // Patient or doctor didn't show up
   EXPIRED // Booking time passed without call
+  REJECTED // Doctor rejected instant consultation request
 }
 
 enum VideoConsultationType {
@@ -1149,6 +1151,11 @@ model VideoConsultation {
   cancelled_at     DateTime?
   created_at       DateTime                 @default(now())
   updated_at       DateTime                 @updatedAt
+  // Instant consultation fields
+  acceptance_deadline DateTime? // Deadline for doctor to accept instant consultation
+  accepted_at      DateTime? // When doctor accepted instant consultation
+  rejected_at      DateTime? // When doctor rejected instant consultation
+  rejection_reason String? // Reason for rejection (optional)
 
   // Relations
   doctor_id  String

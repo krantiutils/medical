@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
@@ -218,7 +218,7 @@ function downloadICS(booking: BookingConfirmation): void {
   URL.revokeObjectURL(url);
 }
 
-export default function BookingPage({ params }: BookingPageProps) {
+function BookingPageContent({ params }: BookingPageProps) {
   const searchParams = useSearchParams();
   const [resolvedParams, setResolvedParams] = useState<{ lang: string; slug: string } | null>(null);
   const [t, setT] = useState(translations.en);
@@ -758,5 +758,13 @@ export default function BookingPage({ params }: BookingPageProps) {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function BookingPage({ params }: BookingPageProps) {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary-blue border-t-transparent rounded-full animate-spin" /></div>}>
+      <BookingPageContent params={params} />
+    </Suspense>
   );
 }
