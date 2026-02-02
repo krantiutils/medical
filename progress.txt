@@ -1988,3 +1988,48 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - getPaymentStatusLabel helper maps enum values to localized display text
 
 ---
+
+## 2026-02-02 - US-086
+**E2E Tests: Billing flow**
+
+### What was implemented
+- Created apps/web/e2e/billing.spec.ts with 47 comprehensive tests covering:
+  - Services Management Page (11 tests): page load, Add Service button, display seeded services, prices, filter tabs, modal open, add new service, validation errors, active filter, Edit/Delete buttons
+  - Billing Page - Basic Functionality (6 tests): page load, patient search section, services section, recent invoices section, Manage Services link, seeded invoices display
+  - Billing Page - Patient Selection (4 tests): search by phone, search by name, select patient and show info, Change Patient button
+  - Billing Page - Invoice Creation (10 tests): add service to invoice, subtotal calculation, discount calculation, VAT 13% tax calculation, payment mode options, payment status options, invoice generation with success message, Print Receipt button, quantity update, item removal, disabled generate button without items
+  - Reports Page (10 tests): page load, date range filter, quick date presets, summary cards, correct totals from seeded data, payment mode breakdown table, daily collection table, invoice details table, Export CSV button, date filter application, payment status badges
+  - Billing Flow - End to End (1 test): complete workflow from patient selection through invoice generation to reports verification
+  - Unauthenticated Access (3 tests): login required messages for billing, services, and reports pages
+  - Language Support (3 tests): Nepali translations for billing, services, and reports pages
+
+- Added billing test data to seed.ts:
+  - SERVICES array: 6 test services (General Consultation, Follow-up Visit, X-Ray, Blood Test, ECG, Dressing-inactive)
+  - PATIENTS array: 2 test patients with phone, email, gender, address
+  - seedServices() function: creates services for dashboard test clinic
+  - seedPatients() function: upserts patients by phone number
+  - seedInvoices() function: creates 3 sample invoices (CASH/PAID, CARD/PAID, CREDIT/PENDING)
+  - Updated cleanupTestData() to delete invoices and services
+
+- Updated test-utils.ts:
+  - Added SERVICES constants with name and price
+  - Added PATIENTS constants with name, phone, number
+  - Fixed login regex to match /en, /en/, /en/dashboard variants
+
+### Files changed
+- apps/web/e2e/billing.spec.ts (NEW)
+- apps/web/e2e/fixtures/seed.ts (MODIFIED)
+- apps/web/e2e/fixtures/test-utils.ts (MODIFIED)
+
+### Learnings for future iterations
+- Playwright selectOption({ label: ... }) requires exact string match, not RegExp - use template literals with exact service name + price format
+- Service dropdown options include price format: "Service Name - NPR X,XXX.00"
+- Test data for billing needs services, patients, AND invoices for comprehensive testing
+- Invoice number format is INV-YEAR-XXXX (e.g., INV-2026-0001)
+- Tax calculation: 13% VAT applied to (subtotal - discount)
+- Payment modes: CASH, CARD, UPI, BANK_TRANSFER, INSURANCE, CREDIT
+- Payment statuses: PENDING, PAID, PARTIAL
+- waitForSelector with .animate-pulse and state: "hidden" useful for waiting for page load
+- Server errors during E2E tests may indicate database connection issues or missing seed data
+
+---

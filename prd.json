@@ -1611,8 +1611,8 @@
         "All tests pass: pnpm test:e2e billing.spec.ts"
       ],
       "priority": 86,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Created billing.spec.ts with 47 tests covering services management (add/edit/delete/filter), billing page (patient search/selection, invoice creation with services/quantities/discounts/tax), invoice generation with auto-numbering, reports page (date filters, summaries, payment breakdowns), language support (EN/NE), and unauthenticated access handling. Added billing test data to seed.ts (6 services, 2 patients, 3 sample invoices). Updated test-utils.ts with billing constants. Typecheck passes."
     },
     {
       "id": "US-087",
