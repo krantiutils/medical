@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
-import { prisma, ClinicType } from "@swasthya/database";
+import { prisma, ClinicType, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { PhotoGallery } from "@/components/clinic/PhotoGallery";
 
 interface ClinicPageProps {
   params: Promise<{
@@ -75,11 +76,57 @@ function getServiceLabel(service: string, lang: string): string {
   return service; // Custom service - return as-is
 }
 
+// Helper to get professional type display label
+function getProfessionalTypeLabel(type: ProfessionalType, lang: string): string {
+  const labels: Record<ProfessionalType, { en: string; ne: string }> = {
+    [ProfessionalType.DOCTOR]: { en: "Doctor", ne: "चिकित्सक" },
+    [ProfessionalType.DENTIST]: { en: "Dentist", ne: "दन्त चिकित्सक" },
+    [ProfessionalType.PHARMACIST]: { en: "Pharmacist", ne: "औषधी विशेषज्ञ" },
+  };
+  return labels[type][lang === "ne" ? "ne" : "en"];
+}
+
+// Helper to get professional type color
+function getProfessionalTypeColor(type: ProfessionalType): string {
+  switch (type) {
+    case ProfessionalType.DOCTOR:
+      return "bg-primary-blue";
+    case ProfessionalType.DENTIST:
+      return "bg-primary-red";
+    case ProfessionalType.PHARMACIST:
+      return "bg-primary-yellow text-foreground";
+    default:
+      return "bg-primary-blue";
+  }
+}
+
+// Helper to get role display label
+function getRoleLabel(role: string | null, lang: string): string {
+  const roles: Record<string, { en: string; ne: string }> = {
+    permanent: { en: "Permanent", ne: "स्थायी" },
+    visiting: { en: "Visiting", ne: "भ्रमण" },
+    consultant: { en: "Consultant", ne: "परामर्शदाता" },
+  };
+  if (!role) return "";
+  const roleData = roles[role.toLowerCase()];
+  return roleData ? roleData[lang === "ne" ? "ne" : "en"] : role;
+}
+
 async function getClinic(slug: string) {
   const clinic = await prisma.clinic.findFirst({
     where: {
       slug,
       verified: true, // Only show verified clinics
+    },
+    include: {
+      doctors: {
+        include: {
+          doctor: true, // Include the Professional data
+        },
+        orderBy: {
+          joined_at: "asc",
+        },
+      },
     },
   });
   return clinic;
@@ -101,6 +148,15 @@ const translations = {
     closed: "Closed",
     services: "Services Offered",
     verified: "Verified",
+    photoGallery: "Photo Gallery",
+    photos: "photos",
+    close: "Close",
+    previous: "Previous",
+    next: "Next",
+    ourDoctors: "Our Medical Team",
+    viewProfile: "View Profile",
+    noDoctors: "No doctors affiliated yet",
+    specialty: "Specialty",
   },
   ne: {
     clinicNotFound: "क्लिनिक फेला परेन",
@@ -116,6 +172,15 @@ const translations = {
     closed: "बन्द",
     services: "उपलब्ध सेवाहरू",
     verified: "प्रमाणित",
+    photoGallery: "फोटो ग्यालेरी",
+    photos: "फोटोहरू",
+    close: "बन्द गर्नुहोस्",
+    previous: "अघिल्लो",
+    next: "अर्को",
+    ourDoctors: "हाम्रो चिकित्सा टोली",
+    viewProfile: "प्रोफाइल हेर्नुहोस्",
+    noDoctors: "अझै कुनै डाक्टर सम्बद्ध छैन",
+    specialty: "विशेषज्ञता",
   },
 };
 
@@ -407,6 +472,149 @@ export default async function ClinicPage({ params }: ClinicPageProps) {
             </CardContent>
           </Card>
         )}
+
+        {/* Photo Gallery Card */}
+        {clinic.photos && clinic.photos.length > 0 && (
+          <Card decorator="red" decoratorPosition="top-right" className="mb-6">
+            <CardContent>
+              <h2 className="text-2xl font-bold mb-4">{t.photoGallery}</h2>
+              <div className="border-t-2 border-black/20 mb-6" />
+
+              <PhotoGallery
+                photos={clinic.photos}
+                clinicName={clinic.name}
+                translations={{
+                  photoGallery: t.photoGallery,
+                  photos: t.photos,
+                  close: t.close,
+                  previous: t.previous,
+                  next: t.next,
+                }}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Doctors List Card */}
+        <Card decorator="yellow" decoratorPosition="top-left" className="mb-6">
+          <CardContent>
+            <h2 className="text-2xl font-bold mb-4">{t.ourDoctors}</h2>
+            <div className="border-t-2 border-black/20 mb-6" />
+
+            {clinic.doctors && clinic.doctors.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {clinic.doctors.map((clinicDoctor) => {
+                  const doctor = clinicDoctor.doctor;
+                  const isDoctor = doctor.type === ProfessionalType.DOCTOR;
+                  const displayName = isDoctor
+                    ? `Dr. ${doctor.full_name}`
+                    : doctor.full_name;
+
+                  return (
+                    <Link
+                      key={clinicDoctor.id}
+                      href={`/${lang}/doctors/${doctor.slug}`}
+                      className="group block"
+                    >
+                      <div className="border-4 border-foreground bg-white p-4 shadow-[4px_4px_0_0_#121212] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#121212] transition-all">
+                        <div className="flex gap-4">
+                          {/* Doctor Photo */}
+                          <div className="flex-shrink-0">
+                            {doctor.photo_url ? (
+                              <img
+                                src={doctor.photo_url}
+                                alt={displayName}
+                                className="w-16 h-16 object-cover border-2 border-foreground"
+                              />
+                            ) : (
+                              <div className="w-16 h-16 bg-muted border-2 border-foreground flex items-center justify-center">
+                                <span className="text-2xl font-bold text-foreground/40">
+                                  {doctor.full_name.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Doctor Info */}
+                          <div className="flex-1 min-w-0">
+                            {/* Type Badge */}
+                            <span
+                              className={`inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-white border border-foreground mb-1 ${getProfessionalTypeColor(doctor.type)}`}
+                            >
+                              {getProfessionalTypeLabel(doctor.type, lang)}
+                            </span>
+
+                            {/* Name */}
+                            <h3 className="font-bold text-foreground truncate group-hover:text-primary-blue transition-colors">
+                              {displayName}
+                            </h3>
+
+                            {/* Specialty or Degree */}
+                            {doctor.specialties && doctor.specialties.length > 0 ? (
+                              <p className="text-sm text-foreground/70 truncate">
+                                {doctor.specialties[0]}
+                              </p>
+                            ) : doctor.degree ? (
+                              <p className="text-sm text-foreground/70 truncate">
+                                {doctor.degree}
+                              </p>
+                            ) : null}
+
+                            {/* Role Badge */}
+                            {clinicDoctor.role && (
+                              <span className="inline-block mt-2 px-2 py-0.5 text-xs font-medium bg-foreground/10 border border-foreground/20 text-foreground/70">
+                                {getRoleLabel(clinicDoctor.role, lang)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* View Profile Link */}
+                        <div className="mt-3 pt-3 border-t border-foreground/10 flex items-center justify-end">
+                          <span className="text-sm font-bold text-primary-blue group-hover:underline flex items-center gap-1">
+                            {t.viewProfile}
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 mx-auto mb-4 bg-foreground/10 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 text-foreground/40"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </div>
+                <p className="text-foreground/60">{t.noDoctors}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </main>
   );
