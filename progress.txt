@@ -2836,3 +2836,42 @@ Created comprehensive database models for Phase 4 features:
 - Card decorator prop takes separate decorator="color" and decoratorPosition="position" props, NOT an object
 
 ---
+
+## 2026-02-02 - US-103
+**E2E Tests: EMR and Lab**
+
+### What was implemented
+- Created apps/web/e2e/emr-lab.spec.ts with 39 comprehensive tests:
+  - EMR Consultations - Access Control (2 tests): login required message, callback URL in login link
+  - EMR Consultations - Page Layout (6 tests): page title, Today's Queue section, Recent Clinical Notes section, Back to Dashboard button, Refresh button, filter buttons (All/Draft/Final)
+  - EMR Consultations - Today's Queue (2 tests): queue count badge, empty queue message or queue items
+  - EMR Consultations - Clinical Notes (3 tests): filter by Draft, filter by Finalized, clinical note with status badge
+  - Lab Dashboard - Access Control (2 tests): login required message, callback URL in login link
+  - Lab Dashboard - Page Layout (3 tests): page title, status tabs (Pending/In Progress/Completed/All), stats cards
+  - Lab Dashboard - Tab Switching (3 tests): switch to In Progress/Completed/All tabs
+  - Lab Dashboard - Order Display (2 tests): show orders or empty message, order with patient info
+  - Lab Dashboard - Order Actions (3 tests): Collect Sample button for ordered status, Enter Results button for processing, View Results button for completed
+  - Patient Lab Results - Access Control (1 test): login required message
+  - Patient Lab Results - Page Layout (2 tests): page title, results or empty message (with session check)
+  - EMR and Lab - Language Support (3 tests): consultations/lab dashboard/patient lab results in Nepali
+  - EMR and Lab - Mobile Responsiveness (3 tests): mobile viewport for all three pages
+  - EMR Consultations - UI Elements (2 tests): Bauhaus-styled cards, blue decorator
+  - Lab Dashboard - UI Elements (2 tests): Bauhaus-styled cards, priority badges with colors
+
+### Files changed
+- apps/web/e2e/emr-lab.spec.ts (NEW)
+
+### Learnings for future iterations
+- EMR routes: /clinic/dashboard/consultations (list), /clinic/dashboard/consultations/[id] (detail with tabs: Vitals, Notes, Diagnosis, Prescription, Lab)
+- Lab routes: /clinic/dashboard/lab (dashboard with tabs), /clinic/dashboard/lab/[id] (results entry), /dashboard/lab-results (patient view)
+- Authenticated tests for clinic features use clinicOwnerPage fixture from test-utils.ts
+- Session may not persist in E2E tests - use graceful skip pattern with hasAccess helper functions
+- Clinical notes filter buttons: All, Drafts, Finalized - filter API uses status param
+- Lab dashboard tabs filter by status: ORDERED (pending), PROCESSING, COMPLETED
+- Lab order actions depend on status: Collect Sample (ORDERED), Start Processing/Enter Results (SAMPLE_COLLECTED/PROCESSING), View Results/Print Report (COMPLETED)
+- Patient lab results shows only COMPLETED orders matching user email/phone
+- Queue shows only CHECKED_IN and IN_PROGRESS appointments
+- Clinical note status badges: DRAFT (yellow), FINAL (green), AMENDED (blue)
+- Lab order status badges: ORDERED (yellow), SAMPLE_COLLECTED (blue), PROCESSING (orange), COMPLETED (green)
+
+---
