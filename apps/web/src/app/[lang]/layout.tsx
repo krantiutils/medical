@@ -1,5 +1,10 @@
+import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { locales, type Locale } from "@/i18n/config";
 
 interface LangLayoutProps {
   children: React.ReactNode;
@@ -8,18 +13,31 @@ interface LangLayoutProps {
   }>;
 }
 
+export function generateStaticParams() {
+  return locales.map((locale) => ({ lang: locale }));
+}
+
 export default async function LangLayout({ children, params }: LangLayoutProps) {
   const { lang } = await params;
 
-  // Validate language (will be expanded with next-intl in US-021)
-  const validLangs = ["en", "ne"];
-  const currentLang = validLangs.includes(lang) ? lang : "en";
+  // Validate that the locale is supported
+  if (!locales.includes(lang as Locale)) {
+    notFound();
+  }
+
+  // Enable static rendering
+  setRequestLocale(lang);
+
+  // Get messages for the current locale
+  const messages = await getMessages();
 
   return (
-    <div data-lang={currentLang} className="min-h-screen flex flex-col">
-      <Header lang={currentLang} />
-      <main className="flex-1">{children}</main>
-      <Footer lang={currentLang} />
-    </div>
+    <NextIntlClientProvider messages={messages}>
+      <div data-lang={lang} className="min-h-screen flex flex-col">
+        <Header lang={lang} />
+        <main className="flex-1">{children}</main>
+        <Footer lang={lang} />
+      </div>
+    </NextIntlClientProvider>
   );
 }
