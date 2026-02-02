@@ -128,6 +128,9 @@ model Professional {
   // Schedules for this professional at clinics
   schedules DoctorSchedule[]
 
+  // Leave records for this professional
+  leaves DoctorLeave[]
+
   @@unique([type, registration_number])
   @@index([slug])
   @@index([type])
@@ -209,6 +212,9 @@ model Clinic {
   // Doctor schedules at this clinic
   schedules DoctorSchedule[]
 
+  // Doctor leaves at this clinic
+  leaves DoctorLeave[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -277,4 +283,22 @@ model DoctorSchedule {
   @@index([clinic_id, doctor_id, day_of_week])
   @@index([clinic_id])
   @@index([doctor_id])
+}
+
+model DoctorLeave {
+  id         String    @id @default(uuid())
+  leave_date DateTime  // Date of leave
+  start_time String?   // Nullable for full day leave, format "HH:MM"
+  end_time   String?   // Nullable for full day leave, format "HH:MM"
+  reason     String    // Reason for leave
+  created_at DateTime  @default(now())
+
+  // Relations
+  doctor_id String
+  doctor    Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+  clinic_id String
+  clinic    Clinic       @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  @@index([doctor_id, leave_date])
+  @@index([clinic_id])
 }
