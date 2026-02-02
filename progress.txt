@@ -262,3 +262,21 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Hidden inputs preserve filter state when submitting search query form
   - Don't use `@typescript-eslint/no-explicit-any` disable comment - ESLint rule not configured in this project
 ---
+
+## 2026-02-02 17:00 +0545 - US-017
+- **What was implemented**: Navigation header component with Bauhaus design
+- **Files changed**:
+  - `apps/web/src/components/layout/header.tsx` - Created header component with logo, nav, language switcher, login button, mobile menu
+  - `apps/web/src/app/[lang]/layout.tsx` - Integrated Header component into the [lang] layout
+  - `prd.json` - Marked US-017 as passes: true
+- **Learnings for future iterations:**
+  - Layout components go in `apps/web/src/components/layout/` directory
+  - Use `"use client"` directive for components with useState (like mobile menu toggle)
+  - Use `usePathname()` from next/navigation to get current path for active link highlighting
+  - Language switcher needs to preserve current path when switching - strip lang prefix then add new one
+  - Login button uses inline styles matching Button outline variant since Button doesn't support asChild prop
+  - Mobile menu uses conditional rendering with hamburger/X toggle icon
+  - Header uses `sticky top-0 z-50` for sticky positioning without covering content
+  - Nav links array pattern makes adding/removing links easy without code duplication
+  - Active link check: exact match for home (`/lang`), startsWith for other pages
+---
