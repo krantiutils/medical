@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -76,6 +76,7 @@ const PREDEFINED_SERVICES: { id: string; labelEn: string; labelNe: string }[] = 
 export default function ClinicRegisterPage() {
   const { data: session, status } = useSession();
   const { lang } = useParams<{ lang: string }>();
+  const router = useRouter();
   const isNepali = lang === "ne";
 
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -100,6 +101,7 @@ export default function ClinicRegisterPage() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Translations
   const t = {
@@ -201,6 +203,9 @@ export default function ClinicRegisterPage() {
     selectedServicesCount: isNepali
       ? (count: number) => `${count} सेवा${count > 1 ? "हरू" : ""} छानिएको`
       : (count: number) => `${count} service${count !== 1 ? "s" : ""} selected`,
+    submitErrorGeneric: isNepali
+      ? "क्लिनिक दर्ता गर्न असफल भयो। कृपया पुन: प्रयास गर्नुहोस्।"
+      : "Failed to register clinic. Please try again.",
   };
 
   // Validate single file (logo)
@@ -425,14 +430,61 @@ export default function ClinicRegisterPage() {
     }
 
     setIsLoading(true);
-    // Form submission will be handled in US-060
-    // For now, just log the data
-    console.log("Form data:", formData);
-    console.log("Logo file:", logoFile);
-    console.log("Photo files:", photoFiles);
-    console.log("Operating hours:", operatingHours);
-    console.log("Services:", selectedServices);
-    setIsLoading(false);
+    setSubmitError(null);
+
+    try {
+      // Build FormData for API submission
+      const apiFormData = new FormData();
+      apiFormData.append("name", formData.name.trim());
+      apiFormData.append("type", formData.type);
+      apiFormData.append("address", formData.address.trim());
+      apiFormData.append("phone", formData.phone.trim());
+      apiFormData.append("email", formData.email.trim());
+      if (formData.website.trim()) {
+        apiFormData.append("website", formData.website.trim());
+      }
+
+      // Add operating hours as JSON
+      apiFormData.append("timings", JSON.stringify(operatingHours));
+
+      // Add services as JSON
+      apiFormData.append("services", JSON.stringify(selectedServices));
+
+      // Add logo file if present
+      if (logoFile) {
+        apiFormData.append("logo", logoFile);
+      }
+
+      // Add photo files with indexed keys
+      photoFiles.forEach((photo, index) => {
+        apiFormData.append(`photo_${index}`, photo);
+      });
+
+      const response = await fetch("/api/clinic/register", {
+        method: "POST",
+        body: apiFormData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || t.submitErrorGeneric);
+      }
+
+      // Success - redirect to confirmation page with clinic data
+      const params = new URLSearchParams({
+        name: data.clinic.name,
+        slug: data.clinic.slug,
+        type: data.clinic.type,
+      });
+      router.push(`/${lang}/clinic/register/success?${params.toString()}`);
+    } catch (error) {
+      console.error("Clinic registration error:", error);
+      setSubmitError(
+        error instanceof Error ? error.message : t.submitErrorGeneric
+      );
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
@@ -1108,6 +1160,13 @@ export default function ClinicRegisterPage() {
                 </div>
               )}
             </div>
+
+            {/* Submit Error */}
+            {submitError && (
+              <div className="p-4 bg-primary-red/10 border-4 border-primary-red">
+                <p className="text-sm text-primary-red font-medium">{submitError}</p>
+              </div>
+            )}
 
             <Button
               type="submit"

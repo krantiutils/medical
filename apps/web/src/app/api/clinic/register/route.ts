@@ -4,6 +4,7 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { prisma, ClinicType } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
+import { sendClinicRegistrationSubmittedEmail } from "@/lib/email";
 
 // Generate a unique filename
 function generateUniqueFilename(originalName: string): string {
@@ -283,6 +284,26 @@ export async function POST(request: NextRequest) {
         claimed_by_id: session.user.id,
       },
     });
+
+    // Send confirmation email to clinic email address
+    // Use 'en' as default language - could be enhanced to detect from request headers
+    try {
+      const clinicEmail = email.trim().toLowerCase();
+      await sendClinicRegistrationSubmittedEmail(
+        clinicEmail,
+        {
+          name: name.trim(),
+          type: type,
+          address: address.trim(),
+          phone: phone.trim(),
+          email: clinicEmail,
+        },
+        "en"
+      );
+    } catch (emailError) {
+      // Log but don't fail the registration if email fails
+      console.error("Failed to send clinic registration email:", emailError);
+    }
 
     return NextResponse.json({
       success: true,
