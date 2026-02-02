@@ -4,9 +4,9 @@
   "private": true,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./src/index.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "build": "tsup src/index.ts --format cjs,esm",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
