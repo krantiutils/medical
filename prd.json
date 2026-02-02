@@ -1504,8 +1504,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 80,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented reception queue page at /[lang]/clinic/dashboard/reception with walk-in registration form, patient search by phone, queue display with filter by doctor, status updates (Check-in, Call, Complete, No-show), and print token slip. Created API endpoints: GET /api/clinic/queue (today's appointments), POST /api/clinic/queue/register (walk-in registration), PATCH /api/clinic/queue/[id]/status (status updates), GET /api/clinic/patients/search (patient search). Bilingual support (EN/NE). Bauhaus styling."
     },
     {
       "id": "US-081",

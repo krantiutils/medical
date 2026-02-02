@@ -1726,3 +1726,53 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Form validation errors appear as <p> elements with specific error text (e.g., "Please enter a valid email address")
 
 ---
+
+## 2026-02-02 - US-080
+**Reception: Walk-in registration and queue view**
+
+### What was implemented
+- Created reception page at /[lang]/clinic/dashboard/reception with:
+  - Walk-in registration form: patient name, phone, doctor selection, reason
+  - Patient search by phone number with autocomplete
+  - Ability to select existing patient or create new one
+  - Auto-assign token number for walk-in patients
+  - Queue display showing today's appointments sorted by token number
+  - Filter queue by doctor
+  - Status badges with color coding (SCHEDULED, CHECKED_IN, IN_PROGRESS, COMPLETED, NO_SHOW)
+  - Action buttons: Check In, Call, Complete, Mark No Show
+  - Print token slip option (uses window.print())
+  - Bilingual support (English/Nepali)
+  - Bauhaus styling with Card components
+
+- Created API endpoints:
+  - GET /api/clinic/queue - Fetch today's appointments for the clinic
+  - POST /api/clinic/queue/register - Register walk-in patient and create appointment
+    - Creates or finds existing patient by phone
+    - Auto-generates patient number (P-XXXXXX format)
+    - Auto-generates token number for the day
+    - Sets appointment status to CHECKED_IN for walk-ins
+    - Sets appointment source to WALK_IN
+  - PATCH /api/clinic/queue/[id]/status - Update appointment status
+    - Validates user owns the clinic
+    - Accepts status: SCHEDULED, CHECKED_IN, IN_PROGRESS, COMPLETED, NO_SHOW, CANCELLED
+  - GET /api/clinic/patients/search - Search patients by phone, name, or patient number
+    - Scoped to user's clinic
+    - Returns up to 10 results
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/reception/page.tsx (NEW)
+- apps/web/src/app/api/clinic/queue/route.ts (NEW)
+- apps/web/src/app/api/clinic/queue/register/route.ts (NEW)
+- apps/web/src/app/api/clinic/queue/[id]/status/route.ts (NEW)
+- apps/web/src/app/api/clinic/patients/search/route.ts (NEW)
+
+### Learnings for future iterations
+- Button component uses size="sm" not size="small" - always check component types
+- Walk-in patients should be automatically checked in (status = CHECKED_IN) to skip the scheduled step
+- Time slot for walk-ins is set to current time + 30 minutes
+- Patient search should support multiple fields (phone, name, patient number)
+- Queue should be sorted by token number, not by time
+- Print functionality uses window.print() with a hidden print-only div
+- Status colors defined as constants for consistency across the app
+
+---
