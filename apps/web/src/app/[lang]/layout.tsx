@@ -1,3 +1,5 @@
+import { Header } from "@/components/layout/header";
+
 interface LangLayoutProps {
   children: React.ReactNode;
   params: Promise<{
@@ -14,6 +16,7 @@ export default async function LangLayout({ children, params }: LangLayoutProps) 
 
   return (
     <div data-lang={currentLang}>
+      <Header lang={currentLang} />
       {children}
     </div>
   );
