@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { SessionProvider } from "@/components/providers/session-provider";
 import { locales, type Locale } from "@/i18n/config";
 
 interface LangLayoutProps {
@@ -32,12 +33,14 @@ export default async function LangLayout({ children, params }: LangLayoutProps) 
   const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <div data-lang={lang} className="min-h-screen flex flex-col">
-        <Header lang={lang} />
-        <main className="flex-1">{children}</main>
-        <Footer lang={lang} />
-      </div>
-    </NextIntlClientProvider>
+    <SessionProvider>
+      <NextIntlClientProvider messages={messages}>
+        <div data-lang={lang} className="min-h-screen flex flex-col">
+          <Header lang={lang} />
+          <main className="flex-1">{children}</main>
+          <Footer lang={lang} />
+        </div>
+      </NextIntlClientProvider>
+    </SessionProvider>
   );
 }

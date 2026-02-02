@@ -136,5 +136,27 @@
     "doctorsTitle": "Doctors in Nepal | Swasthya",
     "dentistsTitle": "Dentists in Nepal | Swasthya",
     "pharmacistsTitle": "Pharmacists in Nepal | Swasthya"
+  },
+  "claim": {
+    "title": "Claim Your Profile",
+    "subtitle": "Search for your profile by registration number to start the verification process",
+    "searchPlaceholder": "Enter NMC/NDA/NPC registration number",
+    "searchButton": "Search",
+    "searching": "Searching...",
+    "noResults": "No professional found with this registration number",
+    "alreadyClaimed": "This profile has already been claimed",
+    "verifyIdentity": "Verify Your Identity",
+    "startClaimProcess": "Start Claim Process",
+    "registrationNumber": "Registration Number",
+    "degree": "Degree",
+    "address": "Address",
+    "loginRequired": "Please log in to claim a profile",
+    "login": "Login",
+    "register": "Register",
+    "viewProfile": "View Profile",
+    "claimInstructions": "After clicking the button below, you will be asked to submit verification documents to prove your identity.",
+    "loginToClaim": "Login to Claim",
+    "isThisYourProfile": "Is this your profile?",
+    "claimThisProfile": "Claim This Profile"
   }
 }

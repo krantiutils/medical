@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { prisma } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { ClaimProfileButton } from "@/components/claim/claim-profile-button";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
@@ -358,6 +359,13 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
                 </div>
               )}
             </dl>
+
+            {/* Claim Profile Button */}
+            <ClaimProfileButton
+              professionalId={professional.id}
+              registrationNumber={professional.registration_number}
+              isClaimed={!!professional.claimed_by_id}
+            />
           </CardContent>
         </Card>
       </div>
