@@ -72,6 +72,10 @@ export default function ClinicDashboardPage() {
       manageSchedulesDesc: "Configure doctor schedules",
       manageDoctors: "Manage Doctors",
       manageDoctorsDesc: "Add or remove clinic doctors",
+      billing: "Billing",
+      billingDesc: "Create invoices and receipts",
+      services: "Services",
+      servicesDesc: "Manage service catalog",
     },
     ne: {
       title: "क्लिनिक ड्यासबोर्ड",
@@ -108,6 +112,10 @@ export default function ClinicDashboardPage() {
       manageSchedulesDesc: "डाक्टर तालिका कन्फिगर गर्नुहोस्",
       manageDoctors: "डाक्टर व्यवस्थापन",
       manageDoctorsDesc: "क्लिनिक डाक्टर थप्नुहोस् वा हटाउनुहोस्",
+      billing: "बिलिङ",
+      billingDesc: "इनभ्वाइस र रसिदहरू बनाउनुहोस्",
+      services: "सेवाहरू",
+      servicesDesc: "सेवा क्याटलग व्यवस्थापन गर्नुहोस्",
     },
   };
 
@@ -543,6 +551,64 @@ export default function ClinicDashboardPage() {
                     <div>
                       <h3 className="font-bold text-foreground text-lg">{tr.manageDoctors}</h3>
                       <p className="text-sm text-foreground/60">{tr.manageDoctorsDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Services */}
+            <Link href={`/${lang}/clinic/dashboard/services`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-blue rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.services}</h3>
+                      <p className="text-sm text-foreground/60">{tr.servicesDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Billing */}
+            <Link href={`/${lang}/clinic/dashboard/billing`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-red rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.billing}</h3>
+                      <p className="text-sm text-foreground/60">{tr.billingDesc}</p>
                     </div>
                   </div>
                 </CardContent>
