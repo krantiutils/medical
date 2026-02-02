@@ -961,8 +961,8 @@
         "Typecheck passes"
       ],
       "priority": 49,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "CI e2e job configured with: PostgreSQL 16 service, Playwright chromium browser, pnpm db:push for migrations, global-setup.ts for test seeding, artifact upload on failure. Branch ralph/swasthya-platform added to CI triggers. PR mergeability requires branch protection settings (not CI config)."
     },
 
     {

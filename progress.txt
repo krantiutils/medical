@@ -510,3 +510,28 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - For keyboard navigation tests, tab through elements and check focus state rather than assuming specific tab order
 
 ---
+
+## 2026-02-02 - US-049
+**E2E Tests: CI integration for E2E tests**
+
+### What was implemented
+- Verified existing CI e2e job configuration in .github/workflows/ci.yml:
+  - PostgreSQL 16 service for test database
+  - `needs: [build]` dependency ensures e2e runs after build succeeds
+  - `npx playwright install --with-deps chromium` for browser installation
+  - `pnpm db:push` for database schema migrations
+  - Playwright global-setup.ts handles test data seeding
+  - Artifact upload for playwright-report and test-results on failure
+- Added `ralph/swasthya-platform` branch to CI trigger branches
+
+### Files changed
+- .github/workflows/ci.yml (MODIFIED)
+
+### Learnings for future iterations
+- CI e2e job was already configured in US-035, just needed branch trigger update
+- Test data seeding is handled by Playwright global-setup.ts, not a separate seed script step
+- DATABASE_URL env var in CI uses postgres:postgres credentials, seed.ts uses process.env.DATABASE_URL so it's compatible
+- PR mergeability enforcement requires GitHub branch protection settings, not CI configuration
+- E2E tests in CI use `pnpm test:e2e` which includes webServer config to start dev server
+
+---
