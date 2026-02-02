@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 type ClinicType = "CLINIC" | "POLYCLINIC" | "HOSPITAL" | "PHARMACY";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_PHOTOS = 5;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 
 interface FormErrors {
   name?: string;
@@ -15,6 +20,8 @@ interface FormErrors {
   phone?: string;
   email?: string;
   website?: string;
+  logo?: string;
+  photos?: string;
 }
 
 const CLINIC_TYPES: { value: ClinicType; labelEn: string; labelNe: string }[] = [
@@ -26,9 +33,11 @@ const CLINIC_TYPES: { value: ClinicType; labelEn: string; labelNe: string }[] = 
 
 export default function ClinicRegisterPage() {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const { lang } = useParams<{ lang: string }>();
   const isNepali = lang === "ne";
+
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const photosInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -38,6 +47,11 @@ export default function ClinicRegisterPage() {
     email: "",
     website: "",
   });
+
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +93,136 @@ export default function ClinicRegisterPage() {
     login: isNepali ? "लगइन गर्नुहोस्" : "Login",
     register: isNepali ? "खाता बनाउनुहोस्" : "Create Account",
     loading: isNepali ? "लोड हुँदैछ..." : "Loading...",
+    // Logo upload translations
+    logoLabel: isNepali ? "क्लिनिक लोगो" : "Clinic Logo",
+    logoHint: isNepali
+      ? "JPG वा PNG, अधिकतम ५MB"
+      : "JPG or PNG, max 5MB",
+    logoUpload: isNepali ? "लोगो अपलोड गर्नुहोस्" : "Upload Logo",
+    logoChange: isNepali ? "लोगो परिवर्तन गर्नुहोस्" : "Change Logo",
+    logoRemove: isNepali ? "हटाउनुहोस्" : "Remove",
+    logoInvalidType: isNepali
+      ? "कृपया JPG वा PNG फाइल मात्र अपलोड गर्नुहोस्"
+      : "Please upload only JPG or PNG files",
+    logoTooLarge: isNepali
+      ? "फाइल साइज ५MB भन्दा बढी हुनु हुँदैन"
+      : "File size must not exceed 5MB",
+    // Photos upload translations
+    photosLabel: isNepali ? "क्लिनिकका फोटोहरू" : "Clinic Photos",
+    photosHint: isNepali
+      ? "JPG वा PNG, अधिकतम ५ फोटो, प्रत्येक ५MB सम्म"
+      : "JPG or PNG, max 5 photos, up to 5MB each",
+    photosUpload: isNepali ? "फोटोहरू अपलोड गर्नुहोस्" : "Upload Photos",
+    photosAdd: isNepali ? "थप फोटो थप्नुहोस्" : "Add More Photos",
+    photosCount: isNepali
+      ? (count: number) => `${count}/५ फोटोहरू`
+      : (count: number) => `${count}/5 photos`,
+    photosInvalidType: isNepali
+      ? "कृपया JPG वा PNG फाइलहरू मात्र अपलोड गर्नुहोस्"
+      : "Please upload only JPG or PNG files",
+    photosTooLarge: isNepali
+      ? "प्रत्येक फाइल साइज ५MB भन्दा बढी हुनु हुँदैन"
+      : "Each file size must not exceed 5MB",
+    photosMaxReached: isNepali
+      ? "अधिकतम ५ फोटो मात्र अपलोड गर्न सकिन्छ"
+      : "Maximum 5 photos allowed",
+    dragDropHint: isNepali
+      ? "वा यहाँ तान्नुहोस् र छोड्नुहोस्"
+      : "or drag and drop here",
+  };
+
+  // Validate single file (logo)
+  const validateImageFile = (file: File): string | null => {
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      return t.logoInvalidType;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      return t.logoTooLarge;
+    }
+    return null;
+  };
+
+  // Handle logo upload
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const error = validateImageFile(file);
+    if (error) {
+      setErrors((prev) => ({ ...prev, logo: error }));
+      return;
+    }
+
+    setErrors((prev) => ({ ...prev, logo: undefined }));
+    setLogoFile(file);
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Remove logo
+  const handleRemoveLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+    if (logoInputRef.current) {
+      logoInputRef.current.value = "";
+    }
+  };
+
+  // Handle photos upload
+  const handlePhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Check max photos limit
+    if (photoFiles.length + files.length > MAX_PHOTOS) {
+      setErrors((prev) => ({ ...prev, photos: t.photosMaxReached }));
+      return;
+    }
+
+    // Validate each file
+    const validFiles: File[] = [];
+    const newPreviews: string[] = [];
+
+    for (const file of files) {
+      if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+        setErrors((prev) => ({ ...prev, photos: t.photosInvalidType }));
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setErrors((prev) => ({ ...prev, photos: t.photosTooLarge }));
+        return;
+      }
+      validFiles.push(file);
+    }
+
+    setErrors((prev) => ({ ...prev, photos: undefined }));
+
+    // Create previews for valid files
+    validFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    setPhotoFiles((prev) => [...prev, ...validFiles]);
+
+    // Reset input to allow selecting the same file again
+    if (photosInputRef.current) {
+      photosInputRef.current.value = "";
+    }
+  };
+
+  // Remove a specific photo
+  const handleRemovePhoto = (index: number) => {
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
+    setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Validate form
@@ -145,6 +289,8 @@ export default function ClinicRegisterPage() {
     // Form submission will be handled in US-060
     // For now, just log the data
     console.log("Form data:", formData);
+    console.log("Logo file:", logoFile);
+    console.log("Photo files:", photoFiles);
     setIsLoading(false);
   };
 
@@ -424,6 +570,179 @@ export default function ClinicRegisterPage() {
               />
               {errors.website && (
                 <p className="mt-1 text-sm text-primary-red">{errors.website}</p>
+              )}
+            </div>
+
+            {/* Logo Upload */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2">
+                {t.logoLabel}
+              </label>
+              <p className="text-xs text-foreground/60 mb-3">{t.logoHint}</p>
+
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/jpeg,image/png"
+                onChange={handleLogoChange}
+                className="hidden"
+                id="logo-upload"
+              />
+
+              {logoPreview ? (
+                <div className="flex items-start gap-4">
+                  <div className="relative w-24 h-24 border-4 border-foreground bg-white overflow-hidden">
+                    <Image
+                      src={logoPreview}
+                      alt="Logo preview"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      type="button"
+                      onClick={() => logoInputRef.current?.click()}
+                      className="text-sm font-bold text-primary-blue hover:underline"
+                    >
+                      {t.logoChange}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRemoveLogo}
+                      className="text-sm font-bold text-primary-red hover:underline"
+                    >
+                      {t.logoRemove}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label
+                  htmlFor="logo-upload"
+                  className={`flex flex-col items-center justify-center w-full h-32 border-4 border-dashed ${
+                    errors.logo ? "border-primary-red" : "border-foreground/40"
+                  } bg-white cursor-pointer hover:border-primary-blue transition-colors`}
+                >
+                  <svg
+                    className="w-8 h-8 text-foreground/40 mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <span className="text-sm font-bold text-primary-blue">
+                    {t.logoUpload}
+                  </span>
+                  <span className="text-xs text-foreground/40 mt-1">
+                    {t.dragDropHint}
+                  </span>
+                </label>
+              )}
+              {errors.logo && (
+                <p className="mt-2 text-sm text-primary-red">{errors.logo}</p>
+              )}
+            </div>
+
+            {/* Photos Upload */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2">
+                {t.photosLabel}
+              </label>
+              <p className="text-xs text-foreground/60 mb-3">{t.photosHint}</p>
+
+              <input
+                ref={photosInputRef}
+                type="file"
+                accept="image/jpeg,image/png"
+                multiple
+                onChange={handlePhotosChange}
+                className="hidden"
+                id="photos-upload"
+              />
+
+              {/* Photo previews grid */}
+              {photoPreviews.length > 0 && (
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-foreground/70">
+                      {t.photosCount(photoPreviews.length)}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                    {photoPreviews.map((preview, index) => (
+                      <div
+                        key={index}
+                        className="relative aspect-square border-4 border-foreground bg-white overflow-hidden group"
+                      >
+                        <Image
+                          src={preview}
+                          alt={`Photo ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemovePhoto(index)}
+                          className="absolute top-1 right-1 w-6 h-6 bg-primary-red text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          title={t.logoRemove}
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Upload button or drop zone */}
+              {photoPreviews.length < MAX_PHOTOS && (
+                <label
+                  htmlFor="photos-upload"
+                  className={`flex flex-col items-center justify-center w-full h-32 border-4 border-dashed ${
+                    errors.photos ? "border-primary-red" : "border-foreground/40"
+                  } bg-white cursor-pointer hover:border-primary-blue transition-colors`}
+                >
+                  <svg
+                    className="w-8 h-8 text-foreground/40 mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <span className="text-sm font-bold text-primary-blue">
+                    {photoPreviews.length > 0 ? t.photosAdd : t.photosUpload}
+                  </span>
+                  <span className="text-xs text-foreground/40 mt-1">
+                    {t.dragDropHint}
+                  </span>
+                </label>
+              )}
+              {errors.photos && (
+                <p className="mt-2 text-sm text-primary-red">{errors.photos}</p>
               )}
             </div>
 
