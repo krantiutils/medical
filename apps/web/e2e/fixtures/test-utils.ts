@@ -100,6 +100,23 @@ export const TEST_DATA = {
       number: "PAT-2026-0002",
     },
   },
+
+  // Test reviews
+  REVIEWS: {
+    PUBLISHED_WITH_RESPONSE: {
+      text: "Excellent service and professional staff. Highly recommend!",
+      doctorResponse: "Thank you for your kind feedback. We are glad to have helped.",
+      rating: 5,
+    },
+    PUBLISHED_NO_RESPONSE: {
+      text: "Good experience overall. Would visit again.",
+      rating: 4,
+    },
+    UNPUBLISHED: {
+      text: "Service could be improved. Long wait times.",
+      rating: 2,
+    },
+  },
 };
 
 /**

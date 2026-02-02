@@ -2,17 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@swasthya/database";
 
 interface RouteContext {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ clinicId: string }>;
 }
 
-// GET /api/clinic/[slug]/info - Get basic clinic info
+// GET /api/clinic/[clinicId]/info - Get basic clinic info
+// clinicId can be either the clinic ID or the clinic slug
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const { slug } = await context.params;
+    const { clinicId } = await context.params;
 
+    // Try to find by ID first, then by slug (for backwards compatibility)
     const clinic = await prisma.clinic.findFirst({
       where: {
-        slug,
+        OR: [
+          { id: clinicId },
+          { slug: clinicId },
+        ],
         verified: true,
       },
       select: {

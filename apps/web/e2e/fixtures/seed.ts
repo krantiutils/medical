@@ -16,6 +16,9 @@ import {
   PaymentMode,
   PaymentStatus,
   Prisma,
+  AppointmentStatus,
+  AppointmentType,
+  AppointmentSource,
 } from "@swasthya/database";
 import { hash } from "bcryptjs";
 
@@ -341,6 +344,10 @@ export const TEST_PATIENT_ONE_NAME = SEED_DATA.PATIENTS[0].full_name;
 export const TEST_PATIENT_ONE_PHONE = SEED_DATA.PATIENTS[0].phone;
 export const TEST_PATIENT_TWO_NAME = SEED_DATA.PATIENTS[1].full_name;
 
+// Review test data constants
+export const TEST_REVIEW_TEXT = "Excellent service and professional staff. Highly recommend!";
+export const TEST_REVIEW_DOCTOR_RESPONSE = "Thank you for your kind feedback. We are glad to have helped.";
+
 /**
  * Seed test users
  */
@@ -491,24 +498,20 @@ async function seedProfessionals(
     professionalIds.set(`PHARMACIST_${pharmacist.registration_number}`, prof.id);
   }
 
-  // Link professional user to a claimed doctor profile
+  // Link professional user to Dr. Ram Sharma (12345) - the doctor at dashboard clinic with reviews
+  // This enables doctor response tests to work
   if (claimedByUserId) {
-    const verifiedDoctor = SEED_DATA.DOCTORS.find(
-      (d) => d.registration_number === "88888"
-    );
-    if (verifiedDoctor) {
-      await prisma.professional.update({
-        where: {
-          type_registration_number: {
-            type: ProfessionalType.DOCTOR,
-            registration_number: verifiedDoctor.registration_number,
-          },
+    await prisma.professional.update({
+      where: {
+        type_registration_number: {
+          type: ProfessionalType.DOCTOR,
+          registration_number: "12345", // Dr. Ram Sharma
         },
-        data: {
-          claimed_by_id: claimedByUserId,
-        },
-      });
-    }
+      },
+      data: {
+        claimed_by_id: claimedByUserId,
+      },
+    });
   }
 
   return professionalIds;
@@ -943,6 +946,175 @@ async function seedInvoices(
 }
 
 /**
+ * Seed completed appointments for review tests
+ */
+async function seedAppointments(
+  clinicIds: Map<string, string>,
+  patientIds: Map<string, string>,
+  professionalIds: Map<string, string>
+): Promise<Map<string, string>> {
+  const appointmentIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping appointments seeding");
+    return appointmentIds;
+  }
+
+  const patientOneId = patientIds.get(SEED_DATA.PATIENTS[0].phone);
+  const patientTwoId = patientIds.get(SEED_DATA.PATIENTS[1].phone);
+  const doctor1Id = professionalIds.get("DOCTOR_12345"); // Dr. Ram Sharma
+
+  if (!patientOneId || !patientTwoId || !doctor1Id) {
+    console.log("  ⚠ Missing patient/doctor IDs, skipping appointments seeding");
+    return appointmentIds;
+  }
+
+  // Delete existing test appointments
+  await prisma.appointment.deleteMany({
+    where: {
+      clinic_id: dashboardClinicId,
+    },
+  });
+
+  // Create a completed appointment for patient one (for review submission)
+  const appointment1 = await prisma.appointment.create({
+    data: {
+      clinic_id: dashboardClinicId,
+      patient_id: patientOneId,
+      doctor_id: doctor1Id,
+      appointment_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+      time_slot_start: "10:00",
+      time_slot_end: "10:30",
+      status: AppointmentStatus.COMPLETED,
+      type: AppointmentType.NEW,
+      source: AppointmentSource.ONLINE,
+      chief_complaint: "General checkup",
+      token_number: 1,
+    },
+  });
+  appointmentIds.set("COMPLETED_1", appointment1.id);
+
+  // Create another completed appointment for patient two (for additional review)
+  const appointment2 = await prisma.appointment.create({
+    data: {
+      clinic_id: dashboardClinicId,
+      patient_id: patientTwoId,
+      doctor_id: doctor1Id,
+      appointment_date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+      time_slot_start: "11:00",
+      time_slot_end: "11:30",
+      status: AppointmentStatus.COMPLETED,
+      type: AppointmentType.FOLLOW_UP,
+      source: AppointmentSource.WALK_IN,
+      chief_complaint: "Follow-up visit",
+      token_number: 2,
+    },
+  });
+  appointmentIds.set("COMPLETED_2", appointment2.id);
+
+  return appointmentIds;
+}
+
+/**
+ * Seed reviews for testing review display, moderation, and response
+ */
+async function seedReviews(
+  clinicIds: Map<string, string>,
+  patientIds: Map<string, string>,
+  professionalIds: Map<string, string>,
+  appointmentIds: Map<string, string>
+): Promise<Map<string, string>> {
+  const reviewIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping reviews seeding");
+    return reviewIds;
+  }
+
+  const patientOneId = patientIds.get(SEED_DATA.PATIENTS[0].phone);
+  const patientTwoId = patientIds.get(SEED_DATA.PATIENTS[1].phone);
+  const doctor1Id = professionalIds.get("DOCTOR_12345"); // Dr. Ram Sharma
+  const completedAppointment1 = appointmentIds.get("COMPLETED_1");
+  const completedAppointment2 = appointmentIds.get("COMPLETED_2");
+
+  if (!patientOneId || !patientTwoId || !doctor1Id) {
+    console.log("  ⚠ Missing patient/doctor IDs, skipping reviews seeding");
+    return reviewIds;
+  }
+
+  // Delete existing reviews for this clinic
+  await prisma.review.deleteMany({
+    where: {
+      clinic_id: dashboardClinicId,
+    },
+  });
+
+  // Create a published review with doctor response (for display tests)
+  const review1 = await prisma.review.create({
+    data: {
+      clinic_id: dashboardClinicId,
+      doctor_id: doctor1Id,
+      patient_id: patientOneId,
+      appointment_id: completedAppointment1 || null,
+      rating: 5,
+      review_text: "Excellent service and professional staff. Highly recommend!",
+      categories: {
+        cleanliness: 5,
+        wait_time: 4,
+        staff: 5,
+      },
+      doctor_response: "Thank you for your kind feedback. We are glad to have helped.",
+      is_published: true,
+    },
+  });
+  reviewIds.set("PUBLISHED_WITH_RESPONSE", review1.id);
+
+  // Create a published review without doctor response (for doctor response test)
+  const review2 = await prisma.review.create({
+    data: {
+      clinic_id: dashboardClinicId,
+      doctor_id: doctor1Id,
+      patient_id: patientTwoId,
+      appointment_id: completedAppointment2 || null,
+      rating: 4,
+      review_text: "Good experience overall. Would visit again.",
+      categories: {
+        cleanliness: 4,
+        wait_time: 3,
+        staff: 4,
+      },
+      doctor_response: null,
+      is_published: true,
+    },
+  });
+  reviewIds.set("PUBLISHED_NO_RESPONSE", review2.id);
+
+  // Create an unpublished review (for admin moderation test)
+  const review3 = await prisma.review.create({
+    data: {
+      clinic_id: dashboardClinicId,
+      doctor_id: doctor1Id,
+      patient_id: patientOneId,
+      appointment_id: null, // General clinic review
+      rating: 2,
+      review_text: "Service could be improved. Long wait times.",
+      categories: {
+        cleanliness: 3,
+        wait_time: 1,
+        staff: 2,
+      },
+      doctor_response: null,
+      is_published: false, // Unpublished for moderation test
+    },
+  });
+  reviewIds.set("UNPUBLISHED", review3.id);
+
+  return reviewIds;
+}
+
+/**
  * Clean up all test data
  * IMPORTANT: Order matters due to foreign key constraints
  */
@@ -953,6 +1125,17 @@ async function cleanupTestData(): Promise<void> {
 
   // Delete clinic doctors (before clinics and professionals)
   const testClinicSlugs = SEED_DATA.CLINICS.map((c) => c.slug);
+
+  // Delete reviews (before appointments and patients)
+  await prisma.review.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
 
   // Delete invoices (before patients)
   await prisma.invoice.deleteMany({
@@ -1144,6 +1327,14 @@ export async function seedTestData(): Promise<{
   // Seed sample invoices for report tests
   await seedInvoices(clinicIds, patientIds, serviceIds, clinicOwnerUserId);
   console.log("  ✓ Seeded sample invoices for reports");
+
+  // Seed appointments for review tests
+  const appointmentIds = await seedAppointments(clinicIds, patientIds, professionalIds);
+  console.log(`  ✓ Seeded ${appointmentIds.size} appointments for reviews`);
+
+  // Seed reviews for review tests
+  const reviewIds = await seedReviews(clinicIds, patientIds, professionalIds, appointmentIds);
+  console.log(`  ✓ Seeded ${reviewIds.size} reviews for review tests`);
 
   console.log("✅ Test data seeding complete!");
 
