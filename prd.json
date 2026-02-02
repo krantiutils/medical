@@ -1254,8 +1254,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 66,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: app/[lang]/clinic/dashboard/page.tsx with protected route (requires login and verified clinic). Shows today's appointments count, patients in queue (SCHEDULED/CHECKED_IN), total patients, and total doctors. API endpoint at /api/clinic/dashboard. Bauhaus styled stat cards with decorators and hover effects. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-067",

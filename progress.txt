@@ -1155,3 +1155,39 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Same E2E session limitation applies: useSession() client-side state not maintained after navigation
 
 ---
+
+## 2026-02-02 - US-066
+**Clinic dashboard: Overview page**
+
+### What was implemented
+- Created app/[lang]/clinic/dashboard/page.tsx with clinic dashboard page
+- Protected route: requires authentication and ownership of verified clinic
+- Stat cards displaying:
+  - Today's appointments count (excludes cancelled)
+  - Patients in queue (SCHEDULED or CHECKED_IN status for today)
+  - Total registered patients
+  - Total clinic doctors (affiliated)
+- API endpoint at /api/clinic/dashboard for fetching stats
+- Bauhaus styling with:
+  - Card components with decorators (blue, red, yellow)
+  - Hard shadow effects
+  - Hover translate effects on stat cards
+  - SVG icons with accent color backgrounds
+  - Mobile responsive grid (1/2/4 cols)
+- Three page states: loading, unauthenticated, no clinic, dashboard
+- Bilingual support (EN/NE) with inline translations
+- Clinic header with logo, type badge, and welcome message
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/page.tsx (NEW)
+- apps/web/src/app/api/clinic/dashboard/route.ts (NEW)
+
+### Learnings for future iterations
+- Clinic dashboard requires both logged in AND verified clinic ownership
+- AppointmentStatus.SCHEDULED and CHECKED_IN represent "in queue" patients
+- Date range queries use startOfDay/endOfDay for accurate "today" filtering
+- Clinic stats pattern: count queries with clinic_id filter
+- getClinicTypeColor/Label functions map ClinicType enum to display values
+- Stat cards use similar pattern to profile page cards with decorator props
+
+---
