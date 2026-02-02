@@ -728,3 +728,312 @@ export async function sendVerificationRejectedEmail(
   const { subject, html } = verificationRejectedEmail(recipient, rejectionReason, lang);
   return sendEmail(recipient.email, subject, html);
 }
+
+// Email template: Clinic Verification Approved
+export function clinicVerificationApprovedEmail(
+  clinicEmail: string,
+  clinicData: {
+    name: string;
+    type: string;
+    slug: string;
+  },
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const t = {
+    en: {
+      subject: "Congratulations! Your Clinic Has Been Verified",
+      heading: "Clinic Approved",
+      greeting: `Hello,`,
+      body1: (clinicName: string) =>
+        `Great news! Your clinic "${clinicName}" has been verified on Swasthya.`,
+      body2:
+        "Your clinic is now visible to patients. They can find your clinic, view your services, and book appointments.",
+      whatYouCanDo: "What you can do now:",
+      action1: "Update your clinic profile and services",
+      action2: "Add or manage doctors at your clinic",
+      action3: "Configure appointment schedules",
+      action4: "Start accepting patient bookings",
+      viewClinic: "View Your Clinic Page",
+      manageDashboard: "Manage Dashboard",
+    },
+    ne: {
+      subject: "बधाई छ! तपाईंको क्लिनिक प्रमाणित भएको छ",
+      heading: "क्लिनिक स्वीकृत",
+      greeting: `नमस्कार,`,
+      body1: (clinicName: string) =>
+        `खुशीको खबर! तपाईंको क्लिनिक "${clinicName}" Swasthya मा प्रमाणित भएको छ।`,
+      body2:
+        "तपाईंको क्लिनिक अब बिरामीहरूलाई देखिन्छ। तिनीहरूले तपाईंको क्लिनिक भेट्टाउन, तपाईंका सेवाहरू हेर्न र अपोइन्टमेन्ट बुक गर्न सक्छन्।",
+      whatYouCanDo: "तपाईं अब के गर्न सक्नुहुन्छ:",
+      action1: "आफ्नो क्लिनिक प्रोफाइल र सेवाहरू अपडेट गर्नुहोस्",
+      action2: "आफ्नो क्लिनिकमा डाक्टरहरू थप्नुहोस् वा व्यवस्थापन गर्नुहोस्",
+      action3: "अपोइन्टमेन्ट तालिका कन्फिगर गर्नुहोस्",
+      action4: "बिरामी बुकिङहरू स्वीकार गर्न सुरु गर्नुहोस्",
+      viewClinic: "आफ्नो क्लिनिक पेज हेर्नुहोस्",
+      manageDashboard: "ड्यासबोर्ड व्यवस्थापन गर्नुहोस्",
+    },
+  };
+
+  const tr = t[lang];
+  const typeLabel =
+    clinicTypeLabels[lang][clinicData.type as keyof typeof clinicTypeLabels.en] ||
+    clinicData.type;
+  const clinicUrl = `${SITE_URL}/${lang}/clinic/${clinicData.slug}`;
+  const dashboardUrl = `${SITE_URL}/${lang}/clinic/dashboard`;
+
+  const content = `
+    <!-- Color accent bar - green for success -->
+    <div style="height: 8px; background-color: #22C55E; margin: -40px -40px 30px -40px;"></div>
+
+    <h1 style="font-size: 28px; font-weight: 900; color: ${colors.foreground}; margin: 0 0 20px; text-transform: uppercase;">
+      ${tr.heading}
+    </h1>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.greeting}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.body1(clinicData.name)}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 30px;">
+      ${tr.body2}
+    </p>
+
+    <!-- Success icon -->
+    <div style="text-align: center; margin-bottom: 30px;">
+      <div style="width: 80px; height: 80px; background-color: #22C55E; border-radius: 50%; display: inline-block; line-height: 80px; text-align: center;">
+        <span style="color: white; font-size: 40px;">&#10003;</span>
+      </div>
+    </div>
+
+    <!-- Clinic info box -->
+    <div style="background-color: ${colors.background}; border: 2px solid ${colors.foreground}; padding: 20px; margin-bottom: 30px;">
+      <table cellpadding="0" cellspacing="0" style="width: 100%;">
+        <tr>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">
+            <span style="font-weight: 700;">${clinicData.name}</span>
+            <span style="display: inline-block; margin-left: 12px; padding: 4px 12px; background-color: ${colors.primaryBlue}20; border: 1px solid ${colors.primaryBlue}; color: ${colors.primaryBlue}; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+              ${typeLabel}
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- What you can do section -->
+    <div style="background-color: ${colors.primaryYellow}10; border: 2px solid ${colors.primaryYellow}; padding: 24px; margin-bottom: 30px;">
+      <h3 style="font-size: 14px; font-weight: 700; color: ${colors.foreground}; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 16px;">
+        ${tr.whatYouCanDo}
+      </h3>
+      <table cellpadding="0" cellspacing="0" style="width: 100%;">
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 8px; height: 8px; background-color: ${colors.primaryRed}; border-radius: 50%;"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.action1}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 8px; height: 8px; background-color: ${colors.primaryBlue};"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.action2}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 8px solid ${colors.primaryYellow};"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.action3}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 8px; height: 8px; background-color: #22C55E; border-radius: 50%;"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.action4}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+      ${emailButton(tr.viewClinic, clinicUrl, "primary")}
+    </div>
+
+    <div style="text-align: center;">
+      ${emailButton(tr.manageDashboard, dashboardUrl, "secondary")}
+    </div>
+  `;
+
+  return {
+    subject: tr.subject,
+    html: baseTemplate(content, lang),
+  };
+}
+
+// Email template: Clinic Verification Rejected
+export function clinicVerificationRejectedEmail(
+  clinicEmail: string,
+  clinicData: {
+    name: string;
+    type: string;
+  },
+  rejectionReason: string,
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const t = {
+    en: {
+      subject: "Update on Your Clinic Registration",
+      heading: "Registration Update",
+      greeting: `Hello,`,
+      body1: (clinicName: string) =>
+        `Unfortunately, we were unable to approve the registration for "${clinicName}" at this time.`,
+      reasonLabel: "Reason:",
+      body2:
+        "You can submit a new registration with the correct information after addressing the issues mentioned above.",
+      tips: "Tips for resubmission:",
+      tip1: "Ensure all clinic details are accurate and complete",
+      tip2: "Provide clear photos of your clinic",
+      tip3: "Include valid contact information",
+      tip4: "Make sure the clinic address is correct and verifiable",
+      submitNew: "Submit New Registration",
+      footer:
+        "If you believe this was an error, please contact our support team.",
+    },
+    ne: {
+      subject: "तपाईंको क्लिनिक दर्ताको अपडेट",
+      heading: "दर्ता अपडेट",
+      greeting: `नमस्कार,`,
+      body1: (clinicName: string) =>
+        `दुर्भाग्यवश, हामी यस समयमा "${clinicName}" को दर्ता स्वीकृत गर्न असक्षम भयौं।`,
+      reasonLabel: "कारण:",
+      body2:
+        "माथि उल्लेखित समस्याहरू समाधान गरेपछि तपाईं सही जानकारीसहित नयाँ दर्ता पेश गर्न सक्नुहुन्छ।",
+      tips: "पुन: पेश गर्नका लागि सुझावहरू:",
+      tip1: "सबै क्लिनिक विवरणहरू सही र पूर्ण छन् भनी सुनिश्चित गर्नुहोस्",
+      tip2: "आफ्नो क्लिनिकको स्पष्ट फोटोहरू प्रदान गर्नुहोस्",
+      tip3: "मान्य सम्पर्क जानकारी समावेश गर्नुहोस्",
+      tip4: "क्लिनिकको ठेगाना सही र प्रमाणित योग्य छ भनी सुनिश्चित गर्नुहोस्",
+      submitNew: "नयाँ दर्ता पेश गर्नुहोस्",
+      footer:
+        "यदि तपाईंलाई यो गल्ती भएको लाग्छ भने, कृपया हाम्रो सहायता टोलीलाई सम्पर्क गर्नुहोस्।",
+    },
+  };
+
+  const tr = t[lang];
+  const typeLabel =
+    clinicTypeLabels[lang][clinicData.type as keyof typeof clinicTypeLabels.en] ||
+    clinicData.type;
+  const registerUrl = `${SITE_URL}/${lang}/clinic/register`;
+
+  const content = `
+    <!-- Color accent bar - red for rejection -->
+    <div style="height: 8px; background-color: ${colors.primaryRed}; margin: -40px -40px 30px -40px;"></div>
+
+    <h1 style="font-size: 28px; font-weight: 900; color: ${colors.foreground}; margin: 0 0 20px; text-transform: uppercase;">
+      ${tr.heading}
+    </h1>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.greeting}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 24px;">
+      ${tr.body1(clinicData.name)}
+    </p>
+
+    <!-- Clinic info box -->
+    <div style="background-color: ${colors.background}; border: 2px solid ${colors.foreground}; padding: 16px; margin-bottom: 20px;">
+      <span style="font-weight: 700; color: ${colors.foreground};">${clinicData.name}</span>
+      <span style="display: inline-block; margin-left: 12px; padding: 4px 12px; background-color: ${colors.primaryBlue}20; border: 1px solid ${colors.primaryBlue}; color: ${colors.primaryBlue}; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+        ${typeLabel}
+      </span>
+    </div>
+
+    <!-- Rejection reason box -->
+    <div style="background-color: ${colors.primaryRed}10; border-left: 4px solid ${colors.primaryRed}; padding: 20px; margin-bottom: 24px;">
+      <p style="font-size: 12px; font-weight: 700; color: ${colors.primaryRed}; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px;">
+        ${tr.reasonLabel}
+      </p>
+      <p style="font-size: 16px; color: ${colors.foreground}; margin: 0;">
+        ${rejectionReason}
+      </p>
+    </div>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 24px;">
+      ${tr.body2}
+    </p>
+
+    <!-- Tips section -->
+    <div style="background-color: ${colors.background}; border: 2px solid ${colors.foreground}; padding: 24px; margin-bottom: 30px;">
+      <h3 style="font-size: 14px; font-weight: 700; color: ${colors.primaryBlue}; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 16px;">
+        ${tr.tips}
+      </h3>
+      <table cellpadding="0" cellspacing="0" style="width: 100%;">
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 8px; height: 8px; background-color: ${colors.primaryRed}; border-radius: 50%;"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.tip1}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 8px; height: 8px; background-color: ${colors.primaryBlue};"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.tip2}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 8px solid ${colors.primaryYellow};"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.tip3}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 8px; height: 8px; background-color: #22C55E; border-radius: 50%;"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.tip4}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 30px;">
+      ${emailButton(tr.submitNew, registerUrl, "primary")}
+    </div>
+
+    <p style="font-size: 13px; color: ${colors.foreground}; opacity: 0.6; margin: 0; border-top: 2px solid ${colors.foreground}20; padding-top: 20px;">
+      ${tr.footer}
+    </p>
+  `;
+
+  return {
+    subject: tr.subject,
+    html: baseTemplate(content, lang),
+  };
+}
+
+// Convenience functions for clinic verification emails
+export async function sendClinicVerificationApprovedEmail(
+  clinicEmail: string,
+  clinicData: {
+    name: string;
+    type: string;
+    slug: string;
+  },
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = clinicVerificationApprovedEmail(clinicEmail, clinicData, lang);
+  return sendEmail(clinicEmail, subject, html);
+}
+
+export async function sendClinicVerificationRejectedEmail(
+  clinicEmail: string,
+  clinicData: {
+    name: string;
+    type: string;
+  },
+  rejectionReason: string,
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = clinicVerificationRejectedEmail(clinicEmail, clinicData, rejectionReason, lang);
+  return sendEmail(clinicEmail, subject, html);
+}

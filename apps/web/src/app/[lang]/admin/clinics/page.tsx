@@ -29,6 +29,8 @@ interface Clinic {
   } | null;
 }
 
+type ModalType = "details" | "approve" | "reject" | null;
+
 export default function AdminClinicsPage() {
   const { data: session, status } = useSession();
   const params = useParams<{ lang: string }>();
@@ -38,6 +40,10 @@ export default function AdminClinicsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedClinic, setSelectedClinic] = useState<Clinic | null>(null);
+  const [modalType, setModalType] = useState<ModalType>(null);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Translations
   const t = {
@@ -75,6 +81,21 @@ export default function AdminClinicsPage() {
       polyclinic: "Polyclinic",
       hospital: "Hospital",
       pharmacy: "Pharmacy",
+      approveClinic: "Approve Clinic",
+      approveConfirmation: "Are you sure you want to approve this clinic registration?",
+      approveDescription: "This clinic will become visible to patients and can start accepting appointments.",
+      confirmApprove: "Confirm Approval",
+      approving: "Approving...",
+      rejectClinic: "Reject Clinic",
+      rejectConfirmation: "Are you sure you want to reject this clinic registration?",
+      rejectDescription: "The registration will be removed and the owner will be notified.",
+      rejectionReason: "Rejection Reason",
+      rejectionReasonPlaceholder: "Please provide a reason for rejection...",
+      confirmReject: "Confirm Rejection",
+      rejecting: "Rejecting...",
+      cancel: "Cancel",
+      actionSuccess: "Action completed successfully",
+      actionError: "Failed to process action",
     },
     ne: {
       title: "क्लिनिक प्रमाणीकरण",
@@ -110,6 +131,21 @@ export default function AdminClinicsPage() {
       polyclinic: "पोलिक्लिनिक",
       hospital: "अस्पताल",
       pharmacy: "फार्मेसी",
+      approveClinic: "क्लिनिक स्वीकृत गर्नुहोस्",
+      approveConfirmation: "के तपाईं यो क्लिनिक दर्ता स्वीकृत गर्न निश्चित हुनुहुन्छ?",
+      approveDescription: "यो क्लिनिक बिरामीहरूलाई देखिनेछ र अपोइन्टमेन्ट स्वीकार गर्न सक्नेछ।",
+      confirmApprove: "स्वीकृति पुष्टि गर्नुहोस्",
+      approving: "स्वीकृत गर्दै...",
+      rejectClinic: "क्लिनिक अस्वीकार गर्नुहोस्",
+      rejectConfirmation: "के तपाईं यो क्लिनिक दर्ता अस्वीकार गर्न निश्चित हुनुहुन्छ?",
+      rejectDescription: "दर्ता हटाइनेछ र मालिकलाई सूचित गरिनेछ।",
+      rejectionReason: "अस्वीकृति कारण",
+      rejectionReasonPlaceholder: "कृपया अस्वीकृतिको कारण प्रदान गर्नुहोस्...",
+      confirmReject: "अस्वीकृति पुष्टि गर्नुहोस्",
+      rejecting: "अस्वीकार गर्दै...",
+      cancel: "रद्द गर्नुहोस्",
+      actionSuccess: "कार्य सफलतापूर्वक सम्पन्न भयो",
+      actionError: "कार्य प्रशोधन गर्न असफल भयो",
     },
   };
 
@@ -179,6 +215,95 @@ export default function AdminClinicsPage() {
       PHARMACY: "bg-primary-yellow",
     };
     return colors[type] || "bg-foreground";
+  };
+
+  const openApproveModal = (clinic: Clinic) => {
+    setSelectedClinic(clinic);
+    setModalType("approve");
+    setActionError(null);
+  };
+
+  const openRejectModal = (clinic: Clinic) => {
+    setSelectedClinic(clinic);
+    setModalType("reject");
+    setRejectionReason("");
+    setActionError(null);
+  };
+
+  const openDetailsModal = (clinic: Clinic) => {
+    setSelectedClinic(clinic);
+    setModalType("details");
+    setActionError(null);
+  };
+
+  const closeModal = () => {
+    setSelectedClinic(null);
+    setModalType(null);
+    setRejectionReason("");
+    setActionError(null);
+  };
+
+  const handleApprove = async () => {
+    if (!selectedClinic) return;
+
+    setActionLoading(true);
+    setActionError(null);
+
+    try {
+      const response = await fetch(`/api/admin/clinics/${selectedClinic.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "approve" }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to approve clinic");
+      }
+
+      // Remove clinic from list
+      setClinics((prev) => prev.filter((c) => c.id !== selectedClinic.id));
+      closeModal();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : tr.actionError);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!selectedClinic || !rejectionReason.trim()) return;
+
+    setActionLoading(true);
+    setActionError(null);
+
+    try {
+      const response = await fetch(`/api/admin/clinics/${selectedClinic.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "reject",
+          reason: rejectionReason.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to reject clinic");
+      }
+
+      // Remove clinic from list
+      setClinics((prev) => prev.filter((c) => c.id !== selectedClinic.id));
+      closeModal();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : tr.actionError);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   // Loading state
@@ -360,15 +485,27 @@ export default function AdminClinicsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setSelectedClinic(clinic)}
+                          onClick={() => openDetailsModal(clinic)}
                         >
                           {tr.viewDetails}
                         </Button>
-                        <Link href={`/${lang}/clinic/${clinic.slug}`} target="_blank">
-                          <Button variant="ghost" size="sm">
-                            View Page
+                        <div className="flex gap-2">
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => openApproveModal(clinic)}
+                            className="bg-verified hover:bg-verified/90"
+                          >
+                            {tr.approve}
                           </Button>
-                        </Link>
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => openRejectModal(clinic)}
+                          >
+                            {tr.reject}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -379,7 +516,7 @@ export default function AdminClinicsPage() {
         </Card>
 
         {/* Clinic details modal */}
-        {selectedClinic && (
+        {selectedClinic && modalType === "details" && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-background border-4 border-foreground shadow-[8px_8px_0_0_#121212] max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="p-6">
@@ -397,7 +534,7 @@ export default function AdminClinicsPage() {
                     </h3>
                   </div>
                   <button
-                    onClick={() => setSelectedClinic(null)}
+                    onClick={closeModal}
                     className="w-10 h-10 border-2 border-foreground flex items-center justify-center hover:bg-foreground/10"
                   >
                     <svg
@@ -566,8 +703,165 @@ export default function AdminClinicsPage() {
 
                 {/* Actions */}
                 <div className="mt-6 pt-6 border-t-2 border-foreground/20 flex flex-wrap gap-4 justify-end">
-                  <Button variant="outline" onClick={() => setSelectedClinic(null)}>
+                  <Button variant="outline" onClick={closeModal}>
                     {tr.closeModal}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      setModalType("reject");
+                      setRejectionReason("");
+                    }}
+                  >
+                    {tr.reject}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => setModalType("approve")}
+                    className="bg-verified hover:bg-verified/90"
+                  >
+                    {tr.approve}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Approve confirmation modal */}
+        {selectedClinic && modalType === "approve" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-background border-4 border-foreground shadow-[8px_8px_0_0_#121212] max-w-lg w-full mx-4">
+              <div className="h-2 bg-verified" />
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-foreground mb-4">
+                  {tr.approveClinic}
+                </h3>
+
+                {/* Clinic info */}
+                <div className="bg-foreground/5 border-2 border-foreground/20 p-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`text-xs font-bold uppercase tracking-widest text-white px-2 py-0.5 ${getTypeColor(
+                        selectedClinic.type
+                      )}`}
+                    >
+                      {getTypeLabel(selectedClinic.type)}
+                    </span>
+                    <span className="font-bold text-foreground">
+                      {selectedClinic.name}
+                    </span>
+                  </div>
+                  {selectedClinic.address && (
+                    <p className="text-sm text-foreground/60 mt-2">
+                      {selectedClinic.address}
+                    </p>
+                  )}
+                </div>
+
+                <p className="text-foreground mb-2">{tr.approveConfirmation}</p>
+                <p className="text-sm text-foreground/60 mb-6">
+                  {tr.approveDescription}
+                </p>
+
+                {actionError && (
+                  <div className="bg-primary-red/10 border-2 border-primary-red text-primary-red p-3 mb-4 text-sm">
+                    {actionError}
+                  </div>
+                )}
+
+                <div className="flex gap-4 justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={closeModal}
+                    disabled={actionLoading}
+                  >
+                    {tr.cancel}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={handleApprove}
+                    disabled={actionLoading}
+                    className="bg-verified hover:bg-verified/90"
+                  >
+                    {actionLoading ? tr.approving : tr.confirmApprove}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reject confirmation modal */}
+        {selectedClinic && modalType === "reject" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-background border-4 border-foreground shadow-[8px_8px_0_0_#121212] max-w-lg w-full mx-4">
+              <div className="h-2 bg-primary-red" />
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-foreground mb-4">
+                  {tr.rejectClinic}
+                </h3>
+
+                {/* Clinic info */}
+                <div className="bg-foreground/5 border-2 border-foreground/20 p-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`text-xs font-bold uppercase tracking-widest text-white px-2 py-0.5 ${getTypeColor(
+                        selectedClinic.type
+                      )}`}
+                    >
+                      {getTypeLabel(selectedClinic.type)}
+                    </span>
+                    <span className="font-bold text-foreground">
+                      {selectedClinic.name}
+                    </span>
+                  </div>
+                  {selectedClinic.address && (
+                    <p className="text-sm text-foreground/60 mt-2">
+                      {selectedClinic.address}
+                    </p>
+                  )}
+                </div>
+
+                <p className="text-foreground mb-2">{tr.rejectConfirmation}</p>
+                <p className="text-sm text-foreground/60 mb-4">
+                  {tr.rejectDescription}
+                </p>
+
+                {/* Rejection reason textarea */}
+                <div className="mb-6">
+                  <label className="block text-sm font-bold text-foreground mb-2">
+                    {tr.rejectionReason} *
+                  </label>
+                  <textarea
+                    value={rejectionReason}
+                    onChange={(e) => setRejectionReason(e.target.value)}
+                    placeholder={tr.rejectionReasonPlaceholder}
+                    className="w-full border-4 border-foreground px-4 py-3 bg-white focus:border-primary-red focus:outline-none min-h-[100px] resize-none"
+                    disabled={actionLoading}
+                  />
+                </div>
+
+                {actionError && (
+                  <div className="bg-primary-red/10 border-2 border-primary-red text-primary-red p-3 mb-4 text-sm">
+                    {actionError}
+                  </div>
+                )}
+
+                <div className="flex gap-4 justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={closeModal}
+                    disabled={actionLoading}
+                  >
+                    {tr.cancel}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={handleReject}
+                    disabled={actionLoading || !rejectionReason.trim()}
+                  >
+                    {actionLoading ? tr.rejecting : tr.confirmReject}
                   </Button>
                 </div>
               </div>

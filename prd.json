@@ -1218,8 +1218,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 64,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: POST /api/admin/clinics/[id] endpoint with action: approve/reject. Approve sets verified=true and sends approval email with Bauhaus styling. Reject requires reason, deletes the clinic, and sends rejection email with reason. Added approve/reject buttons to admin clinic list with confirmation modals (green accent for approve, red accent for reject). Audit logging via logClinicApproved and logClinicRejected functions. Email templates support bilingual (EN/NE). Typecheck passes."
     },
     {
       "id": "US-065",
