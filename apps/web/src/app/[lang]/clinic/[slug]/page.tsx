@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { PhotoGallery } from "@/components/clinic/PhotoGallery";
 import { BookingSection } from "@/components/clinic/BookingSection";
+import { ReviewsSection } from "@/components/clinic/ReviewsSection";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
@@ -366,6 +367,20 @@ const translations = {
     permanent: "Permanent",
     visiting: "Visiting",
     consultant: "Consultant",
+    // Reviews translations
+    reviews: "Reviews",
+    writeReview: "Write a Review",
+    basedOn: "Based on",
+    reviewsText: "reviews",
+    noReviews: "No reviews yet",
+    noReviewsYet: "No reviews yet",
+    beTheFirst: "Be the first to leave a review",
+    showMore: "Show More",
+    doctorResponse: "Doctor's Response",
+    verifiedPatient: "Verified Patient",
+    cleanliness: "Cleanliness",
+    waitTime: "Wait Time",
+    staffBehavior: "Staff Behavior",
   },
   ne: {
     clinicNotFound: "क्लिनिक फेला परेन",
@@ -415,6 +430,20 @@ const translations = {
     permanent: "स्थायी",
     visiting: "भ्रमण",
     consultant: "परामर्शदाता",
+    // Reviews translations
+    reviews: "समीक्षाहरू",
+    writeReview: "समीक्षा लेख्नुहोस्",
+    basedOn: "आधारमा",
+    reviewsText: "समीक्षाहरू",
+    noReviews: "अझै कुनै समीक्षा छैन",
+    noReviewsYet: "अझै कुनै समीक्षा छैन",
+    beTheFirst: "समीक्षा छोड्ने पहिलो व्यक्ति बन्नुहोस्",
+    showMore: "थप देखाउनुहोस्",
+    doctorResponse: "डाक्टरको प्रतिक्रिया",
+    verifiedPatient: "प्रमाणित बिरामी",
+    cleanliness: "सरसफाई",
+    waitTime: "पर्खने समय",
+    staffBehavior: "कर्मचारी व्यवहार",
   },
 };
 
@@ -902,6 +931,37 @@ export default async function ClinicPage({ params }: ClinicPageProps) {
                 <p className="text-foreground/60">{t.noDoctors}</p>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Reviews Section */}
+        <Card decorator="red" decoratorPosition="top-right" className="mb-6">
+          <CardContent>
+            <h2 className="text-2xl font-bold mb-4">{t.reviews}</h2>
+            <div className="border-t-2 border-black/20 mb-6" />
+
+            <ReviewsSection
+              clinicId={clinic.id}
+              clinicSlug={clinic.slug}
+              lang={lang}
+              translations={{
+                reviews: t.reviews,
+                writeReview: t.writeReview,
+                basedOn: t.basedOn,
+                reviewsText: t.reviewsText,
+                noReviews: t.noReviews,
+                noReviewsYet: t.noReviewsYet,
+                beTheFirst: t.beTheFirst,
+                showMore: t.showMore,
+                doctorResponse: t.doctorResponse,
+                verifiedPatient: t.verifiedPatient,
+                categories: {
+                  cleanliness: t.cleanliness,
+                  waitTime: t.waitTime,
+                  staffBehavior: t.staffBehavior,
+                },
+              }}
+            />
           </CardContent>
         </Card>
       </div>
