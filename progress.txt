@@ -13,6 +13,8 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - E2E test seed data in seed.ts must match TEST_DATA constants in test-utils.ts
 - Test database credentials must match docker-compose.yml (swasthya:swasthya, not postgres:postgres)
 - Use header.locator() or section.locator() to scope selectors when multiple elements match
+- E2E tests seed data to main `swasthya` database (not swasthya_test) for local dev server visibility
+- Use URL query params (e.g., &type=DOCTOR) in tests to filter to specific professional types
 
 ---
 
@@ -129,5 +131,42 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Footer section titles are h3 headings with full names like "For Doctors" not just "Doctors"
 - Category cards on homepage are in section.nth(1) (second section after hero)
 - Test database needs to be created and migrated before running tests
+- For E2E tests, seed data should go to the same database the dev server uses (swasthya, not swasthya_test)
+- Use type filters (&type=DOCTOR) to ensure tests target specific professional types
+- getByText() matches hidden elements like <option> - use more specific selectors for badge text
+
+---
+
+## 2026-02-02 18:30 - US-038
+**E2E Tests: Search functionality**
+
+### What was implemented
+- Created apps/web/e2e/search.spec.ts with 30 comprehensive tests:
+  - Basic Functionality: search page load, query display, result cards, no results message, results count
+  - Type Filter: dropdown options, filtering by Doctor/Dentist/Pharmacist types
+  - Location Filter: dropdown visibility, location-based filtering
+  - Active Filters Tags: type tag display, location tag display, Clear all link, tag removal
+  - Pagination: no pagination for few results, page numbers when paginated, Next link navigation
+  - Search Form: new search submission, filter preservation
+  - Result Cards: card structure, View Profile navigation, degree/location display
+  - Different Professional Types: type badges, navigation to dentist/pharmacist detail pages
+- Fixed database configuration for E2E tests:
+  - Updated seed.ts default database from swasthya_test to swasthya
+  - Updated playwright.config.ts to match
+  - This ensures seeded test data is visible to the dev server
+
+### Files changed
+- apps/web/e2e/search.spec.ts (NEW)
+- apps/web/e2e/fixtures/seed.ts (MODIFIED)
+- apps/web/playwright.config.ts (MODIFIED)
+
+### Learnings for future iterations
+- The main database has 40k+ real professionals mixed with seeded test data
+- Use type filters (&type=DENTIST) to ensure tests get specific professional types
+- "View Profile" buttons are wrapped in Links - use getByRole("link") not getByRole("button")
+- getByText with exact:true can match hidden elements like <option> in dropdowns
+- Filter tags are links with SVG icons - use locator().filter({ has: locator("svg") })
+- Pagination uses "← Previous" and "Next →" with arrow symbols
+- Cards are <div> elements not <article> - use getByRole("heading", { level: 3 }) for card titles
 
 ---
