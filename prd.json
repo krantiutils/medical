@@ -335,8 +335,8 @@
         "Typecheck passes"
       ],
       "priority": 19,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: app/sitemap.ts created with Next.js sitemap convention using generateSitemaps for sitemap index support. Generates URLs for all professionals with both en/ne language variants, includes static pages (home, search, category pages). Includes lastmod (from updated_at), changeFrequency (weekly), priority (0.7-1.0 based on page type and verification). Handles >50k URLs with sitemap index via generateSitemaps function. Accessible at /sitemap.xml. Typecheck passes."
     },
     {
       "id": "US-020",

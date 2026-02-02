@@ -296,3 +296,19 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Use `&apos;` for apostrophes in JSX to satisfy ESLint
   - Decorative Bauhaus elements (circle/square/triangle) repeated in footer for brand consistency
 ---
+
+## 2026-02-02 19:00 +0545 - US-019
+- **What was implemented**: Sitemap generation for SEO
+- **Files changed**:
+  - `apps/web/src/app/sitemap.ts` - Created sitemap with Next.js convention and sitemap index support
+  - `prd.json` - Marked US-019 as passes: true
+- **Learnings for future iterations:**
+  - Next.js sitemap uses `generateSitemaps` function for sitemap index pattern (when >50k URLs)
+  - The sitemap function receives `{ id }` param when `generateSitemaps` is exported
+  - Use `skip` and `take` with Prisma for pagination across sitemap chunks
+  - Include both language variants (/en/ and /ne/) for each URL
+  - Static pages only go in first sitemap (id === 0) to avoid duplication
+  - Verified professionals get higher priority (0.8) than unverified (0.7)
+  - Use `updated_at` from database as `lastModified` for accurate sitemap timestamps
+  - Select only needed fields (slug, updated_at, verified) for performance with 40k+ records
+---
