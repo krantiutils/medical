@@ -366,3 +366,16 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - `generateStaticParams` exports locales for static generation of category pages
   - `setRequestLocale(lang)` is needed at start of page component for proper static rendering
 ---
+
+## 2026-02-02 23:00 +0545 - US-023
+- **What was implemented**: Category page for dentists listing at /[lang]/dentists
+- **Files changed**:
+  - `apps/web/src/app/[lang]/dentists/page.tsx` - Created dentists category page following doctors page pattern
+  - `prd.json` - Marked US-023 as passes: true
+- **Learnings for future iterations:**
+  - Dentists page follows exact same pattern as doctors page - just change type filter and accent color
+  - Red accent color (`primary-red`) for dentists: decorator, type badge, count number
+  - NDA (Nepal Dental Association) instead of NMC for registration context
+  - All professionals currently link to `/doctor/[slug]` route regardless of type (may need type-specific routes later)
+  - Copy doctors page, find-replace DOCTOR->DENTIST, blue->red, doctor->dentist, NMC->NDA for quick implementation
+---
