@@ -43,3 +43,9 @@ __pycache__/
 
 # Archive (scrapers, old logs)
 _archive/
+
+# Playwright
+/apps/web/test-results/
+/apps/web/playwright-report/
+/apps/web/blob-report/
+/apps/web/playwright/.cache/
