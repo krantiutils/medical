@@ -42,6 +42,26 @@ interface ExistingSchedule {
   is_active: boolean;
 }
 
+interface Leave {
+  id: string;
+  leave_date: string;
+  start_time: string | null;
+  end_time: string | null;
+  reason: string;
+  doctor: {
+    id: string;
+    full_name: string;
+    type: string;
+    registration_number: string;
+  };
+}
+
+interface AffectedAppointment {
+  id: string;
+  timeSlot: string;
+  patientName: string;
+}
+
 const DAYS_OF_WEEK = [
   { key: 0, labelEn: "Sunday", labelNe: "आइतबार" },
   { key: 1, labelEn: "Monday", labelNe: "सोमबार" },
@@ -83,6 +103,24 @@ export default function ClinicSchedulesPage() {
   const [noClinic, setNoClinic] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Leave management state
+  const [leaves, setLeaves] = useState<Leave[]>([]);
+  const [loadingLeaves, setLoadingLeaves] = useState(false);
+  const [savingLeave, setSavingLeave] = useState(false);
+  const [deletingLeaveId, setDeletingLeaveId] = useState<string | null>(null);
+  const [leaveForm, setLeaveForm] = useState({
+    leaveDate: "",
+    isFullDay: true,
+    startTime: "09:00",
+    endTime: "17:00",
+    reason: "",
+  });
+  const [leaveError, setLeaveError] = useState<string | null>(null);
+  const [leaveSuccessMessage, setLeaveSuccessMessage] = useState<string | null>(null);
+  const [affectedAppointments, setAffectedAppointments] = useState<AffectedAppointment[]>([]);
+  const [showAffectedModal, setShowAffectedModal] = useState(false);
+  const [checkingAffected, setCheckingAffected] = useState(false);
+
   // Translations
   const t = {
     en: {
@@ -123,6 +161,29 @@ export default function ClinicSchedulesPage() {
       noScheduleYet: "No schedule configured yet",
       configureBelow: "Configure the weekly schedule below and save.",
       scheduleNote: "Note: Unchecked days will be marked as unavailable for appointments.",
+      // Leave management translations
+      leaveManagement: "Leave Management",
+      addLeave: "Add Leave",
+      upcomingLeaves: "Upcoming Leaves",
+      noUpcomingLeaves: "No upcoming leaves scheduled",
+      leaveDate: "Date",
+      fullDay: "Full Day",
+      timeRange: "Time Range",
+      reason: "Reason",
+      addLeaveBtn: "Add Leave",
+      addingLeave: "Adding...",
+      leaveAdded: "Leave added successfully!",
+      deleteLeave: "Delete",
+      confirmDelete: "Are you sure you want to delete this leave?",
+      cancel: "Cancel",
+      confirm: "Confirm",
+      affectedAppointments: "Affected Appointments",
+      affectedAppointmentsWarning: "The following appointments will be affected by this leave:",
+      noAffectedAppointments: "No appointments will be affected by this leave.",
+      proceedWithLeave: "Proceed with Leave",
+      checkingAffected: "Checking...",
+      patient: "Patient",
+      timeSlot: "Time Slot",
     },
     ne: {
       title: "डाक्टर तालिकाहरू",
@@ -162,6 +223,29 @@ export default function ClinicSchedulesPage() {
       noScheduleYet: "अझै कुनै तालिका कन्फिगर गरिएको छैन",
       configureBelow: "तलको साप्ताहिक तालिका कन्फिगर गर्नुहोस् र सेभ गर्नुहोस्।",
       scheduleNote: "नोट: अनचेक गरिएका दिनहरू अपोइन्टमेन्टको लागि अनुपलब्ध चिन्ह लगाइनेछ।",
+      // Leave management translations
+      leaveManagement: "बिदा व्यवस्थापन",
+      addLeave: "बिदा थप्नुहोस्",
+      upcomingLeaves: "आगामी बिदाहरू",
+      noUpcomingLeaves: "कुनै आगामी बिदाहरू तालिकाबद्ध छैनन्",
+      leaveDate: "मिति",
+      fullDay: "पूरा दिन",
+      timeRange: "समय दायरा",
+      reason: "कारण",
+      addLeaveBtn: "बिदा थप्नुहोस्",
+      addingLeave: "थप्दै...",
+      leaveAdded: "बिदा सफलतापूर्वक थपियो!",
+      deleteLeave: "मेट्नुहोस्",
+      confirmDelete: "के तपाईं यो बिदा मेट्न चाहनुहुन्छ?",
+      cancel: "रद्द गर्नुहोस्",
+      confirm: "पुष्टि गर्नुहोस्",
+      affectedAppointments: "प्रभावित अपोइन्टमेन्टहरू",
+      affectedAppointmentsWarning: "निम्न अपोइन्टमेन्टहरू यस बिदाबाट प्रभावित हुनेछन्:",
+      noAffectedAppointments: "यस बिदाबाट कुनै अपोइन्टमेन्टहरू प्रभावित हुनेछैनन्।",
+      proceedWithLeave: "बिदा जारी राख्नुहोस्",
+      checkingAffected: "जाँच गर्दै...",
+      patient: "बिरामी",
+      timeSlot: "समय स्लट",
     },
   };
 
@@ -223,6 +307,143 @@ export default function ClinicSchedulesPage() {
       setLoading(false);
     }
   }, [tr.errorLoading, doctorIdFromQuery]);
+
+  const fetchLeaves = useCallback(async (doctorId?: string) => {
+    setLoadingLeaves(true);
+    try {
+      const url = doctorId
+        ? `/api/clinic/leaves?doctorId=${doctorId}&upcoming=true`
+        : `/api/clinic/leaves?upcoming=true`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch leaves");
+      }
+
+      const data = await response.json();
+      setLeaves(data.leaves || []);
+    } catch (err) {
+      console.error("Error fetching leaves:", err);
+    } finally {
+      setLoadingLeaves(false);
+    }
+  }, []);
+
+  const checkAffectedAppointments = useCallback(async () => {
+    if (!selectedDoctor || !leaveForm.leaveDate) return;
+
+    setCheckingAffected(true);
+    setLeaveError(null);
+
+    try {
+      const response = await fetch("/api/clinic/leaves", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          doctorId: selectedDoctor.id,
+          leaveDate: leaveForm.leaveDate,
+          startTime: leaveForm.isFullDay ? null : leaveForm.startTime,
+          endTime: leaveForm.isFullDay ? null : leaveForm.endTime,
+          reason: leaveForm.reason,
+          checkAffected: true,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to check affected appointments");
+      }
+
+      const data = await response.json();
+      setAffectedAppointments(data.affectedAppointments || []);
+      setShowAffectedModal(true);
+    } catch (err) {
+      console.error("Error checking affected appointments:", err);
+      setLeaveError(err instanceof Error ? err.message : "Failed to check affected appointments");
+    } finally {
+      setCheckingAffected(false);
+    }
+  }, [selectedDoctor, leaveForm]);
+
+  const saveLeave = useCallback(async () => {
+    if (!selectedDoctor || !leaveForm.leaveDate || !leaveForm.reason.trim()) {
+      setLeaveError("Please fill in all required fields");
+      return;
+    }
+
+    setSavingLeave(true);
+    setLeaveError(null);
+    setLeaveSuccessMessage(null);
+
+    try {
+      const response = await fetch("/api/clinic/leaves", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          doctorId: selectedDoctor.id,
+          leaveDate: leaveForm.leaveDate,
+          startTime: leaveForm.isFullDay ? null : leaveForm.startTime,
+          endTime: leaveForm.isFullDay ? null : leaveForm.endTime,
+          reason: leaveForm.reason.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to add leave");
+      }
+
+      // Reset form
+      setLeaveForm({
+        leaveDate: "",
+        isFullDay: true,
+        startTime: "09:00",
+        endTime: "17:00",
+        reason: "",
+      });
+      setShowAffectedModal(false);
+      setAffectedAppointments([]);
+      setLeaveSuccessMessage(tr.leaveAdded);
+      setTimeout(() => setLeaveSuccessMessage(null), 5000);
+
+      // Refresh leaves
+      fetchLeaves(selectedDoctor.id);
+    } catch (err) {
+      console.error("Error saving leave:", err);
+      setLeaveError(err instanceof Error ? err.message : "Failed to add leave");
+    } finally {
+      setSavingLeave(false);
+    }
+  }, [selectedDoctor, leaveForm, tr.leaveAdded, fetchLeaves]);
+
+  const deleteLeave = useCallback(async (leaveId: string) => {
+    setDeletingLeaveId(leaveId);
+
+    try {
+      const response = await fetch(`/api/clinic/leaves?id=${leaveId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to delete leave");
+      }
+
+      // Refresh leaves
+      if (selectedDoctor) {
+        fetchLeaves(selectedDoctor.id);
+      }
+    } catch (err) {
+      console.error("Error deleting leave:", err);
+      setLeaveError(err instanceof Error ? err.message : "Failed to delete leave");
+    } finally {
+      setDeletingLeaveId(null);
+    }
+  }, [selectedDoctor, fetchLeaves]);
 
   const fetchSchedule = useCallback(async (doctorId: string) => {
     setLoadingSchedule(true);
@@ -366,8 +587,9 @@ export default function ClinicSchedulesPage() {
   useEffect(() => {
     if (selectedDoctor) {
       fetchSchedule(selectedDoctor.id);
+      fetchLeaves(selectedDoctor.id);
     }
-  }, [selectedDoctor, fetchSchedule]);
+  }, [selectedDoctor, fetchSchedule, fetchLeaves]);
 
   // Loading state
   if (status === "loading" || loading) {
@@ -749,6 +971,325 @@ export default function ClinicSchedulesPage() {
             )}
           </div>
         </div>
+
+        {/* Leave Management Section */}
+        {selectedDoctor && !loadingSchedule && (
+          <div className="mt-8">
+            <Card decorator="red" decoratorPosition="top-left">
+              <CardHeader className="border-b-2 border-foreground/10">
+                <h2 className="text-lg font-bold text-foreground">{tr.leaveManagement}</h2>
+                <p className="text-sm text-foreground/60 mt-1">
+                  {selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST"
+                    ? "Dr. "
+                    : ""}
+                  {selectedDoctor.full_name}
+                </p>
+              </CardHeader>
+              <CardContent className="py-4">
+                {leaveError && (
+                  <div className="mb-4 p-3 bg-primary-red/10 border-2 border-primary-red text-primary-red text-sm">
+                    {leaveError}
+                  </div>
+                )}
+                {leaveSuccessMessage && (
+                  <div className="mb-4 p-3 bg-verified/10 border-2 border-verified text-verified text-sm">
+                    {leaveSuccessMessage}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Add Leave Form */}
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">
+                      {tr.addLeave}
+                    </h3>
+                    <div className="space-y-4">
+                      {/* Date */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground/80 mb-1">
+                          {tr.leaveDate} *
+                        </label>
+                        <input
+                          type="date"
+                          value={leaveForm.leaveDate}
+                          min={new Date().toISOString().split("T")[0]}
+                          onChange={(e) =>
+                            setLeaveForm((prev) => ({ ...prev, leaveDate: e.target.value }))
+                          }
+                          className="w-full px-3 py-2 border-2 border-foreground bg-white text-sm"
+                        />
+                      </div>
+
+                      {/* Full Day Toggle */}
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() =>
+                            setLeaveForm((prev) => ({ ...prev, isFullDay: !prev.isFullDay }))
+                          }
+                          className={`relative w-12 h-6 rounded-full border-2 border-foreground transition-colors ${
+                            leaveForm.isFullDay ? "bg-primary-red" : "bg-foreground/20"
+                          }`}
+                        >
+                          <span
+                            className={`absolute top-0.5 w-4 h-4 bg-white border border-foreground rounded-full transition-transform ${
+                              leaveForm.isFullDay ? "translate-x-6" : "translate-x-0.5"
+                            }`}
+                          />
+                        </button>
+                        <span className="text-sm text-foreground">{tr.fullDay}</span>
+                      </div>
+
+                      {/* Time Range (shown when not full day) */}
+                      {!leaveForm.isFullDay && (
+                        <div className="flex items-center gap-3">
+                          <div>
+                            <label className="block text-xs text-foreground/60 mb-1">
+                              {tr.startTime}
+                            </label>
+                            <input
+                              type="time"
+                              value={leaveForm.startTime}
+                              onChange={(e) =>
+                                setLeaveForm((prev) => ({ ...prev, startTime: e.target.value }))
+                              }
+                              className="px-2 py-1 border-2 border-foreground text-sm bg-white"
+                            />
+                          </div>
+                          <span className="text-foreground/60 mt-5">-</span>
+                          <div>
+                            <label className="block text-xs text-foreground/60 mb-1">
+                              {tr.endTime}
+                            </label>
+                            <input
+                              type="time"
+                              value={leaveForm.endTime}
+                              onChange={(e) =>
+                                setLeaveForm((prev) => ({ ...prev, endTime: e.target.value }))
+                              }
+                              className="px-2 py-1 border-2 border-foreground text-sm bg-white"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Reason */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground/80 mb-1">
+                          {tr.reason} *
+                        </label>
+                        <textarea
+                          value={leaveForm.reason}
+                          onChange={(e) =>
+                            setLeaveForm((prev) => ({ ...prev, reason: e.target.value }))
+                          }
+                          placeholder={lang === "ne" ? "बिदाको कारण..." : "Reason for leave..."}
+                          className="w-full px-3 py-2 border-2 border-foreground bg-white text-sm resize-none"
+                          rows={3}
+                        />
+                      </div>
+
+                      {/* Add Button */}
+                      <Button
+                        variant="secondary"
+                        onClick={checkAffectedAppointments}
+                        disabled={
+                          checkingAffected ||
+                          savingLeave ||
+                          !leaveForm.leaveDate ||
+                          !leaveForm.reason.trim()
+                        }
+                        className="w-full"
+                      >
+                        {checkingAffected ? tr.checkingAffected : tr.addLeaveBtn}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Upcoming Leaves List */}
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">
+                      {tr.upcomingLeaves}
+                    </h3>
+                    {loadingLeaves ? (
+                      <div className="animate-pulse space-y-3">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="h-16 bg-foreground/10 rounded"
+                          />
+                        ))}
+                      </div>
+                    ) : leaves.length === 0 ? (
+                      <div className="text-center py-8 bg-foreground/5 border-2 border-dashed border-foreground/20">
+                        <svg
+                          className="w-10 h-10 text-foreground/30 mx-auto mb-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <p className="text-sm text-foreground/60">{tr.noUpcomingLeaves}</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3 max-h-80 overflow-y-auto">
+                        {leaves.map((leave) => (
+                          <div
+                            key={leave.id}
+                            className="p-3 border-2 border-foreground/20 bg-white"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-bold text-foreground text-sm">
+                                    {new Date(leave.leave_date).toLocaleDateString(
+                                      lang === "ne" ? "ne-NP" : "en-US",
+                                      {
+                                        weekday: "short",
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      }
+                                    )}
+                                  </span>
+                                  {leave.start_time && leave.end_time ? (
+                                    <span className="text-xs bg-primary-yellow/20 text-primary-yellow px-2 py-0.5 font-medium">
+                                      {leave.start_time} - {leave.end_time}
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs bg-primary-red/20 text-primary-red px-2 py-0.5 font-medium">
+                                      {tr.fullDay}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-sm text-foreground/70 truncate">
+                                  {leave.reason}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => deleteLeave(leave.id)}
+                                disabled={deletingLeaveId === leave.id}
+                                className="text-primary-red hover:bg-primary-red/10 p-1.5 transition-colors disabled:opacity-50"
+                                title={tr.deleteLeave}
+                              >
+                                {deletingLeaveId === leave.id ? (
+                                  <svg
+                                    className="w-4 h-4 animate-spin"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    />
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    />
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                    />
+                                  </svg>
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Affected Appointments Modal */}
+        {showAffectedModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <div className="bg-white border-4 border-foreground shadow-[8px_8px_0_0_black] max-w-lg w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-foreground mb-4">
+                  {tr.affectedAppointments}
+                </h3>
+
+                {affectedAppointments.length > 0 ? (
+                  <>
+                    <div className="mb-4 p-3 bg-primary-yellow/10 border-2 border-primary-yellow text-primary-yellow text-sm">
+                      {tr.affectedAppointmentsWarning}
+                    </div>
+                    <div className="space-y-2 mb-6 max-h-60 overflow-y-auto">
+                      {affectedAppointments.map((apt) => (
+                        <div
+                          key={apt.id}
+                          className="p-3 bg-foreground/5 border-2 border-foreground/20"
+                        >
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-foreground">
+                              {apt.patientName}
+                            </span>
+                            <span className="text-sm text-foreground/60">
+                              {apt.timeSlot}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-sm text-foreground/60 mb-4">
+                      {lang === "ne"
+                        ? `${affectedAppointments.length} अपोइन्टमेन्टहरू प्रभावित हुनेछन्।`
+                        : `${affectedAppointments.length} appointment(s) will be affected.`}
+                    </p>
+                  </>
+                ) : (
+                  <div className="mb-6 p-4 bg-verified/10 border-2 border-verified text-verified text-center">
+                    {tr.noAffectedAppointments}
+                  </div>
+                )}
+
+                <div className="flex gap-3 justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowAffectedModal(false);
+                      setAffectedAppointments([]);
+                    }}
+                  >
+                    {tr.cancel}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={saveLeave}
+                    disabled={savingLeave}
+                  >
+                    {savingLeave ? tr.addingLeave : tr.proceedWithLeave}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
