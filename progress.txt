@@ -2777,3 +2777,62 @@ Created comprehensive database models for Phase 4 features:
 - Always check prescription.status before allowing edits (only DRAFT can be modified)
 
 ---
+
+## 2026-02-02 - US-102
+**Lab: Order and results**
+
+### What was implemented
+- Lab tab added to consultation detail page (5 tabs: Vitals, Notes, Diagnosis, Prescription, Lab)
+- Lab Order API endpoints:
+  - GET/POST /api/clinic/lab-orders - List and create lab orders
+  - GET/PATCH/DELETE /api/clinic/lab-orders/[id] - Single order operations
+- Lab Results API:
+  - PATCH /api/clinic/lab-results/[id] - Enter/update result values
+- Lab Tests API:
+  - GET /api/clinic/lab-tests - Search tests (clinic-specific or 60+ common tests)
+- Patient Lab Results API:
+  - GET /api/patient/lab-results - Patient-facing endpoint for viewing completed results
+- Lab Dashboard (/clinic/dashboard/lab):
+  - Stats cards: Pending, Processing, Completed, Total orders
+  - Tabs: Pending, Processing, Completed, All
+  - Order cards with actions: Collect Sample, Start Processing, Enter Results
+- Lab Order Detail (/clinic/dashboard/lab/[id]):
+  - Patient info header
+  - Results entry table with inputs: result_value, unit, normal_range, flag, remarks
+  - Flag dropdown with options: NORMAL, LOW, HIGH, CRITICAL_LOW, CRITICAL_HIGH, ABNORMAL
+  - Individual result verification toggle
+  - Mark All Complete button
+  - Print Lab Report functionality
+- Patient Lab Results View (/dashboard/lab-results):
+  - Shows completed orders with expandable results
+  - Print/download report functionality
+- PDF Lab Report:
+  - Formatted HTML with clinic header
+  - Patient details and order number
+  - Results table with flag color-coding
+  - Verified/unverified status indicators
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/consultations/[id]/page.tsx (MODIFIED)
+- apps/web/src/app/[lang]/clinic/dashboard/lab/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/lab/[id]/page.tsx (NEW)
+- apps/web/src/app/[lang]/dashboard/lab-results/page.tsx (NEW)
+- apps/web/src/app/api/clinic/lab-orders/route.ts (NEW)
+- apps/web/src/app/api/clinic/lab-orders/[id]/route.ts (NEW)
+- apps/web/src/app/api/clinic/lab-results/[id]/route.ts (NEW)
+- apps/web/src/app/api/clinic/lab-tests/route.ts (NEW)
+- apps/web/src/app/api/patient/lab-results/route.ts (NEW)
+
+### Learnings for future iterations
+- LabTest, LabOrder, LabResult models already exist in Prisma schema
+- Lab workflow: ORDERED → SAMPLE_COLLECTED → PROCESSING → COMPLETED
+- LabResultFlag enum: NORMAL, LOW, HIGH, CRITICAL_LOW, CRITICAL_HIGH, ABNORMAL
+- LabOrderPriority enum: ROUTINE, URGENT, STAT
+- Order auto-updates status: all results entered → PROCESSING, all verified → COMPLETED
+- Order number format: LAB-YYYYMMDD-NNNN (auto-generated)
+- Common tests database includes categories: Hematology, Biochemistry, Thyroid, Lipid Profile, etc.
+- Patient lab results API matches patient by user email or phone to Patient record
+- When adding lab translations, avoid duplicating keys like 'normal' (BMI) or 'allCategories' (diagnosis) - prefix with 'lab' (labFlagNormal, labAllCategories)
+- Card decorator prop takes separate decorator="color" and decoratorPosition="position" props, NOT an object
+
+---
