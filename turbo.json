@@ -11,10 +11,10 @@
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^db:generate"]
+      "dependsOn": ["^build", "^db:generate"]
     },
     "typecheck": {
-      "dependsOn": ["^db:generate"]
+      "dependsOn": ["^build", "^db:generate"]
     },
     "db:generate": {
       "cache": false
