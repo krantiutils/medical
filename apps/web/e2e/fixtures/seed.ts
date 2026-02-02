@@ -361,31 +361,69 @@ async function seedProfessionals(
 }
 
 /**
- * Seed a pending verification request for testing
+ * Seed verification requests with different statuses for testing
  */
-async function seedVerificationRequest(
+async function seedVerificationRequests(
   userId: string,
-  professionalId: string
-): Promise<string> {
-  // First clean up any existing verification request for this user/professional
+  professionalIds: Map<string, string>,
+  adminUserId: string
+): Promise<{ pendingId: string; approvedId: string; rejectedId: string }> {
+  // Clean up any existing verification requests for this user
   await prisma.verificationRequest.deleteMany({
-    where: {
-      user_id: userId,
-      professional_id: professionalId,
-    },
+    where: { user_id: userId },
   });
 
-  const verificationRequest = await prisma.verificationRequest.create({
+  const unclaimedDoctorId = professionalIds.get("DOCTOR_99999");
+  const dentistOneId = professionalIds.get("DENTIST_D1002");
+  const pharmacistTwoId = professionalIds.get("PHARMACIST_P1002");
+
+  if (!unclaimedDoctorId || !dentistOneId || !pharmacistTwoId) {
+    throw new Error("Failed to get professional IDs for verification requests");
+  }
+
+  // Create PENDING verification request (unclaimed doctor)
+  const pendingRequest = await prisma.verificationRequest.create({
     data: {
       user_id: userId,
-      professional_id: professionalId,
+      professional_id: unclaimedDoctorId,
       status: VerificationStatus.PENDING,
       government_id_url: "https://example.com/test-government-id.jpg",
       certificate_url: "https://example.com/test-certificate.jpg",
     },
   });
 
-  return verificationRequest.id;
+  // Create APPROVED verification request (dentist)
+  const approvedRequest = await prisma.verificationRequest.create({
+    data: {
+      user_id: userId,
+      professional_id: dentistOneId,
+      status: VerificationStatus.APPROVED,
+      government_id_url: "https://example.com/approved-government-id.jpg",
+      certificate_url: "https://example.com/approved-certificate.jpg",
+      reviewed_at: new Date(),
+      reviewed_by_id: adminUserId,
+    },
+  });
+
+  // Create REJECTED verification request (pharmacist)
+  const rejectedRequest = await prisma.verificationRequest.create({
+    data: {
+      user_id: userId,
+      professional_id: pharmacistTwoId,
+      status: VerificationStatus.REJECTED,
+      government_id_url: "https://example.com/rejected-government-id.jpg",
+      certificate_url: "https://example.com/rejected-certificate.jpg",
+      reviewed_at: new Date(),
+      reviewed_by_id: adminUserId,
+      admin_notes: "Documents were not clearly visible. Please resubmit with better quality images.",
+    },
+  });
+
+  return {
+    pendingId: pendingRequest.id,
+    approvedId: approvedRequest.id,
+    rejectedId: rejectedRequest.id,
+  };
 }
 
 /**
@@ -448,7 +486,7 @@ async function cleanupTestData(): Promise<void> {
 export async function seedTestData(): Promise<{
   userIds: Map<string, string>;
   professionalIds: Map<string, string>;
-  verificationRequestId: string;
+  verificationRequestIds: { pendingId: string; approvedId: string; rejectedId: string };
 }> {
   console.log("🌱 Seeding test data...");
 
@@ -461,26 +499,27 @@ export async function seedTestData(): Promise<{
   const professionalIds = await seedProfessionals(professionalUserId);
   console.log(`  ✓ Seeded ${professionalIds.size} professionals`);
 
-  // Create a pending verification request (regular user claiming unclaimed doctor)
+  // Create verification requests with different statuses
   const regularUserId = userIds.get("REGULAR");
-  const unclaimedDoctorId = professionalIds.get("DOCTOR_99999");
+  const adminUserId = userIds.get("ADMIN");
 
-  if (!regularUserId || !unclaimedDoctorId) {
-    throw new Error("Failed to get user or professional IDs for verification request");
+  if (!regularUserId || !adminUserId) {
+    throw new Error("Failed to get user IDs for verification requests");
   }
 
-  const verificationRequestId = await seedVerificationRequest(
+  const verificationRequestIds = await seedVerificationRequests(
     regularUserId,
-    unclaimedDoctorId
+    professionalIds,
+    adminUserId
   );
-  console.log("  ✓ Seeded verification request");
+  console.log("  ✓ Seeded verification requests (pending, approved, rejected)");
 
   console.log("✅ Test data seeding complete!");
 
   return {
     userIds,
     professionalIds,
-    verificationRequestId,
+    verificationRequestIds,
   };
 }
 
