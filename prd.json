@@ -1465,8 +1465,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 78,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Booking page at /[lang]/clinic/[slug]/book with patient details form (name, phone, email optional, reason). POST /api/appointments endpoint handles appointment creation with slot availability check, patient record creation (or lookup by phone), token number generation, and confirmation. API endpoint /api/clinic/[id]/booking-info provides clinic and doctor info for the form. Confirmation page shows token number, appointment details, next steps, and ICS calendar download. Bilingual support (EN/NE). Bauhaus styling. Typecheck passes."
     },
     {
       "id": "US-079",
