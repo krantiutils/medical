@@ -4,6 +4,7 @@ import { prisma, ClinicType, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { PhotoGallery } from "@/components/clinic/PhotoGallery";
+import { BookingSection } from "@/components/clinic/BookingSection";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
@@ -340,6 +341,31 @@ const translations = {
     viewProfile: "View Profile",
     noDoctors: "No doctors affiliated yet",
     specialty: "Specialty",
+    // Booking translations
+    bookAppointment: "Book Appointment",
+    selectDoctor: "Select Doctor",
+    selectDate: "Select Date",
+    selectTime: "Select Time Slot",
+    availableSlots: "slots available",
+    noSlotsAvailable: "No time slots available for this date",
+    doctorNoSchedule: "Doctor has no schedule for this day",
+    loading: "Loading available slots...",
+    selectDoctorFirst: "Please select a doctor to see available dates",
+    selectDateFirst: "Please select a date to see available time slots",
+    slotSelected: "Selected Time",
+    continueBooking: "Continue Booking",
+    today: "Today",
+    tomorrow: "Tomorrow",
+    noDoctorsAvailable: "No doctors available for booking",
+    slotsRemaining: "left",
+    fullyBooked: "Full",
+    onLeave: "On Leave",
+    doctor: "Doctor",
+    dentist: "Dentist",
+    pharmacist: "Pharmacist",
+    permanent: "Permanent",
+    visiting: "Visiting",
+    consultant: "Consultant",
   },
   ne: {
     clinicNotFound: "क्लिनिक फेला परेन",
@@ -364,6 +390,31 @@ const translations = {
     viewProfile: "प्रोफाइल हेर्नुहोस्",
     noDoctors: "अझै कुनै डाक्टर सम्बद्ध छैन",
     specialty: "विशेषज्ञता",
+    // Booking translations
+    bookAppointment: "अपोइन्टमेन्ट बुक गर्नुहोस्",
+    selectDoctor: "डाक्टर छान्नुहोस्",
+    selectDate: "मिति छान्नुहोस्",
+    selectTime: "समय स्लट छान्नुहोस्",
+    availableSlots: "स्लटहरू उपलब्ध",
+    noSlotsAvailable: "यस मितिको लागि कुनै समय स्लट उपलब्ध छैन",
+    doctorNoSchedule: "यस दिनको लागि डाक्टरको तालिका छैन",
+    loading: "उपलब्ध स्लटहरू लोड हुँदैछ...",
+    selectDoctorFirst: "कृपया उपलब्ध मितिहरू हेर्न डाक्टर छान्नुहोस्",
+    selectDateFirst: "कृपया उपलब्ध समय स्लटहरू हेर्न मिति छान्नुहोस्",
+    slotSelected: "चयनित समय",
+    continueBooking: "बुकिंग जारी राख्नुहोस्",
+    today: "आज",
+    tomorrow: "भोलि",
+    noDoctorsAvailable: "बुकिंगको लागि कुनै डाक्टर उपलब्ध छैन",
+    slotsRemaining: "बाँकी",
+    fullyBooked: "भरियो",
+    onLeave: "बिदामा",
+    doctor: "चिकित्सक",
+    dentist: "दन्त चिकित्सक",
+    pharmacist: "औषधी विशेषज्ञ",
+    permanent: "स्थायी",
+    visiting: "भ्रमण",
+    consultant: "परामर्शदाता",
   },
 };
 
@@ -662,9 +713,58 @@ export default async function ClinicPage({ params }: ClinicPageProps) {
           </Card>
         )}
 
+        {/* Book Appointment Card */}
+        {clinic.doctors && clinic.doctors.length > 0 && (
+          <Card decorator="red" decoratorPosition="top-right" className="mb-6">
+            <CardContent>
+              <h2 className="text-2xl font-bold mb-4">{t.bookAppointment}</h2>
+              <div className="border-t-2 border-black/20 mb-6" />
+
+              <BookingSection
+                clinicId={clinic.id}
+                doctors={clinic.doctors.map((cd) => ({
+                  id: cd.doctor.id,
+                  full_name: cd.doctor.full_name,
+                  type: cd.doctor.type,
+                  degree: cd.doctor.degree,
+                  specialties: cd.doctor.specialties,
+                  role: cd.role,
+                }))}
+                translations={{
+                  bookAppointment: t.bookAppointment,
+                  selectDoctor: t.selectDoctor,
+                  selectDate: t.selectDate,
+                  selectTime: t.selectTime,
+                  availableSlots: t.availableSlots,
+                  noSlotsAvailable: t.noSlotsAvailable,
+                  doctorNoSchedule: t.doctorNoSchedule,
+                  loading: t.loading,
+                  selectDoctorFirst: t.selectDoctorFirst,
+                  selectDateFirst: t.selectDateFirst,
+                  slotSelected: t.slotSelected,
+                  continueBooking: t.continueBooking,
+                  today: t.today,
+                  tomorrow: t.tomorrow,
+                  noDoctorsAvailable: t.noDoctorsAvailable,
+                  slotsRemaining: t.slotsRemaining,
+                  fullyBooked: t.fullyBooked,
+                  onLeave: t.onLeave,
+                  doctor: t.doctor,
+                  dentist: t.dentist,
+                  pharmacist: t.pharmacist,
+                  permanent: t.permanent,
+                  visiting: t.visiting,
+                  consultant: t.consultant,
+                }}
+                lang={lang}
+              />
+            </CardContent>
+          </Card>
+        )}
+
         {/* Photo Gallery Card */}
         {clinic.photos && clinic.photos.length > 0 && (
-          <Card decorator="red" decoratorPosition="top-right" className="mb-6">
+          <Card decorator="yellow" decoratorPosition="top-left" className="mb-6">
             <CardContent>
               <h2 className="text-2xl font-bold mb-4">{t.photoGallery}</h2>
               <div className="border-t-2 border-black/20 mb-6" />
