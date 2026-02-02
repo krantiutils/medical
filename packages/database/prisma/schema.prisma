@@ -122,6 +122,9 @@ model Professional {
   // Verification requests for this professional
   verification_requests VerificationRequest[]
 
+  // Clinics where this professional works
+  clinics ClinicDoctor[]
+
   @@unique([type, registration_number])
   @@index([slug])
   @@index([type])
@@ -194,6 +197,25 @@ model Clinic {
   claimed_by_id String?
   claimed_by    User?   @relation("ClinicClaimedBy", fields: [claimed_by_id], references: [id])
 
+  // Doctors affiliated with this clinic
+  doctors ClinicDoctor[]
+
   @@index([type])
   @@index([claimed_by_id])
+}
+
+model ClinicDoctor {
+  id        String   @id @default(uuid())
+  role      String?  // e.g., "visiting", "permanent", "consultant"
+  joined_at DateTime @default(now())
+
+  // Relations
+  clinic_id String
+  clinic    Clinic       @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  doctor_id String
+  doctor    Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+
+  @@unique([clinic_id, doctor_id])
+  @@index([clinic_id])
+  @@index([doctor_id])
 }
