@@ -32,6 +32,27 @@ enum ClinicType {
   PHARMACY
 }
 
+enum AppointmentStatus {
+  SCHEDULED
+  CHECKED_IN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum AppointmentType {
+  NEW
+  FOLLOW_UP
+  EMERGENCY
+}
+
+enum AppointmentSource {
+  ONLINE
+  WALK_IN
+  PHONE
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -131,6 +152,9 @@ model Professional {
   // Leave records for this professional
   leaves DoctorLeave[]
 
+  // Appointments for this professional
+  appointments Appointment[]
+
   @@unique([type, registration_number])
   @@index([slug])
   @@index([type])
@@ -215,6 +239,9 @@ model Clinic {
   // Doctor leaves at this clinic
   leaves DoctorLeave[]
 
+  // Appointments at this clinic
+  appointments Appointment[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -256,6 +283,9 @@ model Patient {
   // Relations
   clinic_id String
   clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  // Appointments for this patient
+  appointments Appointment[]
 
   @@unique([clinic_id, patient_number])
   @@unique([clinic_id, phone])
@@ -301,4 +331,33 @@ model DoctorLeave {
 
   @@index([doctor_id, leave_date])
   @@index([clinic_id])
+}
+
+model Appointment {
+  id               String            @id @default(uuid())
+  appointment_date DateTime          // Date of the appointment
+  time_slot_start  String            // Format: "HH:MM" (e.g., "09:00")
+  time_slot_end    String            // Format: "HH:MM" (e.g., "09:30")
+  status           AppointmentStatus @default(SCHEDULED)
+  type             AppointmentType   @default(NEW)
+  chief_complaint  String?           // Reason for visit
+  token_number     Int               // Queue token number for the day
+  source           AppointmentSource @default(ONLINE)
+  notes            String?           @db.Text
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @updatedAt
+
+  // Relations
+  clinic_id  String
+  clinic     Clinic       @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  patient_id String
+  patient    Patient      @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  doctor_id  String
+  doctor     Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+
+  @@index([clinic_id, appointment_date, doctor_id])
+  @@index([clinic_id])
+  @@index([patient_id])
+  @@index([doctor_id])
+  @@index([status])
 }
