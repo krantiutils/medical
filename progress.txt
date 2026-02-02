@@ -1420,3 +1420,40 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Follow same patterns as doctor detail page: Card components, dl/dt/dd for details, icons in colored circles
 
 ---
+
+## 2026-02-02 - US-073
+**Clinic public page: Photos gallery and doctors list**
+
+### What was implemented
+- Created PhotoGallery client component at apps/web/src/components/clinic/PhotoGallery.tsx:
+  - Grid display of clinic photos (2-4 columns responsive)
+  - Full-screen modal with navigation (prev/next buttons)
+  - Keyboard navigation support (arrow keys, escape to close)
+  - Bauhaus styling with border-4 and hard shadows
+  - Photo counter in modal
+  - Click overlay to close functionality
+- Added doctors list section to clinic public page:
+  - Fetches affiliated doctors via ClinicDoctor relation with Professional include
+  - Displays doctor photo (or initial avatar), name with "Dr." prefix for doctors
+  - Type badge (Doctor/Dentist/Pharmacist) with color coding
+  - Specialty or degree display
+  - Role badge (Permanent/Visiting/Consultant) if set
+  - View Profile link to /[lang]/doctors/[slug]
+  - Empty state with team icon when no doctors affiliated
+- Added bilingual translations (EN/NE) for all new strings
+- Updated getClinic function to include doctors relation with joined_at ordering
+
+### Files changed
+- apps/web/src/components/clinic/PhotoGallery.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/[slug]/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- PhotoGallery is a client component ("use client") for interactive modal state
+- Use Image from next/image with fill prop and object-contain/cover for responsive images
+- Keyboard navigation uses onKeyDown with tabIndex={0} for focus
+- Doctor profile links use /[lang]/doctors/[slug] route (not /doctor/)
+- Include doctors relation in Prisma query: `include: { doctors: { include: { doctor: true } } }`
+- Professional type colors: DOCTOR=blue, DENTIST=red, PHARMACIST=yellow
+- Role labels need case-insensitive matching (role.toLowerCase())
+
+---

@@ -1377,8 +1377,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 73,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: PhotoGallery client component with modal functionality (prev/next navigation, keyboard support, Bauhaus styling). Doctors list section showing affiliated doctors from ClinicDoctor table with photo, name, type badge, specialty/degree, and role badge. Links to doctor profile page. Empty state for clinics without doctors. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-074",
