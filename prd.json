@@ -765,8 +765,8 @@
         "All tests pass: pnpm test:e2e category-pages.spec.ts"
       ],
       "priority": 40,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: category-pages.spec.ts with 31 tests covering doctors/dentists/pharmacists listing pages, type-specific badges (NMC/NDA/NPC), category badges for pharmacists, SEO titles, pagination with page numbers, card navigation to detail pages, and Nepali language support."
     },
     {
       "id": "US-041",

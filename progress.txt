@@ -201,3 +201,29 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - ClaimProfileButton shows "Login to Claim" when not authenticated, "Claim This Profile" when authenticated
 
 ---
+
+## 2026-02-02 21:30 - US-040
+**E2E Tests: Category pages**
+
+### What was implemented
+- Created apps/web/e2e/category-pages.spec.ts with 31 comprehensive tests:
+  - Doctors Page (5 tests): page loads, DOCTOR type only (NMC badge), SEO title, doctors count, card structure with "Dr." prefix
+  - Dentists Page (5 tests): page loads, red accent (NDA badge), DENTIST type only, SEO title, dentists count
+  - Pharmacists Page (6 tests): page loads, yellow accent (NPC badge), PHARMACIST type only, category badges (Graduate/Assistant), SEO title, count, no "Dr." prefix
+  - Pagination (6 tests): pagination visibility, Next button navigation, Previous button on page 2, page numbers display, dentists/pharmacists pagination
+  - Card Navigation (5 tests): doctors detail navigation, legacy route redirect for dentists/pharmacists, View Profile links structure
+  - Language Support (3 tests): Nepali content on all three category pages
+
+### Files changed
+- apps/web/e2e/category-pages.spec.ts (NEW)
+
+### Learnings for future iterations
+- Category pages use /doctor/[slug] legacy route which redirects based on professional type in database
+- Page numbers are buttons inside links - use `getByRole("button")` to find them
+- Current page is styled with primary variant but still a link
+- When testing navigation from category pages, the first card might be from real database data (40k+), not seeded test data
+- Use seeded slugs (e.g., dr-dental-one-D1001) for reliable redirect testing
+- Each category page has distinct registration authority badges: NMC (doctors), NDA (dentists), NPC (pharmacists)
+- Pharmacists page shows Graduate/Assistant category badges from meta JSON field
+
+---
