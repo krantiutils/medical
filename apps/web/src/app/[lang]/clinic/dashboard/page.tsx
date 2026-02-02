@@ -63,6 +63,13 @@ export default function ClinicDashboardPage() {
       polyclinic: "Polyclinic",
       hospital: "Hospital",
       pharmacy: "Pharmacy",
+      quickActions: "Quick Actions",
+      addPatient: "Add Patient",
+      addPatientDesc: "Register a new patient",
+      viewQueue: "View Queue",
+      viewQueueDesc: "Manage today's appointments",
+      manageSchedules: "Manage Schedules",
+      manageSchedulesDesc: "Configure doctor schedules",
     },
     ne: {
       title: "क्लिनिक ड्यासबोर्ड",
@@ -90,6 +97,13 @@ export default function ClinicDashboardPage() {
       polyclinic: "पोलिक्लिनिक",
       hospital: "अस्पताल",
       pharmacy: "फार्मेसी",
+      quickActions: "द्रुत कार्यहरू",
+      addPatient: "बिरामी थप्नुहोस्",
+      addPatientDesc: "नयाँ बिरामी दर्ता गर्नुहोस्",
+      viewQueue: "लाइन हेर्नुहोस्",
+      viewQueueDesc: "आजका अपोइन्टमेन्टहरू व्यवस्थापन गर्नुहोस्",
+      manageSchedules: "तालिका व्यवस्थापन",
+      manageSchedulesDesc: "डाक्टर तालिका कन्फिगर गर्नुहोस्",
     },
   };
 
@@ -409,6 +423,99 @@ export default function ClinicDashboardPage() {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Quick Actions Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-foreground mb-4">{tr.quickActions}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Add Patient */}
+            <Link href={`/${lang}/clinic/dashboard/patients/new`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-blue rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.addPatient}</h3>
+                      <p className="text-sm text-foreground/60">{tr.addPatientDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* View Queue */}
+            <Link href={`/${lang}/clinic/dashboard/queue`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-red rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.viewQueue}</h3>
+                      <p className="text-sm text-foreground/60">{tr.viewQueueDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Manage Schedules */}
+            <Link href={`/${lang}/clinic/dashboard/schedules`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-yellow rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-foreground"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.manageSchedules}</h3>
+                      <p className="text-sm text-foreground/60">{tr.manageSchedulesDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
         </div>
       </div>
     </main>

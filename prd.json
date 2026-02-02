@@ -1270,8 +1270,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 67,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Added Quick Actions section to clinic dashboard with three buttons (Add Patient, View Queue, Manage Schedules). Each button has Bauhaus styling with colored icon containers (blue, red, yellow), hard shadows, hover effects with translate+shadow reduction. Buttons link to respective pages (/clinic/dashboard/patients/new, /clinic/dashboard/queue, /clinic/dashboard/schedules). Bilingual support (EN/NE) for all labels and descriptions. Typecheck passes."
     },
     {
       "id": "US-068",
