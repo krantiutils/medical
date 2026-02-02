@@ -903,3 +903,86 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Color coding helps users distinguish predefined vs custom services at a glance
 
 ---
+
+## 2026-02-02 - US-060
+**Clinic registration: API endpoint**
+
+### What was implemented
+- Created POST /api/clinic/register endpoint with:
+  - Authentication check using getServerSession
+  - Form field extraction: name, type, address, phone, email, website, timings, services
+  - Logo file upload (single file)
+  - Photos file upload (multiple files, max 5)
+  - Validation for required fields and formats
+  - File type validation (JPG/PNG only, max 5MB each)
+  - Phone validation for Nepali format (98/97 mobile or landline)
+  - Email format validation
+  - URL validation for optional website field
+  - Slug generation from clinic name with random suffix
+  - Slug uniqueness verification against database
+  - File storage to public/uploads/clinics/
+  - Clinic record creation with verified=false and claimed_by_id
+  - Returns created clinic data (id, name, slug, type, verified, created_at)
+
+### Files changed
+- apps/web/src/app/api/clinic/register/route.ts (NEW)
+
+### Learnings for future iterations
+- Follow pattern from /api/verification/route.ts for file uploads
+- Slug generation uses random suffix for uniqueness (unlike professionals which use registration number)
+- Multiple file uploads use FormData with indexed keys (photo_0, photo_1, etc.) - client will need to match this pattern
+- Services and timings are passed as JSON strings and parsed server-side
+- ClinicType enum is imported from @swasthya/database
+- Clinic model requires type to be a ClinicType enum value, not just string
+- Unique slug is ensured by checking database and regenerating if collision occurs
+
+---
+
+## 2026-02-02 - US-061
+**Clinic registration: Submit and confirmation**
+
+### What was implemented
+- Connected clinic registration form to POST /api/clinic/register endpoint:
+  - FormData submission with all form fields (name, type, address, phone, email, website)
+  - JSON-stringified timings and services
+  - Logo file as 'logo' key
+  - Photo files with indexed keys (photo_0, photo_1, etc.)
+- Added loading state during submission:
+  - isLoading state disables submit button
+  - Button text changes to "Registering..." / "दर्ता गर्दै..."
+- Added error handling:
+  - submitError state displays API errors inline
+  - Generic error message fallback in translations
+- Created confirmation page at /[lang]/clinic/register/success:
+  - Reads clinic data from URL query params (name, slug, type)
+  - Shows success message with green theme
+  - Displays clinic name and type badge
+  - Lists pending verification next steps
+  - Shows email confirmation note
+  - Links to homepage and register another clinic
+  - Bilingual support (EN/NE)
+  - Bauhaus styling with decorative panel and geometric shapes
+- Added clinic registration email template to email.ts:
+  - clinicRegistrationSubmittedEmail function
+  - sendClinicRegistrationSubmittedEmail convenience function
+  - Bauhaus-styled email with clinic details table
+  - What's next section with verification steps
+  - Bilingual support (EN/NE)
+- Updated API endpoint to send confirmation email:
+  - Sends email to clinic email address after successful creation
+  - Catches and logs email errors without failing the registration
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/register/page.tsx (MODIFIED)
+- apps/web/src/app/[lang]/clinic/register/success/page.tsx (NEW)
+- apps/web/src/app/api/clinic/register/route.ts (MODIFIED)
+- apps/web/src/lib/email.ts (MODIFIED - added clinic registration templates)
+
+### Learnings for future iterations
+- Form submission to API uses FormData, not JSON body, for file uploads
+- Use router.push() with URLSearchParams for redirect with data
+- Email templates can include clinic type labels via lookup object pattern
+- Email service fails gracefully - registration succeeds even if email fails
+- Confirmation pages receive data via URL params, not server-side props
+
+---

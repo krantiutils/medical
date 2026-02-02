@@ -1146,8 +1146,8 @@
         "Typecheck passes"
       ],
       "priority": 60,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: POST /api/clinic/register endpoint created. Handles file uploads for logo and photos (saved to public/uploads/clinics/). Generates unique slug from clinic name with random suffix. Creates Clinic record with verified=false, sets claimed_by_id to current user. Validates all required fields (name, type, address, phone, email), file types (JPG/PNG only), and file sizes (max 5MB). Returns created clinic data. Typecheck passes."
     },
     {
       "id": "US-061",
@@ -1163,8 +1163,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 61,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Connected clinic registration form to API endpoint with FormData submission. Shows loading state ('Registering...' button text) and disabled button during submission. On success, redirects to /[lang]/clinic/register/success with query params (name, slug, type). Confirmation page shows clinic details, pending verification message, and next steps. Confirmation email sent to clinic email address using Resend service with Bauhaus-styled template. Email includes clinic details (name, type, address, phone, email) and verification steps. Bilingual support (EN/NE). Error handling displays inline errors. Typecheck passes."
     },
     {
       "id": "US-062",
