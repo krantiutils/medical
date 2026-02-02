@@ -80,6 +80,8 @@ export default function ClinicDashboardPage() {
       reportsDesc: "View billing reports and analytics",
       consultations: "Consultations",
       consultationsDesc: "Manage patient consultations",
+      ipd: "IPD Management",
+      ipdDesc: "Wards, beds, and admissions",
     },
     ne: {
       title: "क्लिनिक ड्यासबोर्ड",
@@ -124,6 +126,8 @@ export default function ClinicDashboardPage() {
       reportsDesc: "बिलिङ रिपोर्टहरू र विश्लेषण हेर्नुहोस्",
       consultations: "परामर्शहरू",
       consultationsDesc: "बिरामी परामर्श व्यवस्थापन गर्नुहोस्",
+      ipd: "IPD व्यवस्थापन",
+      ipdDesc: "वार्ड, बेड, र भर्ना",
     },
   };
 
@@ -675,6 +679,35 @@ export default function ClinicDashboardPage() {
                     <div>
                       <h3 className="font-bold text-foreground text-lg">{tr.reports}</h3>
                       <p className="text-sm text-foreground/60">{tr.reportsDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* IPD Management */}
+            <Link href={`/${lang}/clinic/dashboard/ipd`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-red rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.ipd}</h3>
+                      <p className="text-sm text-foreground/60">{tr.ipdDesc}</p>
                     </div>
                   </div>
                 </CardContent>
