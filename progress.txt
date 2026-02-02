@@ -1301,3 +1301,44 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Schedules page supports ?doctor=id query param for pre-selecting doctor from doctors list "Schedules" button
 
 ---
+
+## 2026-02-02 - US-070
+**Clinic dashboard: Doctor leave management**
+
+### What was implemented
+- Added leave management section to the schedules page with:
+  - Leave form: date picker (min today), full day toggle, time range inputs for partial leave, reason textarea
+  - Upcoming leaves list with date, time badge (Full Day or HH:MM - HH:MM), reason, delete button
+  - Loading states for leaves list and delete operations
+  - Empty state when no upcoming leaves scheduled
+  - Scrollable list with max-height for many leaves
+- Created API endpoint at /api/clinic/leaves with:
+  - GET: Fetch leaves for a doctor or all clinic leaves, with optional upcoming=true filter
+  - POST: Create leave with affected appointments check (checkAffected=true returns count without saving)
+  - DELETE: Remove a specific leave by ID
+  - Validation for date, time format, reason required
+  - Authorization checks for clinic ownership
+- Affected appointments modal:
+  - Shows before saving leave to warn about impacted appointments
+  - Lists patient names and time slots for each affected appointment
+  - Cancel/Proceed buttons for user confirmation
+  - Green message when no appointments affected
+  - Uses AppointmentStatus enum (SCHEDULED, CHECKED_IN) for filtering active appointments
+- Bilingual support (EN/NE) for all new labels and messages
+- Bauhaus styling consistent with schedule section (red decorator, toggles, borders)
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/schedules/page.tsx (MODIFIED)
+- apps/web/src/app/api/clinic/leaves/route.ts (NEW)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- DoctorLeave model has leave_date (Date), start_time (nullable string HH:MM), end_time (nullable string HH:MM)
+- Null start_time/end_time indicates full day leave
+- AppointmentStatus enum must be imported from @swasthya/database for Prisma queries
+- Use include (not select) when you need to access related records (patient) in the response
+- Affected appointments check uses same POST endpoint with checkAffected=true flag
+- Date picker input uses type="date" with min attribute set to today's date
+- Full day toggle uses same pattern as schedule day toggles (red color for leave section)
+
+---

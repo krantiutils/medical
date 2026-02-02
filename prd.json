@@ -1324,8 +1324,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 70,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Leave management section added to schedules page with form (date, full day toggle, time range for partial leave, reason). API endpoint at /api/clinic/leaves handles GET (fetch leaves with optional doctorId and upcoming filters), POST (create leave with affected appointments check), DELETE (remove leave). Upcoming leaves list with delete option. Affected appointments modal shown before saving with patient names and time slots. Bilingual support (EN/NE). Bauhaus styling consistent with schedule section. Typecheck passes."
     },
     {
       "id": "US-071",
