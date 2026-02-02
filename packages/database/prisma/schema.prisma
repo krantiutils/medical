@@ -83,8 +83,8 @@ model User {
   updated_at    DateTime  @updatedAt
 
   // NextAuth relations
-  accounts      Account[]
-  sessions      Session[]
+  accounts Account[]
+  sessions Session[]
 
   // App relations
   verification_requests  VerificationRequest[] @relation("UserRequests")
@@ -92,7 +92,7 @@ model User {
   claimed_professionals  Professional[]        @relation("ClaimedBy")
   audit_logs             AuditLog[]
   claimed_clinics        Clinic[]              @relation("ClinicClaimedBy")
-  invoices_created       Invoice[]             // Invoices created by this user
+  invoices_created       Invoice[] // Invoices created by this user
 }
 
 model Account {
@@ -176,6 +176,17 @@ model Professional {
   // Reviews for this professional
   reviews Review[]
 
+  // EMR models (Phase 4)
+  clinical_notes ClinicalNote[]
+  prescriptions  Prescription[]
+
+  // Lab models (Phase 4)
+  lab_orders_ordered LabOrder[] @relation("LabOrderOrderedBy")
+
+  // IPD models (Phase 4)
+  admissions_admitting Admission[] @relation("AdmissionAdmittingDoctor")
+  admissions_attending Admission[] @relation("AdmissionAttendingDoctor")
+
   @@unique([type, registration_number])
   @@index([slug])
   @@index([type])
@@ -192,12 +203,12 @@ model VerificationRequest {
   reviewed_at       DateTime?
 
   // Relations
-  user_id        String
-  user           User         @relation("UserRequests", fields: [user_id], references: [id])
+  user_id         String
+  user            User         @relation("UserRequests", fields: [user_id], references: [id])
   professional_id String
-  professional   Professional @relation(fields: [professional_id], references: [id])
-  reviewed_by_id String?
-  reviewed_by    User?        @relation("ReviewedBy", fields: [reviewed_by_id], references: [id])
+  professional    Professional @relation(fields: [professional_id], references: [id])
+  reviewed_by_id  String?
+  reviewed_by     User?        @relation("ReviewedBy", fields: [reviewed_by_id], references: [id])
 
   @@index([status])
   @@index([user_id])
@@ -206,8 +217,8 @@ model VerificationRequest {
 
 model AuditLog {
   id          String   @id @default(uuid())
-  action      String   // "CLAIM_SUBMITTED", "CLAIM_APPROVED", "CLAIM_REJECTED"
-  target_type String   // "VerificationRequest"
+  action      String // "CLAIM_SUBMITTED", "CLAIM_APPROVED", "CLAIM_REJECTED"
+  target_type String // "VerificationRequest"
   target_id   String
   actor_id    String?
   actor       User?    @relation(fields: [actor_id], references: [id])
@@ -223,9 +234,9 @@ model AuditLog {
 }
 
 model Clinic {
-  id              String      @id @default(uuid())
+  id              String     @id @default(uuid())
   name            String
-  slug            String      @unique
+  slug            String     @unique
   type            ClinicType
   address         String?
   location_lat    Float?
@@ -237,12 +248,12 @@ model Clinic {
   photos          String[]
   services        String[]
   timings         Json?
-  verified        Boolean     @default(false)
+  verified        Boolean    @default(false)
   google_place_id String?
   osm_id          String?
   meta            Json?
-  created_at      DateTime    @default(now())
-  updated_at      DateTime    @updatedAt
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @updatedAt
 
   // Claimed by relation (optional)
   claimed_by_id String?
@@ -273,12 +284,24 @@ model Clinic {
   reviews Review[]
 
   // Pharmacy models (Phase 3)
-  suppliers          Supplier[]
-  products           Product[]
-  inventory_batches  InventoryBatch[]
-  sales              Sale[]
-  credit_accounts    CreditAccount[]
+  suppliers           Supplier[]
+  products            Product[]
+  inventory_batches   InventoryBatch[]
+  sales               Sale[]
+  credit_accounts     CreditAccount[]
   credit_transactions CreditTransaction[]
+
+  // EMR models (Phase 4)
+  clinical_notes ClinicalNote[]
+  prescriptions  Prescription[]
+
+  // Lab models (Phase 4)
+  lab_tests  LabTest[]
+  lab_orders LabOrder[]
+
+  // IPD models (Phase 4)
+  wards      Ward[]
+  admissions Admission[]
 
   @@index([type])
   @@index([claimed_by_id])
@@ -286,7 +309,7 @@ model Clinic {
 
 model ClinicDoctor {
   id        String   @id @default(uuid())
-  role      String?  // e.g., "visiting", "permanent", "consultant"
+  role      String? // e.g., "visiting", "permanent", "consultant"
   joined_at DateTime @default(now())
 
   // Relations
@@ -302,7 +325,7 @@ model ClinicDoctor {
 
 model Patient {
   id                String    @id @default(uuid())
-  patient_number    String    // Clinic-specific patient number
+  patient_number    String // Clinic-specific patient number
   full_name         String
   phone             String?
   email             String?
@@ -331,6 +354,16 @@ model Patient {
   // Reviews submitted by this patient
   reviews Review[]
 
+  // EMR models (Phase 4)
+  clinical_notes ClinicalNote[]
+  prescriptions  Prescription[]
+
+  // Lab models (Phase 4)
+  lab_orders LabOrder[]
+
+  // IPD models (Phase 4)
+  admissions Admission[]
+
   @@unique([clinic_id, patient_number])
   @@unique([clinic_id, phone])
   @@index([phone])
@@ -338,15 +371,15 @@ model Patient {
 }
 
 model DoctorSchedule {
-  id                     String    @id @default(uuid())
-  day_of_week            Int       // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  start_time             String    // Format: "HH:MM" (e.g., "09:00")
-  end_time               String    // Format: "HH:MM" (e.g., "17:00")
-  slot_duration_minutes  Int       // Duration of each appointment slot
-  max_patients_per_slot  Int       @default(1) // Max patients per slot
-  is_active              Boolean   @default(true)
-  effective_from         DateTime  @default(now())
-  effective_to           DateTime? // Nullable for indefinite schedules
+  id                    String    @id @default(uuid())
+  day_of_week           Int // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  start_time            String // Format: "HH:MM" (e.g., "09:00")
+  end_time              String // Format: "HH:MM" (e.g., "17:00")
+  slot_duration_minutes Int // Duration of each appointment slot
+  max_patients_per_slot Int       @default(1) // Max patients per slot
+  is_active             Boolean   @default(true)
+  effective_from        DateTime  @default(now())
+  effective_to          DateTime? // Nullable for indefinite schedules
 
   // Relations
   clinic_id String
@@ -360,12 +393,12 @@ model DoctorSchedule {
 }
 
 model DoctorLeave {
-  id         String    @id @default(uuid())
-  leave_date DateTime  // Date of leave
-  start_time String?   // Nullable for full day leave, format "HH:MM"
-  end_time   String?   // Nullable for full day leave, format "HH:MM"
-  reason     String    // Reason for leave
-  created_at DateTime  @default(now())
+  id         String   @id @default(uuid())
+  leave_date DateTime // Date of leave
+  start_time String? // Nullable for full day leave, format "HH:MM"
+  end_time   String? // Nullable for full day leave, format "HH:MM"
+  reason     String // Reason for leave
+  created_at DateTime @default(now())
 
   // Relations
   doctor_id String
@@ -379,13 +412,13 @@ model DoctorLeave {
 
 model Appointment {
   id               String            @id @default(uuid())
-  appointment_date DateTime          // Date of the appointment
-  time_slot_start  String            // Format: "HH:MM" (e.g., "09:00")
-  time_slot_end    String            // Format: "HH:MM" (e.g., "09:30")
+  appointment_date DateTime // Date of the appointment
+  time_slot_start  String // Format: "HH:MM" (e.g., "09:00")
+  time_slot_end    String // Format: "HH:MM" (e.g., "09:30")
   status           AppointmentStatus @default(SCHEDULED)
   type             AppointmentType   @default(NEW)
-  chief_complaint  String?           // Reason for visit
-  token_number     Int               // Queue token number for the day
+  chief_complaint  String? // Reason for visit
+  token_number     Int // Queue token number for the day
   source           AppointmentSource @default(ONLINE)
   notes            String?           @db.Text
   created_at       DateTime          @default(now())
@@ -405,6 +438,13 @@ model Appointment {
   // Review linked to this appointment (optional)
   review Review?
 
+  // EMR models (Phase 4) - optional one-to-one relations
+  clinical_note ClinicalNote?
+  prescription  Prescription?
+
+  // Lab order linked to this appointment (optional)
+  lab_order LabOrder?
+
   @@index([clinic_id, appointment_date, doctor_id])
   @@index([clinic_id])
   @@index([patient_id])
@@ -417,7 +457,7 @@ model Service {
   name        String
   description String?  @db.Text
   price       Decimal  @db.Decimal(10, 2) // Supports up to 99,999,999.99
-  category    String?  // e.g., "Consultation", "Procedure", "Test", "Medication"
+  category    String? // e.g., "Consultation", "Procedure", "Test", "Medication"
   is_active   Boolean  @default(true)
   created_at  DateTime @default(now())
 
@@ -431,8 +471,8 @@ model Service {
 
 model Invoice {
   id             String        @id @default(uuid())
-  invoice_number String        // Clinic-specific invoice number, e.g., "INV-2026-0001"
-  items          Json          // Array of {service_id, name, quantity, unit_price, amount}
+  invoice_number String // Clinic-specific invoice number, e.g., "INV-2026-0001"
+  items          Json // Array of {service_id, name, quantity, unit_price, amount}
   subtotal       Decimal       @db.Decimal(10, 2)
   discount       Decimal       @default(0) @db.Decimal(10, 2)
   tax            Decimal       @default(0) @db.Decimal(10, 2)
@@ -462,19 +502,19 @@ model Invoice {
 }
 
 model Review {
-  id              String    @id @default(uuid())
-  rating          Int       // 1-5 star rating
-  review_text     String?   @db.Text
-  categories      Json?     // e.g., {"cleanliness": 5, "wait_time": 4, "staff": 5}
-  doctor_response String?   @db.Text
-  is_published    Boolean   @default(true)
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
+  id              String   @id @default(uuid())
+  rating          Int // 1-5 star rating
+  review_text     String?  @db.Text
+  categories      Json? // e.g., {"cleanliness": 5, "wait_time": 4, "staff": 5}
+  doctor_response String?  @db.Text
+  is_published    Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
   // Relations
   clinic_id      String
   clinic         Clinic        @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
-  doctor_id      String?       // Nullable - review may be for clinic only, not a specific doctor
+  doctor_id      String? // Nullable - review may be for clinic only, not a specific doctor
   doctor         Professional? @relation(fields: [doctor_id], references: [id], onDelete: SetNull)
   patient_id     String
   patient        Patient       @relation(fields: [patient_id], references: [id], onDelete: Cascade)
@@ -493,11 +533,11 @@ model Review {
 // ============================================================================
 
 enum DrugSchedule {
-  OTC       // Over the Counter - no prescription needed
-  SCHEDULE_H     // Prescription-only drugs
-  SCHEDULE_H1    // Stronger prescription drugs with special labeling
-  SCHEDULE_X     // Narcotic and psychotropic drugs
-  SCHEDULE_G     // Requires "Caution: Government property"
+  OTC // Over the Counter - no prescription needed
+  SCHEDULE_H // Prescription-only drugs
+  SCHEDULE_H1 // Stronger prescription drugs with special labeling
+  SCHEDULE_X // Narcotic and psychotropic drugs
+  SCHEDULE_G // Requires "Caution: Government property"
 }
 
 enum ProductCategory {
@@ -511,10 +551,10 @@ enum ProductCategory {
 }
 
 enum CreditTransactionType {
-  SALE       // Credit sale increases balance
-  PAYMENT    // Payment decreases balance
+  SALE // Credit sale increases balance
+  PAYMENT // Payment decreases balance
   ADJUSTMENT // Manual adjustment (can be positive or negative)
-  REFUND     // Refund decreases balance (return of paid amount)
+  REFUND // Refund decreases balance (return of paid amount)
 }
 
 model Supplier {
@@ -524,9 +564,9 @@ model Supplier {
   phone         String?
   email         String?
   address       String?
-  gstin         String?  // GST Identification Number (for India/Nepal VAT)
-  pan_number    String?  // PAN number for tax purposes
-  payment_terms String?  // e.g., "Net 30", "COD"
+  gstin         String? // GST Identification Number (for India/Nepal VAT)
+  pan_number    String? // PAN number for tax purposes
+  payment_terms String? // e.g., "Net 30", "COD"
   is_active     Boolean  @default(true)
   notes         String?  @db.Text
   created_at    DateTime @default(now())
@@ -549,22 +589,22 @@ model Supplier {
 
 model Product {
   id              String          @id @default(uuid())
-  name            String          // Brand name
-  generic_name    String?         // Generic/salt name
+  name            String // Brand name
+  generic_name    String? // Generic/salt name
   category        ProductCategory @default(MEDICINE)
-  schedule        DrugSchedule?   // Drug schedule classification
-  manufacturer    String?         // Manufacturer name
-  barcode         String?         // Barcode/SKU
-  hsn_code        String?         // HSN code for GST
+  schedule        DrugSchedule? // Drug schedule classification
+  manufacturer    String? // Manufacturer name
+  barcode         String? // Barcode/SKU
+  hsn_code        String? // HSN code for GST
   gst_rate        Decimal         @default(0) @db.Decimal(5, 2) // GST percentage (0-100)
   unit            String          @default("strip") // e.g., "strip", "bottle", "tablet", "ml"
   pack_size       Int             @default(1) // e.g., 10 tablets per strip
   min_stock_level Int             @default(0) // Reorder point
-  max_stock_level Int?            // Maximum stock to maintain
+  max_stock_level Int? // Maximum stock to maintain
   description     String?         @db.Text
-  storage_info    String?         // Storage instructions (e.g., "Store below 25°C")
+  storage_info    String? // Storage instructions (e.g., "Store below 25°C")
   is_active       Boolean         @default(true)
-  meta            Json?           // Additional product metadata
+  meta            Json? // Additional product metadata
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
 
@@ -587,20 +627,20 @@ model Product {
 }
 
 model InventoryBatch {
-  id              String    @id @default(uuid())
-  batch_number    String    // Manufacturer's batch number
-  expiry_date     DateTime  // Expiry date
-  quantity        Int       // Current quantity in stock
-  original_qty    Int       // Original quantity when received
-  purchase_price  Decimal   @db.Decimal(10, 2) // Cost price per unit
-  mrp             Decimal   @db.Decimal(10, 2) // Maximum Retail Price per unit
-  selling_price   Decimal   @db.Decimal(10, 2) // Actual selling price per unit
-  received_date   DateTime  @default(now()) // Date batch was received
-  invoice_number  String?   // Supplier invoice number
-  is_active       Boolean   @default(true) // False when fully sold or expired
-  notes           String?   @db.Text
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
+  id             String   @id @default(uuid())
+  batch_number   String // Manufacturer's batch number
+  expiry_date    DateTime // Expiry date
+  quantity       Int // Current quantity in stock
+  original_qty   Int // Original quantity when received
+  purchase_price Decimal  @db.Decimal(10, 2) // Cost price per unit
+  mrp            Decimal  @db.Decimal(10, 2) // Maximum Retail Price per unit
+  selling_price  Decimal  @db.Decimal(10, 2) // Actual selling price per unit
+  received_date  DateTime @default(now()) // Date batch was received
+  invoice_number String? // Supplier invoice number
+  is_active      Boolean  @default(true) // False when fully sold or expired
+  notes          String?  @db.Text
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
   // Relations
   product_id  String
@@ -620,21 +660,21 @@ model InventoryBatch {
 }
 
 model Sale {
-  id             String        @id @default(uuid())
-  sale_number    String        // e.g., "SALE-2026-0001"
-  items          Json          // Array of {product_id, batch_id, product_name, quantity, unit_price, discount, gst_amount, amount}
-  subtotal       Decimal       @db.Decimal(10, 2) // Total before tax and discount
-  discount       Decimal       @default(0) @db.Decimal(10, 2) // Total discount
-  tax_amount     Decimal       @default(0) @db.Decimal(10, 2) // Total GST/tax
-  total          Decimal       @db.Decimal(10, 2) // Final total (subtotal - discount + tax)
-  amount_paid    Decimal       @default(0) @db.Decimal(10, 2) // Amount paid (0 for full credit)
-  amount_due     Decimal       @default(0) @db.Decimal(10, 2) // Remaining balance
-  payment_mode   PaymentMode   @default(CASH)
-  is_credit      Boolean       @default(false) // True if this is a credit/khata sale
-  prescription_id String?      // Optional prescription reference
-  notes          String?       @db.Text
-  created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
+  id              String      @id @default(uuid())
+  sale_number     String // e.g., "SALE-2026-0001"
+  items           Json // Array of {product_id, batch_id, product_name, quantity, unit_price, discount, gst_amount, amount}
+  subtotal        Decimal     @db.Decimal(10, 2) // Total before tax and discount
+  discount        Decimal     @default(0) @db.Decimal(10, 2) // Total discount
+  tax_amount      Decimal     @default(0) @db.Decimal(10, 2) // Total GST/tax
+  total           Decimal     @db.Decimal(10, 2) // Final total (subtotal - discount + tax)
+  amount_paid     Decimal     @default(0) @db.Decimal(10, 2) // Amount paid (0 for full credit)
+  amount_due      Decimal     @default(0) @db.Decimal(10, 2) // Remaining balance
+  payment_mode    PaymentMode @default(CASH)
+  is_credit       Boolean     @default(false) // True if this is a credit/khata sale
+  prescription_id String? // Optional prescription reference
+  notes           String?     @db.Text
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
 
   // Relations
   clinic_id         String
@@ -654,7 +694,7 @@ model Sale {
 
 model CreditAccount {
   id              String   @id @default(uuid())
-  customer_name   String   // Customer name for credit account
+  customer_name   String // Customer name for credit account
   phone           String?
   address         String?
   credit_limit    Decimal  @default(0) @db.Decimal(10, 2) // Maximum credit allowed
@@ -685,7 +725,7 @@ model CreditTransaction {
   type        CreditTransactionType
   amount      Decimal               @db.Decimal(10, 2) // Transaction amount
   balance     Decimal               @db.Decimal(10, 2) // Balance after this transaction
-  description String?               // Description of transaction
+  description String? // Description of transaction
   notes       String?               @db.Text
   created_at  DateTime              @default(now())
 
@@ -701,4 +741,350 @@ model CreditTransaction {
   @@index([credit_account_id])
   @@index([clinic_id])
   @@index([type])
+}
+
+// ============================================================================
+// EMR MODELS (Phase 4)
+// ============================================================================
+
+enum ClinicalNoteStatus {
+  DRAFT
+  FINAL
+  AMENDED
+}
+
+enum PrescriptionStatus {
+  DRAFT
+  ISSUED
+  DISPENSED
+  CANCELLED
+}
+
+model ClinicalNote {
+  id                 String             @id @default(uuid())
+  // Vitals
+  height_cm          Decimal?           @db.Decimal(5, 2) // Height in centimeters
+  weight_kg          Decimal?           @db.Decimal(5, 2) // Weight in kilograms
+  bmi                Decimal?           @db.Decimal(4, 2) // Calculated BMI
+  blood_pressure     String? // e.g., "120/80"
+  pulse_rate         Int? // Beats per minute
+  temperature        Decimal?           @db.Decimal(4, 1) // Temperature in Celsius
+  spo2               Int? // Oxygen saturation percentage
+  respiratory_rate   Int? // Breaths per minute
+  // Clinical documentation
+  chief_complaint    String?            @db.Text
+  history_of_illness String?            @db.Text // History of Present Illness (HPI)
+  past_history       String?            @db.Text // Past Medical History
+  examination        String?            @db.Text // Physical Examination findings
+  diagnoses          Json? // Array of {icd10_code, description, is_primary}
+  plan               String?            @db.Text // Treatment plan
+  follow_up          DateTime? // Follow-up date
+  status             ClinicalNoteStatus @default(DRAFT)
+  created_at         DateTime           @default(now())
+  updated_at         DateTime           @updatedAt
+
+  // Relations
+  clinic_id      String
+  clinic         Clinic       @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  patient_id     String
+  patient        Patient      @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  doctor_id      String
+  doctor         Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+  appointment_id String?      @unique // Optional link to appointment
+  appointment    Appointment? @relation(fields: [appointment_id], references: [id])
+
+  // Prescriptions linked to this clinical note
+  prescriptions Prescription[]
+
+  // Lab orders linked to this clinical note
+  lab_orders LabOrder[]
+
+  @@index([clinic_id, patient_id])
+  @@index([clinic_id, doctor_id])
+  @@index([clinic_id])
+  @@index([patient_id])
+  @@index([doctor_id])
+  @@index([created_at])
+}
+
+model Prescription {
+  id              String             @id @default(uuid())
+  prescription_no String // e.g., "RX-2026-0001"
+  items           Json // Array of {drug_name, generic_name, dosage, frequency, duration, quantity, instructions}
+  instructions    String?            @db.Text // General instructions
+  status          PrescriptionStatus @default(DRAFT)
+  issued_at       DateTime? // When prescription was finalized
+  valid_until     DateTime? // Prescription validity
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+
+  // Relations
+  clinic_id        String
+  clinic           Clinic        @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  patient_id       String
+  patient          Patient       @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  doctor_id        String
+  doctor           Professional  @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+  clinical_note_id String?
+  clinical_note    ClinicalNote? @relation(fields: [clinical_note_id], references: [id])
+  appointment_id   String?       @unique // Optional link to appointment
+  appointment      Appointment?  @relation(fields: [appointment_id], references: [id])
+
+  @@unique([clinic_id, prescription_no])
+  @@index([clinic_id, patient_id])
+  @@index([clinic_id, doctor_id])
+  @@index([clinic_id])
+  @@index([patient_id])
+  @@index([doctor_id])
+  @@index([status])
+  @@index([created_at])
+}
+
+// ============================================================================
+// LAB MODELS (Phase 4)
+// ============================================================================
+
+enum LabOrderStatus {
+  ORDERED
+  SAMPLE_COLLECTED
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+enum LabOrderPriority {
+  ROUTINE
+  URGENT
+  STAT // Immediate
+}
+
+enum LabResultFlag {
+  NORMAL
+  LOW
+  HIGH
+  CRITICAL_LOW
+  CRITICAL_HIGH
+  ABNORMAL
+}
+
+model LabTest {
+  id             String   @id @default(uuid())
+  name           String // Test name, e.g., "Complete Blood Count"
+  short_name     String? // Abbreviation, e.g., "CBC"
+  code           String? // Lab-specific test code
+  category       String? // e.g., "Hematology", "Biochemistry", "Microbiology"
+  description    String?  @db.Text
+  sample_type    String? // e.g., "Blood", "Urine", "Stool"
+  instructions   String?  @db.Text // Patient preparation instructions
+  normal_range   String? // e.g., "4.5-11.0 x10^9/L"
+  unit           String? // e.g., "x10^9/L", "mg/dL"
+  price          Decimal  @default(0) @db.Decimal(10, 2)
+  turnaround_hrs Int? // Expected turnaround time in hours
+  is_active      Boolean  @default(true)
+  meta           Json? // Additional metadata (e.g., reference ranges by age/gender)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  // Relations
+  clinic_id String
+  clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  // Results for this test type
+  lab_results LabResult[]
+
+  @@unique([clinic_id, code])
+  @@index([clinic_id, is_active])
+  @@index([clinic_id, category])
+  @@index([clinic_id])
+}
+
+model LabOrder {
+  id               String           @id @default(uuid())
+  order_number     String // e.g., "LAB-2026-0001"
+  priority         LabOrderPriority @default(ROUTINE)
+  status           LabOrderStatus   @default(ORDERED)
+  clinical_notes   String?          @db.Text // Doctor's notes/reason for test
+  sample_collected DateTime? // When sample was collected
+  sample_id        String? // Sample/specimen ID
+  completed_at     DateTime? // When all results are complete
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+
+  // Relations
+  clinic_id        String
+  clinic           Clinic        @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  patient_id       String
+  patient          Patient       @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  ordered_by_id    String // Doctor who ordered the test
+  ordered_by       Professional  @relation("LabOrderOrderedBy", fields: [ordered_by_id], references: [id], onDelete: Cascade)
+  clinical_note_id String? // Optional link to clinical note
+  clinical_note    ClinicalNote? @relation(fields: [clinical_note_id], references: [id])
+  appointment_id   String?       @unique // Optional link to appointment
+  appointment      Appointment?  @relation(fields: [appointment_id], references: [id])
+
+  // Individual test results
+  results LabResult[]
+
+  @@unique([clinic_id, order_number])
+  @@index([clinic_id, patient_id])
+  @@index([clinic_id, status])
+  @@index([clinic_id])
+  @@index([patient_id])
+  @@index([ordered_by_id])
+  @@index([status])
+  @@index([created_at])
+}
+
+model LabResult {
+  id           String         @id @default(uuid())
+  result_value String? // The actual result value
+  unit         String? // Unit of measurement
+  normal_range String? // Reference range for this result
+  flag         LabResultFlag? // Abnormal flag
+  remarks      String?        @db.Text // Lab technician remarks
+  verified     Boolean        @default(false) // Result verified by lab supervisor
+  verified_by  String? // ID of verifier
+  verified_at  DateTime?
+  entered_at   DateTime? // When result was entered
+  entered_by   String? // ID of person who entered result
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+
+  // Relations
+  lab_order_id String
+  lab_order    LabOrder @relation(fields: [lab_order_id], references: [id], onDelete: Cascade)
+  lab_test_id  String
+  lab_test     LabTest  @relation(fields: [lab_test_id], references: [id], onDelete: Cascade)
+
+  @@unique([lab_order_id, lab_test_id])
+  @@index([lab_order_id])
+  @@index([lab_test_id])
+  @@index([flag])
+}
+
+// ============================================================================
+// IPD MODELS (Phase 4)
+// ============================================================================
+
+enum WardType {
+  GENERAL
+  SEMI_PRIVATE
+  PRIVATE
+  ICU
+  NICU // Neonatal ICU
+  PICU // Pediatric ICU
+  CCU // Cardiac Care Unit
+  EMERGENCY
+  MATERNITY
+  PEDIATRIC
+  PSYCHIATRIC
+}
+
+enum BedStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+  MAINTENANCE
+  OUT_OF_SERVICE
+}
+
+enum AdmissionStatus {
+  ADMITTED
+  DISCHARGED
+  TRANSFERRED
+  DECEASED
+  LEFT_AMA // Left Against Medical Advice
+}
+
+model Ward {
+  id          String   @id @default(uuid())
+  name        String // e.g., "Ward A", "ICU-1"
+  type        WardType
+  floor       String? // e.g., "2nd Floor", "Ground Floor"
+  building    String? // Building name if multiple buildings
+  capacity    Int // Total bed capacity
+  description String?  @db.Text
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // Relations
+  clinic_id String
+  clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  // Beds in this ward
+  beds Bed[]
+
+  @@unique([clinic_id, name])
+  @@index([clinic_id, type])
+  @@index([clinic_id, is_active])
+  @@index([clinic_id])
+}
+
+model Bed {
+  id         String    @id @default(uuid())
+  bed_number String // e.g., "A-101", "ICU-01"
+  status     BedStatus @default(AVAILABLE)
+  type       WardType? // Override ward type if needed (e.g., private bed in general ward)
+  daily_rate Decimal   @default(0) @db.Decimal(10, 2) // Daily bed charge
+  features   String[] // e.g., ["Oxygen", "Monitor", "AC"]
+  notes      String?   @db.Text
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  // Relations
+  ward_id String
+  ward    Ward   @relation(fields: [ward_id], references: [id], onDelete: Cascade)
+
+  // Current and past admissions for this bed
+  admissions Admission[]
+
+  @@unique([ward_id, bed_number])
+  @@index([ward_id, status])
+  @@index([ward_id])
+  @@index([status])
+}
+
+model Admission {
+  id                  String          @id @default(uuid())
+  admission_number    String // e.g., "ADM-2026-0001"
+  status              AdmissionStatus @default(ADMITTED)
+  // Admission details
+  admission_date      DateTime        @default(now())
+  admission_diagnosis String?         @db.Text // Provisional diagnosis at admission
+  chief_complaint     String?         @db.Text
+  // Discharge details
+  discharge_date      DateTime?
+  discharge_diagnosis String?         @db.Text // Final diagnosis at discharge
+  discharge_summary   String?         @db.Text
+  discharge_type      String? // e.g., "Normal", "LAMA", "Expired", "Referred"
+  discharge_advice    String?         @db.Text // Post-discharge instructions
+  // Other
+  notes               String?         @db.Text
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
+
+  // Relations
+  clinic_id           String
+  clinic              Clinic        @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  patient_id          String
+  patient             Patient       @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  bed_id              String
+  bed                 Bed           @relation(fields: [bed_id], references: [id], onDelete: Cascade)
+  admitting_doctor_id String // Doctor who admitted the patient
+  admitting_doctor    Professional  @relation("AdmissionAdmittingDoctor", fields: [admitting_doctor_id], references: [id], onDelete: Cascade)
+  attending_doctor_id String? // Primary attending doctor (may differ from admitting)
+  attending_doctor    Professional? @relation("AdmissionAttendingDoctor", fields: [attending_doctor_id], references: [id])
+
+  @@unique([clinic_id, admission_number])
+  @@index([clinic_id, patient_id])
+  @@index([clinic_id, status])
+  @@index([clinic_id])
+  @@index([patient_id])
+  @@index([bed_id])
+  @@index([admitting_doctor_id])
+  @@index([attending_doctor_id])
+  @@index([admission_date])
+  @@index([status])
 }
