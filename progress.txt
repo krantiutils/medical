@@ -1676,3 +1676,53 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Booking-info API accepts both clinic ID and slug for flexibility
 
 ---
+
+## 2026-02-02 - US-079
+**E2E Tests: Appointment booking flow**
+
+### What was implemented
+- Created comprehensive E2E test suite (apps/web/e2e/appointment-booking.spec.ts) with 27 tests:
+  - Clinic Page Booking Section: Tests for booking section visibility, doctor dropdown, date selection
+  - Available Slots: Tests for slot display after doctor/date selection, no-schedule message for off days
+  - Booking Form Page: Tests for navigation, back button, invalid params handling
+  - Form Validation: Tests for required fields, phone format, email format validation
+  - Successful Booking: Tests for complete booking flow with confirmation and token display
+  - Slot Availability: Tests for partially booked slots and disabled unavailable slots
+  - Language Support: Tests for Nepali translations in booking section
+  - Navigation: Tests for back navigation and Book Another link
+  - Error Handling: Tests for invalid booking parameters
+  - What's Next Section: Tests for post-booking next steps display
+
+- Updated seed.ts (apps/web/e2e/fixtures/seed.ts):
+  - Added seedDoctorSchedules() function to create schedules for test doctors
+  - Dr. Ram Sharma: Mon-Fri 09:00-17:00, 30 min slots, 1 patient per slot
+  - Dr. Sita Thapa: Mon/Wed/Fri 10:00-14:00, 20 min slots, 2 patients per slot
+  - Added cleanup for appointments and patients in cleanupTestData()
+  - Called seedDoctorSchedules() in main seedTestData() function
+
+### Key test patterns used
+- Created helper functions for dropdown selection:
+  - selectDoctorByName() - finds matching option text and selects by exact label
+  - selectDateByPattern() - finds matching date option by regex
+- Playwright selectOption() doesn't support regex for label matching - must find exact label first
+- Used graceful skip pattern for date-dependent tests (e.g., Sunday availability)
+- Time slot buttons identified by regex /^\d{2}:\d{2}$/ for HH:MM format
+- Form validation triggers on submit, not on blur
+
+### Files changed
+- apps/web/e2e/appointment-booking.spec.ts (NEW - 800+ lines)
+- apps/web/e2e/fixtures/seed.ts (MODIFIED - added doctor schedules and cleanup)
+
+### Test results
+- 25 tests passed
+- 2 tests skipped (date-dependent scenarios)
+
+### Learnings for future iterations
+- Playwright selectOption({ label: /regex/ }) doesn't work - need to find exact label first, then use selectOption({ label: exactLabel })
+- E2E tests should handle both scenarios when date-dependent (e.g., weekday vs Sunday) using skip conditions
+- Booking page URL may use clinic ID instead of slug after navigation - use flexible URL patterns in assertions
+- Time slot buttons use HH:MM format directly on button text (not aria-label)
+- Wait for loading states with .waitFor({ state: "hidden" }) before asserting slot visibility
+- Form validation errors appear as <p> elements with specific error text (e.g., "Please enter a valid email address")
+
+---
