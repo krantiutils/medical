@@ -502,3 +502,23 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Use confirm() for destructive actions like approve/reject to prevent accidental clicks
   - Client-side role checks use session.user.role from useSession(), server-side fetches from database
 ---
+
+## 2026-02-02 05:00 +0545 - US-030
+- **What was implemented**: Profile edit form for verified professionals at dashboard/profile
+- **Files changed**:
+  - `apps/web/src/app/[lang]/dashboard/profile/page.tsx` - Created dashboard profile edit page with authentication guard, form for editing bio/consultation_fee/languages/education
+  - `apps/web/src/app/api/dashboard/profile/route.ts` - API endpoint with GET (fetch claimed profile) and PUT (update meta fields) handlers
+  - `apps/web/messages/en.json` - Added dashboard.profile namespace translations
+  - `apps/web/messages/ne.json` - Added dashboard.profile namespace translations in Nepali
+  - `prd.json` - Marked US-030 as passes: true
+- **Learnings for future iterations:**
+  - Protected pages should have three states: loading, not authenticated (show login), no claimed profile (show claim prompt)
+  - Editable profile fields stored in Professional.meta JSON field to avoid schema changes for optional fields
+  - Use useCallback for async functions in useEffect dependencies to avoid react-hooks/exhaustive-deps warning
+  - Success toast pattern: fixed position top-20 right-4 z-50, auto-hide with setTimeout after 5 seconds
+  - Form validation should happen on both client (immediate feedback) and server (security)
+  - Languages input: tag pattern with add button, Enter key submission, remove button on each tag
+  - Education: dynamic array with add/remove functionality, each entry has degree/institution/year fields
+  - API route for user-specific data: find by session.user.id (claimed_by_id) rather than professional.id
+  - Use inline translations (t object) for client components instead of next-intl hooks for simpler implementation
+---
