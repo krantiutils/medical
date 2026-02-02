@@ -1870,8 +1870,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 101,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Prescription tab added to consultation detail page. Drug search API at /api/clinic/prescriptions/drugs with 50+ common medications and pharmacy product integration. Prescription CRUD API at /api/clinic/prescriptions with issue endpoint. Dosage dropdown/input, frequency options (OD/BD/TDS/QID/HS/SOS/STAT/Q4H-Q12H/WEEKLY/ALTERNATE_DAYS), duration with units (days/weeks/months). Quantity auto-calculated based on frequency and duration. Print prescription opens formatted HTML with clinic/patient/doctor info, medications list, and signature area. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-102",

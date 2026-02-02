@@ -2729,3 +2729,51 @@ Created comprehensive database models for Phase 4 features:
 - Decimal types in Prisma need careful handling - don't compare directly, calculate and assign new values
 
 ---
+
+## 2026-02-02 - US-101
+**E-prescription**
+
+### What was implemented
+- Prescription tab added to consultation detail page with 4 tabs: Vitals, Notes, Diagnosis, Prescription
+- API endpoints for prescription management:
+  - GET/POST /api/clinic/prescriptions - List and create prescriptions
+  - GET/PATCH/DELETE /api/clinic/prescriptions/[id] - Single prescription operations
+  - POST /api/clinic/prescriptions/[id]/issue - Issue/finalize prescription
+  - GET /api/clinic/prescriptions/drugs - Search medications
+- Drug search with 50+ common medications database including:
+  - Antibiotics (Amoxicillin, Azithromycin, Ciprofloxacin, etc.)
+  - Analgesics/NSAIDs (Paracetamol, Ibuprofen, Diclofenac, etc.)
+  - GI drugs (Omeprazole, Pantoprazole, etc.)
+  - Cardiovascular (Amlodipine, Atenolol, Losartan, etc.)
+  - Diabetes (Metformin, Glimepiride, etc.)
+  - And more categories
+- Integration with pharmacy products (shows "In Stock" badge for clinic's inventory)
+- Frequency options: OD, BD, TDS, QID, HS, SOS, STAT, Q4H-Q12H, WEEKLY, ALTERNATE_DAYS
+- Duration units: days, weeks, months
+- Quantity auto-calculation based on frequency and duration
+- Print prescription with formatted HTML output including:
+  - Clinic/prescription header
+  - Patient info (name, #, age/gender, phone)
+  - Rx symbol with medications list
+  - General instructions section
+  - Doctor signature area
+- Prescription status workflow: DRAFT -> ISSUED
+- Bilingual support (EN/NE)
+
+### Files changed
+- apps/web/src/app/api/clinic/prescriptions/route.ts (NEW)
+- apps/web/src/app/api/clinic/prescriptions/[id]/route.ts (NEW)
+- apps/web/src/app/api/clinic/prescriptions/[id]/issue/route.ts (NEW)
+- apps/web/src/app/api/clinic/prescriptions/drugs/route.ts (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/consultations/[id]/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- Prescription model already exists in schema with items as JSON array
+- Drug search uses both clinic's pharmacy products and common medications database
+- Quantity calculation formula varies by frequency (e.g., TDS = 3x per day, Q12H = 2x per day)
+- Print prescription uses window.open with document.write for formatted HTML
+- Prescription.items structure: {drug_name, generic_name, dosage, frequency, duration, duration_unit, quantity, instructions}
+- PrescriptionStatus enum: DRAFT, ISSUED, DISPENSED, CANCELLED
+- Always check prescription.status before allowing edits (only DRAFT can be modified)
+
+---
