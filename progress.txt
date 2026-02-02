@@ -2549,3 +2549,43 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Print ledger uses window.open() with document.write() for printer-friendly format
 - CSV export uses Blob and createElement('a') for download
 ---
+
+## 2026-02-02 - US-097
+**Pharmacy: Reports**
+
+### What was implemented
+- Created comprehensive pharmacy reports functionality with:
+  - API endpoint at `/api/clinic/pharmacy/reports`:
+    - Date range filtering with dateFrom/dateTo query params
+    - Summary statistics: total sales, revenue, discount, tax, net revenue, cost (COGS), gross profit, profit margin, cash vs credit, average sale value
+    - Payment mode breakdown (count and amount per mode)
+    - Daily sales breakdown (date, count, revenue, cost, profit, discount, tax)
+    - Product-wise sales (top 50 by revenue): product name, quantity sold, revenue, cost, profit, average price
+    - Recent sales history (last 100 sales)
+  - Reports page at `/[lang]/clinic/dashboard/pharmacy/reports`:
+    - Date filter with presets (Today, Yesterday, This Week, This Month, Last 30 Days, Last 90 Days) and custom date range
+    - Overview tab: primary stats cards (total sales, revenue, gross profit, profit margin), secondary stats (net revenue, cost, discount, avg sale), cash vs credit comparison bar, payment mode breakdown
+    - Daily Sales tab: table with date/count/revenue/cost/profit/discount/tax/margin columns, totals row, color-coded margin badges
+    - Product Sales tab: table with product/qty/revenue/cost/profit/avg price/margin columns, ranked by revenue
+    - Sales History tab: table with sale number/time/payment mode/discount/tax/total, credit customer info for credit sales
+  - CSV export functionality:
+    - Exports summary section
+    - Payment mode breakdown
+    - Daily sales data
+    - Product sales data (top 50)
+- Bilingual support (EN/NE) for all UI elements
+- Bauhaus styling consistent with design system
+
+### Files changed
+- apps/web/src/app/api/clinic/pharmacy/reports/route.ts (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/pharmacy/reports/page.tsx (NEW)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Sale.items is Json type in Prisma - need `as unknown as SaleItem[]` for type casting
+- Profit margin calculation: (gross profit / net revenue) * 100
+- COGS (Cost of Goods Sold) calculated from purchase_price in sale items
+- Date presets use setDate() relative to today for consistent range calculation
+- CSV export uses Blob with text/csv MIME type and createElement('a') for download
+- Color-coded margin badges: green >= 20%, yellow 10-20%, red < 10%
+---

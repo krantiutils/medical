@@ -1801,8 +1801,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 97,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: API endpoint at /api/clinic/pharmacy/reports (GET) with date range filtering, summary statistics (total sales, revenue, discount, tax, cost, profit, profit margin), payment mode breakdown, daily sales breakdown, product-wise sales (top 50 by revenue). Reports page at /[lang]/clinic/dashboard/pharmacy/reports with Overview (summary cards, cash vs credit, payment breakdown), Daily Sales (date/count/revenue/cost/profit table with margins), Product Sales (product/qty/revenue/cost/profit table), Sales History (recent 100 sales). CSV export includes all data sections. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-098",
