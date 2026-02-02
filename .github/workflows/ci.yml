@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, ralph/phase1-healthcare-directory]
+    branches: [main, ralph/phase1-healthcare-directory, ralph/swasthya-platform]
   pull_request:
     branches: [main]
 
