@@ -1836,8 +1836,8 @@
         "Typecheck passes"
       ],
       "priority": 99,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented EMR models (ClinicalNote with vitals/clinical documentation, Prescription with items/status tracking), Lab models (LabTest catalog, LabOrder with priority/status, LabResult with flags/verification), and IPD models (Ward with types, Bed with status/features, Admission with admission/discharge tracking). All models have proper FK relations to Clinic/Patient/Professional/Appointment, comprehensive indexes, and cascade delete behavior. Migration applied successfully, typecheck passes."
     },
     {
       "id": "US-100",

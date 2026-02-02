@@ -2623,3 +2623,46 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Test both table display AND empty/no-data messages since test data may not always be present
 - For expiring items tests, use longer expiry periods (90 days, All Expiring) to find seeded test data
 ---
+
+## 2026-02-02 21:30 - US-099
+**Database schema: EMR and Lab models**
+
+### What was implemented
+Created comprehensive database models for Phase 4 features:
+
+**EMR Models:**
+- **ClinicalNote**: Vitals (height_cm, weight_kg, bmi, blood_pressure, pulse_rate, temperature, spo2, respiratory_rate), clinical documentation (chief_complaint, history_of_illness, past_history, examination, diagnoses as JSON with ICD-10 codes, plan, follow_up), status (DRAFT/FINAL/AMENDED)
+- **Prescription**: prescription_no, items (JSON with drug_name, generic_name, dosage, frequency, duration, quantity, instructions), instructions, status (DRAFT/ISSUED/DISPENSED/CANCELLED), issued_at, valid_until
+
+**Lab Models:**
+- **LabTest**: Test catalog with name, short_name, code, category, sample_type, instructions, normal_range, unit, price, turnaround_hrs, meta
+- **LabOrder**: order_number, priority (ROUTINE/URGENT/STAT), status (ORDERED/SAMPLE_COLLECTED/PROCESSING/COMPLETED/CANCELLED), clinical_notes, sample_collected, sample_id, completed_at
+- **LabResult**: result_value, unit, normal_range, flag (NORMAL/LOW/HIGH/CRITICAL_LOW/CRITICAL_HIGH/ABNORMAL), remarks, verified, verified_by, verified_at, entered_at, entered_by
+
+**IPD Models:**
+- **Ward**: name, type (GENERAL/SEMI_PRIVATE/PRIVATE/ICU/NICU/PICU/CCU/EMERGENCY/MATERNITY/PEDIATRIC/PSYCHIATRIC), floor, building, capacity
+- **Bed**: bed_number, status (AVAILABLE/OCCUPIED/RESERVED/MAINTENANCE/OUT_OF_SERVICE), type, daily_rate, features
+- **Admission**: admission_number, status (ADMITTED/DISCHARGED/TRANSFERRED/DECEASED/LEFT_AMA), admission_date, admission_diagnosis, chief_complaint, discharge_date, discharge_diagnosis, discharge_summary, discharge_type, discharge_advice
+
+**Relations added:**
+- All models link to Clinic (clinic_id)
+- ClinicalNote, Prescription, LabOrder, Admission link to Patient
+- ClinicalNote, Prescription link to Professional (doctor)
+- LabOrder links to Professional as ordered_by (named relation)
+- Admission links to Professional as admitting_doctor and attending_doctor (named relations)
+- Optional one-to-one links from Appointment to ClinicalNote, Prescription, LabOrder
+- ClinicalNote has many Prescriptions and LabOrders
+- Ward has many Beds, Bed has many Admissions
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+- packages/database/prisma/migrations/20260202050000_add_emr_lab_ipd_models/migration.sql (NEW)
+
+### Learnings for future iterations
+- When adding multiple relations from one model to another (e.g., Professional to Admission via admitting_doctor and attending_doctor), use named relations with @relation("RelationName")
+- Prisma db push is useful when migration history has issues - it syncs the database directly, then create a migration file and mark it as applied with `prisma migrate resolve --applied`
+- Decimal fields for measurements: use @db.Decimal(5,2) for height/weight, @db.Decimal(4,2) for BMI, @db.Decimal(4,1) for temperature
+- Use comprehensive enum types for status fields (e.g., AdmissionStatus with LEFT_AMA for "Left Against Medical Advice")
+- IPD ward types should cover all major hospital departments: ICU, NICU (Neonatal), PICU (Pediatric), CCU (Cardiac), Emergency, Maternity, etc.
+
+---
