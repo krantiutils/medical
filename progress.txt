@@ -535,3 +535,33 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - E2E tests in CI use `pnpm test:e2e` which includes webServer config to start dev server
 
 ---
+
+## 2026-02-02 - US-050
+**Database schema: Clinic model**
+
+### What was implemented
+- Added ClinicType enum with values: CLINIC, POLYCLINIC, HOSPITAL, PHARMACY
+- Created Clinic model with all required fields:
+  - id (uuid), name, slug (unique), type (ClinicType)
+  - address, location_lat, location_lng, phone, email, website
+  - logo_url, photos (string[]), services (string[])
+  - timings (Json), verified (bool)
+  - google_place_id, osm_id, meta (Json)
+  - created_at, updated_at
+  - claimed_by_id (FK User) with "ClinicClaimedBy" relation
+- Added unique constraint on slug (@unique)
+- Added index on type
+- Added index on claimed_by_id
+- Added claimed_clinics relation to User model
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Use `prisma db push` instead of `prisma migrate dev` in non-interactive environments
+- ClinicType enum follows the same pattern as ProfessionalType
+- Clinic model structure is Phase 2 foundation for clinic management features
+- claimed_by relation pattern is consistent with Professional model
+
+---

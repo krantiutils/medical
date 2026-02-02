@@ -25,6 +25,13 @@ enum VerificationStatus {
   REJECTED
 }
 
+enum ClinicType {
+  CLINIC
+  POLYCLINIC
+  HOSPITAL
+  PHARMACY
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -45,6 +52,8 @@ model User {
   verification_requests  VerificationRequest[] @relation("UserRequests")
   reviewed_verifications VerificationRequest[] @relation("ReviewedBy")
   claimed_professionals  Professional[]        @relation("ClaimedBy")
+  audit_logs             AuditLog[]
+  claimed_clinics        Clinic[]              @relation("ClinicClaimedBy")
 }
 
 model Account {
@@ -89,7 +98,7 @@ model VerificationToken {
 model Professional {
   id                  String           @id @default(uuid())
   type                ProfessionalType
-  registration_number String           @unique
+  registration_number String
   full_name           String
   full_name_ne        String?
   photo_url           String?
@@ -113,6 +122,7 @@ model Professional {
   // Verification requests for this professional
   verification_requests VerificationRequest[]
 
+  @@unique([type, registration_number])
   @@index([slug])
   @@index([type])
   @@index([claimed_by_id])
@@ -123,6 +133,7 @@ model VerificationRequest {
   status            VerificationStatus @default(PENDING)
   government_id_url String?
   certificate_url   String?
+  admin_notes       String?            @db.Text
   submitted_at      DateTime           @default(now())
   reviewed_at       DateTime?
 
@@ -137,4 +148,52 @@ model VerificationRequest {
   @@index([status])
   @@index([user_id])
   @@index([professional_id])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  action      String   // "CLAIM_SUBMITTED", "CLAIM_APPROVED", "CLAIM_REJECTED"
+  target_type String   // "VerificationRequest"
+  target_id   String
+  actor_id    String?
+  actor       User?    @relation(fields: [actor_id], references: [id])
+  metadata    Json?
+  ip_address  String?
+  user_agent  String?
+  created_at  DateTime @default(now())
+
+  @@index([action])
+  @@index([target_type, target_id])
+  @@index([actor_id])
+  @@index([created_at])
+}
+
+model Clinic {
+  id              String      @id @default(uuid())
+  name            String
+  slug            String      @unique
+  type            ClinicType
+  address         String?
+  location_lat    Float?
+  location_lng    Float?
+  phone           String?
+  email           String?
+  website         String?
+  logo_url        String?
+  photos          String[]
+  services        String[]
+  timings         Json?
+  verified        Boolean     @default(false)
+  google_place_id String?
+  osm_id          String?
+  meta            Json?
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  // Claimed by relation (optional)
+  claimed_by_id String?
+  claimed_by    User?   @relation("ClinicClaimedBy", fields: [claimed_by_id], references: [id])
+
+  @@index([type])
+  @@index([claimed_by_id])
 }

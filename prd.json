@@ -978,8 +978,8 @@
         "Typecheck passes"
       ],
       "priority": 50,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: ClinicType enum (CLINIC/POLYCLINIC/HOSPITAL/PHARMACY) and Clinic model with all required fields. Unique constraint on slug, indexes on type and claimed_by_id. Used prisma db push for database sync. Typecheck passes."
     },
     {
       "id": "US-051",
