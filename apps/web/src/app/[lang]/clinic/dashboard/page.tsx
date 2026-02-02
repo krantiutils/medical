@@ -76,6 +76,8 @@ export default function ClinicDashboardPage() {
       billingDesc: "Create invoices and receipts",
       services: "Services",
       servicesDesc: "Manage service catalog",
+      reports: "Reports",
+      reportsDesc: "View billing reports and analytics",
     },
     ne: {
       title: "क्लिनिक ड्यासबोर्ड",
@@ -116,6 +118,8 @@ export default function ClinicDashboardPage() {
       billingDesc: "इनभ्वाइस र रसिदहरू बनाउनुहोस्",
       services: "सेवाहरू",
       servicesDesc: "सेवा क्याटलग व्यवस्थापन गर्नुहोस्",
+      reports: "रिपोर्टहरू",
+      reportsDesc: "बिलिङ रिपोर्टहरू र विश्लेषण हेर्नुहोस्",
     },
   };
 
@@ -609,6 +613,35 @@ export default function ClinicDashboardPage() {
                     <div>
                       <h3 className="font-bold text-foreground text-lg">{tr.billing}</h3>
                       <p className="text-sm text-foreground/60">{tr.billingDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Reports */}
+            <Link href={`/${lang}/clinic/dashboard/reports`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-yellow rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-foreground"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.reports}</h3>
+                      <p className="text-sm text-foreground/60">{tr.reportsDesc}</p>
                     </div>
                   </div>
                 </CardContent>

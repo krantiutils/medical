@@ -1593,8 +1593,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 85,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Reports page at /[lang]/clinic/dashboard/reports with collection summary (total invoices, collection, paid, pending, discount, tax). Date range filter with quick presets (Today, This Week, This Month, Last 30 Days) and custom date inputs. Payment mode breakdown table showing count and amount by payment mode. Daily collection table with date, invoice count, total, paid, and pending amounts. Invoice details table (last 20 invoices). CSV export functionality downloading complete report with summary. API endpoint at /api/clinic/reports. Reports quick action card added to clinic dashboard. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-086",
