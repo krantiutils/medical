@@ -264,5 +264,41 @@
       "dentist": "दन्त चिकित्सक",
       "pharmacist": "फार्मासिस्ट"
     }
+  },
+  "clinic": {
+    "register": {
+      "title": "क्लिनिक दर्ता गर्नुहोस्",
+      "subtitle": "नेपालको स्वास्थ्य निर्देशिकामा तपाईंको क्लिनिक थप्नुहोस्",
+      "badge": "क्लिनिक दर्ता",
+      "nameLabel": "क्लिनिकको नाम",
+      "namePlaceholder": "तपाईंको क्लिनिकको नाम",
+      "nameRequired": "क्लिनिकको नाम आवश्यक छ",
+      "typeLabel": "क्लिनिकको प्रकार",
+      "typePlaceholder": "प्रकार छान्नुहोस्",
+      "typeRequired": "क्लिनिकको प्रकार आवश्यक छ",
+      "typeClinic": "क्लिनिक",
+      "typePolyclinic": "पोलिक्लिनिक",
+      "typeHospital": "अस्पताल",
+      "typePharmacy": "फार्मेसी",
+      "addressLabel": "ठेगाना",
+      "addressPlaceholder": "पूर्ण ठेगाना",
+      "addressRequired": "ठेगाना आवश्यक छ",
+      "phoneLabel": "फोन नम्बर",
+      "phonePlaceholder": "९८xxxxxxxx",
+      "phoneRequired": "फोन नम्बर आवश्यक छ",
+      "phoneInvalid": "कृपया मान्य नेपाली फोन नम्बर राख्नुहोस्",
+      "emailLabel": "इमेल ठेगाना",
+      "emailPlaceholder": "clinic@example.com",
+      "emailRequired": "इमेल ठेगाना आवश्यक छ",
+      "emailInvalid": "कृपया मान्य इमेल ठेगाना राख्नुहोस्",
+      "websiteLabel": "वेबसाइट (वैकल्पिक)",
+      "websitePlaceholder": "https://www.example.com",
+      "websiteInvalid": "कृपया मान्य URL राख्नुहोस्",
+      "submit": "क्लिनिक दर्ता गर्नुहोस्",
+      "submitting": "दर्ता गर्दै...",
+      "loginRequired": "क्लिनिक दर्ता गर्न कृपया लगइन गर्नुहोस्",
+      "login": "लगइन गर्नुहोस्",
+      "createAccount": "खाता बनाउनुहोस्"
+    }
   }
 }

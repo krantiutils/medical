@@ -264,5 +264,41 @@
       "dentist": "Dentist",
       "pharmacist": "Pharmacist"
     }
+  },
+  "clinic": {
+    "register": {
+      "title": "Register Your Clinic",
+      "subtitle": "Add your clinic to Nepal's healthcare directory",
+      "badge": "Clinic Registration",
+      "nameLabel": "Clinic Name",
+      "namePlaceholder": "Your clinic name",
+      "nameRequired": "Clinic name is required",
+      "typeLabel": "Clinic Type",
+      "typePlaceholder": "Select type",
+      "typeRequired": "Clinic type is required",
+      "typeClinic": "Clinic",
+      "typePolyclinic": "Polyclinic",
+      "typeHospital": "Hospital",
+      "typePharmacy": "Pharmacy",
+      "addressLabel": "Address",
+      "addressPlaceholder": "Full address",
+      "addressRequired": "Address is required",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "98xxxxxxxx",
+      "phoneRequired": "Phone number is required",
+      "phoneInvalid": "Please enter a valid Nepali phone number",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "clinic@example.com",
+      "emailRequired": "Email address is required",
+      "emailInvalid": "Please enter a valid email address",
+      "websiteLabel": "Website (Optional)",
+      "websitePlaceholder": "https://www.example.com",
+      "websiteInvalid": "Please enter a valid URL",
+      "submit": "Register Clinic",
+      "submitting": "Registering...",
+      "loginRequired": "Please log in to register a clinic",
+      "login": "Login",
+      "createAccount": "Create Account"
+    }
   }
 }
