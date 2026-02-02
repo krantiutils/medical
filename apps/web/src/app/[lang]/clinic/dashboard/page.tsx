@@ -78,6 +78,8 @@ export default function ClinicDashboardPage() {
       servicesDesc: "Manage service catalog",
       reports: "Reports",
       reportsDesc: "View billing reports and analytics",
+      consultations: "Consultations",
+      consultationsDesc: "Manage patient consultations",
     },
     ne: {
       title: "क्लिनिक ड्यासबोर्ड",
@@ -120,6 +122,8 @@ export default function ClinicDashboardPage() {
       servicesDesc: "सेवा क्याटलग व्यवस्थापन गर्नुहोस्",
       reports: "रिपोर्टहरू",
       reportsDesc: "बिलिङ रिपोर्टहरू र विश्लेषण हेर्नुहोस्",
+      consultations: "परामर्शहरू",
+      consultationsDesc: "बिरामी परामर्श व्यवस्थापन गर्नुहोस्",
     },
   };
 
@@ -468,6 +472,35 @@ export default function ClinicDashboardPage() {
                     <div>
                       <h3 className="font-bold text-foreground text-lg">{tr.addPatient}</h3>
                       <p className="text-sm text-foreground/60">{tr.addPatientDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Consultations */}
+            <Link href={`/${lang}/clinic/dashboard/consultations`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-red rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.consultations}</h3>
+                      <p className="text-sm text-foreground/60">{tr.consultationsDesc}</p>
                     </div>
                   </div>
                 </CardContent>
