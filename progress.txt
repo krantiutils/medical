@@ -351,3 +351,18 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - The i18n config exports types (`Locale`) for type-safe locale handling
   - next-intl plugin wraps Next.js config: `withNextIntl(nextConfig)`
 ---
+
+## 2026-02-02 22:00 +0545 - US-022
+- **What was implemented**: Category page for doctors listing at /[lang]/doctors
+- **Files changed**:
+  - `apps/web/src/app/[lang]/doctors/page.tsx` - Created doctors category page with listing, pagination, and SEO
+  - `prd.json` - Marked US-022 as passes: true
+- **Learnings for future iterations:**
+  - Category pages follow the search page pattern but filter by professional type
+  - Use `ProfessionalType.DOCTOR` enum value for type filtering (not string "DOCTOR")
+  - Decorator color should match the professional type: blue for doctors, red for dentists, yellow for pharmacists
+  - Inline translations (t object) work for simple cases, could be moved to messages JSON for full i18n
+  - Use `toLocaleString("ne-NP")` for Nepali number formatting
+  - `generateStaticParams` exports locales for static generation of category pages
+  - `setRequestLocale(lang)` is needed at start of page component for proper static rendering
+---
