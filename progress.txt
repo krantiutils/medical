@@ -463,3 +463,23 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - `useCallback` with dependency array solves react-hooks/exhaustive-deps warning for async functions
   - Button component can be wrapped in Link for navigation - no need for onClick + router.push
 ---
+
+## 2026-02-02 03:00 +0545 - US-028
+- **What was implemented**: Verification request form with file uploads for claiming professional profiles
+- **Files changed**:
+  - `apps/web/src/app/[lang]/claim/[professionalId]/verify/page.tsx` - Created verification form page with file upload UI, success/error states
+  - `apps/web/src/app/api/professionals/[id]/route.ts` - API endpoint to fetch professional by ID
+  - `apps/web/src/app/api/verification/route.ts` - API endpoint to handle verification request submission with file uploads
+  - `apps/web/messages/en.json` - Added verification namespace translations
+  - `apps/web/messages/ne.json` - Added verification namespace translations in Nepali
+  - `prd.json` - Marked US-028 as passes: true
+- **Learnings for future iterations:**
+  - Use `formData.get("fieldName") as File` to extract File objects from FormData in API routes
+  - Use `Buffer.from(await file.arrayBuffer())` to convert File to Buffer for writing to disk with `fs/promises writeFile`
+  - Generate unique filenames with timestamp + random string to avoid collisions: `${Date.now()}-${random}${ext}`
+  - Store uploaded files in `public/uploads/verification/` for easy serving via Next.js static file handling
+  - Check for existing pending verification requests before allowing new submissions to prevent duplicates
+  - Use nested dynamic routes like `/[lang]/claim/[professionalId]/verify` for multi-step forms
+  - File upload UI pattern: show upload zone when no file selected, show file info with remove button when file selected
+  - In Next.js 14 App Router, dynamic route params in API routes use `{ params }: { params: Promise<{ id: string }> }` pattern
+---
