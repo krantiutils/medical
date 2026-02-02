@@ -867,3 +867,39 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Status indicator badges hidden on mobile (hidden sm:block) for cleaner layout
 
 ---
+
+## 2026-02-02 - US-059
+**Clinic registration: Services selection**
+
+### What was implemented
+- Added services multi-select to clinic registration form with:
+  - PREDEFINED_SERVICES constant with 7 service options (General Consultation, Specialist Consultation, Lab Tests, X-Ray, Pharmacy, Emergency, Surgery)
+  - Bilingual labels (EN/NE) for all predefined services
+  - Checkbox-style buttons for predefined services in a 2-column grid
+  - Custom service text input with Enter key support
+  - Selected services displayed as removable tags
+  - Color coding: blue for predefined services, yellow for custom services
+- State management:
+  - selectedServices state stores array of service IDs (predefined) or strings (custom)
+  - customServiceInput state for custom service text field
+  - handleServiceToggle for predefined services
+  - handleAddCustomService for custom services
+  - handleRemoveService for removing any service
+- Bilingual translations (EN/NE):
+  - Service labels, section headers, hints
+  - Add/remove button text
+  - Selected services count
+- Services array logged to console for US-060 API integration
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/register/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- Services multi-select uses same state management pattern as languages in profile edit page
+- Predefined services use id field for storage, custom services use the raw string
+- isPredefinedService helper distinguishes between predefined and custom services for display logic
+- getServiceLabel helper returns localized label for predefined services or raw string for custom
+- Enter key handling uses onKeyDown with e.preventDefault() to prevent form submission
+- Color coding helps users distinguish predefined vs custom services at a glance
+
+---

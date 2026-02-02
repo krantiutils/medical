@@ -1128,8 +1128,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 59,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Services multi-select with predefined options (General Consultation, Specialist Consultation, Lab Tests, X-Ray, Pharmacy, Emergency, Surgery). Custom service tag input with Enter key support. Selected services display as tags with color coding (blue for predefined, yellow for custom). Bilingual translations (EN/NE) for all labels. Services stored in selectedServices array for API submission. Typecheck passes."
     },
     {
       "id": "US-060",
