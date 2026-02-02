@@ -698,8 +698,8 @@
         "All tests pass: pnpm test:e2e homepage.spec.ts"
       ],
       "priority": 37,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: homepage.spec.ts with 23 tests covering homepage hero/search/categories, navigation header links/logo/language switcher, footer sections/social links, mobile menu toggle, and cross-page navigation. Fixed database credentials in test config. All tests pass."
     },
     {
       "id": "US-038",

@@ -11,6 +11,8 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Test helpers export extended `test` with authenticated page fixtures
 - Import Prisma types from @swasthya/database (not @prisma/client) in apps/web
 - E2E test seed data in seed.ts must match TEST_DATA constants in test-utils.ts
+- Test database credentials must match docker-compose.yml (swasthya:swasthya, not postgres:postgres)
+- Use header.locator() or section.locator() to scope selectors when multiple elements match
 
 ---
 
@@ -95,5 +97,37 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Global setup/teardown must export default async functions for Playwright
 - UserRole and VerificationStatus enums come from @swasthya/database
 - Test data constants in seed.ts must match TEST_DATA in test-utils.ts exactly
+
+---
+
+## 2026-02-02 16:30 - US-037
+**E2E Tests: Homepage and navigation**
+
+### What was implemented
+- Created apps/web/e2e/homepage.spec.ts with 23 comprehensive tests:
+  - Homepage tests: hero heading, search input functionality, search navigation, category cards, quick stats
+  - Navigation Header tests: all nav links visible, navigation to Doctors/Dentists/Pharmacists pages, logo click returns home, Login button, language switcher, NE language switch
+  - Footer tests: all sections visible (About, For Doctors, For Clinics, Legal), copyright notice, social media links, "Made in Nepal" text
+  - Mobile Navigation tests: hamburger menu button, menu toggle, menu closes on link click, language switcher in mobile, Login in mobile
+  - Cross-page Navigation test: full navigation flow through all pages
+- Fixed database credentials in test configuration:
+  - Updated .env.test to use swasthya:swasthya (matching docker-compose.yml)
+  - Updated playwright.config.ts webServer.env.DATABASE_URL
+  - Updated seed.ts Prisma client datasource URL
+- Created swasthya_test database and pushed Prisma schema
+
+### Files changed
+- apps/web/e2e/homepage.spec.ts (NEW)
+- apps/web/.env.test (MODIFIED)
+- apps/web/playwright.config.ts (MODIFIED)
+- apps/web/e2e/fixtures/seed.ts (MODIFIED)
+
+### Learnings for future iterations
+- When multiple elements match (e.g., nav links in header and footer), scope with locator: `header.getByRole("link", { name: "Home" })`
+- Use `exact: true` option to avoid matching partial text (e.g., "Home" vs "Swasthya - Home")
+- Mobile viewport tests need `test.use({ viewport: { width: 375, height: 667 } })`
+- Footer section titles are h3 headings with full names like "For Doctors" not just "Doctors"
+- Category cards on homepage are in section.nth(1) (second section after hero)
+- Test database needs to be created and migrated before running tests
 
 ---
