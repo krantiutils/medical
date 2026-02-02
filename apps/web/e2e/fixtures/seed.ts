@@ -617,6 +617,73 @@ async function seedClinicDoctors(
 }
 
 /**
+ * Seed doctor schedules for appointment booking tests
+ */
+async function seedDoctorSchedules(
+  clinicIds: Map<string, string>,
+  professionalIds: Map<string, string>
+): Promise<void> {
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping doctor schedules seeding");
+    return;
+  }
+
+  const doctor1Id = professionalIds.get("DOCTOR_12345"); // Dr. Ram Sharma
+  const doctor2Id = professionalIds.get("DOCTOR_12346"); // Dr. Sita Thapa
+
+  // Delete existing schedules for this clinic
+  await prisma.doctorSchedule.deleteMany({
+    where: { clinic_id: dashboardClinicId },
+  });
+
+  // Effective date range for schedules (from past to future)
+  const effectiveFrom = new Date("2024-01-01");
+
+  // Dr. Ram Sharma - works Monday to Friday, 09:00-17:00, 30 min slots
+  if (doctor1Id) {
+    const weekdays = [1, 2, 3, 4, 5]; // Monday to Friday
+    for (const day of weekdays) {
+      await prisma.doctorSchedule.create({
+        data: {
+          clinic_id: dashboardClinicId,
+          doctor_id: doctor1Id,
+          day_of_week: day,
+          start_time: "09:00",
+          end_time: "17:00",
+          slot_duration_minutes: 30,
+          max_patients_per_slot: 1,
+          is_active: true,
+          effective_from: effectiveFrom,
+          effective_to: null, // No end date
+        },
+      });
+    }
+  }
+
+  // Dr. Sita Thapa - works Monday, Wednesday, Friday, 10:00-14:00, 20 min slots
+  if (doctor2Id) {
+    const visitingDays = [1, 3, 5]; // Mon, Wed, Fri
+    for (const day of visitingDays) {
+      await prisma.doctorSchedule.create({
+        data: {
+          clinic_id: dashboardClinicId,
+          doctor_id: doctor2Id,
+          day_of_week: day,
+          start_time: "10:00",
+          end_time: "14:00",
+          slot_duration_minutes: 20,
+          max_patients_per_slot: 2, // Allows overbooking
+          is_active: true,
+          effective_from: effectiveFrom,
+          effective_to: null,
+        },
+      });
+    }
+  }
+}
+
+/**
  * Clean up all test data
  * IMPORTANT: Order matters due to foreign key constraints
  */
@@ -627,6 +694,29 @@ async function cleanupTestData(): Promise<void> {
 
   // Delete clinic doctors (before clinics and professionals)
   const testClinicSlugs = SEED_DATA.CLINICS.map((c) => c.slug);
+
+  // Delete appointments (before patients)
+  await prisma.appointment.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  // Delete patients (before clinics)
+  await prisma.patient.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
   await prisma.clinicDoctor.deleteMany({
     where: {
       clinic: {
@@ -757,6 +847,10 @@ export async function seedTestData(): Promise<{
   // Seed clinic doctors for dashboard test clinic
   await seedClinicDoctors(clinicIds, professionalIds);
   console.log("  ✓ Seeded clinic doctors for dashboard test clinic");
+
+  // Seed doctor schedules for appointment booking tests
+  await seedDoctorSchedules(clinicIds, professionalIds);
+  console.log("  ✓ Seeded doctor schedules for appointment booking");
 
   console.log("✅ Test data seeding complete!");
 
