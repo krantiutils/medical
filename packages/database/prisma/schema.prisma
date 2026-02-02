@@ -53,6 +53,23 @@ enum AppointmentSource {
   PHONE
 }
 
+enum PaymentMode {
+  CASH
+  CARD
+  UPI
+  BANK_TRANSFER
+  INSURANCE
+  CREDIT // For khata/credit accounts
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  PARTIAL
+  REFUNDED
+  CANCELLED
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -75,6 +92,7 @@ model User {
   claimed_professionals  Professional[]        @relation("ClaimedBy")
   audit_logs             AuditLog[]
   claimed_clinics        Clinic[]              @relation("ClinicClaimedBy")
+  invoices_created       Invoice[]             // Invoices created by this user
 }
 
 model Account {
@@ -242,6 +260,12 @@ model Clinic {
   // Appointments at this clinic
   appointments Appointment[]
 
+  // Services offered at this clinic
+  services_list Service[]
+
+  // Invoices generated at this clinic
+  invoices Invoice[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -286,6 +310,9 @@ model Patient {
 
   // Appointments for this patient
   appointments Appointment[]
+
+  // Invoices for this patient
+  invoices Invoice[]
 
   @@unique([clinic_id, patient_number])
   @@unique([clinic_id, phone])
@@ -355,9 +382,61 @@ model Appointment {
   doctor_id  String
   doctor     Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
 
+  // Invoice linked to this appointment (optional)
+  invoice Invoice?
+
   @@index([clinic_id, appointment_date, doctor_id])
   @@index([clinic_id])
   @@index([patient_id])
   @@index([doctor_id])
   @@index([status])
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10, 2) // Supports up to 99,999,999.99
+  category    String?  // e.g., "Consultation", "Procedure", "Test", "Medication"
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+
+  // Relations
+  clinic_id String
+  clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  @@index([clinic_id, is_active])
+  @@index([clinic_id])
+}
+
+model Invoice {
+  id             String        @id @default(uuid())
+  invoice_number String        // Clinic-specific invoice number, e.g., "INV-2026-0001"
+  items          Json          // Array of {service_id, name, quantity, unit_price, amount}
+  subtotal       Decimal       @db.Decimal(10, 2)
+  discount       Decimal       @default(0) @db.Decimal(10, 2)
+  tax            Decimal       @default(0) @db.Decimal(10, 2)
+  total          Decimal       @db.Decimal(10, 2)
+  payment_mode   PaymentMode   @default(CASH)
+  payment_status PaymentStatus @default(PENDING)
+  notes          String?       @db.Text
+  created_at     DateTime      @default(now())
+
+  // Relations
+  clinic_id      String
+  clinic         Clinic       @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  patient_id     String
+  patient        Patient      @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  appointment_id String?      @unique // Nullable - invoice may or may not be linked to an appointment (one-to-one)
+  appointment    Appointment? @relation(fields: [appointment_id], references: [id])
+  created_by_id  String
+  created_by     User         @relation(fields: [created_by_id], references: [id])
+
+  @@unique([clinic_id, invoice_number])
+  @@index([clinic_id, invoice_number])
+  @@index([clinic_id])
+  @@index([patient_id])
+  @@index([appointment_id])
+  @@index([created_by_id])
+  @@index([payment_status])
 }
