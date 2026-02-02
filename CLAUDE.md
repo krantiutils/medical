@@ -2,6 +2,8 @@
 
 You are an autonomous coding agent working on a software project.
 
+**Repository:** https://github.com/krantiutils/medical
+
 ## Your Task
 
 1. Read the PRD at `prd.json` (in the same directory as this file)
@@ -12,8 +14,9 @@ You are an autonomous coding agent working on a software project.
 6. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
 7. Update CLAUDE.md files if you discover reusable patterns (see below)
 8. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
-9. Update the PRD to set `passes: true` for the completed story
-10. Append your progress to `progress.txt`
+9. Push the commit to remote: `git push origin <branch-name>`
+10. Update the PRD to set `passes: true` for the completed story
+11. Append your progress to `progress.txt`
 
 ## Progress Report Format
 
@@ -99,6 +102,6 @@ If there are still stories with `passes: false`, end your response normally (ano
 ## Important
 
 - Work on ONE story per iteration
-- Commit frequently
+- Commit frequently and push immediately after each commit
 - Keep CI green
 - Read the Codebase Patterns section in progress.txt before starting
