@@ -93,6 +93,9 @@ model User {
   audit_logs             AuditLog[]
   claimed_clinics        Clinic[]              @relation("ClinicClaimedBy")
   invoices_created       Invoice[] // Invoices created by this user
+
+  // Telemedicine (Phase 5)
+  video_consultations VideoConsultation[] @relation("VideoConsultationPatient")
 }
 
 model Account {
@@ -154,6 +157,11 @@ model Professional {
   last_synced_at      DateTime?
   meta                Json?
 
+  // Telemedicine fields
+  telemedicine_enabled Boolean @default(false)
+  telemedicine_fee     Decimal? @db.Decimal(10, 2) // Video consultation fee in NPR
+  telemedicine_available_now Boolean @default(false) // Currently available for instant consultations
+
   // Claimed by relation (optional)
   claimed_by_id String?
   claimed_by    User?   @relation("ClaimedBy", fields: [claimed_by_id], references: [id])
@@ -186,6 +194,9 @@ model Professional {
   // IPD models (Phase 4)
   admissions_admitting Admission[] @relation("AdmissionAdmittingDoctor")
   admissions_attending Admission[] @relation("AdmissionAttendingDoctor")
+
+  // Telemedicine (Phase 5)
+  video_consultations VideoConsultation[]
 
   @@unique([type, registration_number])
   @@index([slug])
@@ -1087,4 +1098,71 @@ model Admission {
   @@index([attending_doctor_id])
   @@index([admission_date])
   @@index([status])
+}
+
+// ============================================================================
+// TELEMEDICINE MODELS (Phase 5)
+// ============================================================================
+
+enum VideoConsultationStatus {
+  SCHEDULED // Patient has booked, awaiting confirmation
+  CONFIRMED // Doctor confirmed the booking
+  WAITING // Patient is in waiting room
+  IN_PROGRESS // Video call is active
+  COMPLETED // Consultation finished
+  CANCELLED // Cancelled by either party
+  NO_SHOW // Patient or doctor didn't show up
+  EXPIRED // Booking time passed without call
+}
+
+enum VideoConsultationType {
+  SCHEDULED // Pre-booked consultation at a specific time
+  INSTANT // On-demand consultation with available doctor
+}
+
+model VideoConsultation {
+  id               String                   @id @default(uuid())
+  type             VideoConsultationType    @default(SCHEDULED)
+  status           VideoConsultationStatus  @default(SCHEDULED)
+  // Scheduling
+  scheduled_at     DateTime? // Scheduled start time (for SCHEDULED type)
+  scheduled_end    DateTime? // Scheduled end time
+  // Call details
+  room_id          String? // Video room identifier (e.g., Daily.co room name)
+  room_url         String? // Full URL for video room
+  started_at       DateTime? // When call actually started
+  ended_at         DateTime? // When call ended
+  duration_minutes Int? // Actual call duration in minutes
+  // Payment
+  fee              Decimal                  @db.Decimal(10, 2) // Consultation fee in NPR
+  payment_status   PaymentStatus            @default(PENDING)
+  payment_id       String? // Payment gateway transaction ID
+  paid_at          DateTime?
+  // Consultation notes
+  chief_complaint  String?                  @db.Text // Patient's reason for consultation
+  notes            String?                  @db.Text // Doctor's consultation notes
+  prescription     String?                  @db.Text // Digital prescription (can link to Prescription model later)
+  follow_up_date   DateTime? // Recommended follow-up date
+  // Metadata
+  cancellation_reason String?
+  cancelled_by     String? // 'patient' or 'doctor'
+  cancelled_at     DateTime?
+  created_at       DateTime                 @default(now())
+  updated_at       DateTime                 @updatedAt
+
+  // Relations
+  doctor_id  String
+  doctor     Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+  patient_id String
+  patient    User         @relation("VideoConsultationPatient", fields: [patient_id], references: [id], onDelete: Cascade)
+
+  @@index([doctor_id, status])
+  @@index([doctor_id, scheduled_at])
+  @@index([patient_id, status])
+  @@index([patient_id])
+  @@index([doctor_id])
+  @@index([status])
+  @@index([type])
+  @@index([scheduled_at])
+  @@index([created_at])
 }

@@ -35,6 +35,10 @@ interface Professional {
     education?: Education[];
     [key: string]: unknown;
   } | null;
+  // Telemedicine fields
+  telemedicine_enabled: boolean;
+  telemedicine_fee: string | number | null;
+  telemedicine_available_now: boolean;
 }
 
 export default function DashboardProfilePage() {
@@ -54,6 +58,11 @@ export default function DashboardProfilePage() {
   const [languages, setLanguages] = useState<string[]>([]);
   const [newLanguage, setNewLanguage] = useState("");
   const [education, setEducation] = useState<Education[]>([]);
+
+  // Telemedicine form state
+  const [telemedicineEnabled, setTelemedicineEnabled] = useState(false);
+  const [telemedicineFee, setTelemedicineFee] = useState("");
+  const [telemedicineAvailableNow, setTelemedicineAvailableNow] = useState(false);
 
   // Translations
   const t = {
@@ -102,6 +111,17 @@ export default function DashboardProfilePage() {
       pharmacist: "Pharmacist",
       nprSymbol: "NPR",
       charactersRemaining: "characters remaining",
+      // Telemedicine translations
+      telemedicineSettings: "Telemedicine Settings",
+      telemedicineDescription: "Enable video consultations to see patients remotely",
+      enableTelemedicine: "Enable Telemedicine",
+      enableTelemedicineHelp: "When enabled, patients can book video consultations with you",
+      telemedicineFee: "Video Consultation Fee",
+      telemedicineFeePlaceholder: "Enter amount in NPR",
+      telemedicineFeeHelp: "Your fee for video consultations (can differ from in-person fee)",
+      availableNow: "Available Now",
+      availableNowHelp: "Turn on when you're available for instant video consultations. Patients can connect with you immediately.",
+      telemedicineNote: "Video consultations allow you to see patients from anywhere. Set your fee and availability to start receiving online bookings.",
     },
     ne: {
       title: "प्रोफाइल सम्पादन",
@@ -148,6 +168,17 @@ export default function DashboardProfilePage() {
       pharmacist: "फार्मासिस्ट",
       nprSymbol: "रु",
       charactersRemaining: "अक्षरहरू बाँकी",
+      // Telemedicine translations
+      telemedicineSettings: "टेलिमेडिसिन सेटिङ्हरू",
+      telemedicineDescription: "बिरामीहरूलाई टाढाबाट हेर्न भिडियो परामर्श सक्षम गर्नुहोस्",
+      enableTelemedicine: "टेलिमेडिसिन सक्षम गर्नुहोस्",
+      enableTelemedicineHelp: "सक्षम हुँदा, बिरामीहरूले तपाईंसँग भिडियो परामर्श बुक गर्न सक्छन्",
+      telemedicineFee: "भिडियो परामर्श शुल्क",
+      telemedicineFeePlaceholder: "रकम NPR मा राख्नुहोस्",
+      telemedicineFeeHelp: "भिडियो परामर्शको लागि तपाईंको शुल्क (व्यक्तिगत शुल्कभन्दा फरक हुन सक्छ)",
+      availableNow: "अहिले उपलब्ध",
+      availableNowHelp: "तत्काल भिडियो परामर्शका लागि उपलब्ध हुँदा खोल्नुहोस्। बिरामीहरू तुरुन्तै तपाईंसँग जडान हुन सक्छन्।",
+      telemedicineNote: "भिडियो परामर्शले तपाईंलाई जहाँबाट पनि बिरामीहरू हेर्न अनुमति दिन्छ। अनलाइन बुकिंग प्राप्त गर्न आफ्नो शुल्क र उपलब्धता सेट गर्नुहोस्।",
     },
   };
 
@@ -179,6 +210,11 @@ export default function DashboardProfilePage() {
       setConsultationFee(meta.consultation_fee?.toString() || "");
       setLanguages(meta.languages || []);
       setEducation(meta.education || []);
+
+      // Initialize telemedicine form state
+      setTelemedicineEnabled(prof.telemedicine_enabled || false);
+      setTelemedicineFee(prof.telemedicine_fee?.toString() || "");
+      setTelemedicineAvailableNow(prof.telemedicine_available_now || false);
     } catch (err) {
       console.error("Error fetching profile:", err);
       setError(tr.errorLoad);
@@ -213,6 +249,10 @@ export default function DashboardProfilePage() {
           consultation_fee: consultationFee ? parseFloat(consultationFee) : null,
           languages: languages.length > 0 ? languages : null,
           education: education.length > 0 ? education : null,
+          // Telemedicine fields
+          telemedicine_enabled: telemedicineEnabled,
+          telemedicine_fee: telemedicineFee ? parseFloat(telemedicineFee) : null,
+          telemedicine_available_now: telemedicineAvailableNow,
         }),
       });
 
@@ -737,6 +777,138 @@ export default function DashboardProfilePage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Telemedicine Settings - Only show for doctors and dentists */}
+            {(professional.type === "DOCTOR" || professional.type === "DENTIST") && (
+              <Card decorator="blue" decoratorPosition="top-left" className="mb-6">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary-blue rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-foreground">
+                        {tr.telemedicineSettings}
+                      </h2>
+                      <p className="text-sm text-foreground/60">
+                        {tr.telemedicineDescription}
+                      </p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Enable Telemedicine Toggle */}
+                  <div className="flex items-start gap-4 p-4 bg-foreground/5 border-2 border-foreground/10">
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={telemedicineEnabled}
+                        onChange={(e) => setTelemedicineEnabled(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-14 h-7 bg-foreground/20 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-blue/20 rounded-none peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-foreground after:border-2 after:h-6 after:w-6 after:transition-all peer-checked:bg-primary-blue"></div>
+                    </label>
+                    <div className="flex-1">
+                      <span className="text-sm font-bold text-foreground">
+                        {tr.enableTelemedicine}
+                      </span>
+                      <p className="text-xs text-foreground/50 mt-1">
+                        {tr.enableTelemedicineHelp}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Telemedicine Fee - only show when enabled */}
+                  {telemedicineEnabled && (
+                    <>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                          {tr.telemedicineFee}
+                        </label>
+                        <div className="flex">
+                          <span className="inline-flex items-center px-4 bg-foreground/10 border-4 border-r-0 border-foreground text-foreground font-bold">
+                            {tr.nprSymbol}
+                          </span>
+                          <input
+                            type="number"
+                            value={telemedicineFee}
+                            onChange={(e) => setTelemedicineFee(e.target.value)}
+                            placeholder={tr.telemedicineFeePlaceholder}
+                            min="0"
+                            max="100000"
+                            className="flex-1 px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue text-foreground placeholder:text-foreground/40"
+                          />
+                        </div>
+                        <p className="text-xs text-foreground/50 mt-1">
+                          {tr.telemedicineFeeHelp}
+                        </p>
+                      </div>
+
+                      {/* Available Now Toggle */}
+                      <div className="flex items-start gap-4 p-4 bg-verified/10 border-2 border-verified/30">
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={telemedicineAvailableNow}
+                            onChange={(e) => setTelemedicineAvailableNow(e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-14 h-7 bg-foreground/20 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-verified/20 rounded-none peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-foreground after:border-2 after:h-6 after:w-6 after:transition-all peer-checked:bg-verified"></div>
+                        </label>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold text-foreground">
+                              {tr.availableNow}
+                            </span>
+                            {telemedicineAvailableNow && (
+                              <span className="inline-flex items-center gap-1 bg-verified text-white text-xs font-bold px-2 py-0.5">
+                                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                                LIVE
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-foreground/50 mt-1">
+                            {tr.availableNowHelp}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Info note */}
+                  <div className="flex items-start gap-3 p-3 bg-primary-blue/5 border-l-4 border-primary-blue">
+                    <svg
+                      className="w-5 h-5 text-primary-blue flex-shrink-0 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <p className="text-sm text-foreground/70">
+                      {tr.telemedicineNote}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Submit buttons */}
             <div className="flex flex-col sm:flex-row gap-4">

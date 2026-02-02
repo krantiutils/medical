@@ -32,6 +32,10 @@ export async function GET() {
       verified: true,
       slug: true,
       meta: true,
+      // Telemedicine fields
+      telemedicine_enabled: true,
+      telemedicine_fee: true,
+      telemedicine_available_now: true,
     },
   });
 
@@ -73,7 +77,16 @@ export async function PUT(request: NextRequest) {
 
   // Parse the request body
   const body = await request.json();
-  const { bio, consultation_fee, languages, education } = body;
+  const {
+    bio,
+    consultation_fee,
+    languages,
+    education,
+    // Telemedicine fields
+    telemedicine_enabled,
+    telemedicine_fee,
+    telemedicine_available_now,
+  } = body;
 
   // Validate fields
   const errors: Record<string, string> = {};
@@ -129,6 +142,24 @@ export async function PUT(request: NextRequest) {
     }
   }
 
+  // Validate telemedicine fields
+  if (telemedicine_enabled !== undefined && typeof telemedicine_enabled !== "boolean") {
+    errors.telemedicine_enabled = "Telemedicine enabled must be a boolean";
+  }
+
+  if (telemedicine_fee !== undefined && telemedicine_fee !== null) {
+    if (typeof telemedicine_fee !== "number" || telemedicine_fee < 0) {
+      errors.telemedicine_fee = "Telemedicine fee must be a positive number";
+    }
+    if (telemedicine_fee > 100000) {
+      errors.telemedicine_fee = "Telemedicine fee seems too high";
+    }
+  }
+
+  if (telemedicine_available_now !== undefined && typeof telemedicine_available_now !== "boolean") {
+    errors.telemedicine_available_now = "Available now must be a boolean";
+  }
+
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ errors }, { status: 400 });
   }
@@ -144,6 +175,23 @@ export async function PUT(request: NextRequest) {
     education: education ?? existingMeta.education,
   };
 
+  // Build update data for telemedicine fields (separate from meta)
+  const telemedicineUpdates: {
+    telemedicine_enabled?: boolean;
+    telemedicine_fee?: number | null;
+    telemedicine_available_now?: boolean;
+  } = {};
+
+  if (telemedicine_enabled !== undefined) {
+    telemedicineUpdates.telemedicine_enabled = telemedicine_enabled;
+  }
+  if (telemedicine_fee !== undefined) {
+    telemedicineUpdates.telemedicine_fee = telemedicine_fee;
+  }
+  if (telemedicine_available_now !== undefined) {
+    telemedicineUpdates.telemedicine_available_now = telemedicine_available_now;
+  }
+
   // Update the professional record
   const updatedProfessional = await prisma.professional.update({
     where: {
@@ -151,6 +199,7 @@ export async function PUT(request: NextRequest) {
     },
     data: {
       meta: updatedMeta,
+      ...telemedicineUpdates,
     },
     select: {
       id: true,
@@ -168,6 +217,10 @@ export async function PUT(request: NextRequest) {
       verified: true,
       slug: true,
       meta: true,
+      // Telemedicine fields
+      telemedicine_enabled: true,
+      telemedicine_fee: true,
+      telemedicine_available_now: true,
     },
   });
 
