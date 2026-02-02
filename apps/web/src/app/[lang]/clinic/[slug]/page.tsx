@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { prisma, ClinicType, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { PhotoGallery } from "@/components/clinic/PhotoGallery";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
 interface ClinicPageProps {
   params: Promise<{
@@ -132,6 +135,186 @@ async function getClinic(slug: string) {
   return clinic;
 }
 
+// Clinic type labels for SEO
+function getClinicTypeLabelEn(type: ClinicType): string {
+  const labels: Record<ClinicType, string> = {
+    [ClinicType.CLINIC]: "Clinic",
+    [ClinicType.POLYCLINIC]: "Polyclinic",
+    [ClinicType.HOSPITAL]: "Hospital",
+    [ClinicType.PHARMACY]: "Pharmacy",
+  };
+  return labels[type];
+}
+
+// Generate SEO metadata for clinic pages
+export async function generateMetadata({ params }: ClinicPageProps): Promise<Metadata> {
+  const { lang, slug } = await params;
+
+  // Fetch clinic without verified filter for metadata (to show proper 404 message)
+  const clinic = await prisma.clinic.findFirst({
+    where: { slug, verified: true },
+  });
+
+  if (!clinic) {
+    return {
+      title: "Clinic Not Found | Swasthya",
+      description: "The requested clinic could not be found or is not verified.",
+    };
+  }
+
+  const clinicType = getClinicTypeLabelEn(clinic.type);
+  const location = clinic.address || "Nepal";
+
+  // Build services description
+  const servicesText = clinic.services && clinic.services.length > 0
+    ? clinic.services.slice(0, 3).map(s => PREDEFINED_SERVICES[s]?.en || s).join(", ")
+    : "";
+
+  const title = `${clinic.name} - ${clinicType} in ${location} | Swasthya`;
+
+  const description = `${clinic.name} is a verified ${clinicType.toLowerCase()} located in ${location}.${servicesText ? ` Services: ${servicesText}.` : ""} Contact: ${clinic.phone || clinic.email || "See details"}. Find healthcare facilities on Swasthya.`;
+
+  const canonicalUrl = `${SITE_URL}/${lang}/clinic/${slug}`;
+  const ogImageUrl = clinic.logo_url || `${SITE_URL}/og-default.png`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        en: `${SITE_URL}/en/clinic/${slug}`,
+        ne: `${SITE_URL}/ne/clinic/${slug}`,
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "Swasthya",
+      type: "website",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 400,
+          height: 400,
+          alt: clinic.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+      images: [ogImageUrl],
+    },
+  };
+}
+
+// Generate JSON-LD structured data with MedicalClinic schema
+function generateJsonLd(clinic: NonNullable<Awaited<ReturnType<typeof getClinic>>>, lang: string) {
+  const timings = clinic.timings as WeeklySchedule | null;
+
+  // Map clinic type to schema.org type
+  const schemaType = clinic.type === ClinicType.HOSPITAL
+    ? "Hospital"
+    : clinic.type === ClinicType.PHARMACY
+      ? "Pharmacy"
+      : "MedicalClinic";
+
+  const baseJsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": schemaType,
+    "@id": `${SITE_URL}/${lang}/clinic/${clinic.slug}`,
+    name: clinic.name,
+    url: `${SITE_URL}/${lang}/clinic/${clinic.slug}`,
+  };
+
+  // Add image if available
+  if (clinic.logo_url) {
+    baseJsonLd.image = clinic.logo_url;
+  }
+
+  // Add photos if available
+  if (clinic.photos && clinic.photos.length > 0) {
+    baseJsonLd.photo = clinic.photos;
+  }
+
+  // Add address
+  if (clinic.address) {
+    baseJsonLd.address = {
+      "@type": "PostalAddress",
+      streetAddress: clinic.address,
+      addressCountry: "NP",
+    };
+  }
+
+  // Add geo coordinates if available
+  if (clinic.location_lat && clinic.location_lng) {
+    baseJsonLd.geo = {
+      "@type": "GeoCoordinates",
+      latitude: clinic.location_lat,
+      longitude: clinic.location_lng,
+    };
+  }
+
+  // Add contact information
+  if (clinic.phone) {
+    baseJsonLd.telephone = clinic.phone;
+  }
+  if (clinic.email) {
+    baseJsonLd.email = clinic.email;
+  }
+  if (clinic.website) {
+    baseJsonLd.sameAs = clinic.website;
+  }
+
+  // Add opening hours from timings JSON
+  if (timings) {
+    const openingHours: string[] = [];
+    const dayMapping: Record<string, string> = {
+      sunday: "Su",
+      monday: "Mo",
+      tuesday: "Tu",
+      wednesday: "We",
+      thursday: "Th",
+      friday: "Fr",
+      saturday: "Sa",
+    };
+
+    for (const [day, schedule] of Object.entries(timings)) {
+      if (schedule?.isOpen && schedule.openTime && schedule.closeTime) {
+        const dayCode = dayMapping[day];
+        if (dayCode) {
+          // Format: "Mo 09:00-17:00"
+          openingHours.push(`${dayCode} ${schedule.openTime}-${schedule.closeTime}`);
+        }
+      }
+    }
+
+    if (openingHours.length > 0) {
+      baseJsonLd.openingHours = openingHours;
+    }
+  }
+
+  // Add available services
+  if (clinic.services && clinic.services.length > 0) {
+    baseJsonLd.availableService = clinic.services.map((service) => ({
+      "@type": "MedicalProcedure",
+      name: PREDEFINED_SERVICES[service]?.en || service,
+    }));
+  }
+
+  // Add medical specialty based on clinic type
+  if (clinic.type !== ClinicType.PHARMACY) {
+    baseJsonLd.medicalSpecialty = clinic.services?.includes("emergency")
+      ? "Emergency"
+      : "GeneralPractice";
+  }
+
+  return baseJsonLd;
+}
+
 // Translations
 const translations = {
   en: {
@@ -194,9 +377,15 @@ export default async function ClinicPage({ params }: ClinicPageProps) {
 
   const t = translations[lang === "ne" ? "ne" : "en"];
   const timings = clinic.timings as WeeklySchedule | null;
+  const jsonLd = generateJsonLd(clinic, lang);
 
   return (
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-4xl mx-auto">
         {/* Header Card with Logo and Basic Info */}
         <Card decorator="blue" decoratorPosition="top-right" className="mb-6">
