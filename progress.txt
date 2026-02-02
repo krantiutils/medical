@@ -483,3 +483,22 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - File upload UI pattern: show upload zone when no file selected, show file info with remove button when file selected
   - In Next.js 14 App Router, dynamic route params in API routes use `{ params }: { params: Promise<{ id: string }> }` pattern
 ---
+
+## 2026-02-02 04:00 +0545 - US-029
+- **What was implemented**: Admin claims dashboard for reviewing and approving/rejecting profile claims
+- **Files changed**:
+  - `apps/web/src/app/[lang]/admin/claims/page.tsx` - Created admin claims dashboard with pending requests list, document viewer modal, approve/reject actions
+  - `apps/web/src/app/api/admin/claims/route.ts` - API endpoint to list pending verification requests (admin only)
+  - `apps/web/src/app/api/admin/claims/[id]/route.ts` - API endpoint to approve or reject claims (admin only)
+  - `apps/web/messages/en.json` - Added admin.claims namespace translations
+  - `apps/web/messages/ne.json` - Added admin.claims namespace translations in Nepali
+  - `prd.json` - Marked US-029 as passes: true
+- **Learnings for future iterations:**
+  - Admin pages should check both authentication AND role in client component before fetching data
+  - API endpoints must independently verify admin role from database, not trust client session
+  - Use `prisma.$transaction` for atomic operations that update multiple tables (VerificationRequest + Professional + User)
+  - When approving a claim: set status=APPROVED, link professional.claimed_by_id, set professional.verified=true, update user.role=PROFESSIONAL
+  - Document viewer modal pattern: show image directly for JPG/PNG, show link for PDF files
+  - Use confirm() for destructive actions like approve/reject to prevent accidental clicks
+  - Client-side role checks use session.user.role from useSession(), server-side fetches from database
+---
