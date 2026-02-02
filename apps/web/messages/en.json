@@ -158,5 +158,31 @@
     "loginToClaim": "Login to Claim",
     "isThisYourProfile": "Is this your profile?",
     "claimThisProfile": "Claim This Profile"
+  },
+  "verification": {
+    "title": "Verify Your Identity",
+    "subtitle": "Please upload the required documents to verify your identity and claim this profile",
+    "claimingProfile": "Claiming profile for",
+    "governmentId": "Government ID",
+    "governmentIdHelp": "Upload a clear photo of your citizenship card, passport, or driver license",
+    "certificate": "Professional Certificate",
+    "certificateHelp": "Upload your NMC/NDA/NPC registration certificate",
+    "dragDrop": "Drag and drop or click to upload",
+    "maxFileSize": "Maximum file size: 10MB. Accepted formats: JPG, PNG, PDF",
+    "selectedFile": "Selected file",
+    "removeFile": "Remove",
+    "submitVerification": "Submit Verification Request",
+    "submitting": "Submitting...",
+    "cancel": "Cancel",
+    "successTitle": "Verification Request Submitted!",
+    "successMessage": "Your verification request has been submitted successfully. Our team will review your documents and get back to you within 2-3 business days.",
+    "pendingReview": "Status: Pending Review",
+    "backToProfile": "Back to Profile",
+    "backToSearch": "Search Another Profile",
+    "errorRequired": "Both documents are required",
+    "errorSubmit": "Failed to submit verification request. Please try again.",
+    "errorNotFound": "Professional not found",
+    "errorAlreadyClaimed": "This profile has already been claimed",
+    "errorAlreadyPending": "You already have a pending verification request for this profile"
   }
 }
