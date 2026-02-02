@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { prisma } from "@swasthya/database";
+import { prisma, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -12,22 +12,48 @@ interface SearchPageProps {
   searchParams: Promise<{
     q?: string;
     page?: string;
+    type?: string;
+    location?: string;
   }>;
 }
 
-async function searchProfessionals(query: string, page: number) {
-  const skip = (page - 1) * ITEMS_PER_PAGE;
+interface SearchFilters {
+  query: string;
+  type?: ProfessionalType;
+  location?: string;
+}
 
-  // Build the where clause with ILIKE on full_name, degree, address
-  const whereClause = query
-    ? {
-        OR: [
-          { full_name: { contains: query, mode: "insensitive" as const } },
-          { degree: { contains: query, mode: "insensitive" as const } },
-          { address: { contains: query, mode: "insensitive" as const } },
-        ],
-      }
-    : {};
+async function searchProfessionals(filters: SearchFilters, page: number) {
+  const skip = (page - 1) * ITEMS_PER_PAGE;
+  const { query, type, location } = filters;
+
+  // Build the where clause with conditions
+  const conditions: object[] = [];
+
+  // Text search on full_name, degree, address
+  if (query) {
+    conditions.push({
+      OR: [
+        { full_name: { contains: query, mode: "insensitive" as const } },
+        { degree: { contains: query, mode: "insensitive" as const } },
+        { address: { contains: query, mode: "insensitive" as const } },
+      ],
+    });
+  }
+
+  // Type filter
+  if (type) {
+    conditions.push({ type });
+  }
+
+  // Location filter (case-insensitive contains)
+  if (location) {
+    conditions.push({
+      address: { contains: location, mode: "insensitive" as const },
+    });
+  }
+
+  const whereClause = conditions.length > 0 ? { AND: conditions } : {};
 
   const [professionals, totalCount] = await Promise.all([
     prisma.professional.findMany({
@@ -45,6 +71,25 @@ async function searchProfessionals(query: string, page: number) {
     totalPages: Math.ceil(totalCount / ITEMS_PER_PAGE),
     currentPage: page,
   };
+}
+
+// Get distinct locations from the database for the filter dropdown
+async function getDistinctLocations(): Promise<string[]> {
+  const results = await prisma.professional.findMany({
+    where: {
+      address: { not: null },
+    },
+    select: { address: true },
+    distinct: ["address"],
+    orderBy: { address: "asc" },
+    take: 100, // Limit to top 100 unique locations
+  });
+
+  // Filter out nulls and empty strings, and clean up the addresses
+  return results
+    .map((r) => r.address)
+    .filter((addr): addr is string => !!addr && addr.trim() !== "")
+    .slice(0, 50); // Further limit for performance
 }
 
 function getDecoratorColor(type: string): "red" | "blue" | "yellow" {
@@ -78,15 +123,41 @@ function getProfileUrl(professional: { type: string; slug: string }, lang: strin
   return `/${lang}/doctor/${professional.slug}`;
 }
 
+// Helper to validate the type filter
+function parseTypeFilter(type?: string): ProfessionalType | undefined {
+  if (type && Object.values(ProfessionalType).includes(type as ProfessionalType)) {
+    return type as ProfessionalType;
+  }
+  return undefined;
+}
+
+// Build URL with updated params
+function buildSearchUrl(
+  lang: string,
+  params: { q?: string; type?: string; location?: string; page?: number }
+): string {
+  const searchParams = new URLSearchParams();
+  if (params.q) searchParams.set("q", params.q);
+  if (params.type) searchParams.set("type", params.type);
+  if (params.location) searchParams.set("location", params.location);
+  if (params.page && params.page > 1) searchParams.set("page", String(params.page));
+  const queryString = searchParams.toString();
+  return `/${lang}/search${queryString ? `?${queryString}` : ""}`;
+}
+
 export default async function SearchPage({ params, searchParams }: SearchPageProps) {
   const { lang } = await params;
-  const { q: query = "", page: pageStr = "1" } = await searchParams;
+  const { q: query = "", page: pageStr = "1", type: typeStr, location } = await searchParams;
   const currentPage = Math.max(1, parseInt(pageStr, 10) || 1);
+  const typeFilter = parseTypeFilter(typeStr);
 
-  const { professionals, totalCount, totalPages } = await searchProfessionals(
-    query,
-    currentPage
-  );
+  const [{ professionals, totalCount, totalPages }, distinctLocations] = await Promise.all([
+    searchProfessionals({ query, type: typeFilter, location }, currentPage),
+    getDistinctLocations(),
+  ]);
+
+  // Check if any filters are active
+  const hasActiveFilters = !!typeFilter || !!location;
 
   return (
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
@@ -101,13 +172,19 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
               Showing results for &quot;{query}&quot;
             </p>
           )}
-          <p className="text-sm text-foreground/60 mt-2">
-            {totalCount} professional{totalCount !== 1 ? "s" : ""} found
+          <p className="text-sm font-medium text-foreground/80 mt-2">
+            <span className="text-primary-blue">{totalCount}</span> professional{totalCount !== 1 ? "s" : ""} found
+            {(typeFilter || location) && (
+              <span className="text-foreground/60">
+                {typeFilter && ` · ${getTypeLabel(typeFilter)}`}
+                {location && ` · ${location}`}
+              </span>
+            )}
           </p>
         </div>
 
         {/* Search Form */}
-        <div className="mb-8">
+        <div className="mb-6">
           <form action={`/${lang}/search`} method="GET" className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
@@ -116,11 +193,105 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
               placeholder="Search by name, specialty, or location..."
               className="flex-1 px-6 py-4 text-lg bg-white border-4 border-foreground focus:outline-none focus:ring-0 focus:border-primary-blue placeholder:text-foreground/40"
             />
+            {/* Hidden inputs to preserve filter state */}
+            {typeFilter && <input type="hidden" name="type" value={typeFilter} />}
+            {location && <input type="hidden" name="location" value={location} />}
             <Button type="submit" variant="primary" size="lg" className="px-8">
               Search
             </Button>
           </form>
         </div>
+
+        {/* Filters Section */}
+        <div className="mb-6">
+          <form action={`/${lang}/search`} method="GET" className="flex flex-wrap items-center gap-4">
+            {/* Preserve search query */}
+            {query && <input type="hidden" name="q" value={query} />}
+
+            {/* Type Filter Dropdown */}
+            <div className="flex items-center gap-2">
+              <label htmlFor="type-filter" className="text-sm font-bold uppercase tracking-wide">
+                Type:
+              </label>
+              <select
+                id="type-filter"
+                name="type"
+                defaultValue={typeFilter || ""}
+                onChange={(e) => {
+                  const form = e.target.closest("form");
+                  if (form) form.submit();
+                }}
+                className="px-4 py-2 bg-white border-2 border-foreground text-sm font-medium focus:outline-none focus:border-primary-blue cursor-pointer"
+              >
+                <option value="">All Types</option>
+                <option value="DOCTOR">Doctor</option>
+                <option value="DENTIST">Dentist</option>
+                <option value="PHARMACIST">Pharmacist</option>
+              </select>
+            </div>
+
+            {/* Location Filter Dropdown */}
+            <div className="flex items-center gap-2">
+              <label htmlFor="location-filter" className="text-sm font-bold uppercase tracking-wide">
+                Location:
+              </label>
+              <select
+                id="location-filter"
+                name="location"
+                defaultValue={location || ""}
+                onChange={(e) => {
+                  const form = e.target.closest("form");
+                  if (form) form.submit();
+                }}
+                className="px-4 py-2 bg-white border-2 border-foreground text-sm font-medium focus:outline-none focus:border-primary-blue cursor-pointer max-w-[200px]"
+              >
+                <option value="">All Locations</option>
+                {distinctLocations.map((loc) => (
+                  <option key={loc} value={loc}>
+                    {loc.length > 30 ? loc.slice(0, 30) + "..." : loc}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </form>
+        </div>
+
+        {/* Active Filters Tags */}
+        {hasActiveFilters && (
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <span className="text-sm font-bold uppercase tracking-wide text-foreground/60">
+              Active filters:
+            </span>
+            {typeFilter && (
+              <Link
+                href={buildSearchUrl(lang, { q: query, location, page: 1 })}
+                className="inline-flex items-center gap-1 px-3 py-1 bg-primary-blue text-white text-sm font-medium border-2 border-foreground hover:bg-primary-blue/80 transition-colors"
+              >
+                {getTypeLabel(typeFilter)}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </Link>
+            )}
+            {location && (
+              <Link
+                href={buildSearchUrl(lang, { q: query, type: typeFilter, page: 1 })}
+                className="inline-flex items-center gap-1 px-3 py-1 bg-primary-yellow text-foreground text-sm font-medium border-2 border-foreground hover:bg-primary-yellow/80 transition-colors"
+              >
+                {location.length > 25 ? location.slice(0, 25) + "..." : location}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </Link>
+            )}
+            <Link
+              href={buildSearchUrl(lang, { q: query, page: 1 })}
+              className="text-sm text-foreground/60 hover:text-primary-red underline"
+            >
+              Clear all
+            </Link>
+          </div>
+        )}
 
         {/* Results Grid */}
         {professionals.length === 0 ? (
@@ -237,7 +408,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
                   {/* Previous button */}
                   {currentPage > 1 ? (
                     <Link
-                      href={`/${lang}/search?q=${encodeURIComponent(query)}&page=${currentPage - 1}`}
+                      href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: currentPage - 1 })}
                     >
                       <Button variant="outline" size="sm">
                         ← Previous
@@ -263,7 +434,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
                       return (
                         <Link
                           key={pageNum}
-                          href={`/${lang}/search?q=${encodeURIComponent(query)}&page=${pageNum}`}
+                          href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: pageNum })}
                         >
                           <Button
                             variant={isCurrentPage ? "primary" : "outline"}
@@ -280,7 +451,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
                   {/* Next button */}
                   {currentPage < totalPages ? (
                     <Link
-                      href={`/${lang}/search?q=${encodeURIComponent(query)}&page=${currentPage + 1}`}
+                      href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: currentPage + 1 })}
                     >
                       <Button variant="outline" size="sm">
                         Next →
