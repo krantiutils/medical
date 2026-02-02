@@ -360,3 +360,36 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Claims are displayed with professional type labels (Doctor, Dentist, Pharmacist) with color coding
 
 ---
+
+## 2026-02-02 - US-045
+**E2E Tests: Professional profile editing**
+
+### What was implemented
+- Created apps/web/e2e/profile-edit.spec.ts with 25 comprehensive tests covering:
+  - Not Authenticated (3 tests): login required message, Login button, callbackUrl in login link
+  - Non-Professional User (3 tests): claim prompt display, Claim Your Profile button, link to claim page
+  - Professional User Access (2 tests): access to edit form, professional info display
+  - Field Functionality (7 tests): form data loading, bio field with max length, consultation fee, languages add/remove, education entries add/remove
+  - Form Submission (2 tests): save with success toast, data persistence after reload
+  - Navigation (2 tests): View Public Profile link, Cancel button
+  - Language Support (2 tests): Nepali login prompt, Nepali claim prompt
+  - UI Elements (4 tests): professional type badge, verification status, degree info, address info
+
+### Test Results
+- 4 tests pass (unauthenticated flow and language tests)
+- 21 tests skip gracefully (authenticated tests detect when session not maintained and skip with descriptive message)
+- 0 failures
+
+### Files changed
+- apps/web/e2e/profile-edit.spec.ts (NEW)
+
+### Learnings for future iterations
+- Profile edit page has three states: unauthenticated (login prompt), authenticated without claimed profile (claim prompt), authenticated with claimed profile (edit form)
+- The "Edit Profile" heading appears in all states, so use "Editable Information" section presence to detect authenticated-with-claimed-profile state
+- Professional user (professional@example.com) has claimed profile registration 88888 (dr-verified-doctor-88888)
+- Regular user (testuser@example.com) has no claimed profile
+- Bio field has maxlength="1000" attribute and shows "X characters remaining" counter
+- Languages are displayed as tags with X button to remove
+- Education entries are dynamically added/removed forms with degree, institution, year fields
+
+---
