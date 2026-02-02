@@ -1,4 +1,5 @@
 import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 
 interface LangLayoutProps {
   children: React.ReactNode;
@@ -15,9 +16,10 @@ export default async function LangLayout({ children, params }: LangLayoutProps) 
   const currentLang = validLangs.includes(lang) ? lang : "en";
 
   return (
-    <div data-lang={currentLang}>
+    <div data-lang={currentLang} className="min-h-screen flex flex-col">
       <Header lang={currentLang} />
-      {children}
+      <main className="flex-1">{children}</main>
+      <Footer lang={currentLang} />
     </div>
   );
 }
