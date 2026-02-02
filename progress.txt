@@ -2069,3 +2069,61 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Composite indexes should be ordered by most selective column first for filtering efficiency
 
 ---
+
+## 2026-02-02 - US-088
+**Reviews: Submit and display**
+
+### What was implemented
+- Created review submission page at /[lang]/clinic/[slug]/review:
+  - Phone-based patient verification (looks up patient by phone number)
+  - Appointment selection for reviewed doctor
+  - Star rating (1-5) with interactive UI
+  - Review text (optional)
+  - Category ratings (cleanliness, wait time, staff) - all optional
+  - Success confirmation page after submission
+- Created ReviewsSection client component for clinic public page:
+  - Average rating display with star visualization
+  - Individual review cards with patient info, ratings, text
+  - Doctor response display when available
+  - "Show More" button for pagination
+  - "Write a Review" button linking to review page
+- Created admin moderation page at /[lang]/admin/reviews:
+  - List all reviews with filter (all/published/unpublished)
+  - Publish/unpublish toggle for each review
+  - View review details modal
+  - Delete review with confirmation dialog
+- Created doctor response feature at /[lang]/dashboard/reviews:
+  - List reviews for the doctor's claimed professional profile
+  - Respond to reviews with text input
+  - Edit existing responses
+  - Only accessible to professionals with claimed profiles
+- API endpoints created:
+  - GET/POST /api/reviews - List and create reviews
+  - GET/PATCH/DELETE /api/reviews/[id] - Single review operations
+  - GET /api/admin/reviews - Admin review listing
+  - GET /api/dashboard/reviews - Doctor's reviews listing
+  - GET /api/clinic/[slug]/info - Clinic basic info for review page
+  - GET /api/clinic/appointments - Patient's appointments for review selection
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/[slug]/page.tsx (MODIFIED - added ReviewsSection)
+- apps/web/src/app/[lang]/clinic/[slug]/review/page.tsx (NEW)
+- apps/web/src/app/[lang]/admin/reviews/page.tsx (NEW)
+- apps/web/src/app/[lang]/dashboard/reviews/page.tsx (NEW)
+- apps/web/src/app/api/reviews/route.ts (NEW)
+- apps/web/src/app/api/reviews/[id]/route.ts (NEW)
+- apps/web/src/app/api/admin/reviews/route.ts (NEW)
+- apps/web/src/app/api/dashboard/reviews/route.ts (NEW)
+- apps/web/src/app/api/clinic/[slug]/info/route.ts (NEW)
+- apps/web/src/app/api/clinic/appointments/route.ts (NEW)
+- apps/web/src/components/clinic/ReviewsSection.tsx (NEW)
+
+### Learnings for future iterations
+- Phone-based verification allows patients without user accounts to leave reviews (uses patient records from clinic)
+- Reviews are published by default; admin can unpublish for moderation
+- Only doctors who received the review (and own the professional profile) can respond
+- Category ratings are stored in JSON field for flexibility
+- ReviewsSection is a client component for dynamic loading and "show more" functionality
+- Review can be linked to a specific appointment or be a general clinic review (appointment_id nullable)
+
+---
