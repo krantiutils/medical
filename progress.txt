@@ -1841,3 +1841,113 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Test count: 11 passed, 19 skipped (expected for authenticated tests)
 
 ---
+
+## 2026-02-02 - US-083
+**Database schema: Service and Invoice models**
+
+### What was implemented
+- Created PaymentMode enum: CASH, CARD, UPI, BANK_TRANSFER, INSURANCE, CREDIT
+- Created PaymentStatus enum: PENDING, PAID, PARTIAL, REFUNDED, CANCELLED
+- Created Service model with:
+  - id (uuid) as primary key
+  - name (String) for service name
+  - description (Text optional) for service description
+  - price (Decimal 10,2) supporting up to 99,999,999.99
+  - category (String optional) for grouping (e.g., Consultation, Procedure, Test, Medication)
+  - is_active (Boolean, default true) for soft delete
+  - created_at (DateTime, default now)
+  - clinic_id (FK to Clinic) with onDelete: Cascade
+  - Indexes on (clinic_id, is_active) and clinic_id
+- Created Invoice model with:
+  - id (uuid) as primary key
+  - invoice_number (String) for clinic-specific number (e.g., INV-2026-0001)
+  - items (Json) array of {service_id, name, quantity, unit_price, amount}
+  - subtotal, discount, tax, total (all Decimal 10,2)
+  - payment_mode (PaymentMode enum, default CASH)
+  - payment_status (PaymentStatus enum, default PENDING)
+  - notes (Text optional)
+  - created_at (DateTime, default now)
+  - clinic_id (FK to Clinic) with onDelete: Cascade
+  - patient_id (FK to Patient) with onDelete: Cascade
+  - appointment_id (FK to Appointment, optional, unique) for one-to-one
+  - created_by_id (FK to User)
+  - Unique constraint on (clinic_id, invoice_number)
+  - Index on (clinic_id, invoice_number) and individual FKs
+- Added bidirectional relations:
+  - Clinic.services_list: Service[]
+  - Clinic.invoices: Invoice[]
+  - Patient.invoices: Invoice[]
+  - Appointment.invoice: Invoice? (one-to-one)
+  - User.invoices_created: Invoice[]
+- Ran prisma db push successfully
+- Typecheck passes
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+
+### Learnings for future iterations
+- One-to-one optional relations in Prisma require @unique on the FK field
+- PaymentMode enum includes CREDIT for khata/credit accounts common in Nepal
+- Decimal(10,2) supports currency amounts up to 99,999,999.99 (suitable for NPR)
+- Invoice items stored as JSON for flexibility - schema: {service_id, name, quantity, unit_price, amount}
+- Use db push (not migrate dev) for rapid iteration when safe to recreate tables
+
+---
+
+## 2026-02-02 - US-084
+**Billing: Service catalog and invoice generation**
+
+### What was implemented
+- Created Services API endpoints:
+  - GET/POST /api/clinic/services - list and create services
+  - GET/PUT/DELETE /api/clinic/services/[id] - read, update, delete individual services
+  - All endpoints validate clinic ownership via claimed_by_id
+- Created Invoices API endpoints:
+  - GET/POST /api/clinic/invoices - list with pagination/filtering and create invoices
+  - GET/PATCH /api/clinic/invoices/[id] - get invoice details and update payment status
+  - Invoice number generation: INV-YYYY-XXXX format (year-based sequential)
+  - Supports appointment linking (one-to-one, checks for existing invoice)
+- Created Services Management Page (/[lang]/clinic/dashboard/services):
+  - CRUD operations for clinic services
+  - Form modal for add/edit with validation
+  - Category-based grouping with predefined categories (Consultation, Test, Procedure, Medication, Other)
+  - Active/inactive filter tabs
+  - Bilingual support (EN/NE)
+- Created Billing Page (/[lang]/clinic/dashboard/billing):
+  - Patient search and selection
+  - Optional appointment linking (fetches patient's appointments)
+  - Service selection with quantity editing
+  - Dynamic subtotal calculation
+  - Discount input (NPR amount)
+  - Tax toggle (13% VAT calculation)
+  - Payment mode selection: Cash, Card, UPI, Bank Transfer, Insurance, Credit (Khata)
+  - Payment status selection: Pending, Paid, Partial
+  - Notes field for additional information
+  - Invoice generation with immediate print option
+  - Recent invoices sidebar with status badges
+  - Print receipt functionality with thermal-style receipt layout
+- Updated Clinic Dashboard:
+  - Added Services quick action card (blue)
+  - Added Billing quick action card (red)
+  - Added bilingual translations for new features
+- Typecheck passes
+
+### Files changed
+- apps/web/src/app/api/clinic/services/route.ts (NEW)
+- apps/web/src/app/api/clinic/services/[id]/route.ts (NEW)
+- apps/web/src/app/api/clinic/invoices/route.ts (NEW)
+- apps/web/src/app/api/clinic/invoices/[id]/route.ts (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/services/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/billing/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- Decimal fields from Prisma come as strings in API responses - parse with Number()
+- Invoice number generation should be year-based and sequential per clinic
+- Use appointment_id @unique constraint to ensure one invoice per appointment
+- Print receipt uses CSS @media print queries with print:block/print:hidden classes
+- 13% VAT is standard in Nepal
+- Credit (Khata) is common payment mode for regular customers in Nepal
+- Category filtering is useful for organizing services (Consultation, Test, Procedure, etc.)
+
+---

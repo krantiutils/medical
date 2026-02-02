@@ -1555,8 +1555,8 @@
         "Typecheck passes"
       ],
       "priority": 83,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Service model with id, clinic_id, name, description, price (Decimal 10,2), category, is_active, created_at. Invoice model with id, clinic_id, patient_id, appointment_id (nullable unique), invoice_number, items (Json), subtotal, discount, tax, total (all Decimal 10,2), payment_mode (PaymentMode enum), payment_status (PaymentStatus enum), notes, created_by_id, created_at. Added PaymentMode (CASH/CARD/UPI/BANK_TRANSFER/INSURANCE/CREDIT) and PaymentStatus (PENDING/PAID/PARTIAL/REFUNDED/CANCELLED) enums. Index on (clinic_id, invoice_number) with unique constraint. Relations added to Clinic, Patient, User, Appointment. Prisma db push successful. Typecheck passes."
     },
     {
       "id": "US-084",
@@ -1575,8 +1575,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 84,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Services management page at /[lang]/clinic/dashboard/services with CRUD operations, category filtering, active/inactive toggle. Billing page at /[lang]/clinic/dashboard/billing with patient search, appointment linking, service selection, quantity editing, discount, tax (13% VAT toggle), payment mode selection (Cash, Card, UPI, Bank Transfer, Insurance, Credit/Khata), payment status (Pending, Paid, Partial), invoice number generation (INV-YYYY-XXXX format), and print receipt functionality. Quick action cards added to clinic dashboard."
     },
     {
       "id": "US-085",
