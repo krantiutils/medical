@@ -272,6 +272,14 @@ model Clinic {
   // Reviews for this clinic
   reviews Review[]
 
+  // Pharmacy models (Phase 3)
+  suppliers          Supplier[]
+  products           Product[]
+  inventory_batches  InventoryBatch[]
+  sales              Sale[]
+  credit_accounts    CreditAccount[]
+  credit_transactions CreditTransaction[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -478,4 +486,219 @@ model Review {
   @@index([doctor_id])
   @@index([patient_id])
   @@index([rating])
+}
+
+// ============================================================================
+// PHARMACY MODELS (Phase 3)
+// ============================================================================
+
+enum DrugSchedule {
+  OTC       // Over the Counter - no prescription needed
+  SCHEDULE_H     // Prescription-only drugs
+  SCHEDULE_H1    // Stronger prescription drugs with special labeling
+  SCHEDULE_X     // Narcotic and psychotropic drugs
+  SCHEDULE_G     // Requires "Caution: Government property"
+}
+
+enum ProductCategory {
+  MEDICINE
+  MEDICAL_DEVICE
+  COSMETIC
+  AYURVEDIC
+  HOMEOPATHIC
+  SUPPLEMENT
+  OTHER
+}
+
+enum CreditTransactionType {
+  SALE       // Credit sale increases balance
+  PAYMENT    // Payment decreases balance
+  ADJUSTMENT // Manual adjustment (can be positive or negative)
+  REFUND     // Refund decreases balance (return of paid amount)
+}
+
+model Supplier {
+  id            String   @id @default(uuid())
+  name          String
+  contact_name  String?
+  phone         String?
+  email         String?
+  address       String?
+  gstin         String?  // GST Identification Number (for India/Nepal VAT)
+  pan_number    String?  // PAN number for tax purposes
+  payment_terms String?  // e.g., "Net 30", "COD"
+  is_active     Boolean  @default(true)
+  notes         String?  @db.Text
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Relations
+  clinic_id String
+  clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  // Products from this supplier
+  products Product[]
+
+  // Inventory batches from this supplier
+  batches InventoryBatch[]
+
+  @@unique([clinic_id, name])
+  @@index([clinic_id, is_active])
+  @@index([clinic_id])
+}
+
+model Product {
+  id              String          @id @default(uuid())
+  name            String          // Brand name
+  generic_name    String?         // Generic/salt name
+  category        ProductCategory @default(MEDICINE)
+  schedule        DrugSchedule?   // Drug schedule classification
+  manufacturer    String?         // Manufacturer name
+  barcode         String?         // Barcode/SKU
+  hsn_code        String?         // HSN code for GST
+  gst_rate        Decimal         @default(0) @db.Decimal(5, 2) // GST percentage (0-100)
+  unit            String          @default("strip") // e.g., "strip", "bottle", "tablet", "ml"
+  pack_size       Int             @default(1) // e.g., 10 tablets per strip
+  min_stock_level Int             @default(0) // Reorder point
+  max_stock_level Int?            // Maximum stock to maintain
+  description     String?         @db.Text
+  storage_info    String?         // Storage instructions (e.g., "Store below 25°C")
+  is_active       Boolean         @default(true)
+  meta            Json?           // Additional product metadata
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+
+  // Relations
+  clinic_id   String
+  clinic      Clinic    @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  supplier_id String?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id], onDelete: SetNull)
+
+  // Inventory batches for this product
+  batches InventoryBatch[]
+
+  @@unique([clinic_id, barcode])
+  @@index([clinic_id, is_active])
+  @@index([clinic_id, category])
+  @@index([clinic_id])
+  @@index([supplier_id])
+  @@index([barcode])
+  @@index([generic_name])
+}
+
+model InventoryBatch {
+  id              String    @id @default(uuid())
+  batch_number    String    // Manufacturer's batch number
+  expiry_date     DateTime  // Expiry date
+  quantity        Int       // Current quantity in stock
+  original_qty    Int       // Original quantity when received
+  purchase_price  Decimal   @db.Decimal(10, 2) // Cost price per unit
+  mrp             Decimal   @db.Decimal(10, 2) // Maximum Retail Price per unit
+  selling_price   Decimal   @db.Decimal(10, 2) // Actual selling price per unit
+  received_date   DateTime  @default(now()) // Date batch was received
+  invoice_number  String?   // Supplier invoice number
+  is_active       Boolean   @default(true) // False when fully sold or expired
+  notes           String?   @db.Text
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  // Relations
+  product_id  String
+  product     Product   @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  supplier_id String?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id], onDelete: SetNull)
+  clinic_id   String
+  clinic      Clinic    @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  @@unique([clinic_id, product_id, batch_number])
+  @@index([clinic_id, product_id, expiry_date]) // For FEFO (First Expired, First Out)
+  @@index([clinic_id, expiry_date]) // For expiry tracking
+  @@index([clinic_id])
+  @@index([product_id])
+  @@index([supplier_id])
+  @@index([is_active])
+}
+
+model Sale {
+  id             String        @id @default(uuid())
+  sale_number    String        // e.g., "SALE-2026-0001"
+  items          Json          // Array of {product_id, batch_id, product_name, quantity, unit_price, discount, gst_amount, amount}
+  subtotal       Decimal       @db.Decimal(10, 2) // Total before tax and discount
+  discount       Decimal       @default(0) @db.Decimal(10, 2) // Total discount
+  tax_amount     Decimal       @default(0) @db.Decimal(10, 2) // Total GST/tax
+  total          Decimal       @db.Decimal(10, 2) // Final total (subtotal - discount + tax)
+  amount_paid    Decimal       @default(0) @db.Decimal(10, 2) // Amount paid (0 for full credit)
+  amount_due     Decimal       @default(0) @db.Decimal(10, 2) // Remaining balance
+  payment_mode   PaymentMode   @default(CASH)
+  is_credit      Boolean       @default(false) // True if this is a credit/khata sale
+  prescription_id String?      // Optional prescription reference
+  notes          String?       @db.Text
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+
+  // Relations
+  clinic_id         String
+  clinic            Clinic         @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  credit_account_id String?
+  credit_account    CreditAccount? @relation(fields: [credit_account_id], references: [id], onDelete: SetNull)
+
+  // Credit transaction linked to this sale (if credit sale)
+  credit_transaction CreditTransaction?
+
+  @@unique([clinic_id, sale_number])
+  @@index([clinic_id, created_at])
+  @@index([clinic_id])
+  @@index([credit_account_id])
+  @@index([is_credit])
+}
+
+model CreditAccount {
+  id              String   @id @default(uuid())
+  customer_name   String   // Customer name for credit account
+  phone           String?
+  address         String?
+  credit_limit    Decimal  @default(0) @db.Decimal(10, 2) // Maximum credit allowed
+  current_balance Decimal  @default(0) @db.Decimal(10, 2) // Current outstanding balance
+  notes           String?  @db.Text
+  is_active       Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  // Relations
+  clinic_id String
+  clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  // Sales linked to this credit account
+  sales Sale[]
+
+  // Transaction history
+  transactions CreditTransaction[]
+
+  @@unique([clinic_id, phone])
+  @@index([clinic_id, is_active])
+  @@index([clinic_id])
+  @@index([phone])
+}
+
+model CreditTransaction {
+  id          String                @id @default(uuid())
+  type        CreditTransactionType
+  amount      Decimal               @db.Decimal(10, 2) // Transaction amount
+  balance     Decimal               @db.Decimal(10, 2) // Balance after this transaction
+  description String?               // Description of transaction
+  notes       String?               @db.Text
+  created_at  DateTime              @default(now())
+
+  // Relations
+  credit_account_id String
+  credit_account    CreditAccount @relation(fields: [credit_account_id], references: [id], onDelete: Cascade)
+  sale_id           String?       @unique // Linked sale (for SALE type transactions)
+  sale              Sale?         @relation(fields: [sale_id], references: [id], onDelete: SetNull)
+  clinic_id         String
+  clinic            Clinic        @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  @@index([credit_account_id, created_at])
+  @@index([credit_account_id])
+  @@index([clinic_id])
+  @@index([type])
 }

@@ -2170,3 +2170,71 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Use `.first()` liberally when page has multiple main elements or duplicate text
 
 ---
+
+## 2026-02-02 - US-090
+**Database schema: Pharmacy models**
+
+### What was implemented
+- Created pharmacy-related enums:
+  - DrugSchedule: OTC, SCHEDULE_H, SCHEDULE_H1, SCHEDULE_X, SCHEDULE_G for drug classification
+  - ProductCategory: MEDICINE, MEDICAL_DEVICE, COSMETIC, AYURVEDIC, HOMEOPATHIC, SUPPLEMENT, OTHER
+  - CreditTransactionType: SALE, PAYMENT, ADJUSTMENT, REFUND for khata tracking
+
+- Created Supplier model with:
+  - Contact info: name, contact_name, phone, email, address
+  - Tax info: gstin, pan_number
+  - payment_terms, is_active, notes
+  - Unique constraint on (clinic_id, name)
+
+- Created Product model with:
+  - name, generic_name, category (ProductCategory enum), schedule (DrugSchedule enum)
+  - manufacturer, barcode, hsn_code, gst_rate (Decimal 5,2)
+  - unit, pack_size, min_stock_level, max_stock_level
+  - description, storage_info, is_active, meta (Json)
+  - Relation to Supplier (optional)
+  - Unique constraint on (clinic_id, barcode)
+  - Indexes on is_active, category, barcode, generic_name
+
+- Created InventoryBatch model with:
+  - batch_number, expiry_date, quantity, original_qty
+  - purchase_price, mrp, selling_price (all Decimal 10,2)
+  - received_date, invoice_number, is_active, notes
+  - Relations to Product, Supplier, Clinic
+  - Unique constraint on (clinic_id, product_id, batch_number)
+  - Indexes for FEFO (First Expired, First Out) queries
+
+- Created Sale model with:
+  - sale_number, items (Json), subtotal, discount, tax_amount, total
+  - amount_paid, amount_due for partial payments
+  - payment_mode (reusing existing PaymentMode enum), is_credit
+  - prescription_id (optional reference)
+  - Relation to CreditAccount (optional)
+  - Unique constraint on (clinic_id, sale_number)
+
+- Created CreditAccount model (khata) with:
+  - customer_name, phone, address
+  - credit_limit, current_balance (both Decimal 10,2)
+  - is_active, notes
+  - Unique constraint on (clinic_id, phone)
+
+- Created CreditTransaction model with:
+  - type (CreditTransactionType), amount, balance (running balance)
+  - description, notes
+  - Relations to CreditAccount, Sale (one-to-one), Clinic
+  - Indexes for transaction history queries
+
+- Added pharmacy relations to Clinic model:
+  - suppliers, products, inventory_batches, sales, credit_accounts, credit_transactions
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+
+### Learnings for future iterations
+- Reuse existing PaymentMode enum from clinic phase for pharmacy sales
+- Use Decimal(10,2) for prices (up to 99,999,999.99) and Decimal(5,2) for percentages (0-100%)
+- FEFO queries need composite index on (clinic_id, product_id, expiry_date)
+- Store sale items as Json array for flexibility with product snapshots
+- Credit transactions store running balance for easy ledger reconstruction
+- All pharmacy models are scoped to Clinic for multi-tenant support
+
+---
