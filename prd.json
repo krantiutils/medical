@@ -367,8 +367,8 @@
         "Typecheck passes"
       ],
       "priority": 21,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: next-intl installed and configured. Created messages/en.json and messages/ne.json with translations for common strings, home page, nav, footer, search, doctor details, not found, and metadata. Middleware configured for locale detection with 'always' prefix strategy. URL structure /en/... and /ne/... working. Default locale 'en'. Typecheck passes."
     },
     {
       "id": "US-022",

@@ -328,3 +328,26 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - robots directive in metadata provides additional control beyond robots.txt
   - googleBot specific directives like `max-video-preview`, `max-image-preview`, `max-snippet` optimize rich snippets
 ---
+
+## 2026-02-02 21:00 +0545 - US-021
+- **What was implemented**: i18n setup with next-intl configuration
+- **Files changed**:
+  - `apps/web/messages/en.json` - Created English translation file with common, home, nav, footer, search, doctor, notFound, and metadata translations
+  - `apps/web/messages/ne.json` - Created Nepali translation file with same structure as English
+  - `apps/web/src/i18n/config.ts` - Created i18n configuration with locales array, defaultLocale, and localeNames
+  - `apps/web/src/i18n/request.ts` - Created next-intl request configuration using getRequestConfig
+  - `apps/web/src/middleware.ts` - Created middleware for locale detection with localePrefix: 'always'
+  - `apps/web/next.config.mjs` - Updated to use createNextIntlPlugin wrapper
+  - `apps/web/src/app/[lang]/layout.tsx` - Updated to use NextIntlClientProvider, setRequestLocale, getMessages
+  - `apps/web/package.json` - Added next-intl dependency
+  - `prd.json` - Marked US-021 as passes: true
+- **Learnings for future iterations:**
+  - next-intl uses `getRequestConfig` from `next-intl/server` for async message loading
+  - Use `setRequestLocale(locale)` at the start of layouts/pages to enable static rendering
+  - `NextIntlClientProvider` wraps client components to provide translations via `useTranslations` hook
+  - Middleware uses `localePrefix: 'always'` to enforce /en/ and /ne/ in all URLs
+  - Messages are organized by namespace (common, home, nav, footer, search, etc.) for clean organization
+  - `generateStaticParams` should export all supported locales for static generation
+  - The i18n config exports types (`Locale`) for type-safe locale handling
+  - next-intl plugin wraps Next.js config: `withNextIntl(nextConfig)`
+---
