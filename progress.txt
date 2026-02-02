@@ -420,3 +420,24 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Set `allowDangerousEmailAccountLinking: true` on Google provider to allow linking existing accounts
   - bcryptjs v3+ has built-in TypeScript types - no need for @types/bcryptjs
 ---
+
+## 2026-02-02 01:15 +0545 - US-026
+- **What was implemented**: Login and Register pages with Bauhaus design styling
+- **Files changed**:
+  - `apps/web/src/app/[lang]/login/page.tsx` - Login page with email/password form, Google OAuth, error handling
+  - `apps/web/src/app/[lang]/register/page.tsx` - Register page with name/email/password/confirm form, Google OAuth, auto-login after registration
+  - `apps/web/messages/en.json` - Added auth namespace translations
+  - `apps/web/messages/ne.json` - Added auth namespace translations in Nepali
+  - `apps/web/src/lib/auth.ts` - Updated signIn page path to /en/login (with language prefix)
+  - `prd.json` - Marked US-026 as passes: true
+- **Learnings for future iterations:**
+  - Use `useParams<{ lang: string }>()` hook in client components to get dynamic route params
+  - Form inputs with Bauhaus styling: `border-4 border-foreground focus:outline-none focus:border-primary-blue`
+  - Labels use `text-xs font-bold uppercase tracking-widest` for consistent Bauhaus typography
+  - Error messages displayed in `bg-primary-red/10 border-2 border-primary-red text-primary-red` boxes
+  - NextAuth `signIn("credentials", ...)` returns result object with `ok` and `error` properties when `redirect: false`
+  - Decorative side panels use geometric shapes: circles (border-8 border-white/20), squares (rotate-12), triangles (clip-path)
+  - Google OAuth button uses same styling as outline Button variant
+  - Auth pages don't need header/footer from layout - they have their own full-page design
+  - Auto-login after registration uses signIn with redirect: false, then router.push and router.refresh
+---
