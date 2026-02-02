@@ -2875,3 +2875,85 @@ Created comprehensive database models for Phase 4 features:
 - Lab order status badges: ORDERED (yellow), SAMPLE_COLLECTED (blue), PROCESSING (orange), COMPLETED (green)
 
 ---
+## 2026-02-02 - US-104
+**IPD: Bed and admission management**
+
+### What was implemented
+- Ward Management Page (/clinic/dashboard/ipd):
+  - Ward list with CRUD operations (create, read, update, delete)
+  - Ward types: GENERAL, SEMI_PRIVATE, PRIVATE, ICU, NICU, PICU, CCU, EMERGENCY, MATERNITY, PEDIATRIC
+  - Stats overview: total beds, occupied beds, available beds
+  - Ward cards showing occupancy progress bar and bed counts
+  - Add/Edit Ward modal with form validation
+  - Bilingual support (EN/NE)
+  
+- Bed Management Page (/clinic/dashboard/ipd/beds):
+  - Visual bed map with color-coded status tiles
+  - Bed status: AVAILABLE (green), OCCUPIED (red), RESERVED (yellow), MAINTENANCE (gray)
+  - Ward filter dropdown
+  - Bed details: number, ward, daily rate, features (Oxygen, Monitor, AC, etc.)
+  - Patient info display for occupied beds
+  - Add/Edit Bed modal with features tagging
+  - Legend for status colors
+  
+- Admission Form Page (/clinic/dashboard/ipd/admit):
+  - Step 1: Patient search by name, phone, or patient number
+  - Step 2: Available bed selection with ward filtering
+  - Step 3: Admission details (doctors, diagnosis, complaint, notes)
+  - Doctor selection from clinic-affiliated doctors
+  - Auto-generated admission number (ADM-YYYYMM-NNNN format)
+  - Bed status automatically updated to OCCUPIED on admission
+  
+- Admissions List Page (/clinic/dashboard/ipd/admissions):
+  - Filter tabs: Current (ADMITTED), Discharged, All
+  - Admission cards with patient info, bed, ward, dates, doctor, diagnosis
+  - Status badges with color coding
+  - View Details and Discharge action buttons
+  
+- Admission Detail Page (/clinic/dashboard/ipd/admissions/[id]):
+  - Patient information section
+  - Admission information section (dates, bed, ward, doctors, diagnosis)
+  - Discharge information section (for discharged patients)
+  - Stay duration calculation
+  - Print summary functionality
+  
+- Discharge Page (/clinic/dashboard/ipd/admissions/[id]/discharge):
+  - Discharge type selection: Normal, LAMA, Referred, Expired, Absconded
+  - Final diagnosis input
+  - Discharge summary (required)
+  - Post-discharge instructions
+  - Confirmation dialog
+  - Automatic bed release (status → AVAILABLE) on discharge
+
+### API Endpoints created
+- GET/POST/PATCH/DELETE /api/clinic/ipd/wards - Ward CRUD
+- GET/POST/PATCH/DELETE /api/clinic/ipd/beds - Bed CRUD
+- GET/POST /api/clinic/ipd/admissions - Admissions list and create
+- POST /api/clinic/ipd/admissions/[id]/discharge - Discharge patient
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/ipd/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/ipd/beds/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/ipd/admit/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/ipd/admissions/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/ipd/admissions/[id]/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/ipd/admissions/[id]/discharge/page.tsx (NEW)
+- apps/web/src/app/api/clinic/ipd/wards/route.ts (NEW)
+- apps/web/src/app/api/clinic/ipd/beds/route.ts (NEW)
+- apps/web/src/app/api/clinic/ipd/admissions/route.ts (NEW)
+- apps/web/src/app/api/clinic/ipd/admissions/[id]/discharge/route.ts (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/page.tsx (MODIFIED - added IPD quick action)
+
+### Learnings for future iterations
+- Ward, Bed, Admission models already exist in schema (created in US-099)
+- WardType, BedStatus, AdmissionStatus enums from @swasthya/database
+- Admission number format: ADM-YYYYMM-NNNN (sequential per clinic per month)
+- Patient can only have one active admission (status=ADMITTED) at a time
+- Bed status managed via transactions: admission creates → OCCUPIED, discharge → AVAILABLE
+- Verify doctor affiliation via ClinicDoctor junction table before admission
+- Use composite unique constraint clinic_id_name for ward names
+- Use composite unique constraint ward_id_bed_number for bed numbers
+- DISCHARGE_TYPES: Normal, LAMA, Referred, Expired, Absconded
+- Protected route pattern: check session, find verified clinic by claimed_by_id
+
+---

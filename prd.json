@@ -1924,8 +1924,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 104,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Ward management page with CRUD operations and ward types (General, ICU, NICU, PICU, CCU, etc.). Visual bed map with color-coded status (Available, Occupied, Reserved, Maintenance). Admission form with patient search, available bed selection, doctor assignment. Discharge page with discharge type, final diagnosis, summary, and post-discharge instructions. API endpoints for wards, beds, admissions, and discharge. IPD link added to clinic dashboard quick actions. Typecheck passes."
     },
     {
       "id": "US-105",
