@@ -435,8 +435,8 @@
         "Typecheck passes"
       ],
       "priority": 25,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: NextAuth.js v4 with Prisma adapter. Credentials provider for email/password login with bcryptjs hashing. Google OAuth provider configured (needs GOOGLE_CLIENT_ID/SECRET env vars). API routes at /api/auth/[...nextauth] and /api/auth/register. Session stored in database with custom session callback adding user.id and user.role. Added Account, Session, VerificationToken models and emailVerified/image fields to User. Typecheck passes."
     },
     {
       "id": "US-026",

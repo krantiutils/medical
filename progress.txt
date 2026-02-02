@@ -395,3 +395,28 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Category badge uses different colors: blue for Graduate, yellow bg for Assistant
   - Registration date shown for pharmacists instead of degree (pharmacists don't have degree field populated)
 ---
+
+## 2026-02-02 00:30 +0545 - US-025
+- **What was implemented**: NextAuth.js authentication setup with credentials and Google OAuth
+- **Files changed**:
+  - `apps/web/package.json` - Added next-auth, @auth/prisma-adapter, bcryptjs dependencies
+  - `packages/database/prisma/schema.prisma` - Added Account, Session, VerificationToken models; emailVerified and image fields to User
+  - `packages/database/prisma/migrations/20260202030000_add_nextauth_models/migration.sql` - Migration for NextAuth models
+  - `apps/web/src/lib/auth.ts` - NextAuth configuration with Prisma adapter, credentials provider, Google provider
+  - `apps/web/src/app/api/auth/[...nextauth]/route.ts` - NextAuth API route handler
+  - `apps/web/src/app/api/auth/register/route.ts` - User registration API endpoint
+  - `apps/web/src/types/next-auth.d.ts` - TypeScript declarations for custom session with user.id and user.role
+  - `.env.example` - Updated with NEXTAUTH_SECRET, NEXTAUTH_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+  - `prd.json` - Marked US-025 as passes: true
+- **Learnings for future iterations:**
+  - For Next.js 14, use next-auth v4 (not v5/auth.js which is still in beta)
+  - Prisma adapter requires Account, Session, VerificationToken models with specific field names
+  - Use `strategy: "database"` in session config for database-backed sessions
+  - Credentials provider requires custom authorize function - it doesn't handle registration
+  - Create separate /api/auth/register endpoint for user creation with bcryptjs hashing
+  - Use `@auth/prisma-adapter` not `@next-auth/prisma-adapter` (the latter is deprecated)
+  - Extend NextAuth types in src/types/next-auth.d.ts using module augmentation
+  - Session callback runs on every session fetch - use it to add custom user data like role
+  - Set `allowDangerousEmailAccountLinking: true` on Google provider to allow linking existing accounts
+  - bcryptjs v3+ has built-in TypeScript types - no need for @types/bcryptjs
+---
