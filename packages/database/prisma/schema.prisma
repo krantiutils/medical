@@ -28,17 +28,62 @@ enum VerificationStatus {
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
+  emailVerified DateTime?
   phone         String?
   password_hash String?
   name          String?
+  image         String?
   role          UserRole  @default(USER)
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
 
-  // Relations
+  // NextAuth relations
+  accounts      Account[]
+  sessions      Session[]
+
+  // App relations
   verification_requests  VerificationRequest[] @relation("UserRequests")
   reviewed_verifications VerificationRequest[] @relation("ReviewedBy")
   claimed_professionals  Professional[]        @relation("ClaimedBy")
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 model Professional {
