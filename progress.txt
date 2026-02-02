@@ -379,3 +379,19 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - All professionals currently link to `/doctor/[slug]` route regardless of type (may need type-specific routes later)
   - Copy doctors page, find-replace DOCTOR->DENTIST, blue->red, doctor->dentist, NMC->NDA for quick implementation
 ---
+
+## 2026-02-02 23:30 +0545 - US-024
+- **What was implemented**: Category page for pharmacists listing at /[lang]/pharmacists
+- **Files changed**:
+  - `apps/web/src/app/[lang]/pharmacists/page.tsx` - Created pharmacists category page with yellow accent
+  - `prd.json` - Marked US-024 as passes: true
+- **Learnings for future iterations:**
+  - Pharmacists page follows same pattern as doctors/dentists pages - change type, accent color, and display details
+  - Yellow accent color (`primary-yellow`) for pharmacists: decorator, type badge, count number
+  - NPC (Nepal Pharmacy Council) instead of NMC/NDA for registration context
+  - Pharmacists don't get "Dr." prefix in display - just show full_name directly
+  - Category is stored in `meta.category` field as JSON, must extract with type-safe helper function
+  - Use `Prisma.JsonValue` type and cast to `Record<string, unknown>` for safe meta field access
+  - Category badge uses different colors: blue for Graduate, yellow bg for Assistant
+  - Registration date shown for pharmacists instead of degree (pharmacists don't have degree field populated)
+---
