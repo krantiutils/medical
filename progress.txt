@@ -2506,3 +2506,46 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Purchase receiving is different from stock adjustment - adjustments change existing batch quantities, receiving creates new batches
 
 ---
+
+## 2026-02-02 - US-096
+**Credit sales: Khata management**
+
+### What was implemented
+- Credit accounts management page at `/[lang]/clinic/dashboard/pharmacy/khata`:
+  - Customer CRUD (create, read, update, delete)
+  - Search and filter by status
+  - Summary stats (total accounts, total outstanding, active credit)
+  - Payment recording modal with amount and notes
+  - View ledger navigation to individual customer page
+  - Activate/deactivate accounts
+  - Delete protection for accounts with balance or transactions
+- Customer ledger view page at `/[lang]/clinic/dashboard/pharmacy/khata/[id]`:
+  - Customer details card with contact info and credit limit
+  - Outstanding balance display with Record Payment button
+  - Transaction history table with debit/credit columns
+  - Recent credit sales section
+  - Print ledger functionality
+  - Export to CSV functionality
+- API endpoints:
+  - GET /api/clinic/pharmacy/credit-accounts/[id] - Get account with transactions
+  - PUT /api/clinic/pharmacy/credit-accounts/[id] - Update account
+  - DELETE /api/clinic/pharmacy/credit-accounts/[id] - Delete account (protected)
+  - POST /api/clinic/pharmacy/credit-accounts/[id]/payment - Record payment
+- Bilingual support (EN/NE) for all UI elements
+- Bauhaus styling consistent with design system
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/pharmacy/khata/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/pharmacy/khata/[id]/page.tsx (NEW)
+- apps/web/src/app/api/clinic/pharmacy/credit-accounts/[id]/route.ts (NEW)
+- apps/web/src/app/api/clinic/pharmacy/credit-accounts/[id]/payment/route.ts (NEW)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Credit sale functionality in POS was already implemented in US-093
+- CreditAccount and CreditTransaction models already exist in schema
+- Use Prisma $transaction for atomic balance updates with transaction logging
+- Delete protection important for accounts with transaction history
+- Print ledger uses window.open() with document.write() for printer-friendly format
+- CSV export uses Blob and createElement('a') for download
+---

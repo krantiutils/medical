@@ -1784,8 +1784,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 96,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Credit accounts management page at /[lang]/clinic/dashboard/pharmacy/khata with customer CRUD, payment recording, and statistics. Customer ledger view at /[lang]/clinic/dashboard/pharmacy/khata/[id] with transaction history, print ledger, CSV export. API endpoints: GET/PUT/DELETE /api/clinic/pharmacy/credit-accounts/[id] for account management, POST /api/clinic/pharmacy/credit-accounts/[id]/payment for payment recording. Credit sale in POS already implemented (US-093). Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-097",
