@@ -21,6 +21,11 @@ export const TEST_DATA = {
     password: "AdminPassword123!",
     name: "Admin User",
   },
+  CLINIC_OWNER: {
+    email: "clinicowner@example.com",
+    password: "ClinicOwner123!",
+    name: "Clinic Owner",
+  },
 
   // Test professional slugs (doctors)
   DOCTORS: {
@@ -52,6 +57,14 @@ export const TEST_DATA = {
     UNCLAIMED: "99999",
     INVALID: "INVALID12345",
   },
+
+  // Test clinics
+  CLINICS: {
+    DASHBOARD_CLINIC: {
+      name: "Dashboard Test Clinic",
+      slug: "dashboard-test-clinic",
+    },
+  },
 };
 
 /**
@@ -61,6 +74,7 @@ export const test = base.extend<{
   authenticatedPage: Page;
   adminPage: Page;
   professionalPage: Page;
+  clinicOwnerPage: Page;
 }>({
   /**
    * Provides a page with a regular user logged in
@@ -86,6 +100,18 @@ export const test = base.extend<{
       page,
       TEST_DATA.PROFESSIONAL.email,
       TEST_DATA.PROFESSIONAL.password
+    );
+    await use(page);
+  },
+
+  /**
+   * Provides a page with a clinic owner logged in
+   */
+  clinicOwnerPage: async ({ page }, use) => {
+    await login(
+      page,
+      TEST_DATA.CLINIC_OWNER.email,
+      TEST_DATA.CLINIC_OWNER.password
     );
     await use(page);
   },

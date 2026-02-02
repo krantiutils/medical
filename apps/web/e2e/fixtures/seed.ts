@@ -51,6 +51,12 @@ export const SEED_DATA = {
       name: "Admin User",
       role: UserRole.ADMIN,
     },
+    CLINIC_OWNER: {
+      email: "clinicowner@example.com",
+      password: "ClinicOwner123!",
+      name: "Clinic Owner",
+      role: UserRole.USER,
+    },
   },
 
   // Test doctors (5 total)
@@ -211,6 +217,18 @@ export const SEED_DATA = {
       services: ["Pharmacy"],
       verified: true, // Already verified
     },
+    {
+      name: "Dashboard Test Clinic",
+      slug: "dashboard-test-clinic",
+      type: ClinicType.POLYCLINIC,
+      address: "Kathmandu, Nepal",
+      phone: "9812345678",
+      email: "dashboardclinic@example.com",
+      website: "https://dashboardclinic.example.com",
+      services: ["General Consultation", "Specialist Consultation", "Lab Tests"],
+      verified: true, // Verified clinic for dashboard tests
+      ownerType: "CLINIC_OWNER", // Special marker for clinic owner
+    },
   ],
 };
 
@@ -230,6 +248,12 @@ export const TEST_CLINIC_NAME = SEED_DATA.CLINICS[0].name;
 export const TEST_CLINIC_SLUG = SEED_DATA.CLINICS[0].slug;
 export const TEST_HOSPITAL_NAME = SEED_DATA.CLINICS[1].name;
 export const TEST_HOSPITAL_SLUG = SEED_DATA.CLINICS[1].slug;
+
+// Clinic owner and dashboard clinic constants
+export const TEST_CLINIC_OWNER_EMAIL = SEED_DATA.USERS.CLINIC_OWNER.email;
+export const TEST_CLINIC_OWNER_PASSWORD = SEED_DATA.USERS.CLINIC_OWNER.password;
+export const TEST_DASHBOARD_CLINIC_NAME = SEED_DATA.CLINICS[3].name;
+export const TEST_DASHBOARD_CLINIC_SLUG = SEED_DATA.CLINICS[3].slug;
 
 /**
  * Seed test users
@@ -473,10 +497,18 @@ async function seedVerificationRequests(
 /**
  * Seed test clinics for admin verification tests
  */
-async function seedClinics(ownerUserId: string): Promise<Map<string, string>> {
+async function seedClinics(
+  ownerUserId: string,
+  clinicOwnerUserId: string
+): Promise<Map<string, string>> {
   const clinicIds = new Map<string, string>();
 
   for (const clinicData of SEED_DATA.CLINICS) {
+    // Determine which user should own this clinic
+    const ownerId = (clinicData as { ownerType?: string }).ownerType === "CLINIC_OWNER"
+      ? clinicOwnerUserId
+      : ownerUserId;
+
     // Check if clinic already exists
     const existing = await prisma.clinic.findUnique({
       where: { slug: clinicData.slug },
@@ -495,7 +527,7 @@ async function seedClinics(ownerUserId: string): Promise<Map<string, string>> {
           website: clinicData.website,
           services: clinicData.services,
           verified: clinicData.verified,
-          claimed_by_id: ownerUserId,
+          claimed_by_id: ownerId,
         },
       });
       clinicIds.set(clinicData.slug, clinic.id);
@@ -514,7 +546,7 @@ async function seedClinics(ownerUserId: string): Promise<Map<string, string>> {
           timings: {},
           photos: [],
           verified: clinicData.verified,
-          claimed_by_id: ownerUserId,
+          claimed_by_id: ownerId,
         },
       });
       clinicIds.set(clinicData.slug, clinic.id);
@@ -522,6 +554,51 @@ async function seedClinics(ownerUserId: string): Promise<Map<string, string>> {
   }
 
   return clinicIds;
+}
+
+/**
+ * Seed clinic doctors for the dashboard test clinic
+ */
+async function seedClinicDoctors(
+  clinicIds: Map<string, string>,
+  professionalIds: Map<string, string>
+): Promise<void> {
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping clinic doctors seeding");
+    return;
+  }
+
+  // Delete existing clinic doctors for this clinic
+  await prisma.clinicDoctor.deleteMany({
+    where: { clinic_id: dashboardClinicId },
+  });
+
+  // Add first two verified doctors to the dashboard clinic
+  const doctor1Id = professionalIds.get("DOCTOR_12345"); // Dr. Ram Sharma
+  const doctor2Id = professionalIds.get("DOCTOR_12346"); // Dr. Sita Thapa
+
+  if (doctor1Id) {
+    await prisma.clinicDoctor.create({
+      data: {
+        clinic_id: dashboardClinicId,
+        doctor_id: doctor1Id,
+        role: "permanent",
+        joined_at: new Date("2024-01-01"),
+      },
+    });
+  }
+
+  if (doctor2Id) {
+    await prisma.clinicDoctor.create({
+      data: {
+        clinic_id: dashboardClinicId,
+        doctor_id: doctor2Id,
+        role: "visiting",
+        joined_at: new Date("2024-06-01"),
+      },
+    });
+  }
 }
 
 /**
@@ -533,8 +610,41 @@ async function cleanupTestData(): Promise<void> {
   await prisma.auditLog.deleteMany({});
   await prisma.verificationRequest.deleteMany({});
 
-  // Delete test clinics
+  // Delete clinic doctors (before clinics and professionals)
   const testClinicSlugs = SEED_DATA.CLINICS.map((c) => c.slug);
+  await prisma.clinicDoctor.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  // Delete doctor schedules
+  await prisma.doctorSchedule.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  // Delete doctor leaves
+  await prisma.doctorLeave.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  // Delete test clinics
   await prisma.clinic.deleteMany({
     where: {
       slug: {
@@ -611,8 +721,9 @@ export async function seedTestData(): Promise<{
   // Create verification requests with different statuses
   const regularUserId = userIds.get("REGULAR");
   const adminUserId = userIds.get("ADMIN");
+  const clinicOwnerUserId = userIds.get("CLINIC_OWNER");
 
-  if (!regularUserId || !adminUserId) {
+  if (!regularUserId || !adminUserId || !clinicOwnerUserId) {
     throw new Error("Failed to get user IDs for verification requests");
   }
 
@@ -623,9 +734,14 @@ export async function seedTestData(): Promise<{
   );
   console.log("  ✓ Seeded verification requests (pending, approved, rejected)");
 
-  // Seed test clinics (owned by regular user for testing admin verification)
-  const clinicIds = await seedClinics(regularUserId);
+  // Seed test clinics (owned by regular user for testing admin verification,
+  // with dashboard test clinic owned by clinic owner)
+  const clinicIds = await seedClinics(regularUserId, clinicOwnerUserId);
   console.log(`  ✓ Seeded ${clinicIds.size} clinics`);
+
+  // Seed clinic doctors for dashboard test clinic
+  await seedClinicDoctors(clinicIds, professionalIds);
+  console.log("  ✓ Seeded clinic doctors for dashboard test clinic");
 
   console.log("✅ Test data seeding complete!");
 
