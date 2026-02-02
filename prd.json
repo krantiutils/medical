@@ -1696,8 +1696,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 91,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Product catalog CRUD page at /clinic/dashboard/pharmacy/products with search (name, generic name, barcode, manufacturer), filter (category, supplier, active status), pagination, barcode generation (EAN-13), stock levels and nearest expiry display, low stock and expiring soon indicators, deactivate/reactivate. Supplier management page at /clinic/dashboard/pharmacy/suppliers with CRUD, search, filter, products/batches count. API endpoints: GET/POST/PUT/DELETE /api/clinic/pharmacy/products and /api/clinic/pharmacy/suppliers. Bilingual support (EN/NE). Bauhaus design system. Typecheck passes."
     },
     {
       "id": "US-092",
@@ -1715,8 +1715,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 92,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: POS page at /clinic/dashboard/pharmacy/pos with cart and product search layout. Barcode scanner input with Enter key submission, product search by name/generic/barcode. FEFO (First Expired First Out) batch auto-selection - sorts available batches by expiry and picks earliest. Cart management with quantity +/- controls, max quantity validation. Item-level and bill-level discount (percent or amount). Multiple payment modes (Cash, Card, UPI, Bank Transfer, Credit/Khata). Credit account management with customer creation. Receipt printing via new window with print dialog. API endpoints: GET /api/clinic/pharmacy/pos/search, POST /api/clinic/pharmacy/pos/sale, GET/POST /api/clinic/pharmacy/credit-accounts. Sale processing deducts inventory from batches, creates CreditTransaction for credit sales. Bilingual support (EN/NE). Bauhaus design system. Typecheck passes."
     },
     {
       "id": "US-093",

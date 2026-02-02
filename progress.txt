@@ -2238,3 +2238,122 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - All pharmacy models are scoped to Clinic for multi-tenant support
 
 ---
+
+## 2026-02-02 - US-091
+**Pharmacy: Product and supplier management**
+
+### What was implemented
+- Created Products catalog page at /[lang]/clinic/dashboard/pharmacy/products:
+  - Full CRUD operations for products
+  - Search by name, generic name, barcode, manufacturer
+  - Filter by category (Medicine, Medical Device, Cosmetic, Ayurvedic, etc.)
+  - Filter by supplier (from active suppliers list)
+  - Filter by active/inactive status
+  - Pagination support (20 items per page)
+  - Barcode generation (EAN-13 format with 890 prefix for India/Nepal)
+  - Display stock levels calculated from active batches
+  - Display nearest expiry date from batches
+  - Low stock indicator (when totalStock <= min_stock_level)
+  - Expiring soon indicator (within 30 days)
+  - Deactivate/reactivate products (cannot delete if has stock)
+  - Modal form with all product fields (name, generic name, manufacturer, category, schedule, barcode, HSN code, GST rate, unit, pack size, min/max stock, storage info, description, supplier)
+  - Bilingual support (EN/NE)
+
+- Created Suppliers management page at /[lang]/clinic/dashboard/pharmacy/suppliers:
+  - Full CRUD operations for suppliers
+  - Search by name, contact person, phone
+  - Filter by active/inactive status
+  - Track products and batches count per supplier
+  - Contact info (name, phone, email)
+  - Business info (address, GSTIN, PAN number, payment terms)
+  - Notes field for additional information
+  - Deactivate/reactivate suppliers (cannot delete if has products or batches)
+  - Modal form with all supplier fields
+  - Bilingual support (EN/NE)
+
+- Created API endpoints:
+  - GET /api/clinic/pharmacy/products - List with search/filter/pagination
+  - POST /api/clinic/pharmacy/products - Create product
+  - PUT /api/clinic/pharmacy/products - Update product
+  - DELETE /api/clinic/pharmacy/products?id=X - Delete product (only if no stock)
+  - GET /api/clinic/pharmacy/suppliers - List with search/filter
+  - POST /api/clinic/pharmacy/suppliers - Create supplier
+  - PUT /api/clinic/pharmacy/suppliers - Update supplier
+  - DELETE /api/clinic/pharmacy/suppliers?id=X - Delete supplier (only if no products/batches)
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/pharmacy/products/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/pharmacy/suppliers/page.tsx (NEW)
+- apps/web/src/app/api/clinic/pharmacy/products/route.ts (NEW)
+- apps/web/src/app/api/clinic/pharmacy/suppliers/route.ts (NEW)
+
+### Learnings for future iterations
+- Products with existing stock cannot be deleted, only deactivated - prevents data loss in sales history
+- Suppliers with products or inventory batches cannot be deleted for same reason
+- EAN-13 barcode generation uses 890 prefix (India/Nepal country code) + 9 random digits + check digit
+- Product stock is calculated dynamically from active batches (batches where is_active=true and quantity>0)
+- Nearest expiry date is calculated from batches sorted by expiry_date ascending
+- Use Prisma include with _count to efficiently get related counts for suppliers
+- Products page calculates totalStock, nearestExpiry, and batchCount on the fly from batches relation
+- Filter state resets pagination to page 1 when changed to avoid empty results
+- Modal forms follow established pattern from clinic dashboard (doctors/schedules pages)
+
+---
+
+## 2026-02-02 - US-092
+**Pharmacy POS: Billing interface**
+
+### What was implemented
+- Created Pharmacy POS page at /clinic/dashboard/pharmacy/pos with:
+  - Split layout: product search on left, cart and payment on right
+  - Barcode scanner input with Enter key submission for quick product lookup
+  - Product search by name, generic name, or barcode with auto-complete dropdown
+  - FEFO (First Expired First Out) batch auto-selection - automatically picks batch expiring soonest
+  - Cart management with:
+    - Quantity increment/decrement controls
+    - Max quantity validation against available stock
+    - Per-item discount (percent or fixed amount)
+    - Item removal
+    - Real-time total calculation
+  - Bill-level discount (percent or fixed amount)
+  - GST calculation per item based on product GST rate
+  - Multiple payment modes: Cash, Card, UPI, Bank Transfer, Credit (Khata)
+  - Credit/Khata sales with:
+    - Customer account selection dropdown
+    - New customer account creation inline
+    - Customer balance display
+  - Receipt printing via new browser window with print dialog
+  - Sale completion screen with sale number, totals, and change amount
+  - Bilingual support (EN/NE) for all UI text
+  - Bauhaus design system styling with Card components
+
+- Created API endpoints:
+  - GET /api/clinic/pharmacy/pos/search - Search products with available batches (not expired, has stock)
+  - POST /api/clinic/pharmacy/pos/sale - Complete sale with:
+    - Stock validation before processing
+    - Sale number generation (SALE-YYYYMMDD-XXXX format)
+    - Inventory deduction from batches (marks batch inactive when depleted)
+    - Credit account balance update for credit sales
+    - CreditTransaction record creation for credit sales
+    - Receipt HTML generation
+  - GET /api/clinic/pharmacy/credit-accounts - List credit accounts for clinic
+  - POST /api/clinic/pharmacy/credit-accounts - Create new credit account with duplicate phone validation
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/pharmacy/pos/page.tsx (NEW)
+- apps/web/src/app/api/clinic/pharmacy/pos/search/route.ts (NEW)
+- apps/web/src/app/api/clinic/pharmacy/pos/sale/route.ts (NEW)
+- apps/web/src/app/api/clinic/pharmacy/credit-accounts/route.ts (NEW)
+
+### Learnings for future iterations
+- FEFO (First Expired First Out) is implemented by sorting batches by expiry_date ascending and picking the first one
+- Cart items track batch_id to ensure stock is deducted from correct batch
+- Use `prisma.$transaction` for sale processing to ensure atomicity - if any step fails, entire sale is rolled back
+- Card component uses `decorator` prop (not `decoratorColor`) for corner color decorators
+- CreditTransaction model requires `credit_account_id` (not `account_id`) and `clinic_id` fields
+- Sale number format uses YYYYMMDD for date prefix to enable easy date-based queries
+- Receipt HTML is generated server-side and returned to client for printing
+- Payment mode 'CREDIT' sets amount_paid=0 and creates credit transaction; other modes require sufficient payment
+- Barcode input should auto-focus on page load and after scan for efficient workflow
+
+---
