@@ -1024,3 +1024,45 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Success page uses searchParams to display clinic details and shows pending verification steps
 
 ---
+
+## 2026-02-02 - US-063
+**Admin: Clinic verification list**
+
+### What was implemented
+- Created GET /api/admin/clinics API endpoint that:
+  - Checks authentication via getServerSession
+  - Verifies admin role by querying User table
+  - Returns unverified clinics (verified=false) with claimed_by user data
+  - Orders by created_at ascending (oldest first)
+- Created /[lang]/admin/clinics page with:
+  - Role-based access control (admin only) with login prompt, access denied states
+  - List of pending clinic registrations with:
+    - Logo or initial avatar
+    - Type badge (CLINIC/POLYCLINIC/HOSPITAL/PHARMACY) with color coding
+    - Clinic name and address
+    - Owner name and email
+    - Submitted date
+  - View Details button opens modal with:
+    - Full clinic details (address, phone, email, website)
+    - Services list as tags
+    - Logo preview
+    - Photos grid
+    - Owner information
+  - Link to public clinic page (opens in new tab)
+  - Count badge showing number of pending clinics
+  - Empty state with checkmark icon when no pending clinics
+- Bilingual support (EN/NE) for all labels and messages
+
+### Files changed
+- apps/web/src/app/api/admin/clinics/route.ts (NEW)
+- apps/web/src/app/[lang]/admin/clinics/page.tsx (NEW)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Admin pages follow consistent pattern: useSession hook, status checks for loading/unauthenticated/non-admin states
+- API endpoints should check admin role by querying database, not just session (session might be stale)
+- Clinic model uses claimed_by relation for owner, not a separate owner_id field
+- ClinicType enum colors: CLINIC/POLYCLINIC = blue, HOSPITAL = red, PHARMACY = yellow
+- Modal pattern: fixed inset-0 z-50 with centered content box using border-4 and shadow-[8px_8px_0_0_#121212]
+
+---

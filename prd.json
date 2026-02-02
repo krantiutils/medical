@@ -1200,8 +1200,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 63,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Admin clinics page at /[lang]/admin/clinics with role-based access control (admin only). API endpoint GET /api/admin/clinics returns unverified clinics with owner details. Lists all clinics with verified=false, showing name, type badge (color-coded), address, submitted date, owner email/name. View Details modal shows clinic details, services, logo, photos, and owner information. Link to public clinic page. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-064",
