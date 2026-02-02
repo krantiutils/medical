@@ -1427,8 +1427,8 @@
         "Typecheck passes"
       ],
       "priority": 76,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: GET /api/clinic/[id]/slots endpoint with doctor_id and date query params. Calculates slots from DoctorSchedule for the requested day of week. Excludes slots during DoctorLeave (full-day and partial). Excludes slots already booked from Appointment table (SCHEDULED/CHECKED_IN/IN_PROGRESS statuses). Returns array of time slots with availability info (start, end, available, bookedCount, maxPatients). Validates clinic is verified and doctor is affiliated. Blocks past dates and already-passed slots for today. Typecheck passes."
     },
     {
       "id": "US-077",

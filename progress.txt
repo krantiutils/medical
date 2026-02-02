@@ -1541,3 +1541,47 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Use Prisma.InputJsonValue cast for JSON field data in seed functions
 
 ---
+
+## 2026-02-02 - US-076
+**Appointment booking: API for available slots**
+
+### What was implemented
+- Created GET /api/clinic/[id]/slots endpoint at apps/web/src/app/api/clinic/[id]/slots/route.ts
+- Query parameters:
+  - doctor_id (required): The ID of the doctor
+  - date (required): The date in YYYY-MM-DD format
+- Slot calculation from DoctorSchedule:
+  - Gets schedule for the requested day of week (0=Sunday, 6=Saturday)
+  - Checks schedule is active and within effective_from/effective_to dates
+  - Generates time slots based on start_time, end_time, and slot_duration_minutes
+- Exclusion of booked slots:
+  - Queries Appointment table for SCHEDULED/CHECKED_IN/IN_PROGRESS appointments
+  - Counts bookings per slot and marks as unavailable if bookedCount >= maxPatients
+- Exclusion during DoctorLeave:
+  - Queries DoctorLeave for the requested date
+  - Full day leave: all slots unavailable
+  - Partial leave: checks for time overlap between slot and leave period
+- Additional features:
+  - Validates clinic exists and is verified
+  - Validates doctor is affiliated with clinic
+  - Blocks past dates (returns error)
+  - For today's date, marks already-passed slots (+ 15 min buffer) as unavailable
+  - Returns doctor and clinic info along with slots
+- Response structure:
+  - slots: Array of { start, end, available, bookedCount, maxPatients }
+  - doctor: { id, name, type }
+  - clinic: { id, name }
+  - date, dayOfWeek, schedule info
+
+### Files changed
+- apps/web/src/app/api/clinic/[id]/slots/route.ts (NEW)
+
+### Learnings for future iterations
+- Use dynamic route params with `{ params }: { params: Promise<{ id: string }> }` in Next.js 14+ API routes
+- Time comparison using minutes since midnight makes overlap detection cleaner
+- DoctorSchedule uses day_of_week (0-6), matching JavaScript Date.getDay()
+- Partial leave overlap: slot starts before leave ends AND slot ends after leave starts
+- AppointmentStatus enum available from @swasthya/database
+- For booking availability, only count SCHEDULED/CHECKED_IN/IN_PROGRESS appointments (not COMPLETED/CANCELLED/NO_SHOW)
+
+---
