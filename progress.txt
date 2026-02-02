@@ -2666,3 +2666,66 @@ Created comprehensive database models for Phase 4 features:
 - IPD ward types should cover all major hospital departments: ICU, NICU (Neonatal), PICU (Pediatric), CCU (Cardiac), Emergency, Maternity, etc.
 
 ---
+
+## 2026-02-02 - US-100
+**EMR: Consultation interface**
+
+### What was implemented
+- Created consultation list page at /[lang]/clinic/dashboard/consultations with:
+  - Today's Queue section showing CHECKED_IN and IN_PROGRESS appointments
+  - Recent Clinical Notes section with filter (All/Drafts/Finalized)
+  - Start Consultation and Continue buttons from queue
+  - Patient name, doctor, token number, chief complaint display
+  - Status badges for notes (Draft/Final/Amended) and appointments (Checked In/In Progress)
+
+- Created consultation detail page at /[lang]/clinic/dashboard/consultations/[id] with three tabs:
+  - **Vitals Tab**: Height (cm), Weight (kg), BMI (auto-calculated with category: Underweight/Normal/Overweight/Obese), Blood Pressure (systolic/diastolic), Pulse Rate (bpm), Temperature (°C), SpO2 (%), Respiratory Rate (breaths/min)
+  - **Clinical Notes Tab**: Chief Complaint (required for finalize), History of Present Illness (HPI), Past Medical History, Physical Examination, Treatment Plan, Follow-up Date
+  - **Diagnosis Tab**: ICD-10 code search with category filter, search by code or description, add diagnoses, set primary diagnosis, remove diagnoses
+
+- Created /[lang]/clinic/dashboard/consultations/new page that:
+  - Accepts query params: appointment_id, patient_id, doctor_id
+  - Creates new ClinicalNote draft via API
+  - Handles existing note for appointment (redirects to existing)
+  - Redirects to detail page after creation
+
+- Created API endpoints:
+  - GET/POST /api/clinic/clinical-notes - List and create clinical notes
+  - GET/PATCH/DELETE /api/clinic/clinical-notes/[id] - Get, update, delete note
+  - POST /api/clinic/clinical-notes/[id]/finalize - Finalize draft note
+  - GET /api/clinic/icd10?q=query&category=X - Search ICD-10 codes
+
+- ICD-10 database with 100+ common codes organized by category:
+  - Infections, Respiratory, Cardiovascular, Endocrine, Gastrointestinal
+  - Musculoskeletal, Neurological, Mental Health, Dermatology
+  - Genitourinary, Ophthalmology, ENT, Trauma, Symptoms, Preventive
+
+- Implemented auto-save draft functionality:
+  - 2-second debounce on form changes
+  - Visual indicators: "Saving..." and "Auto-saved"
+  - Only saves DRAFT status notes
+
+- Added Consultations quick action to clinic dashboard
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/consultations/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/consultations/[id]/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/consultations/new/page.tsx (NEW)
+- apps/web/src/app/api/clinic/clinical-notes/route.ts (NEW)
+- apps/web/src/app/api/clinic/clinical-notes/[id]/route.ts (NEW)
+- apps/web/src/app/api/clinic/clinical-notes/[id]/finalize/route.ts (NEW)
+- apps/web/src/app/api/clinic/icd10/route.ts (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- ClinicalNote model uses ClinicalNoteStatus enum: DRAFT, FINAL, AMENDED
+- BMI calculation: weight(kg) / (height(m))^2 - display with category labels
+- Blood pressure stored as single string "120/80" but parsed to systolic/diastolic for UI
+- ICD-10 codes use format like "J06.9" - search both code and description
+- Auto-save pattern: useRef for timeout, clear on each change, debounce with setTimeout
+- Finalize flow should validate required fields (chief_complaint) and update appointment status to COMPLETED
+- Use useCallback for functions used in useEffect dependencies
+- LabOrder relation to results is `results`, not `lab_results`
+- Decimal types in Prisma need careful handling - don't compare directly, calculate and assign new values
+
+---

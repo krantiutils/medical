@@ -1853,8 +1853,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 100,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Consultations page at /[lang]/clinic/dashboard/consultations showing today's queue and recent clinical notes. Detail page at /[lang]/clinic/dashboard/consultations/[id] with three tabs: Vitals (height, weight, BMI with auto-calculation and category, blood pressure, pulse, temp, SpO2, respiratory rate), Clinical Notes (chief complaint, HPI, past history, examination, plan, follow-up date), Diagnosis (ICD-10 search with 100+ codes, category filter, primary diagnosis selection). Auto-save draft with 2-second debounce. Finalize flow with chief complaint validation. API endpoints at /api/clinic/clinical-notes for CRUD and /api/clinic/icd10 for diagnosis search. Consultations quick action added to clinic dashboard. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-101",
