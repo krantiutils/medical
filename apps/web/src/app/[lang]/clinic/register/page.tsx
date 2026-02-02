@@ -9,6 +9,37 @@ import { Button } from "@/components/ui/button";
 
 type ClinicType = "CLINIC" | "POLYCLINIC" | "HOSPITAL" | "PHARMACY";
 
+// Operating hours types
+interface DaySchedule {
+  isOpen: boolean;
+  openTime: string;
+  closeTime: string;
+}
+
+type WeeklySchedule = {
+  [key: string]: DaySchedule;
+};
+
+const DAYS_OF_WEEK = [
+  { key: "sunday", labelEn: "Sunday", labelNe: "आइतबार" },
+  { key: "monday", labelEn: "Monday", labelNe: "सोमबार" },
+  { key: "tuesday", labelEn: "Tuesday", labelNe: "मंगलबार" },
+  { key: "wednesday", labelEn: "Wednesday", labelNe: "बुधबार" },
+  { key: "thursday", labelEn: "Thursday", labelNe: "बिहिबार" },
+  { key: "friday", labelEn: "Friday", labelNe: "शुक्रबार" },
+  { key: "saturday", labelEn: "Saturday", labelNe: "शनिबार" },
+];
+
+const DEFAULT_SCHEDULE: WeeklySchedule = {
+  sunday: { isOpen: false, openTime: "09:00", closeTime: "17:00" },
+  monday: { isOpen: false, openTime: "09:00", closeTime: "17:00" },
+  tuesday: { isOpen: false, openTime: "09:00", closeTime: "17:00" },
+  wednesday: { isOpen: false, openTime: "09:00", closeTime: "17:00" },
+  thursday: { isOpen: false, openTime: "09:00", closeTime: "17:00" },
+  friday: { isOpen: false, openTime: "09:00", closeTime: "17:00" },
+  saturday: { isOpen: false, openTime: "09:00", closeTime: "17:00" },
+};
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_PHOTOS = 5;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
@@ -52,6 +83,7 @@ export default function ClinicRegisterPage() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [operatingHours, setOperatingHours] = useState<WeeklySchedule>(DEFAULT_SCHEDULE);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -129,6 +161,17 @@ export default function ClinicRegisterPage() {
     dragDropHint: isNepali
       ? "वा यहाँ तान्नुहोस् र छोड्नुहोस्"
       : "or drag and drop here",
+    // Operating hours translations
+    operatingHoursLabel: isNepali ? "खुल्ने समय" : "Operating Hours",
+    operatingHoursHint: isNepali
+      ? "तपाईंको क्लिनिक कुन दिन र कति बजे खुल्छ भनेर सेट गर्नुहोस्"
+      : "Set which days and times your clinic is open",
+    openLabel: isNepali ? "खुला" : "Open",
+    closedLabel: isNepali ? "बन्द" : "Closed",
+    opensAt: isNepali ? "खुल्ने समय" : "Opens",
+    closesAt: isNepali ? "बन्द हुने समय" : "Closes",
+    to: isNepali ? "देखि" : "to",
+    open24Hours: isNepali ? "२४ घण्टा खुला" : "24 hours",
   };
 
   // Validate single file (logo)
@@ -225,6 +268,28 @@ export default function ClinicRegisterPage() {
     setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Handle operating hours toggle for a day
+  const handleDayToggle = (day: string) => {
+    setOperatingHours((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        isOpen: !prev[day].isOpen,
+      },
+    }));
+  };
+
+  // Handle time change for a day
+  const handleTimeChange = (day: string, field: "openTime" | "closeTime", value: string) => {
+    setOperatingHours((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [field]: value,
+      },
+    }));
+  };
+
   // Validate form
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -291,6 +356,7 @@ export default function ClinicRegisterPage() {
     console.log("Form data:", formData);
     console.log("Logo file:", logoFile);
     console.log("Photo files:", photoFiles);
+    console.log("Operating hours:", operatingHours);
     setIsLoading(false);
   };
 
@@ -744,6 +810,107 @@ export default function ClinicRegisterPage() {
               {errors.photos && (
                 <p className="mt-2 text-sm text-primary-red">{errors.photos}</p>
               )}
+            </div>
+
+            {/* Operating Hours */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2">
+                {t.operatingHoursLabel}
+              </label>
+              <p className="text-xs text-foreground/60 mb-4">{t.operatingHoursHint}</p>
+
+              <div className="border-4 border-foreground bg-white">
+                {DAYS_OF_WEEK.map((day, index) => {
+                  const schedule = operatingHours[day.key];
+                  return (
+                    <div
+                      key={day.key}
+                      className={`flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 ${
+                        index !== DAYS_OF_WEEK.length - 1 ? "border-b-2 border-foreground/20" : ""
+                      }`}
+                    >
+                      {/* Day name and toggle */}
+                      <div className="flex items-center justify-between sm:w-40">
+                        <span className="font-bold text-sm">
+                          {isNepali ? day.labelNe : day.labelEn}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleDayToggle(day.key)}
+                          className={`relative inline-flex h-7 w-14 items-center rounded-none border-2 border-foreground transition-colors ${
+                            schedule.isOpen ? "bg-verified" : "bg-foreground/10"
+                          }`}
+                          aria-label={`Toggle ${day.labelEn}`}
+                        >
+                          <span
+                            className={`inline-block h-5 w-5 transform bg-white border-2 border-foreground transition-transform ${
+                              schedule.isOpen ? "translate-x-7" : "translate-x-1"
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Time inputs or Closed label */}
+                      <div className="flex-1 flex items-center gap-2 sm:gap-3">
+                        {schedule.isOpen ? (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <label
+                                htmlFor={`${day.key}-open`}
+                                className="text-xs text-foreground/60 sr-only"
+                              >
+                                {t.opensAt}
+                              </label>
+                              <input
+                                type="time"
+                                id={`${day.key}-open`}
+                                value={schedule.openTime}
+                                onChange={(e) => handleTimeChange(day.key, "openTime", e.target.value)}
+                                className="px-3 py-2 bg-white border-2 border-foreground text-sm focus:outline-none focus:border-primary-blue"
+                              />
+                            </div>
+                            <span className="text-xs text-foreground/60 font-medium">
+                              {t.to}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <label
+                                htmlFor={`${day.key}-close`}
+                                className="text-xs text-foreground/60 sr-only"
+                              >
+                                {t.closesAt}
+                              </label>
+                              <input
+                                type="time"
+                                id={`${day.key}-close`}
+                                value={schedule.closeTime}
+                                onChange={(e) => handleTimeChange(day.key, "closeTime", e.target.value)}
+                                className="px-3 py-2 bg-white border-2 border-foreground text-sm focus:outline-none focus:border-primary-blue"
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <span className="text-sm text-foreground/50 italic">
+                            {t.closedLabel}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Status indicator */}
+                      <div className="hidden sm:block">
+                        <span
+                          className={`inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider ${
+                            schedule.isOpen
+                              ? "bg-verified/20 text-verified border-2 border-verified"
+                              : "bg-foreground/5 text-foreground/50 border-2 border-foreground/20"
+                          }`}
+                        >
+                          {schedule.isOpen ? t.openLabel : t.closedLabel}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             <Button
