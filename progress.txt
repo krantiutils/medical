@@ -1951,3 +1951,40 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Category filtering is useful for organizing services (Consultation, Test, Procedure, etc.)
 
 ---
+
+## 2026-02-02 - US-085
+**Billing: Daily reports**
+
+### What was implemented
+- Created reports page at /[lang]/clinic/dashboard/reports with:
+  - Collection summary cards showing: total invoices, total collection, paid amount, pending amount, total discount, total tax
+  - Date range filter with quick presets (Today, This Week, This Month, Last 30 Days) and custom date inputs
+  - Payment mode breakdown table showing count and amount by payment mode (Cash, Card, UPI, Bank Transfer, Insurance, Credit)
+  - Daily collection table with date, invoice count, total collection, paid amount, and pending amount
+  - Invoice details table showing last 20 invoices with invoice number, date, patient name, amount, payment mode, and status
+  - CSV export functionality downloading complete report with all invoices and summary
+- Created API endpoint GET /api/clinic/reports:
+  - Accepts dateFrom and dateTo query params (defaults to last 30 days)
+  - Returns summary statistics, payment mode breakdown, payment status breakdown, daily breakdown, and invoice list
+  - Calculates totals for paid/pending/partial payment statuses
+- Updated clinic dashboard:
+  - Added Reports quick action card with chart icon (yellow accent)
+  - Added bilingual translations for reports feature
+- Typecheck passes
+
+### Files changed
+- apps/web/src/app/api/clinic/reports/route.ts (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/reports/page.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/page.tsx (MODIFIED)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Use PaymentStatus.PAID check for total collection calculation, not just total of all invoices
+- Date range quick presets should use setDateFrom/setDateTo separately to avoid stale state
+- CSV export should include both detail rows and summary for complete reporting
+- Bauhaus summary cards work well as a 6-column grid for dashboard metrics
+- formatCurrency helper with toLocaleString("en-NP") for Nepali currency formatting
+- Daily breakdown should be sorted by date descending (most recent first)
+- getPaymentStatusLabel helper maps enum values to localized display text
+
+---
