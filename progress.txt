@@ -1066,3 +1066,48 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Modal pattern: fixed inset-0 z-50 with centered content box using border-4 and shadow-[8px_8px_0_0_#121212]
 
 ---
+
+## 2026-02-02 - US-064
+**Admin: Clinic verification actions**
+
+### What was implemented
+- Created POST /api/admin/clinics/[id] endpoint for approve/reject actions:
+  - Authentication check via getServerSession
+  - Admin role verification by querying User table
+  - Approve action: sets clinic verified=true, sends approval email
+  - Reject action: requires reason, deletes clinic, sends rejection email with reason
+  - Input validation for action type and rejection reason
+- Added clinic verification email templates to email.ts:
+  - clinicVerificationApprovedEmail: green-accented success email with clinic info and next steps
+  - clinicVerificationRejectedEmail: red-accented rejection email with reason and resubmission tips
+  - sendClinicVerificationApprovedEmail and sendClinicVerificationRejectedEmail convenience functions
+  - Bilingual support (EN/NE) for all email content
+- Added audit logging functions to audit.ts:
+  - CLINIC_APPROVED and CLINIC_REJECTED actions added to AuditAction type
+  - logClinicApproved: logs clinic approval with admin ID, owner ID, clinic name
+  - logClinicRejected: logs clinic rejection with admin ID, owner ID, clinic name, rejection reason
+- Updated admin clinics page with approve/reject UI:
+  - Approve and Reject buttons on each clinic card in the list
+  - Approve confirmation modal with green accent bar
+  - Reject modal with red accent bar and required reason textarea
+  - Action loading states with disabled buttons and "Approving..."/"Rejecting..." text
+  - Error handling with inline error display in modals
+  - Removed clinic from list after successful action
+  - Approve/Reject buttons also in the details modal
+
+### Files changed
+- apps/web/src/app/api/admin/clinics/[id]/route.ts (NEW)
+- apps/web/src/lib/email.ts (MODIFIED - added clinic verification email templates)
+- apps/web/src/lib/audit.ts (MODIFIED - added clinic audit actions)
+- apps/web/src/app/[lang]/admin/clinics/page.tsx (MODIFIED - added approve/reject UI)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Clinic rejection deletes the clinic record (unlike professional claim rejection which keeps the request)
+- Modal state management pattern: use modalType state to control which modal is shown
+- Confirmation modals should include context (clinic name, type, address) so admin knows what they're approving/rejecting
+- Rejection reason is required and validated both client-side (button disabled) and server-side (returns 400)
+- Email templates follow established Bauhaus patterns: colored accent bars, geometric bullet points, styled buttons
+- Audit logging for clinics uses same pattern as claims: target_type, target_id, actor_id, metadata JSON
+
+---
