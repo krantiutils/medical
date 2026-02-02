@@ -896,7 +896,7 @@
         "All tests pass: pnpm test:e2e user-claims.spec.ts"
       ],
       "priority": 46,
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {

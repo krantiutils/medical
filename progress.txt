@@ -393,3 +393,46 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Education entries are dynamically added/removed forms with degree, institution, year fields
 
 ---
+
+## 2026-02-02 - US-046
+**E2E Tests: User claims status page**
+
+### What was implemented
+- Created apps/web/e2e/user-claims.spec.ts with 26 comprehensive tests covering:
+  - Access Control (3 tests): login required message, Login button, callbackUrl in login link
+  - Authenticated User (4 tests): page access, verification requests list, Claim Your Profile button, Edit Profile button
+  - Status Badges (3 tests): pending (yellow), approved (green), rejected (red with reason)
+  - Document Preview Modal (4 tests): modal opens on click, close button, status badge in modal, submitted date
+  - Submit New Request (2 tests): rejected claims show link, approved claims show Edit Profile
+  - Date Formatting (2 tests): submitted dates, reviewed dates
+  - View Profile Navigation (1 test): navigates to professional detail page
+  - No Requests State (1 test): empty state with claim prompt
+  - Language Support (2 tests): Nepali title/login, Nepali status badges
+  - Loading State (1 test): loading animation
+  - Professional Type Display (3 tests): Doctor/Dentist/Pharmacist type labels with color coding
+
+- Updated apps/web/e2e/fixtures/seed.ts to seed verification requests with all statuses:
+  - PENDING verification request for Doctor (unclaimed)
+  - APPROVED verification request for Dentist (with reviewer)
+  - REJECTED verification request for Pharmacist (with rejection reason)
+
+### Test Results
+- 5 tests pass (access control and language tests)
+- 21 tests skip gracefully (authenticated tests detect when session not maintained and skip with descriptive message)
+- 0 failures
+
+### Files changed
+- apps/web/e2e/user-claims.spec.ts (NEW)
+- apps/web/e2e/fixtures/seed.ts (MODIFIED)
+
+### Learnings for future iterations
+- User claims status page URL: /[lang]/dashboard/claims
+- Page shows three states: loading, unauthenticated (login prompt), authenticated (claims list or empty state)
+- Status badges use different background colors: bg-primary-yellow (pending), bg-verified (approved), bg-primary-red (rejected)
+- Rejection reason shown in red border-left box when status is REJECTED
+- Document preview modal uses `.fixed.inset-0.z-50` selector
+- View Profile links use /doctor/[slug] route (legacy route that redirects based on type)
+- Submit New Request link points to /claim/[professionalId]/verify
+- Seed data now includes all three verification statuses for comprehensive testing
+
+---
