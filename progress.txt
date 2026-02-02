@@ -436,3 +436,39 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Seed data now includes all three verification statuses for comprehensive testing
 
 ---
+
+## 2026-02-02 - US-047
+**E2E Tests: Language switching (i18n)**
+
+### What was implemented
+- Created apps/web/e2e/i18n.spec.ts with 36 comprehensive tests covering:
+  - Default Language (3 tests): root path redirect to /en/, English content load, EN link active state
+  - Language Switcher Visibility (2 tests): desktop header visibility, mobile menu visibility
+  - Switch to Nepali (3 tests): URL switch to /ne/, NE link active state, page content load
+  - Switch Back to English (2 tests): URL switch back to /en/, EN link active state
+  - Language Persistence Across Navigation (4 tests): maintain /en/ and /ne/ URLs through navigation
+  - Direct URL Navigation (6 tests): /en/ and /ne/ paths for doctors, search, login pages
+  - Invalid Language Handling (2 tests): invalid paths get default locale prepended
+  - 404 Handling (2 tests): 404 pages for /en/ and /ne/ non-existent pages
+  - Language Switching on Different Pages (4 tests): preserve path when switching language
+  - Mobile Language Switching (3 tests): mobile view language switching and menu close
+  - Language Switcher State (2 tests): EN/NE highlight states
+  - Language Links Navigation (3 tests): href attribute verification, dynamic updates
+
+### Test Results
+- 36 tests pass
+- 0 failures
+
+### Files changed
+- apps/web/e2e/i18n.spec.ts (NEW)
+
+### Learnings for future iterations
+- The current implementation uses URL-based language switching via next-intl middleware
+- Homepage, Header, and Footer content is hardcoded in English - not using translations
+- Navigation links in header are hardcoded in English regardless of language
+- Invalid language paths get default locale prepended (e.g., /fr → /en/fr), not redirected to root
+- Search page has multiple <main> elements - use .first() to avoid strict mode violation
+- Language switcher links have href attributes that update based on current pathname
+- Mobile menu closes after language switch due to page navigation
+
+---
