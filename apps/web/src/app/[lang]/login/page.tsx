@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
@@ -240,5 +240,24 @@ export default function LoginPage() {
         <div className="flex-1 bg-primary-yellow" />
       </div>
     </main>
+  );
+}
+
+function LoginPageFallback() {
+  return (
+    <main className="min-h-screen bg-background flex items-center justify-center">
+      <div className="animate-pulse">
+        <div className="w-16 h-16 bg-primary-blue/20 rounded-full mx-auto mb-4" />
+        <div className="h-4 bg-foreground/10 rounded w-32 mx-auto" />
+      </div>
+    </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginPageFallback />}>
+      <LoginPageContent />
+    </Suspense>
   );
 }

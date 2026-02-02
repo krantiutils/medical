@@ -33,10 +33,12 @@ export default async function sitemap({
 }: {
   id: number;
 }): Promise<MetadataRoute.Sitemap> {
+  // Ensure id is a valid number (defaults to 0 if undefined/NaN)
+  const sitemapId = typeof id === "number" && !isNaN(id) ? id : 0;
   const entries: MetadataRoute.Sitemap = [];
 
   // Add static pages only in the first sitemap
-  if (id === 0) {
+  if (sitemapId === 0) {
     const staticPages = [
       { path: "", priority: 1.0 },
       { path: "/search", priority: 0.8 },
@@ -74,7 +76,7 @@ export default async function sitemap({
     orderBy: {
       created_at: "asc",
     },
-    skip: id * MAX_URLS_PER_SITEMAP,
+    skip: sitemapId * MAX_URLS_PER_SITEMAP,
     take: MAX_URLS_PER_SITEMAP,
   });
 

@@ -14,6 +14,9 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
 - Use `docker-compose` (v1 syntax) not `docker compose` on this system
 - Don't set `rootDir` in packages/database/tsconfig.json - scripts are outside src/ and need to be typechecked too
 - Import scripts in packages/database/scripts/ use `tsx` to run TypeScript directly
+- **Next.js 16 upgrade notes**: Requires Suspense boundary for `useSearchParams()`, use ESLint 8 (not 9) with eslint-config-next
+- Stay on Tailwind v3.x - v4 has breaking changes requiring CSS-first config and `@tailwindcss/postcss` package
+- CI workflow: .github/workflows/ci.yml - lint, typecheck, build (with Postgres service), security audit
 ---
 
 ## 2026-02-02 01:52 +0545 - US-001
@@ -521,4 +524,26 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Education: dynamic array with add/remove functionality, each entry has degree/institution/year fields
   - API route for user-specific data: find by session.user.id (claimed_by_id) rather than professional.id
   - Use inline translations (t object) for client components instead of next-intl hooks for simpler implementation
+---
+
+## 2026-02-02 06:30 +0545 - US-031
+- **What was implemented**: GitHub Actions CI pipeline for quality checks, plus critical Next.js 16 upgrade fixes
+- **Files changed**:
+  - `.github/workflows/ci.yml` - Created CI workflow with lint, typecheck, build, security audit jobs
+  - `apps/web/package.json` - Updated Next.js 14→16, Tailwind 4→3, ESLint 9→8, lint script to use eslint directly
+  - `apps/web/tailwind.config.ts` - Unchanged (compatible with Tailwind 3)
+  - `apps/web/postcss.config.js` - Unchanged (compatible with Tailwind 3)
+  - `apps/web/.eslintrc.json` - Updated rules for ESLint 8 compatibility
+  - `apps/web/src/app/[lang]/claim/page.tsx` - Added Suspense boundary for useSearchParams() (Next.js 15+ requirement)
+  - `apps/web/src/app/[lang]/login/page.tsx` - Added Suspense boundary for useSearchParams() (Next.js 15+ requirement)
+  - `apps/web/src/app/sitemap.ts` - Added safety check for undefined id parameter
+  - `prd.json` - Added US-031 story and marked as passes: true
+- **Learnings for future iterations:**
+  - Tailwind v4 has breaking changes: requires `@tailwindcss/postcss` package and CSS-first config. Stick with v3.x for now
+  - Next.js 16 requires `useSearchParams()` to be wrapped in Suspense boundary during static generation
+  - ESLint 9 flat config has compatibility issues with eslint-config-next. Use ESLint 8 with `.eslintrc.json` for stability
+  - `next lint` command broken in Next.js 16 - use `eslint . --ext .ts,.tsx` directly instead
+  - CI workflow structure: separate jobs for lint/typecheck/build/security allows parallel execution
+  - Build job needs PostgreSQL service for Prisma schema validation during Next.js build
+  - Security audit: `pnpm audit --audit-level=critical` catches most serious issues, allow warnings to pass
 ---

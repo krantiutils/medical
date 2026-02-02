@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -20,7 +20,7 @@ interface Professional {
   verified: boolean;
 }
 
-export default function ClaimPage() {
+function ClaimPageContent() {
   const { data: session, status } = useSession();
   const params = useParams<{ lang: string }>();
   const searchParams = useSearchParams();
@@ -309,5 +309,30 @@ export default function ClaimPage() {
         )}
       </div>
     </main>
+  );
+}
+
+function ClaimPageFallback() {
+  return (
+    <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl mx-auto">
+        <Card decorator="blue" decoratorPosition="top-right">
+          <CardContent className="py-12 text-center">
+            <div className="animate-pulse">
+              <div className="w-12 h-12 bg-primary-blue/20 rounded-full mx-auto mb-4" />
+              <div className="h-4 bg-foreground/10 rounded w-48 mx-auto" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </main>
+  );
+}
+
+export default function ClaimPage() {
+  return (
+    <Suspense fallback={<ClaimPageFallback />}>
+      <ClaimPageContent />
+    </Suspense>
   );
 }

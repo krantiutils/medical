@@ -522,6 +522,26 @@
       "priority": 30,
       "passes": true,
       "notes": "Implemented: Dashboard profile page at /[lang]/dashboard/profile with authentication guard (redirects to login if not authenticated, shows claim prompt if no claimed profile). Editable fields: bio (textarea, 1000 char max), consultation_fee (number input with NPR prefix), languages (tag input with add/remove), education (dynamic array with degree/institution/year fields). API endpoint at /api/dashboard/profile (GET to fetch, PUT to update) stores all fields in Professional.meta JSON. Form validation on both client and server (max lengths, type validation). Success toast displays on save with auto-hide after 5 seconds. Translations added for en/ne. Typecheck passes. Browser verification noted as needed."
+    },
+    {
+      "id": "US-031",
+      "title": "CI Pipeline: GitHub Actions for quality checks",
+      "description": "As a developer, I need automated CI checks on pull requests to ensure code quality and prevent regressions.",
+      "acceptanceCriteria": [
+        "Create .github/workflows/ci.yml GitHub Actions workflow",
+        "Trigger on push to main and pull requests",
+        "Run linting (pnpm lint)",
+        "Run TypeScript type checking (pnpm typecheck)",
+        "Run Next.js production build (pnpm build)",
+        "Run dependency security audit (pnpm audit)",
+        "Cache pnpm dependencies for faster builds",
+        "Use PostgreSQL service for build (needed for Prisma)",
+        "All checks must pass for PR to be mergeable",
+        "Status badges in README (optional)"
+      ],
+      "priority": 31,
+      "passes": true,
+      "notes": "Implemented: GitHub Actions CI workflow at .github/workflows/ci.yml with 4 parallel jobs: lint (ESLint), typecheck (TypeScript), build (Next.js production build with PostgreSQL service), security (pnpm audit). Triggers on push to main/ralph branch and PRs. Uses pnpm 8 with Node.js 20 and caching. Build job includes PostgreSQL service for Prisma. Also fixed: Tailwind v4→v3 downgrade, Next.js 14→16 upgrade, ESLint 9→8 for next lint compatibility, Suspense boundaries for useSearchParams() in claim/login pages, sitemap id parameter safety check."
     }
   ]
 }
