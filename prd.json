@@ -1360,8 +1360,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 72,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Clinic public page at /[lang]/clinic/[slug] with name, logo, type badge, contact info (address, phone, email, website), operating hours from timings JSON with open/closed states, services offered with color-coded tags. Returns 404 for not found or unverified clinics. Bilingual support (EN/NE). Bauhaus styling with Card components. Typecheck passes."
     },
     {
       "id": "US-073",

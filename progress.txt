@@ -1391,3 +1391,32 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Seed clinic doctors before tests to ensure doctors are available for schedule configuration tests
 
 ---
+
+## 2026-02-02 - US-072
+**Clinic public page: Basic layout**
+
+### What was implemented
+- Created app/[lang]/clinic/[slug]/page.tsx with:
+  - Protected route that returns 404 for non-existent or unverified clinics
+  - Header card with clinic logo (or placeholder icon), type badge, name, address, verified badge
+  - Contact information card: phone (clickable), email (clickable), website link
+  - Operating hours card: shows all 7 days with open/closed status and times
+  - Services card: displays services as color-coded tags (blue=predefined, yellow=custom)
+- Type badge colors: CLINIC/POLYCLINIC=blue, HOSPITAL=red, PHARMACY=yellow
+- Operating hours parsed from timings JSON field (DaySchedule format)
+- Predefined services mapping for bilingual display (general, specialist, lab, xray, pharmacy, emergency, surgery)
+- Inline translations object for EN/NE support
+- Bauhaus styling with Card components, decorators, and icons
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/[slug]/page.tsx (NEW)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Clinic model uses timings JSON field with DaySchedule interface: { isOpen, openTime, closeTime }
+- Services array contains either predefined service IDs or custom service strings
+- Clinic public page only shows verified clinics (verified=true filter)
+- ClinicType enum: CLINIC, POLYCLINIC, HOSPITAL, PHARMACY
+- Follow same patterns as doctor detail page: Card components, dl/dt/dd for details, icons in colored circles
+
+---
