@@ -184,5 +184,37 @@
     "errorNotFound": "Professional not found",
     "errorAlreadyClaimed": "This profile has already been claimed",
     "errorAlreadyPending": "You already have a pending verification request for this profile"
+  },
+  "admin": {
+    "claims": {
+      "title": "Claims Dashboard",
+      "subtitle": "Review and manage profile verification requests",
+      "pendingClaims": "Pending Claims",
+      "noPending": "No pending verification requests",
+      "userEmail": "User Email",
+      "userName": "User Name",
+      "professional": "Professional",
+      "registrationNumber": "Registration Number",
+      "submittedAt": "Submitted",
+      "viewDocuments": "View Documents",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approving": "Approving...",
+      "rejecting": "Rejecting...",
+      "governmentId": "Government ID",
+      "certificate": "Professional Certificate",
+      "closeModal": "Close",
+      "confirmApprove": "Are you sure you want to approve this claim?",
+      "confirmReject": "Are you sure you want to reject this claim?",
+      "accessDenied": "Access Denied",
+      "accessDeniedMessage": "You do not have permission to access this page.",
+      "goHome": "Go Home",
+      "loginRequired": "Please log in to access this page",
+      "login": "Login",
+      "viewProfile": "View Profile",
+      "doctor": "Doctor",
+      "dentist": "Dentist",
+      "pharmacist": "Pharmacist"
+    }
   }
 }
