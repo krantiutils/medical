@@ -73,10 +73,10 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120000, // 2 minutes to start the server
     env: {
-      // Use test database
+      // Use test database (credentials match docker-compose.yml)
       DATABASE_URL:
         process.env.DATABASE_URL ||
-        "postgresql://postgres:postgres@localhost:5432/swasthya_test",
+        "postgresql://swasthya:swasthya@localhost:5432/swasthya_test",
       NEXTAUTH_SECRET: "e2e-test-secret-not-for-production",
       NEXTAUTH_URL: "http://localhost:3000",
     },

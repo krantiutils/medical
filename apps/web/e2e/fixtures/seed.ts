@@ -16,10 +16,11 @@ import {
 import { hash } from "bcryptjs";
 
 // Create a dedicated Prisma client for test seeding
+// Credentials match docker-compose.yml (swasthya:swasthya)
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/swasthya_test",
+      url: process.env.DATABASE_URL || "postgresql://swasthya:swasthya@localhost:5432/swasthya_test",
     },
   },
 });
