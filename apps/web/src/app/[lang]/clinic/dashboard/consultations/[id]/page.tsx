@@ -48,6 +48,48 @@ interface ICD10Code {
   category: string;
 }
 
+interface PrescriptionItem {
+  id: string;
+  drug_name: string;
+  generic_name?: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  duration_unit: string;
+  quantity: number;
+  instructions?: string;
+  product_id?: string;
+}
+
+interface Drug {
+  id: string | null;
+  name: string;
+  generic_name: string | null;
+  category: string;
+  strengths: string[];
+  source: "pharmacy" | "common";
+}
+
+interface FrequencyOption {
+  value: string;
+  label: string;
+}
+
+interface DurationUnit {
+  value: string;
+  label: string;
+}
+
+interface Prescription {
+  id: string;
+  prescription_no: string;
+  items: PrescriptionItem[];
+  instructions: string | null;
+  status: "DRAFT" | "ISSUED" | "DISPENSED" | "CANCELLED";
+  issued_at: string | null;
+  valid_until: string | null;
+}
+
 interface ClinicalNote {
   id: string;
   height_cm: string | null;
@@ -166,6 +208,37 @@ const translations = {
     male: "Male",
     female: "Female",
     other: "Other",
+    // Prescription
+    prescription: "Prescription",
+    searchMedication: "Search medication...",
+    addMedication: "Add Medication",
+    medications: "Medications",
+    noMedications: "No medications added",
+    drugName: "Drug Name",
+    genericName: "Generic Name",
+    dosage: "Dosage/Strength",
+    frequency: "Frequency",
+    duration: "Duration",
+    quantity: "Quantity",
+    qty: "Qty",
+    medicationInstructions: "Instructions",
+    selectDosage: "Select dosage",
+    selectFrequency: "Select frequency",
+    enterDuration: "Enter duration",
+    generalInstructions: "General Instructions",
+    generalInstructionsPlaceholder: "Additional instructions for the patient...",
+    removeMedication: "Remove",
+    issuePrescription: "Issue Prescription",
+    issuing: "Issuing...",
+    printPrescription: "Print",
+    prescriptionIssued: "Prescription issued successfully",
+    prescriptionRequired: "Add at least one medication to issue prescription",
+    prescriptionStatus: "Prescription Status",
+    prescriptionDraft: "Draft",
+    prescriptionIssued2: "Issued",
+    prescriptionValid: "Valid until",
+    autoCalculate: "Auto-calculate based on duration and frequency",
+    perDay: "per day",
   },
   ne: {
     title: "परामर्श",
@@ -258,6 +331,37 @@ const translations = {
     male: "पुरुष",
     female: "महिला",
     other: "अन्य",
+    // Prescription
+    prescription: "प्रेस्क्रिप्सन",
+    searchMedication: "औषधि खोज्नुहोस्...",
+    addMedication: "औषधि थप्नुहोस्",
+    medications: "औषधिहरू",
+    noMedications: "कुनै औषधि थपिएको छैन",
+    drugName: "औषधिको नाम",
+    genericName: "जेनेरिक नाम",
+    dosage: "मात्रा/शक्ति",
+    frequency: "आवृत्ति",
+    duration: "अवधि",
+    quantity: "परिमाण",
+    qty: "संख्या",
+    medicationInstructions: "निर्देशनहरू",
+    selectDosage: "मात्रा छान्नुहोस्",
+    selectFrequency: "आवृत्ति छान्नुहोस्",
+    enterDuration: "अवधि राख्नुहोस्",
+    generalInstructions: "सामान्य निर्देशनहरू",
+    generalInstructionsPlaceholder: "बिरामीका लागि थप निर्देशनहरू...",
+    removeMedication: "हटाउनुहोस्",
+    issuePrescription: "प्रेस्क्रिप्सन जारी गर्नुहोस्",
+    issuing: "जारी गर्दै...",
+    printPrescription: "छाप्नुहोस्",
+    prescriptionIssued: "प्रेस्क्रिप्सन सफलतापूर्वक जारी भयो",
+    prescriptionRequired: "प्रेस्क्रिप्सन जारी गर्न कम्तीमा एउटा औषधि थप्नुहोस्",
+    prescriptionStatus: "प्रेस्क्रिप्सन स्थिति",
+    prescriptionDraft: "ड्राफ्ट",
+    prescriptionIssued2: "जारी भयो",
+    prescriptionValid: "मान्य",
+    autoCalculate: "अवधि र आवृत्तिको आधारमा स्वचालित गणना",
+    perDay: "प्रति दिन",
   },
 };
 
@@ -276,7 +380,7 @@ export default function ConsultationDetailPage() {
   const [loading, setLoading] = useState(true);
   const [noClinic, setNoClinic] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [activeTab, setActiveTab] = useState<"vitals" | "notes" | "diagnosis">("vitals");
+  const [activeTab, setActiveTab] = useState<"vitals" | "notes" | "diagnosis" | "prescription">("vitals");
   const [saving, setSaving] = useState(false);
   const [finalizing, setFinalizing] = useState(false);
   const [showFinalizeModal, setShowFinalizeModal] = useState(false);
@@ -308,6 +412,25 @@ export default function ConsultationDetailPage() {
   const [icdCategories, setIcdCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchingIcd, setSearchingIcd] = useState(false);
+
+  // Prescription state
+  const [prescription, setPrescription] = useState<Prescription | null>(null);
+  const [prescriptionItems, setPrescriptionItems] = useState<PrescriptionItem[]>([]);
+  const [prescriptionInstructions, setPrescriptionInstructions] = useState("");
+  const [drugSearch, setDrugSearch] = useState("");
+  const [drugResults, setDrugResults] = useState<Drug[]>([]);
+  const [frequencyOptions, setFrequencyOptions] = useState<FrequencyOption[]>([]);
+  const [durationUnits, setDurationUnits] = useState<DurationUnit[]>([]);
+  const [searchingDrugs, setSearchingDrugs] = useState(false);
+  const [issuingPrescription, setIssuingPrescription] = useState(false);
+  const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
+  const [newMedication, setNewMedication] = useState({
+    dosage: "",
+    frequency: "",
+    duration: "",
+    duration_unit: "days",
+    instructions: "",
+  });
 
   // Auto-save debounce
   const autoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -421,6 +544,427 @@ export default function ConsultationDetailPage() {
     }
   }, [icdCategories.length]);
 
+  // Fetch prescription for this clinical note
+  const fetchPrescription = useCallback(async () => {
+    if (!noteId) return;
+
+    try {
+      const response = await fetch(`/api/clinic/prescriptions?clinical_note_id=${noteId}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.prescriptions && data.prescriptions.length > 0) {
+          const rx = data.prescriptions[0];
+          setPrescription(rx);
+          setPrescriptionItems((rx.items as PrescriptionItem[]) || []);
+          setPrescriptionInstructions(rx.instructions || "");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching prescription:", error);
+    }
+  }, [noteId]);
+
+  // Search drugs
+  const searchDrugs = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      // Fetch frequency options and duration units
+      try {
+        const response = await fetch("/api/clinic/prescriptions/drugs?q=");
+        if (response.ok) {
+          const data = await response.json();
+          setFrequencyOptions(data.frequencyOptions || []);
+          setDurationUnits(data.durationUnits || []);
+        }
+      } catch (error) {
+        console.error("Error fetching drug options:", error);
+      }
+      setDrugResults([]);
+      return;
+    }
+
+    setSearchingDrugs(true);
+    try {
+      const response = await fetch(`/api/clinic/prescriptions/drugs?q=${encodeURIComponent(query)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setDrugResults(data.drugs || []);
+        if (data.frequencyOptions && frequencyOptions.length === 0) {
+          setFrequencyOptions(data.frequencyOptions);
+        }
+        if (data.durationUnits && durationUnits.length === 0) {
+          setDurationUnits(data.durationUnits);
+        }
+      }
+    } catch (error) {
+      console.error("Error searching drugs:", error);
+    } finally {
+      setSearchingDrugs(false);
+    }
+  }, [frequencyOptions.length, durationUnits.length]);
+
+  // Calculate quantity based on frequency and duration
+  const calculateQuantity = (frequency: string, duration: string, durationUnit: string): number => {
+    const durationNum = parseFloat(duration) || 0;
+    if (durationNum <= 0) return 0;
+
+    // Convert duration to days
+    let totalDays = durationNum;
+    if (durationUnit === "weeks") {
+      totalDays = durationNum * 7;
+    } else if (durationUnit === "months") {
+      totalDays = durationNum * 30;
+    }
+
+    // Calculate doses per day based on frequency
+    let dosesPerDay = 1;
+    switch (frequency) {
+      case "OD":
+        dosesPerDay = 1;
+        break;
+      case "BD":
+        dosesPerDay = 2;
+        break;
+      case "TDS":
+        dosesPerDay = 3;
+        break;
+      case "QID":
+        dosesPerDay = 4;
+        break;
+      case "HS":
+        dosesPerDay = 1;
+        break;
+      case "SOS":
+        dosesPerDay = 1; // As needed, approximate
+        break;
+      case "STAT":
+        return 1; // Single dose
+      case "Q4H":
+        dosesPerDay = 6;
+        break;
+      case "Q6H":
+        dosesPerDay = 4;
+        break;
+      case "Q8H":
+        dosesPerDay = 3;
+        break;
+      case "Q12H":
+        dosesPerDay = 2;
+        break;
+      case "WEEKLY":
+        return Math.ceil(totalDays / 7);
+      case "ALTERNATE_DAYS":
+        return Math.ceil(totalDays / 2);
+      default:
+        dosesPerDay = 1;
+    }
+
+    return Math.ceil(totalDays * dosesPerDay);
+  };
+
+  // Add medication to prescription
+  const handleAddMedication = () => {
+    if (!selectedDrug || !newMedication.dosage || !newMedication.frequency || !newMedication.duration) {
+      return;
+    }
+
+    const quantity = calculateQuantity(
+      newMedication.frequency,
+      newMedication.duration,
+      newMedication.duration_unit
+    );
+
+    const newItem: PrescriptionItem = {
+      id: crypto.randomUUID(),
+      drug_name: selectedDrug.name,
+      generic_name: selectedDrug.generic_name || undefined,
+      dosage: newMedication.dosage,
+      frequency: newMedication.frequency,
+      duration: newMedication.duration,
+      duration_unit: newMedication.duration_unit,
+      quantity,
+      instructions: newMedication.instructions || undefined,
+      product_id: selectedDrug.id || undefined,
+    };
+
+    setPrescriptionItems((prev) => [...prev, newItem]);
+    setSelectedDrug(null);
+    setDrugSearch("");
+    setDrugResults([]);
+    setNewMedication({
+      dosage: "",
+      frequency: "",
+      duration: "",
+      duration_unit: "days",
+      instructions: "",
+    });
+  };
+
+  // Remove medication from prescription
+  const handleRemoveMedication = (id: string) => {
+    setPrescriptionItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  // Save prescription (create or update)
+  const savePrescription = useCallback(async () => {
+    if (!clinicalNote || prescriptionItems.length === 0) return null;
+
+    try {
+      if (prescription) {
+        // Update existing prescription
+        const response = await fetch(`/api/clinic/prescriptions/${prescription.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: prescriptionItems,
+            instructions: prescriptionInstructions || null,
+          }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          return data.prescription;
+        }
+      } else {
+        // Create new prescription
+        const response = await fetch("/api/clinic/prescriptions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            patient_id: clinicalNote.patient.id,
+            doctor_id: clinicalNote.doctor.id,
+            clinical_note_id: clinicalNote.id,
+            appointment_id: clinicalNote.appointment?.id || null,
+            items: prescriptionItems,
+            instructions: prescriptionInstructions || null,
+          }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setPrescription(data.prescription);
+          return data.prescription;
+        }
+      }
+    } catch (error) {
+      console.error("Error saving prescription:", error);
+    }
+    return null;
+  }, [clinicalNote, prescription, prescriptionItems, prescriptionInstructions]);
+
+  // Issue prescription
+  const handleIssuePrescription = async () => {
+    if (prescriptionItems.length === 0) {
+      setMessage({ type: "error", text: t.prescriptionRequired });
+      return;
+    }
+
+    setIssuingPrescription(true);
+    setMessage(null);
+
+    try {
+      // First save/create the prescription
+      let rx = prescription;
+      if (!rx || prescriptionItems.length !== ((rx.items as PrescriptionItem[])?.length || 0)) {
+        rx = await savePrescription();
+      }
+
+      if (!rx) {
+        throw new Error("Failed to save prescription");
+      }
+
+      // Then issue it
+      const response = await fetch(`/api/clinic/prescriptions/${rx.id}/issue`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ validity_days: 30 }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to issue prescription");
+      }
+
+      const data = await response.json();
+      setPrescription(data.prescription);
+      setMessage({ type: "success", text: t.prescriptionIssued });
+    } catch (error) {
+      console.error("Error issuing prescription:", error);
+      setMessage({ type: "error", text: t.error });
+    } finally {
+      setIssuingPrescription(false);
+    }
+  };
+
+  // Print prescription
+  const handlePrintPrescription = () => {
+    if (!prescription && prescriptionItems.length === 0) return;
+
+    // Open print window with prescription details
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const prescriptionNo = prescription?.prescription_no || "DRAFT";
+    const issuedDate = prescription?.issued_at
+      ? new Date(prescription.issued_at).toLocaleDateString()
+      : new Date().toLocaleDateString();
+    const validUntil = prescription?.valid_until
+      ? new Date(prescription.valid_until).toLocaleDateString()
+      : "-";
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Prescription - ${prescriptionNo}</title>
+        <style>
+          @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          }
+          body {
+            font-family: 'Outfit', Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 14px;
+            line-height: 1.4;
+          }
+          .header {
+            border-bottom: 3px solid #121212;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+          }
+          .clinic-info { text-align: left; }
+          .clinic-name { font-size: 24px; font-weight: bold; color: #D02020; }
+          .rx-info { text-align: right; }
+          .rx-no { font-size: 18px; font-weight: bold; font-family: monospace; }
+          .patient-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border: 2px solid #121212;
+          }
+          .rx-symbol {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1040C0;
+            margin: 20px 0 10px;
+          }
+          .medications { margin-bottom: 20px; }
+          .med-item {
+            padding: 12px;
+            border: 2px solid #121212;
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+          }
+          .med-name { font-weight: bold; }
+          .med-generic { font-size: 12px; color: #666; }
+          .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #121212;
+            background: #FFF8E1;
+          }
+          .doctor-signature {
+            margin-top: 40px;
+            text-align: right;
+            padding-top: 20px;
+            border-top: 2px solid #121212;
+          }
+          .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            padding-top: 15px;
+            border-top: 1px solid #ccc;
+          }
+          @media print {
+            .no-print { display: none; }
+            body { padding: 0; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="clinic-info">
+            <div class="clinic-name">Swasthya</div>
+            <div>Healthcare Platform</div>
+          </div>
+          <div class="rx-info">
+            <div class="rx-no">${prescriptionNo}</div>
+            <div>Date: ${issuedDate}</div>
+            <div>Valid Until: ${validUntil}</div>
+          </div>
+        </div>
+
+        <div class="patient-info">
+          <div>
+            <strong>Patient:</strong> ${clinicalNote?.patient.full_name || ""}
+          </div>
+          <div>
+            <strong>Patient #:</strong> ${clinicalNote?.patient.patient_number || ""}
+          </div>
+          <div>
+            <strong>Age/Gender:</strong> ${clinicalNote?.patient.date_of_birth ? getAge(clinicalNote.patient.date_of_birth) : "-"} / ${clinicalNote?.patient.gender || "-"}
+          </div>
+          <div>
+            <strong>Phone:</strong> ${clinicalNote?.patient.phone || "-"}
+          </div>
+        </div>
+
+        <div class="rx-symbol">Rx</div>
+
+        <div class="medications">
+          ${prescriptionItems.map((item, idx) => `
+            <div class="med-item">
+              <div>
+                <div class="med-name">${idx + 1}. ${item.drug_name} ${item.dosage}</div>
+                ${item.generic_name ? `<div class="med-generic">(${item.generic_name})</div>` : ""}
+              </div>
+              <div><strong>${item.frequency}</strong></div>
+              <div>${item.duration} ${item.duration_unit}</div>
+              <div>Qty: <strong>${item.quantity}</strong></div>
+            </div>
+            ${item.instructions ? `<div style="padding: 5px 12px; font-size: 12px; color: #666;">↳ ${item.instructions}</div>` : ""}
+          `).join("")}
+        </div>
+
+        ${prescriptionInstructions ? `
+          <div class="instructions">
+            <strong>General Instructions:</strong><br>
+            ${prescriptionInstructions}
+          </div>
+        ` : ""}
+
+        <div class="doctor-signature">
+          <div><strong>Dr. ${clinicalNote?.doctor.full_name || ""}</strong></div>
+          <div>${clinicalNote?.doctor.degree || ""}</div>
+          <div>Reg. No: ${clinicalNote?.doctor.registration_number || ""}</div>
+          <div style="margin-top: 40px;">_______________________</div>
+          <div>Signature</div>
+        </div>
+
+        <div class="footer">
+          Generated via Swasthya Healthcare Platform
+        </div>
+
+        <div class="no-print" style="text-align: center; margin-top: 20px;">
+          <button onclick="window.print()" style="padding: 10px 30px; font-size: 16px; cursor: pointer;">
+            Print Prescription
+          </button>
+        </div>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   // Auto-save function
   const autoSave = useCallback(async () => {
     if (!noteId || clinicalNote?.status !== "DRAFT") return;
@@ -486,10 +1030,13 @@ export default function ConsultationDetailPage() {
   useEffect(() => {
     if (status === "authenticated") {
       fetchClinicalNote();
+      fetchPrescription();
+      // Load frequency/duration options
+      searchDrugs("");
     } else if (status === "unauthenticated") {
       setLoading(false);
     }
-  }, [status, fetchClinicalNote]);
+  }, [status, fetchClinicalNote, fetchPrescription, searchDrugs]);
 
   // ICD-10 search with debounce
   useEffect(() => {
@@ -501,6 +1048,17 @@ export default function ConsultationDetailPage() {
 
     return () => clearTimeout(timer);
   }, [icdSearch, selectedCategory, searchICD10]);
+
+  // Drug search with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (drugSearch) {
+        searchDrugs(drugSearch);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [drugSearch, searchDrugs]);
 
   // Handle form input change
   const handleInputChange = (field: string, value: string) => {
@@ -797,18 +1355,18 @@ export default function ConsultationDetailPage() {
         </Card>
 
         {/* Tabs */}
-        <div className="flex border-b-2 border-foreground mb-6">
-          {(["vitals", "notes", "diagnosis"] as const).map((tab) => (
+        <div className="flex border-b-2 border-foreground mb-6 overflow-x-auto">
+          {(["vitals", "notes", "diagnosis", "prescription"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 font-medium text-sm transition-colors ${
+              className={`px-6 py-3 font-medium text-sm transition-colors whitespace-nowrap ${
                 activeTab === tab
                   ? "bg-foreground text-white"
                   : "hover:bg-gray-100"
               }`}
             >
-              {tab === "vitals" ? t.vitals : tab === "notes" ? t.notes : t.diagnosis}
+              {tab === "vitals" ? t.vitals : tab === "notes" ? t.notes : tab === "diagnosis" ? t.diagnosis : t.prescription}
             </button>
           ))}
         </div>
@@ -1207,6 +1765,310 @@ export default function ConsultationDetailPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === "prescription" && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Drug Search Panel */}
+            <Card>
+              <CardHeader>
+                <h2 className="text-xl font-bold">{t.addMedication}</h2>
+              </CardHeader>
+              <CardContent>
+                {/* Drug search input */}
+                <div className="relative mb-4">
+                  <input
+                    type="text"
+                    value={drugSearch}
+                    onChange={(e) => setDrugSearch(e.target.value)}
+                    disabled={prescription?.status === "ISSUED"}
+                    className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none disabled:bg-gray-100"
+                    placeholder={t.searchMedication}
+                  />
+                  {searchingDrugs && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="w-4 h-4 border-2 border-primary-blue border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Drug search results */}
+                {drugResults.length > 0 && !selectedDrug && (
+                  <div className="space-y-2 max-h-[200px] overflow-y-auto mb-4">
+                    {drugResults.map((drug, idx) => (
+                      <div
+                        key={`${drug.name}-${idx}`}
+                        className="p-3 border-2 border-foreground hover:bg-gray-50 cursor-pointer rounded"
+                        onClick={() => {
+                          setSelectedDrug(drug);
+                          setDrugSearch(drug.name);
+                          setDrugResults([]);
+                          // Auto-select first strength if available
+                          if (drug.strengths.length > 0) {
+                            setNewMedication(prev => ({ ...prev, dosage: drug.strengths[0] }));
+                          }
+                        }}
+                      >
+                        <div className="font-medium">{drug.name}</div>
+                        {drug.generic_name && (
+                          <div className="text-sm text-gray-500">{drug.generic_name}</div>
+                        )}
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs bg-gray-200 px-2 py-0.5 rounded">{drug.category}</span>
+                          {drug.source === "pharmacy" && (
+                            <span className="text-xs bg-verified text-white px-2 py-0.5 rounded">In Stock</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Selected drug form */}
+                {selectedDrug && (
+                  <div className="space-y-4 p-4 border-2 border-primary-blue rounded bg-blue-50">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-bold text-lg">{selectedDrug.name}</div>
+                        {selectedDrug.generic_name && (
+                          <div className="text-sm text-gray-600">{selectedDrug.generic_name}</div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => {
+                          setSelectedDrug(null);
+                          setDrugSearch("");
+                          setNewMedication({
+                            dosage: "",
+                            frequency: "",
+                            duration: "",
+                            duration_unit: "days",
+                            instructions: "",
+                          });
+                        }}
+                        className="text-gray-500 hover:text-primary-red"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Dosage */}
+                    <div>
+                      <label className="block text-sm font-medium mb-1">{t.dosage}</label>
+                      {selectedDrug.strengths.length > 0 ? (
+                        <select
+                          value={newMedication.dosage}
+                          onChange={(e) => setNewMedication(prev => ({ ...prev, dosage: e.target.value }))}
+                          className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                        >
+                          <option value="">{t.selectDosage}</option>
+                          {selectedDrug.strengths.map((strength) => (
+                            <option key={strength} value={strength}>{strength}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          value={newMedication.dosage}
+                          onChange={(e) => setNewMedication(prev => ({ ...prev, dosage: e.target.value }))}
+                          className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                          placeholder="e.g., 500mg"
+                        />
+                      )}
+                    </div>
+
+                    {/* Frequency */}
+                    <div>
+                      <label className="block text-sm font-medium mb-1">{t.frequency}</label>
+                      <select
+                        value={newMedication.frequency}
+                        onChange={(e) => setNewMedication(prev => ({ ...prev, frequency: e.target.value }))}
+                        className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                      >
+                        <option value="">{t.selectFrequency}</option>
+                        {frequencyOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Duration */}
+                    <div>
+                      <label className="block text-sm font-medium mb-1">{t.duration}</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          value={newMedication.duration}
+                          onChange={(e) => setNewMedication(prev => ({ ...prev, duration: e.target.value }))}
+                          className="flex-1 p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                          placeholder={t.enterDuration}
+                          min="1"
+                        />
+                        <select
+                          value={newMedication.duration_unit}
+                          onChange={(e) => setNewMedication(prev => ({ ...prev, duration_unit: e.target.value }))}
+                          className="w-32 p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                        >
+                          {durationUnits.map((unit) => (
+                            <option key={unit.value} value={unit.value}>{unit.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Calculated Quantity */}
+                    {newMedication.frequency && newMedication.duration && (
+                      <div className="p-3 bg-primary-yellow/20 rounded border-2 border-primary-yellow">
+                        <div className="text-sm font-medium">{t.quantity}: <span className="text-lg font-bold">
+                          {calculateQuantity(newMedication.frequency, newMedication.duration, newMedication.duration_unit)}
+                        </span></div>
+                        <div className="text-xs text-gray-600">{t.autoCalculate}</div>
+                      </div>
+                    )}
+
+                    {/* Instructions */}
+                    <div>
+                      <label className="block text-sm font-medium mb-1">{t.medicationInstructions}</label>
+                      <input
+                        type="text"
+                        value={newMedication.instructions}
+                        onChange={(e) => setNewMedication(prev => ({ ...prev, instructions: e.target.value }))}
+                        className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                        placeholder="e.g., Take after meals"
+                      />
+                    </div>
+
+                    {/* Add button */}
+                    <Button
+                      variant="primary"
+                      className="w-full"
+                      onClick={handleAddMedication}
+                      disabled={!newMedication.dosage || !newMedication.frequency || !newMedication.duration}
+                    >
+                      {t.addMedication}
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Prescription Items Panel */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold">{t.medications}</h2>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-primary-blue text-white px-2 py-1 rounded text-sm">
+                      {prescriptionItems.length}
+                    </span>
+                    {prescription && (
+                      <span className={`px-2 py-1 rounded text-sm ${
+                        prescription.status === "DRAFT"
+                          ? "bg-primary-yellow text-foreground"
+                          : "bg-verified text-white"
+                      }`}>
+                        {prescription.status === "DRAFT" ? t.prescriptionDraft : t.prescriptionIssued2}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {prescriptionItems.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <p>{t.noMedications}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                    {prescriptionItems.map((item, idx) => (
+                      <div
+                        key={item.id}
+                        className="p-3 border-2 border-foreground rounded"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-primary-blue">{idx + 1}.</span>
+                              <span className="font-bold">{item.drug_name}</span>
+                              <span className="text-sm bg-gray-200 px-2 py-0.5 rounded">{item.dosage}</span>
+                            </div>
+                            {item.generic_name && (
+                              <div className="text-sm text-gray-500 ml-5">{item.generic_name}</div>
+                            )}
+                            <div className="flex items-center gap-4 mt-2 ml-5 text-sm">
+                              <span><strong>{item.frequency}</strong></span>
+                              <span>{item.duration} {item.duration_unit}</span>
+                              <span className="text-primary-blue font-medium">{t.qty}: {item.quantity}</span>
+                            </div>
+                            {item.instructions && (
+                              <div className="mt-1 ml-5 text-sm text-gray-600">
+                                ↳ {item.instructions}
+                              </div>
+                            )}
+                          </div>
+                          {prescription?.status !== "ISSUED" && (
+                            <button
+                              onClick={() => handleRemoveMedication(item.id)}
+                              className="text-primary-red hover:underline text-sm"
+                            >
+                              {t.removeMedication}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* General Instructions */}
+                <div className="mt-4 pt-4 border-t-2 border-gray-200">
+                  <label className="block text-sm font-medium mb-1">{t.generalInstructions}</label>
+                  <textarea
+                    value={prescriptionInstructions}
+                    onChange={(e) => setPrescriptionInstructions(e.target.value)}
+                    disabled={prescription?.status === "ISSUED"}
+                    className="w-full p-3 border-2 border-foreground rounded focus:border-primary-blue outline-none resize-none disabled:bg-gray-100"
+                    rows={3}
+                    placeholder={t.generalInstructionsPlaceholder}
+                  />
+                </div>
+
+                {/* Prescription Actions */}
+                <div className="mt-4 flex gap-2">
+                  {prescription?.status !== "ISSUED" && (
+                    <Button
+                      variant="primary"
+                      className="flex-1"
+                      onClick={handleIssuePrescription}
+                      disabled={issuingPrescription || prescriptionItems.length === 0}
+                    >
+                      {issuingPrescription ? t.issuing : t.issuePrescription}
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    onClick={handlePrintPrescription}
+                    disabled={prescriptionItems.length === 0}
+                  >
+                    {t.printPrescription}
+                  </Button>
+                </div>
+
+                {/* Valid until info */}
+                {prescription?.status === "ISSUED" && prescription.valid_until && (
+                  <div className="mt-4 p-3 bg-verified/10 border-2 border-verified rounded text-sm">
+                    <strong>{t.prescriptionValid}:</strong>{" "}
+                    {new Date(prescription.valid_until).toLocaleDateString()}
                   </div>
                 )}
               </CardContent>
