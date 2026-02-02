@@ -1585,3 +1585,45 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - For booking availability, only count SCHEDULED/CHECKED_IN/IN_PROGRESS appointments (not COMPLETED/CANCELLED/NO_SHOW)
 
 ---
+
+## 2026-02-02 - US-077
+**Appointment booking: Date and slot selection UI**
+
+### What was implemented
+- Created BookingSection client component at apps/web/src/components/clinic/BookingSection.tsx:
+  - Doctor selection dropdown with type badges (Doctor/Dentist/Pharmacist) and role badges (Permanent/Visiting/Consultant)
+  - Selected doctor info display with specialty/degree
+  - Date picker dropdown with next 14 days (Today/Tomorrow labels + day name)
+  - Automatic slot fetching when doctor and date selected
+  - Time slots grid with visual states:
+    - Available slots: white with black border, clickable
+    - Selected slot: blue with hard shadow
+    - Fully booked: grayed out with "Full" label
+    - Shows remaining capacity for partially booked slots
+  - Loading spinner during API fetch
+  - Error/message handling for no schedule days
+  - Selected slot summary with continue booking link
+- Integrated BookingSection into clinic public page:
+  - Added after Services section, before Photo Gallery
+  - Only renders if clinic has affiliated doctors
+  - Red decorator card for visual hierarchy
+- Added bilingual translations (EN/NE):
+  - All booking UI text: selectDoctor, selectDate, selectTime, etc.
+  - Status messages: loading, noSlotsAvailable, doctorNoSchedule
+  - Labels: today, tomorrow, slotsRemaining, fullyBooked
+  - Type/role labels: doctor, dentist, pharmacist, permanent, visiting, consultant
+
+### Files changed
+- apps/web/src/components/clinic/BookingSection.tsx (NEW)
+- apps/web/src/app/[lang]/clinic/[slug]/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- Client components in clinic/ directory follow pattern: "use client", useState/useEffect, typed props with translations object
+- Date generation: use Date object manipulation, format YYYY-MM-DD for API compatibility
+- Slot grid uses CSS grid with responsive columns (3/4/5 for mobile/tablet/desktop)
+- For booking flow, pass selection via URL query params: ?doctor=X&date=Y&slot=HH:MM-HH:MM
+- useEffect with dependencies array handles re-fetching when doctor/date change
+- Reset downstream state (date, slot) when upstream changes (doctor)
+- Bauhaus styling: border-4 for primary inputs, border-2 for secondary elements, hard shadows on selected items
+
+---

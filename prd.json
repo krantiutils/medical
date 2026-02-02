@@ -1445,8 +1445,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 77,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: BookingSection client component created with doctor selection dropdown (type/role badges), date picker (next 14 days with Today/Tomorrow labels), slot grid fetched from /api/clinic/[id]/slots API, visual feedback for available/booked slots, slot selection with summary card, and continue booking link. Added to clinic public page after services section. Bilingual translations (EN/NE). Bauhaus styling. Typecheck passes."
     },
     {
       "id": "US-078",
