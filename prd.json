@@ -786,7 +786,7 @@
         "All tests pass: pnpm test:e2e auth-register.spec.ts"
       ],
       "priority": 41,
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {

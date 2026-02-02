@@ -227,3 +227,32 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Pharmacists page shows Graduate/Assistant category badges from meta JSON field
 
 ---
+
+## 2026-02-02 23:00 - US-041
+**E2E Tests: User registration flow**
+
+### What was implemented
+- Created apps/web/e2e/auth-register.spec.ts with 26 comprehensive tests covering:
+  - Basic Functionality (7 tests): page load, form fields, buttons, Google OAuth, divider, login link, terms/privacy links
+  - Validation Errors (6 tests): empty email, invalid email format, empty password, short password (<8 chars), password mismatch, empty confirm password
+  - Duplicate Email (1 test): shows "User with this email already exists" error
+  - Successful Registration (2 tests): redirect on success, success message display
+  - Button States (1 test): button disabled during loading with "Creating Account..." text
+  - Navigation (3 tests): login link, terms link, privacy link navigation
+  - Google OAuth (1 test): Google button visible with SVG icon
+  - Language Support (1 test): /ne/register route works
+  - UI Elements (4 tests): decorative panel on desktop, mobile color bar, "Get Started" badge, tagline
+
+### Files changed
+- apps/web/e2e/auth-register.spec.ts (NEW)
+
+### Learnings for future iterations
+- Scope locators to main/footer/header when elements appear in multiple places (e.g., Terms links in footer and page)
+- Use `page.locator("main").getByRole("link", ...)` to avoid strict mode violations
+- For redirect assertions after form submission, use function-based URL matcher: `page.waitForURL((url) => ...)`
+- Desktop viewport tests need `page.setViewportSize({ width: 1280, height: 720 })` before page.goto()
+- Test unique email generation: `test-${Date.now()}-${Math.random().toString(36).substring(7)}@example.com`
+- Seeded test user (testuser@example.com) available for duplicate email tests
+- HTML5 validation messages accessible via `el.validationMessage` through `evaluate()`
+
+---
