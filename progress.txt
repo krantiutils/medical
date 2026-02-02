@@ -18,6 +18,7 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - When using useSession() with separate loading state, ensure loading is set false for BOTH authenticated AND unauthenticated cases
 - Client-side useSession() state not reliable in E2E tests after navigation - use graceful skip pattern with isVisible check
 - For authenticated feature tests (e.g., pharmacy POS), use hasPOSAccess() helper pattern to detect access and skip gracefully when unavailable
+- Pages using useSearchParams must wrap content in Suspense: rename main fn to `*Content`, wrap in `<Suspense>` in default export
 
 ---
 
@@ -3118,5 +3119,60 @@ Created comprehensive database models for Phase 4 features:
 - Status transitions have strict rules: SCHEDULED -> CONFIRMED -> WAITING -> IN_PROGRESS -> COMPLETED
 - Payment must be completed before joining waiting room (enforced at API level)
 - Room creation is lazy - only created when first person tries to join
+
+---
+
+## 2026-02-02 - US-108
+**Telemedicine: Instant consultation**
+
+### What was implemented
+- Extended VideoConsultationStatus enum with PENDING_ACCEPTANCE and REJECTED statuses
+- Added instant consultation fields to VideoConsultation model:
+  - acceptance_deadline: Deadline for doctor to accept (60 seconds)
+  - accepted_at: When doctor accepted
+  - rejected_at: When doctor rejected
+  - rejection_reason: Optional rejection reason
+- Created available doctors API (GET /api/telemedicine/instant/available-doctors):
+  - Filters by telemedicine_available_now=true
+  - Returns doctors with fee, type, specialty filters
+  - Includes specialty options for filtering
+- Created instant consultation APIs:
+  - GET/POST /api/telemedicine/instant: List/create instant requests
+  - GET/PATCH /api/telemedicine/instant/[id]: Status polling and accept/reject
+- Created patient instant consultation page (/instant-consultation):
+  - Browse available doctors with type/specialty filters
+  - Confirmation modal with chief complaint input
+  - Real-time 60-second countdown timer
+  - Status polling every 2 seconds
+  - Auto-redirect to call page on acceptance
+  - Expired/rejected state handling
+- Created doctor pending requests page (/dashboard/instant-requests):
+  - List incoming consultation requests
+  - Real-time countdown timer per request
+  - Accept/reject actions with optional rejection reason
+  - Auto-redirect to call page on accept
+- Updated consultations page with new status colors and labels
+- Added bilingual translations for instant feature (EN/NE)
+- Fixed Suspense boundary issues in 10 pages using useSearchParams
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED - new statuses and fields)
+- apps/web/src/app/api/telemedicine/instant/available-doctors/route.ts (NEW)
+- apps/web/src/app/api/telemedicine/instant/route.ts (NEW)
+- apps/web/src/app/api/telemedicine/instant/[id]/route.ts (NEW)
+- apps/web/src/app/[lang]/instant-consultation/page.tsx (NEW)
+- apps/web/src/app/[lang]/dashboard/instant-requests/page.tsx (NEW)
+- apps/web/src/app/[lang]/dashboard/consultations/page.tsx (MODIFIED)
+- apps/web/messages/en.json (MODIFIED)
+- apps/web/messages/ne.json (MODIFIED)
+- Multiple pages fixed for Suspense boundary issues
+
+### Learnings for future iterations
+- Pages using useSearchParams in Next.js 14+ must be wrapped in Suspense boundary
+- Pattern: Create inner *Content component, wrap in Suspense in default export
+- Real-time polling UIs need to properly cleanup intervals on unmount
+- For countdown timers, use separate state map when tracking multiple items
+- The Card component uses `decorator` prop not `decoratorColor`
+- Session object doesn't have custom `locale` property - use hardcoded language or route param
 
 ---

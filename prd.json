@@ -1994,8 +1994,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 108,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Added PENDING_ACCEPTANCE and REJECTED statuses to VideoConsultationStatus. Added instant consultation fields to VideoConsultation model (acceptance_deadline, accepted_at, rejected_at, rejection_reason). Created GET /api/telemedicine/instant/available-doctors endpoint to list doctors with telemedicine_available_now=true. Created instant consultation APIs (GET/POST /api/telemedicine/instant, GET/PATCH /api/telemedicine/instant/[id]). Patient page at /instant-consultation shows available doctors with filters, confirmation modal, real-time 60-second countdown timer, and status polling for accept/reject/expired states. Doctor page at /dashboard/instant-requests shows pending requests with countdown timer and accept/reject actions. Auto-redirects to call page on accept. Fixed Suspense boundary issues in multiple pages. Typecheck passes. Build passes."
     },
     {
       "id": "US-109",
