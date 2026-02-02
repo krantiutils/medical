@@ -12,6 +12,7 @@ import {
   ProfessionalType,
   UserRole,
   VerificationStatus,
+  ClinicType,
 } from "@swasthya/database";
 import { hash } from "bcryptjs";
 
@@ -174,6 +175,43 @@ export const SEED_DATA = {
       verified: false,
     },
   ],
+
+  // Test clinics for admin verification tests
+  CLINICS: [
+    {
+      name: "Test Clinic One",
+      slug: "test-clinic-one",
+      type: ClinicType.CLINIC,
+      address: "Kathmandu, Nepal",
+      phone: "9801234567",
+      email: "testclinic1@example.com",
+      website: "https://testclinic1.example.com",
+      services: ["General Consultation", "Lab Tests"],
+      verified: false, // Pending verification
+    },
+    {
+      name: "Test Hospital",
+      slug: "test-hospital",
+      type: ClinicType.HOSPITAL,
+      address: "Lalitpur, Nepal",
+      phone: "9807654321",
+      email: "testhospital@example.com",
+      website: "https://testhospital.example.com",
+      services: ["Emergency", "Surgery", "X-Ray"],
+      verified: false, // Pending verification
+    },
+    {
+      name: "Test Pharmacy",
+      slug: "test-pharmacy",
+      type: ClinicType.PHARMACY,
+      address: "Bhaktapur, Nepal",
+      phone: "9811111111",
+      email: "testpharmacy@example.com",
+      website: null,
+      services: ["Pharmacy"],
+      verified: true, // Already verified
+    },
+  ],
 };
 
 /**
@@ -186,6 +224,12 @@ export const TEST_UNCLAIMED_DOCTOR_SLUG = SEED_DATA.DOCTORS[3].slug;
 export const TEST_USER_EMAIL = SEED_DATA.USERS.REGULAR.email;
 export const TEST_ADMIN_EMAIL = SEED_DATA.USERS.ADMIN.email;
 export const TEST_PROFESSIONAL_EMAIL = SEED_DATA.USERS.PROFESSIONAL.email;
+
+// Test clinic constants
+export const TEST_CLINIC_NAME = SEED_DATA.CLINICS[0].name;
+export const TEST_CLINIC_SLUG = SEED_DATA.CLINICS[0].slug;
+export const TEST_HOSPITAL_NAME = SEED_DATA.CLINICS[1].name;
+export const TEST_HOSPITAL_SLUG = SEED_DATA.CLINICS[1].slug;
 
 /**
  * Seed test users
@@ -427,6 +471,60 @@ async function seedVerificationRequests(
 }
 
 /**
+ * Seed test clinics for admin verification tests
+ */
+async function seedClinics(ownerUserId: string): Promise<Map<string, string>> {
+  const clinicIds = new Map<string, string>();
+
+  for (const clinicData of SEED_DATA.CLINICS) {
+    // Check if clinic already exists
+    const existing = await prisma.clinic.findUnique({
+      where: { slug: clinicData.slug },
+    });
+
+    if (existing) {
+      // Update existing clinic
+      const clinic = await prisma.clinic.update({
+        where: { slug: clinicData.slug },
+        data: {
+          name: clinicData.name,
+          type: clinicData.type,
+          address: clinicData.address,
+          phone: clinicData.phone,
+          email: clinicData.email,
+          website: clinicData.website,
+          services: clinicData.services,
+          verified: clinicData.verified,
+          claimed_by_id: ownerUserId,
+        },
+      });
+      clinicIds.set(clinicData.slug, clinic.id);
+    } else {
+      // Create new clinic
+      const clinic = await prisma.clinic.create({
+        data: {
+          name: clinicData.name,
+          slug: clinicData.slug,
+          type: clinicData.type,
+          address: clinicData.address,
+          phone: clinicData.phone,
+          email: clinicData.email,
+          website: clinicData.website,
+          services: clinicData.services,
+          timings: {},
+          photos: [],
+          verified: clinicData.verified,
+          claimed_by_id: ownerUserId,
+        },
+      });
+      clinicIds.set(clinicData.slug, clinic.id);
+    }
+  }
+
+  return clinicIds;
+}
+
+/**
  * Clean up all test data
  * IMPORTANT: Order matters due to foreign key constraints
  */
@@ -434,6 +532,16 @@ async function cleanupTestData(): Promise<void> {
   // Delete in reverse order of dependencies
   await prisma.auditLog.deleteMany({});
   await prisma.verificationRequest.deleteMany({});
+
+  // Delete test clinics
+  const testClinicSlugs = SEED_DATA.CLINICS.map((c) => c.slug);
+  await prisma.clinic.deleteMany({
+    where: {
+      slug: {
+        in: testClinicSlugs,
+      },
+    },
+  });
 
   // Delete professionals with test registration numbers
   const testRegistrationNumbers = [
@@ -487,6 +595,7 @@ export async function seedTestData(): Promise<{
   userIds: Map<string, string>;
   professionalIds: Map<string, string>;
   verificationRequestIds: { pendingId: string; approvedId: string; rejectedId: string };
+  clinicIds: Map<string, string>;
 }> {
   console.log("🌱 Seeding test data...");
 
@@ -514,12 +623,17 @@ export async function seedTestData(): Promise<{
   );
   console.log("  ✓ Seeded verification requests (pending, approved, rejected)");
 
+  // Seed test clinics (owned by regular user for testing admin verification)
+  const clinicIds = await seedClinics(regularUserId);
+  console.log(`  ✓ Seeded ${clinicIds.size} clinics`);
+
   console.log("✅ Test data seeding complete!");
 
   return {
     userIds,
     professionalIds,
     verificationRequestIds,
+    clinicIds,
   };
 }
 
