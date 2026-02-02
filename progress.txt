@@ -3053,3 +3053,70 @@ Created comprehensive database models for Phase 4 features:
 - "Available Now" toggle is only shown when telemedicine is enabled (progressive disclosure)
 
 ---
+
+## 2026-02-02 - US-107
+**Telemedicine: Booking and video call**
+
+### What was implemented
+- Created telemedicine API endpoints:
+  - POST /api/telemedicine/consultations - Book new video consultation (scheduled or instant)
+  - GET /api/telemedicine/consultations - List consultations for patient or doctor
+  - GET /api/telemedicine/consultations/[id] - Get single consultation details
+  - PATCH /api/telemedicine/consultations/[id] - Update consultation status, notes, prescription
+  - DELETE /api/telemedicine/consultations/[id] - Cancel consultation
+  - POST /api/telemedicine/consultations/[id]/payment - Process payment (demo mode)
+  - GET /api/telemedicine/consultations/[id]/payment - Get payment status
+  - POST/GET /api/telemedicine/consultations/[id]/room - Create/get video room
+
+- Added booking UI to doctor profile page:
+  - BookConsultationButton component with modal
+  - Scheduled vs Instant booking options (instant only when doctor is available_now)
+  - Date/time picker for scheduled consultations
+  - Chief complaint input
+  - Fee display and payment flow initiation
+
+- Created patient consultation dashboard:
+  - /[lang]/dashboard/consultations - List view with filter tabs (All/Upcoming/Past)
+  - Status badges with color coding
+  - Quick actions: Pay Now, Join Call, View Details
+  - /[lang]/dashboard/consultations/[id] - Detail view with:
+    - Doctor info card
+    - Consultation details (type, scheduled time, fee, payment status)
+    - Notes and prescription display (for completed consultations)
+    - Action buttons based on consultation state
+
+- Built video call interface:
+  - /[lang]/dashboard/consultations/[id]/call - Video call page
+  - Waiting room with camera preview and tips
+  - Camera/microphone toggle controls
+  - Connected state with simulated video feed (Daily.co structure ready)
+  - Doctor's notes panel (for doctor role during call)
+  - End call button with completion flow
+
+- Post-consultation features:
+  - Doctor can add notes and prescription during call
+  - Save notes button with auto-save
+  - Follow-up date recommendation
+  - All captured in VideoConsultation record
+
+### Files changed
+- apps/web/src/app/api/telemedicine/consultations/route.ts (NEW)
+- apps/web/src/app/api/telemedicine/consultations/[id]/route.ts (NEW)
+- apps/web/src/app/api/telemedicine/consultations/[id]/payment/route.ts (NEW)
+- apps/web/src/app/api/telemedicine/consultations/[id]/room/route.ts (NEW)
+- apps/web/src/app/[lang]/doctors/[slug]/page.tsx (MODIFIED - added telemedicine booking section)
+- apps/web/src/app/[lang]/dashboard/consultations/page.tsx (NEW)
+- apps/web/src/app/[lang]/dashboard/consultations/[id]/page.tsx (NEW)
+- apps/web/src/app/[lang]/dashboard/consultations/[id]/call/page.tsx (NEW)
+- apps/web/src/components/telemedicine/book-consultation-button.tsx (NEW)
+- .env.example (MODIFIED - added DAILY_API_KEY)
+
+### Learnings for future iterations
+- When using TypeScript enum includes() checks, use individual comparisons instead to avoid type narrowing issues
+- Video call implementation uses simulated UI - Daily.co SDK would be integrated in production with DAILY_API_KEY
+- Patient and doctor roles determined by checking claimed_by_id relationship
+- Status transitions have strict rules: SCHEDULED -> CONFIRMED -> WAITING -> IN_PROGRESS -> COMPLETED
+- Payment must be completed before joining waiting room (enforced at API level)
+- Room creation is lazy - only created when first person tries to join
+
+---
