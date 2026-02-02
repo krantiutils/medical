@@ -13,6 +13,7 @@ import {
   UserRole,
   VerificationStatus,
   ClinicType,
+  Prisma,
 } from "@swasthya/database";
 import { hash } from "bcryptjs";
 
@@ -225,9 +226,18 @@ export const SEED_DATA = {
       phone: "9812345678",
       email: "dashboardclinic@example.com",
       website: "https://dashboardclinic.example.com",
-      services: ["General Consultation", "Specialist Consultation", "Lab Tests"],
+      services: ["general", "specialist", "lab"],
       verified: true, // Verified clinic for dashboard tests
       ownerType: "CLINIC_OWNER", // Special marker for clinic owner
+      timings: {
+        sunday: { isOpen: false, openTime: "", closeTime: "" },
+        monday: { isOpen: true, openTime: "09:00", closeTime: "17:00" },
+        tuesday: { isOpen: true, openTime: "09:00", closeTime: "17:00" },
+        wednesday: { isOpen: true, openTime: "09:00", closeTime: "17:00" },
+        thursday: { isOpen: true, openTime: "09:00", closeTime: "17:00" },
+        friday: { isOpen: true, openTime: "09:00", closeTime: "17:00" },
+        saturday: { isOpen: true, openTime: "10:00", closeTime: "14:00" },
+      },
     },
   ],
 };
@@ -514,6 +524,10 @@ async function seedClinics(
       where: { slug: clinicData.slug },
     });
 
+    // Get timings from data if available
+    const timingsData = (clinicData as { timings?: Record<string, unknown> }).timings || {};
+    const timings = Object.keys(timingsData).length > 0 ? timingsData as Prisma.InputJsonValue : {};
+
     if (existing) {
       // Update existing clinic
       const clinic = await prisma.clinic.update({
@@ -526,6 +540,7 @@ async function seedClinics(
           email: clinicData.email,
           website: clinicData.website,
           services: clinicData.services,
+          timings: timings,
           verified: clinicData.verified,
           claimed_by_id: ownerId,
         },
@@ -543,7 +558,7 @@ async function seedClinics(
           email: clinicData.email,
           website: clinicData.website,
           services: clinicData.services,
-          timings: {},
+          timings: timings,
           photos: [],
           verified: clinicData.verified,
           claimed_by_id: ownerId,

@@ -63,6 +63,17 @@ export const TEST_DATA = {
     DASHBOARD_CLINIC: {
       name: "Dashboard Test Clinic",
       slug: "dashboard-test-clinic",
+      type: "POLYCLINIC",
+    },
+    TEST_PHARMACY: {
+      name: "Test Pharmacy",
+      slug: "test-pharmacy",
+      type: "PHARMACY",
+    },
+    TEST_CLINIC_UNVERIFIED: {
+      name: "Test Clinic One",
+      slug: "test-clinic-one",
+      type: "CLINIC",
     },
   },
 };
