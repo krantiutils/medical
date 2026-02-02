@@ -210,3 +210,20 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Added .eslintrc.json to prevent interactive ESLint prompts during lint
   - Next.js warns about <img> vs <Image> component - consider optimizing later (out of scope for styling)
 ---
+
+## 2026-02-02 14:30 +0545 - US-014
+- **What was implemented**: Homepage hero section with Bauhaus design
+- **Files changed**:
+  - `apps/web/src/app/[lang]/page.tsx` - Created homepage with hero section and categories
+  - `prd.json` - Marked US-014 as passes: true
+- **Learnings for future iterations:**
+  - Use `"use client"` directive for pages with useState/form handling
+  - Hero text: text-6xl lg:text-8xl font-black uppercase with leading-[0.9] for tight line height
+  - Color blocking: Use lg:flex-row with hidden lg:flex for desktop-only color panel
+  - Geometric shapes: Use absolute positioning within relative container, clip-path polygon for triangles
+  - Search form: flex-col sm:flex-row gap-4 for responsive stacking
+  - Quick stats: Small colored squares (w-3 h-3) with Bauhaus colors for visual differentiation
+  - Mobile fallback: Use h-4 flex bar with colored segments instead of geometric panel
+  - Category cards: Use anchor tags with group class, hover:shadow-[color] for colored shadow on hover
+  - Escape apostrophes with &apos; in JSX to satisfy ESLint react/no-unescaped-entities
+---
