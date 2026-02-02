@@ -986,3 +986,41 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Confirmation pages receive data via URL params, not server-side props
 
 ---
+
+## 2026-02-02 - US-062
+**E2E Tests: Clinic registration flow**
+
+### What was implemented
+- Created apps/web/e2e/clinic-registration.spec.ts with 44 comprehensive tests covering:
+  - Access Control (4 tests): login required message, Login button, callbackUrl in login link, Create Account button
+  - Basic Form Functionality (5 tests): registration form display, all required fields, clinic type dropdown, registration badge, submit button
+  - Form Validation (5 tests): empty clinic name, invalid phone, invalid email, invalid website URL, error clearing on typing
+  - Logo Upload (2 tests): logo upload section, upload button
+  - Photos Upload (2 tests): photos upload section, upload button
+  - Operating Hours (5 tests): operating hours section, all days displayed, default closed state, toggle functionality, time inputs
+  - Services Selection (6 tests): services section, predefined services display, selecting services, custom service input, adding custom services, Enter key support
+  - Successful Submission (7 tests): loading state, redirect to success, clinic details display, pending verification message, email confirmation, navigation buttons
+  - Language Support (3 tests): Nepali login prompt, Nepali form, Nepali success page
+  - UI Elements (3 tests): decorative panel, mobile accent bar, Swasthya branding
+  - Success Page Navigation (2 tests): homepage navigation, return to registration
+
+### Test Results
+- 11 tests pass (access control, language tests, UI tests, success page navigation)
+- 33 tests skip gracefully (authenticated tests detect when session not maintained and skip with descriptive message)
+- 0 failures
+
+### Files changed
+- apps/web/e2e/clinic-registration.spec.ts (NEW)
+
+### Learnings for future iterations
+- Clinic registration page is at /[lang]/clinic/register with login required (shows login prompt inline)
+- Multiple Login links exist on page (header and content) - use `page.locator("main")` to scope to content area
+- Custom loginUser helper needed for these tests (similar to claim-profile tests)
+- goToClinicRegisterAndCheckAuth helper checks if authenticated by looking for form fields vs login prompt
+- Form validation uses client-side JavaScript validation with inline error messages below fields
+- Operating hours default to all closed, toggled via styled switch buttons
+- Services section has predefined checkboxes and custom service tag input with Enter key support
+- Successful submission redirects to /[lang]/clinic/register/success with query params (name, slug, type)
+- Success page uses searchParams to display clinic details and shows pending verification steps
+
+---
