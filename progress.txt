@@ -312,3 +312,19 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Use `updated_at` from database as `lastModified` for accurate sitemap timestamps
   - Select only needed fields (slug, updated_at, verified) for performance with 40k+ records
 ---
+
+## 2026-02-02 20:00 +0545 - US-020
+- **What was implemented**: robots.txt and SEO basics configuration
+- **Files changed**:
+  - `apps/web/src/app/robots.ts` - Created robots.txt using Next.js MetadataRoute.Robots convention
+  - `apps/web/src/app/layout.tsx` - Added comprehensive default metadata for SEO
+  - `prd.json` - Marked US-020 as passes: true
+- **Learnings for future iterations:**
+  - Use `MetadataRoute.Robots` type from "next" for type-safe robots.ts configuration
+  - `metadataBase` in metadata object is essential for resolving relative URLs in OpenGraph/Twitter images
+  - Title template `%s | Swasthya` allows child pages to just set the page-specific part
+  - `formatDetection` can disable auto-linking of emails/phones/addresses by mobile browsers
+  - Use `GOOGLE_SITE_VERIFICATION` env var for Google Search Console verification (no public prefix needed)
+  - robots directive in metadata provides additional control beyond robots.txt
+  - googleBot specific directives like `max-video-preview`, `max-image-preview`, `max-snippet` optimize rich snippets
+---
