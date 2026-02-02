@@ -227,3 +227,20 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Category cards: Use anchor tags with group class, hover:shadow-[color] for colored shadow on hover
   - Escape apostrophes with &apos; in JSX to satisfy ESLint react/no-unescaped-entities
 ---
+
+## 2026-02-02 15:00 +0545 - US-015
+- **What was implemented**: Search results page with basic listing and pagination
+- **Files changed**:
+  - `apps/web/src/app/[lang]/search/page.tsx` - Created search page with query param handling, ILIKE search, responsive grid, pagination
+  - `prd.json` - Marked US-015 as passes: true
+- **Learnings for future iterations:**
+  - Use `searchParams: Promise<{}>` for query params in Next.js 14 App Router (must await like params)
+  - Prisma `contains` with `mode: "insensitive"` provides ILIKE behavior for case-insensitive search
+  - Responsive grid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-4` for 1/2/4 column layout
+  - Use `line-clamp-1` and `line-clamp-2` for text truncation in cards
+  - Card decorator colors: blue for DOCTOR, red for DENTIST, yellow for PHARMACIST
+  - For pagination, use `skip` and `take` with Prisma, and `Math.ceil(totalCount / ITEMS_PER_PAGE)` for total pages
+  - Generate page numbers with ellipsis for better UX on large page counts
+  - Use native `<form action="url" method="GET">` for server-side search (no "use client" needed)
+  - All professionals currently use /doctor/[slug] route - this may change with dentist/pharmacist-specific routes
+---
