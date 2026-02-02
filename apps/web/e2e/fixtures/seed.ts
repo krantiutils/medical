@@ -13,6 +13,8 @@ import {
   UserRole,
   VerificationStatus,
   ClinicType,
+  PaymentMode,
+  PaymentStatus,
   Prisma,
 } from "@swasthya/database";
 import { hash } from "bcryptjs";
@@ -240,6 +242,72 @@ export const SEED_DATA = {
       },
     },
   ],
+
+  // Test services for billing tests
+  SERVICES: [
+    {
+      name: "General Consultation",
+      description: "Initial consultation with a general physician",
+      price: 500,
+      category: "Consultation",
+      is_active: true,
+    },
+    {
+      name: "Follow-up Visit",
+      description: "Follow-up consultation",
+      price: 300,
+      category: "Consultation",
+      is_active: true,
+    },
+    {
+      name: "X-Ray",
+      description: "Digital X-ray imaging",
+      price: 1200,
+      category: "Test",
+      is_active: true,
+    },
+    {
+      name: "Blood Test",
+      description: "Complete blood count",
+      price: 800,
+      category: "Test",
+      is_active: true,
+    },
+    {
+      name: "ECG",
+      description: "Electrocardiogram",
+      price: 600,
+      category: "Procedure",
+      is_active: true,
+    },
+    {
+      name: "Dressing",
+      description: "Wound dressing service",
+      price: 200,
+      category: "Procedure",
+      is_active: false, // Inactive service for testing
+    },
+  ],
+
+  // Test patients for billing tests
+  PATIENTS: [
+    {
+      patient_number: "PAT-2026-0001",
+      full_name: "Test Patient One",
+      phone: "9841000001",
+      email: "patient1@example.com",
+      gender: "Male",
+      address: "Kathmandu, Nepal",
+    },
+    {
+      patient_number: "PAT-2026-0002",
+      full_name: "Test Patient Two",
+      phone: "9841000002",
+      email: "patient2@example.com",
+      gender: "Female",
+      address: "Lalitpur, Nepal",
+    },
+  ],
 };
 
 /**
@@ -264,6 +332,14 @@ export const TEST_CLINIC_OWNER_EMAIL = SEED_DATA.USERS.CLINIC_OWNER.email;
 export const TEST_CLINIC_OWNER_PASSWORD = SEED_DATA.USERS.CLINIC_OWNER.password;
 export const TEST_DASHBOARD_CLINIC_NAME = SEED_DATA.CLINICS[3].name;
 export const TEST_DASHBOARD_CLINIC_SLUG = SEED_DATA.CLINICS[3].slug;
+
+// Billing test data constants
+export const TEST_SERVICE_CONSULTATION = SEED_DATA.SERVICES[0].name;
+export const TEST_SERVICE_FOLLOWUP = SEED_DATA.SERVICES[1].name;
+export const TEST_SERVICE_XRAY = SEED_DATA.SERVICES[2].name;
+export const TEST_PATIENT_ONE_NAME = SEED_DATA.PATIENTS[0].full_name;
+export const TEST_PATIENT_ONE_PHONE = SEED_DATA.PATIENTS[0].phone;
+export const TEST_PATIENT_TWO_NAME = SEED_DATA.PATIENTS[1].full_name;
 
 /**
  * Seed test users
@@ -684,6 +760,189 @@ async function seedDoctorSchedules(
 }
 
 /**
+ * Seed clinic services for billing tests
+ */
+async function seedServices(clinicIds: Map<string, string>): Promise<Map<string, string>> {
+  const serviceIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping services seeding");
+    return serviceIds;
+  }
+
+  // Delete existing services for this clinic
+  await prisma.service.deleteMany({
+    where: { clinic_id: dashboardClinicId },
+  });
+
+  for (const serviceData of SEED_DATA.SERVICES) {
+    const service = await prisma.service.create({
+      data: {
+        clinic_id: dashboardClinicId,
+        name: serviceData.name,
+        description: serviceData.description,
+        price: serviceData.price,
+        category: serviceData.category,
+        is_active: serviceData.is_active,
+      },
+    });
+    serviceIds.set(serviceData.name, service.id);
+  }
+
+  return serviceIds;
+}
+
+/**
+ * Seed clinic patients for billing tests
+ */
+async function seedPatients(clinicIds: Map<string, string>): Promise<Map<string, string>> {
+  const patientIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping patients seeding");
+    return patientIds;
+  }
+
+  for (const patientData of SEED_DATA.PATIENTS) {
+    // Upsert patient by phone (unique per clinic)
+    const existing = await prisma.patient.findFirst({
+      where: {
+        clinic_id: dashboardClinicId,
+        phone: patientData.phone,
+      },
+    });
+
+    if (existing) {
+      // Update existing patient
+      const patient = await prisma.patient.update({
+        where: { id: existing.id },
+        data: {
+          patient_number: patientData.patient_number,
+          full_name: patientData.full_name,
+          email: patientData.email,
+          gender: patientData.gender,
+          address: patientData.address,
+        },
+      });
+      patientIds.set(patientData.phone, patient.id);
+    } else {
+      // Create new patient
+      const patient = await prisma.patient.create({
+        data: {
+          clinic_id: dashboardClinicId,
+          patient_number: patientData.patient_number,
+          full_name: patientData.full_name,
+          phone: patientData.phone,
+          email: patientData.email,
+          gender: patientData.gender,
+          address: patientData.address,
+          allergies: [],
+        },
+      });
+      patientIds.set(patientData.phone, patient.id);
+    }
+  }
+
+  return patientIds;
+}
+
+/**
+ * Seed sample invoices for report tests
+ */
+async function seedInvoices(
+  clinicIds: Map<string, string>,
+  patientIds: Map<string, string>,
+  serviceIds: Map<string, string>,
+  createdById: string
+): Promise<void> {
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping invoices seeding");
+    return;
+  }
+
+  // Delete existing invoices for this clinic
+  await prisma.invoice.deleteMany({
+    where: { clinic_id: dashboardClinicId },
+  });
+
+  const patientOneId = patientIds.get(SEED_DATA.PATIENTS[0].phone);
+  const patientTwoId = patientIds.get(SEED_DATA.PATIENTS[1].phone);
+  const consultationId = serviceIds.get("General Consultation");
+  const xrayId = serviceIds.get("X-Ray");
+
+  if (!patientOneId || !patientTwoId || !consultationId || !xrayId) {
+    console.log("  ⚠ Missing patient/service IDs, skipping invoices seeding");
+    return;
+  }
+
+  // Create a few sample invoices for report testing
+  const invoices = [
+    {
+      patient_id: patientOneId,
+      invoice_number: "INV-2026-0001",
+      items: [
+        { service_id: consultationId, name: "General Consultation", quantity: 1, unit_price: 500, amount: 500 },
+      ],
+      subtotal: 500,
+      discount: 0,
+      tax: 0,
+      total: 500,
+      payment_mode: PaymentMode.CASH,
+      payment_status: PaymentStatus.PAID,
+    },
+    {
+      patient_id: patientTwoId,
+      invoice_number: "INV-2026-0002",
+      items: [
+        { service_id: consultationId, name: "General Consultation", quantity: 1, unit_price: 500, amount: 500 },
+        { service_id: xrayId, name: "X-Ray", quantity: 1, unit_price: 1200, amount: 1200 },
+      ],
+      subtotal: 1700,
+      discount: 100,
+      tax: 208, // 13% of (1700 - 100)
+      total: 1808,
+      payment_mode: PaymentMode.CARD,
+      payment_status: PaymentStatus.PAID,
+    },
+    {
+      patient_id: patientOneId,
+      invoice_number: "INV-2026-0003",
+      items: [
+        { service_id: xrayId, name: "X-Ray", quantity: 2, unit_price: 1200, amount: 2400 },
+      ],
+      subtotal: 2400,
+      discount: 0,
+      tax: 0,
+      total: 2400,
+      payment_mode: PaymentMode.CREDIT,
+      payment_status: PaymentStatus.PENDING,
+    },
+  ];
+
+  for (const invoiceData of invoices) {
+    await prisma.invoice.create({
+      data: {
+        clinic_id: dashboardClinicId,
+        patient_id: invoiceData.patient_id,
+        created_by_id: createdById,
+        invoice_number: invoiceData.invoice_number,
+        items: invoiceData.items,
+        subtotal: invoiceData.subtotal,
+        discount: invoiceData.discount,
+        tax: invoiceData.tax,
+        total: invoiceData.total,
+        payment_mode: invoiceData.payment_mode,
+        payment_status: invoiceData.payment_status,
+      },
+    });
+  }
+}
+
+/**
  * Clean up all test data
  * IMPORTANT: Order matters due to foreign key constraints
  */
@@ -694,6 +953,17 @@ async function cleanupTestData(): Promise<void> {
 
   // Delete clinic doctors (before clinics and professionals)
   const testClinicSlugs = SEED_DATA.CLINICS.map((c) => c.slug);
+
+  // Delete invoices (before patients)
+  await prisma.invoice.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
 
   // Delete appointments (before patients)
   await prisma.appointment.deleteMany({
@@ -740,6 +1010,17 @@ async function cleanupTestData(): Promise<void> {
 
   // Delete doctor leaves
   await prisma.doctorLeave.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  // Delete services (before clinics)
+  await prisma.service.deleteMany({
     where: {
       clinic: {
         slug: {
@@ -851,6 +1132,18 @@ export async function seedTestData(): Promise<{
   // Seed doctor schedules for appointment booking tests
   await seedDoctorSchedules(clinicIds, professionalIds);
   console.log("  ✓ Seeded doctor schedules for appointment booking");
+
+  // Seed services for billing tests
+  const serviceIds = await seedServices(clinicIds);
+  console.log(`  ✓ Seeded ${serviceIds.size} services for billing`);
+
+  // Seed patients for billing tests
+  const patientIds = await seedPatients(clinicIds);
+  console.log(`  ✓ Seeded ${patientIds.size} patients for billing`);
+
+  // Seed sample invoices for report tests
+  await seedInvoices(clinicIds, patientIds, serviceIds, clinicOwnerUserId);
+  console.log("  ✓ Seeded sample invoices for reports");
 
   console.log("✅ Test data seeding complete!");
 

@@ -76,6 +76,30 @@ export const TEST_DATA = {
       type: "CLINIC",
     },
   },
+
+  // Test services for billing
+  SERVICES: {
+    CONSULTATION: { name: "General Consultation", price: 500 },
+    FOLLOWUP: { name: "Follow-up Visit", price: 300 },
+    XRAY: { name: "X-Ray", price: 1200 },
+    BLOOD_TEST: { name: "Blood Test", price: 800 },
+    ECG: { name: "ECG", price: 600 },
+    DRESSING_INACTIVE: { name: "Dressing", price: 200 },
+  },
+
+  // Test patients for billing
+  PATIENTS: {
+    PATIENT_ONE: {
+      name: "Test Patient One",
+      phone: "9841000001",
+      number: "PAT-2026-0001",
+    },
+    PATIENT_TWO: {
+      name: "Test Patient Two",
+      phone: "9841000002",
+      number: "PAT-2026-0002",
+    },
+  },
 };
 
 /**
@@ -149,7 +173,8 @@ export async function login(
   await page.getByRole("button", { name: /sign in|log in/i }).click();
 
   // Wait for redirect to homepage or dashboard
-  await page.waitForURL(/\/(en|ne)\/(dashboard|$)/);
+  // Matches /en, /en/, /en/dashboard, /ne, /ne/, /ne/dashboard
+  await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/);
 }
 
 /**
@@ -167,7 +192,7 @@ export async function logout(page: Page): Promise<void> {
   }
 
   // Wait for redirect to login or home
-  await page.waitForURL(/\/(en|ne)\/(login|$)/);
+  await page.waitForURL(/\/(en|ne)(\/login|\/)?$/);
 }
 
 /**
