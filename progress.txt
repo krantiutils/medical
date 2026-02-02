@@ -244,3 +244,21 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Use native `<form action="url" method="GET">` for server-side search (no "use client" needed)
   - All professionals currently use /doctor/[slug] route - this may change with dentist/pharmacist-specific routes
 ---
+
+## 2026-02-02 16:00 +0545 - US-016
+- **What was implemented**: Search results page filters for type and location
+- **Files changed**:
+  - `apps/web/src/app/[lang]/search/page.tsx` - Added type and location filter dropdowns, active filter tags, updated pagination to preserve filters
+  - `prd.json` - Marked US-016 as passes: true
+- **Learnings for future iterations:**
+  - Import `ProfessionalType` enum from `@swasthya/database` for type validation
+  - Use `Object.values(EnumType).includes(value)` to validate enum values from URL params
+  - Build URL with `URLSearchParams` for clean query string construction
+  - Combine Prisma conditions with `{ AND: conditions }` when multiple filters apply
+  - Use `distinct: ["field"]` in Prisma to get unique values for dropdown options
+  - Form `onChange` with `form.submit()` provides instant filter application without button
+  - Active filters as tags with X icon use Link components for easy removal (omit the param)
+  - Filter tags use Bauhaus colors: blue for type, yellow for location
+  - Hidden inputs preserve filter state when submitting search query form
+  - Don't use `@typescript-eslint/no-explicit-any` disable comment - ESLint rule not configured in this project
+---
