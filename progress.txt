@@ -565,3 +565,31 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - claimed_by relation pattern is consistent with Professional model
 
 ---
+
+## 2026-02-02 - US-051
+**Database schema: ClinicDoctor junction table**
+
+### What was implemented
+- Created ClinicDoctor model in Prisma schema with:
+  - id (uuid) as primary key
+  - clinic_id (FK to Clinic) with onDelete: Cascade
+  - doctor_id (FK to Professional) with onDelete: Cascade
+  - role (String optional) for types like "visiting", "permanent", "consultant"
+  - joined_at (DateTime) with default now()
+- Added unique constraint on (clinic_id, doctor_id) to prevent duplicate associations
+- Added indexes on clinic_id and doctor_id for query performance
+- Added bidirectional relations:
+  - Clinic.doctors: ClinicDoctor[]
+  - Professional.clinics: ClinicDoctor[]
+- Ran prisma db push successfully
+- Typecheck passes
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+
+### Learnings for future iterations
+- Junction tables should include onDelete: Cascade on foreign keys for clean deletion
+- Use `prisma db push` for development schema sync (not migrate dev) - this is the established pattern in this project
+- Bidirectional relations in Prisma require adding the array field on both sides of the many-to-many
+
+---

@@ -994,8 +994,8 @@
         "Typecheck passes"
       ],
       "priority": 51,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: ClinicDoctor model with id (uuid), clinic_id (FK Clinic), doctor_id (FK Professional), role (String optional for visiting/permanent/consultant), joined_at (DateTime). Unique constraint on (clinic_id, doctor_id). Added bidirectional relations: Clinic.doctors and Professional.clinics. Indexes on clinic_id and doctor_id. Used prisma db push for database sync. Typecheck passes."
     },
     {
       "id": "US-052",
