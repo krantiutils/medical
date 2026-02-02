@@ -9,6 +9,8 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Scripts should be added to both package.json (workspace) and root package.json (with filter)
 - E2E tests use Playwright with fixtures in apps/web/e2e/fixtures/
 - Test helpers export extended `test` with authenticated page fixtures
+- Import Prisma types from @swasthya/database (not @prisma/client) in apps/web
+- E2E test seed data in seed.ts must match TEST_DATA constants in test-utils.ts
 
 ---
 
@@ -57,5 +59,41 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Extended test fixtures allow authenticated pages without repetitive login
 - TEST_DATA constants should match seeded test data (see US-036)
 - CI e2e job should depend on build job to avoid running tests on broken code
+
+---
+
+## 2026-02-02 14:45 - US-036
+**E2E Tests: Test data seeding**
+
+### What was implemented
+- Created apps/web/e2e/fixtures/seed.ts with complete test data seeding:
+  - SEED_DATA constant with all test fixtures
+  - seedUsers() - creates 3 users (regular, professional, admin) with hashed passwords
+  - seedProfessionals() - creates 5 doctors, 3 dentists, 2 pharmacists with known slugs
+  - seedVerificationRequest() - creates pending verification request for claim testing
+  - teardownTestData() - cleans up all test data respecting FK constraints
+  - disconnectDb() - properly closes Prisma connection
+- Created Playwright global setup/teardown hooks:
+  - apps/web/e2e/global-setup.ts - seeds test data before all tests
+  - apps/web/e2e/global-teardown.ts - cleans up after all tests
+- Updated playwright.config.ts to use globalSetup and globalTeardown
+- Exported constants for easy test access:
+  - TEST_DOCTOR_SLUG, TEST_DENTIST_SLUG, TEST_PHARMACIST_SLUG
+  - TEST_UNCLAIMED_DOCTOR_SLUG (for claim flow testing)
+  - TEST_USER_EMAIL, TEST_ADMIN_EMAIL, TEST_PROFESSIONAL_EMAIL
+
+### Files changed
+- apps/web/e2e/fixtures/seed.ts (NEW)
+- apps/web/e2e/global-setup.ts (NEW)
+- apps/web/e2e/global-teardown.ts (NEW)
+- apps/web/playwright.config.ts (MODIFIED)
+
+### Learnings for future iterations
+- Import from @swasthya/database, not directly from @prisma/client in apps/web
+- Don't use `as const` on objects with arrays that will be passed to Prisma (readonly incompatibility)
+- Prisma upsert with composite unique keys uses `type_registration_number` compound field
+- Global setup/teardown must export default async functions for Playwright
+- UserRole and VerificationStatus enums come from @swasthya/database
+- Test data constants in seed.ts must match TEST_DATA in test-utils.ts exactly
 
 ---

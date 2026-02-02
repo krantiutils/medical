@@ -677,8 +677,8 @@
         "Typecheck passes"
       ],
       "priority": 36,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: seed.ts with test professionals (5 doctors, 3 dentists, 2 pharmacists), test users (regular, professional, admin), and pending verification request. Created global-setup.ts and global-teardown.ts for Playwright hooks. Exported TEST_DOCTOR_SLUG, TEST_USER_EMAIL, etc. Updated playwright.config.ts. Typecheck passes."
     },
     {
       "id": "US-037",
