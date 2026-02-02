@@ -125,6 +125,9 @@ model Professional {
   // Clinics where this professional works
   clinics ClinicDoctor[]
 
+  // Schedules for this professional at clinics
+  schedules DoctorSchedule[]
+
   @@unique([type, registration_number])
   @@index([slug])
   @@index([type])
@@ -203,6 +206,9 @@ model Clinic {
   // Patients registered at this clinic
   patients Patient[]
 
+  // Doctor schedules at this clinic
+  schedules DoctorSchedule[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -249,4 +255,26 @@ model Patient {
   @@unique([clinic_id, phone])
   @@index([phone])
   @@index([clinic_id])
+}
+
+model DoctorSchedule {
+  id                     String    @id @default(uuid())
+  day_of_week            Int       // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  start_time             String    // Format: "HH:MM" (e.g., "09:00")
+  end_time               String    // Format: "HH:MM" (e.g., "17:00")
+  slot_duration_minutes  Int       // Duration of each appointment slot
+  max_patients_per_slot  Int       @default(1) // Max patients per slot
+  is_active              Boolean   @default(true)
+  effective_from         DateTime  @default(now())
+  effective_to           DateTime? // Nullable for indefinite schedules
+
+  // Relations
+  clinic_id String
+  clinic    Clinic       @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  doctor_id String
+  doctor    Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+
+  @@index([clinic_id, doctor_id, day_of_week])
+  @@index([clinic_id])
+  @@index([doctor_id])
 }
