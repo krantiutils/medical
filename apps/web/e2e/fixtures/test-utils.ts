@@ -135,6 +135,20 @@ export const TEST_DATA = {
     RAM_BAHADUR: { name: "Ram Bahadur", phone: "9801234567", balance: 500 },
     SITA_KUMARI: { name: "Sita Kumari", phone: "9802345678", balance: 0 },
   },
+
+  // IPD test data - wards and beds
+  WARDS: {
+    GENERAL_A: { name: "General Ward A", type: "GENERAL" },
+    ICU: { name: "ICU", type: "ICU" },
+  },
+
+  BEDS: {
+    A101: { number: "A-101", wardIndex: 0, dailyRate: 500 },
+    A102: { number: "A-102", wardIndex: 0, dailyRate: 500 },
+    A103: { number: "A-103", wardIndex: 0, dailyRate: 500 },
+    ICU01: { number: "ICU-01", wardIndex: 1, dailyRate: 2000 },
+    ICU02: { number: "ICU-02", wardIndex: 1, dailyRate: 2000 },
+  },
 };
 
 /**

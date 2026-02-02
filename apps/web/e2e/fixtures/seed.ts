@@ -20,6 +20,9 @@ import {
   AppointmentType,
   AppointmentSource,
   ProductCategory,
+  WardType,
+  BedStatus,
+  AdmissionStatus,
 } from "@swasthya/database";
 import { hash } from "bcryptjs";
 
@@ -454,6 +457,38 @@ export const SEED_DATA = {
       current_balance: 0, // Fresh account
     },
   ],
+
+  // IPD test data - wards and beds for bed management tests
+  WARDS: [
+    {
+      name: "General Ward A",
+      type: WardType.GENERAL,
+      floor: "Ground Floor",
+      building: "Main Building",
+      capacity: 10,
+      description: "General ward for adult patients",
+      is_active: true,
+    },
+    {
+      name: "ICU",
+      type: WardType.ICU,
+      floor: "1st Floor",
+      building: "Main Building",
+      capacity: 5,
+      description: "Intensive Care Unit",
+      is_active: true,
+    },
+  ],
+
+  BEDS: [
+    // Beds for General Ward A (index 0)
+    { wardIndex: 0, bed_number: "A-101", daily_rate: 500, features: ["Oxygen", "Monitor"], is_active: true },
+    { wardIndex: 0, bed_number: "A-102", daily_rate: 500, features: ["Oxygen"], is_active: true },
+    { wardIndex: 0, bed_number: "A-103", daily_rate: 500, features: [], is_active: true },
+    // Beds for ICU (index 1)
+    { wardIndex: 1, bed_number: "ICU-01", daily_rate: 2000, features: ["Oxygen", "Monitor", "Ventilator"], is_active: true },
+    { wardIndex: 1, bed_number: "ICU-02", daily_rate: 2000, features: ["Oxygen", "Monitor", "Ventilator"], is_active: true },
+  ],
 };
 
 /**
@@ -501,6 +536,13 @@ export const TEST_BATCH_PARACETAMOL_1 = SEED_DATA.BATCHES[0].batch_number;
 export const TEST_BATCH_PARACETAMOL_2 = SEED_DATA.BATCHES[1].batch_number;
 export const TEST_CREDIT_CUSTOMER = SEED_DATA.CREDIT_ACCOUNTS[0].customer_name;
 export const TEST_PHARMACY_SLUG = SEED_DATA.CLINICS[2].slug; // Test Pharmacy
+
+// IPD test data constants
+export const TEST_WARD_GENERAL = SEED_DATA.WARDS[0].name;
+export const TEST_WARD_ICU = SEED_DATA.WARDS[1].name;
+export const TEST_BED_A101 = SEED_DATA.BEDS[0].bed_number;
+export const TEST_BED_A102 = SEED_DATA.BEDS[1].bed_number;
+export const TEST_BED_ICU01 = SEED_DATA.BEDS[3].bed_number;
 
 /**
  * Seed test users
@@ -1397,6 +1439,85 @@ async function seedCreditAccounts(
 }
 
 /**
+ * Seed wards for IPD tests
+ */
+async function seedWards(
+  clinicIds: Map<string, string>
+): Promise<Map<string, string>> {
+  const wardIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping wards seeding");
+    return wardIds;
+  }
+
+  // Delete existing wards for this clinic (cascades to beds and admissions)
+  await prisma.ward.deleteMany({
+    where: { clinic_id: dashboardClinicId },
+  });
+
+  for (let i = 0; i < SEED_DATA.WARDS.length; i++) {
+    const wardData = SEED_DATA.WARDS[i];
+    const ward = await prisma.ward.create({
+      data: {
+        clinic_id: dashboardClinicId,
+        name: wardData.name,
+        type: wardData.type,
+        floor: wardData.floor,
+        building: wardData.building,
+        capacity: wardData.capacity,
+        description: wardData.description,
+        is_active: wardData.is_active,
+      },
+    });
+    wardIds.set(`WARD_${i}`, ward.id);
+  }
+
+  return wardIds;
+}
+
+/**
+ * Seed beds for IPD tests
+ */
+async function seedBeds(
+  clinicIds: Map<string, string>,
+  wardIds: Map<string, string>
+): Promise<Map<string, string>> {
+  const bedIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping beds seeding");
+    return bedIds;
+  }
+
+  for (let i = 0; i < SEED_DATA.BEDS.length; i++) {
+    const bedData = SEED_DATA.BEDS[i];
+    const wardId = wardIds.get(`WARD_${bedData.wardIndex}`);
+
+    if (!wardId) {
+      console.log(`  ⚠ Ward ${bedData.wardIndex} not found, skipping bed ${i}`);
+      continue;
+    }
+
+    const bed = await prisma.bed.create({
+      data: {
+        ward_id: wardId,
+        bed_number: bedData.bed_number,
+        daily_rate: bedData.daily_rate,
+        features: bedData.features,
+        is_active: bedData.is_active,
+        status: BedStatus.AVAILABLE, // All beds start as available
+      },
+    });
+    bedIds.set(`BED_${i}`, bed.id);
+  }
+
+  return bedIds;
+}
+
+/**
  * Clean up all test data
  * IMPORTANT: Order matters due to foreign key constraints
  */
@@ -1410,6 +1531,39 @@ async function cleanupTestData(): Promise<void> {
 
   // Delete reviews (before appointments and patients)
   await prisma.review.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  // Delete IPD data (admissions before beds, beds before wards)
+  await prisma.admission.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  await prisma.bed.deleteMany({
+    where: {
+      ward: {
+        clinic: {
+          slug: {
+            in: testClinicSlugs,
+          },
+        },
+      },
+    },
+  });
+
+  await prisma.ward.deleteMany({
     where: {
       clinic: {
         slug: {
@@ -1680,6 +1834,14 @@ export async function seedTestData(): Promise<{
   // Seed credit accounts for POS tests
   const creditAccountIds = await seedCreditAccounts(clinicIds);
   console.log(`  ✓ Seeded ${creditAccountIds.size} credit accounts`);
+
+  // Seed wards for IPD tests
+  const wardIds = await seedWards(clinicIds);
+  console.log(`  ✓ Seeded ${wardIds.size} wards for IPD`);
+
+  // Seed beds for IPD tests
+  const bedIds = await seedBeds(clinicIds, wardIds);
+  console.log(`  ✓ Seeded ${bedIds.size} beds for IPD`);
 
   console.log("✅ Test data seeding complete!");
 
