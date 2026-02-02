@@ -1026,8 +1026,8 @@
         "Typecheck passes"
       ],
       "priority": 53,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: DoctorSchedule model with id (uuid), clinic_id (FK Clinic), doctor_id (FK Professional), day_of_week (Int 0-6), start_time (String HH:MM), end_time (String HH:MM), slot_duration_minutes (Int), max_patients_per_slot (Int default 1), is_active (Boolean default true), effective_from (DateTime), effective_to (DateTime nullable). Added composite index on (clinic_id, doctor_id, day_of_week) plus individual indexes on clinic_id and doctor_id. Bidirectional relations added to Clinic.schedules and Professional.schedules. Used prisma db push for database sync. Typecheck passes."
     },
     {
       "id": "US-054",
@@ -1041,8 +1041,8 @@
         "Typecheck passes"
       ],
       "priority": 54,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: DoctorLeave model with id (uuid), doctor_id (FK Professional), clinic_id (FK Clinic), leave_date (DateTime), start_time (String nullable for full day), end_time (String nullable), reason (String), created_at. Added composite index on (doctor_id, leave_date) and index on clinic_id. Both FKs use onDelete: Cascade. Bidirectional relations added to Professional.leaves and Clinic.leaves. Used prisma db push for database sync. Typecheck passes."
     },
     {
       "id": "US-055",
@@ -1059,8 +1059,8 @@
         "Typecheck passes"
       ],
       "priority": 55,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: AppointmentStatus enum (SCHEDULED/CHECKED_IN/IN_PROGRESS/COMPLETED/CANCELLED/NO_SHOW), AppointmentType enum (NEW/FOLLOW_UP/EMERGENCY), AppointmentSource enum (ONLINE/WALK_IN/PHONE), and Appointment model with id (uuid), clinic_id (FK Clinic), patient_id (FK Patient), doctor_id (FK Professional), appointment_date (DateTime), time_slot_start (String HH:MM), time_slot_end (String HH:MM), status (default SCHEDULED), type (default NEW), chief_complaint (optional), token_number (Int), source (default ONLINE), notes (Text optional), created_at, updated_at. Added composite index on (clinic_id, appointment_date, doctor_id) plus indexes on clinic_id, patient_id, doctor_id, status. Bidirectional relations added to Clinic.appointments, Patient.appointments, Professional.appointments. All FKs use onDelete: Cascade. Used prisma db push for database sync. Typecheck passes."
     },
     {
       "id": "US-056",
@@ -1077,8 +1077,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 56,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: app/[lang]/clinic/register/page.tsx with protected route (login required). Form fields: name, type (dropdown with CLINIC/POLYCLINIC/HOSPITAL/PHARMACY), address, phone, email, website (optional). Bauhaus styling with border-4 inputs, focus:border-primary-blue. Client-side validation for required fields, email format, Nepali phone format (98/97 mobile or landline), and URL format. Shows login prompt with callback URL for unauthenticated users. Decorative Bauhaus panel with geometric shapes. Mobile accent bar. Bilingual support (EN/NE) with translations. Typecheck passes."
     },
     {
       "id": "US-057",

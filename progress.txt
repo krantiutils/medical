@@ -633,3 +633,155 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - emergency_contact, medical_history, and insurance_info are Json for flexible schema-less data
 
 ---
+
+## 2026-02-02 - US-053
+**Database schema: DoctorSchedule model**
+
+### What was implemented
+- Created DoctorSchedule model in Prisma schema with:
+  - id (uuid) as primary key
+  - clinic_id (FK to Clinic) with onDelete: Cascade
+  - doctor_id (FK to Professional) with onDelete: Cascade
+  - day_of_week (Int) - 0 = Sunday through 6 = Saturday
+  - start_time (String) - Format "HH:MM"
+  - end_time (String) - Format "HH:MM"
+  - slot_duration_minutes (Int) - Duration of each appointment slot
+  - max_patients_per_slot (Int default 1) - Allows overbooking if needed
+  - is_active (Boolean default true) - To enable/disable schedules
+  - effective_from (DateTime) - When schedule becomes active
+  - effective_to (DateTime nullable) - For indefinite schedules
+- Added composite index on (clinic_id, doctor_id, day_of_week)
+- Added individual indexes on clinic_id and doctor_id
+- Added bidirectional relations:
+  - Clinic.schedules: DoctorSchedule[]
+  - Professional.schedules: DoctorSchedule[]
+- Ran prisma db push successfully
+- Typecheck passes
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+
+### Learnings for future iterations
+- DoctorSchedule uses onDelete: Cascade on both FKs - when a clinic or doctor is deleted, their schedules are automatically removed
+- The effective_from/effective_to pattern allows for scheduled changes (e.g., summer hours)
+- max_patients_per_slot > 1 enables overbooking for high-volume clinics
+- Composite index (clinic_id, doctor_id, day_of_week) optimizes the common query pattern: "get schedule for doctor X at clinic Y on day Z"
+
+---
+
+## 2026-02-02 - US-054
+**Database schema: DoctorLeave model**
+
+### What was implemented
+- Created DoctorLeave model in Prisma schema with:
+  - id (uuid) as primary key
+  - doctor_id (FK to Professional) with onDelete: Cascade
+  - clinic_id (FK to Clinic) with onDelete: Cascade
+  - leave_date (DateTime) for the date of leave
+  - start_time (String nullable) for partial day leave (format "HH:MM")
+  - end_time (String nullable) for partial day leave (format "HH:MM")
+  - reason (String) for leave reason
+  - created_at timestamp
+- Added composite index on (doctor_id, leave_date) for efficient lookups
+- Added index on clinic_id for FK performance
+- Added bidirectional relations:
+  - Professional.leaves: DoctorLeave[]
+  - Clinic.leaves: DoctorLeave[]
+- Ran prisma db push successfully
+- Typecheck passes
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+
+### Learnings for future iterations
+- DoctorLeave uses nullable start_time/end_time pattern: null values indicate full-day leave, while values indicate partial-day leave
+- Consistent with DoctorSchedule pattern: onDelete: Cascade on both FKs for clean deletion
+- The (doctor_id, leave_date) composite index optimizes the common query: "check if doctor has leave on date X"
+
+---
+
+## 2026-02-02 - US-055
+**Database schema: Appointment model**
+
+### What was implemented
+- Created three enums for appointment management:
+  - AppointmentStatus: SCHEDULED, CHECKED_IN, IN_PROGRESS, COMPLETED, CANCELLED, NO_SHOW
+  - AppointmentType: NEW, FOLLOW_UP, EMERGENCY
+  - AppointmentSource: ONLINE, WALK_IN, PHONE
+- Created Appointment model in Prisma schema with:
+  - id (uuid) as primary key
+  - appointment_date (DateTime) for the appointment date
+  - time_slot_start (String HH:MM format)
+  - time_slot_end (String HH:MM format)
+  - status (AppointmentStatus, default SCHEDULED)
+  - type (AppointmentType, default NEW)
+  - chief_complaint (String optional) for reason for visit
+  - token_number (Int) for queue token
+  - source (AppointmentSource, default ONLINE)
+  - notes (Text optional)
+  - created_at, updated_at timestamps
+  - clinic_id (FK to Clinic) with onDelete: Cascade
+  - patient_id (FK to Patient) with onDelete: Cascade
+  - doctor_id (FK to Professional) with onDelete: Cascade
+- Added indexes:
+  - Composite index on (clinic_id, appointment_date, doctor_id) for efficient slot lookups
+  - Individual indexes on clinic_id, patient_id, doctor_id, status
+- Added bidirectional relations:
+  - Clinic.appointments: Appointment[]
+  - Patient.appointments: Appointment[]
+  - Professional.appointments: Appointment[]
+- Ran prisma db push successfully
+- Typecheck passes
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+
+### Learnings for future iterations
+- Appointment model uses three enums for type-safe status management across the booking lifecycle
+- The composite index on (clinic_id, appointment_date, doctor_id) is critical for the slot availability query
+- Token number is per-day queue number, generated when booking is created
+- Time slots stored as strings (HH:MM) consistent with DoctorSchedule pattern
+
+---
+
+## 2026-02-02 - US-056
+**Clinic registration: Basic form page**
+
+### What was implemented
+- Created app/[lang]/clinic/register/page.tsx with clinic registration form
+- Protected route: shows login prompt with callback URL for unauthenticated users
+- Form fields:
+  - Clinic name (required, text input)
+  - Clinic type (required, dropdown: CLINIC/POLYCLINIC/HOSPITAL/PHARMACY)
+  - Address (required, text input)
+  - Phone (required, tel input with Nepali format validation)
+  - Email (required, email input with format validation)
+  - Website (optional, URL input with format validation)
+- Bauhaus styling:
+  - border-4 border-foreground inputs
+  - focus:border-primary-blue focus states
+  - Error states with border-primary-red
+  - Decorative panel with geometric shapes (circles, squares, triangles)
+  - Mobile accent bar (blue/red/yellow)
+- Client-side validation:
+  - All required field checks
+  - Email format regex validation
+  - Nepali phone format validation (98/97 mobile or 0X landline)
+  - URL format validation for website field
+  - Inline error messages below each field
+- Bilingual support (EN/NE) with inline translations object
+- Added clinic.register translations to messages/en.json and messages/ne.json
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/register/page.tsx (NEW)
+- apps/web/messages/en.json (MODIFIED)
+- apps/web/messages/ne.json (MODIFIED)
+
+### Learnings for future iterations
+- Protected routes in this codebase use useSession() with status check and show login prompt inline (not redirect)
+- Inline translations (t object) pattern used for pages that don't use next-intl useTranslations hook
+- Nepali phone validation: mobile starts with 98/97 (10 digits), landline starts with 0 (8-9 digits)
+- Form validation shows errors inline below each field, clears on input change
+- ClinicType enum values: CLINIC, POLYCLINIC, HOSPITAL, PHARMACY
+
+---
