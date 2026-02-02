@@ -1776,3 +1776,35 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Status colors defined as constants for consistency across the app
 
 ---
+
+## 2026-02-02 - US-081
+**Queue display: TV screen page**
+
+### What was implemented
+- Created public API endpoint `/api/clinic/[slug]/queue/route.ts` for fetching queue data by clinic slug
+  - Returns queue grouped by doctor with current token and waiting tokens
+  - Filters to CHECKED_IN, IN_PROGRESS, and SCHEDULED appointments
+  - No authentication required (public display)
+- Created queue display page at `app/[lang]/clinic/[slug]/queue-display/page.tsx`
+  - TV-optimized full-screen layout with dark background
+  - Large, readable fonts (5xl-6xl for headers, 6xl for token numbers)
+  - Shows current token being served per doctor with patient name
+  - Shows waiting tokens as smaller numbered squares
+  - Auto-refresh every 10 seconds using useEffect interval
+  - Bilingual support (English/Nepali)
+  - Color-coded doctor cards (blue, red, green, yellow rotation)
+  - Responsive grid layout (1-4 columns based on doctor count)
+  - Shows last updated timestamp
+  - Fixed footer with current date
+
+### Files changed
+- apps/web/src/app/api/clinic/[slug]/queue/route.ts (new)
+- apps/web/src/app/[lang]/clinic/[slug]/queue-display/page.tsx (new)
+- prd.json (US-081 passes: true)
+
+### Learnings for future iterations
+- Public API endpoints don't require authentication - use for display-only pages
+- The [slug] route pattern allows fetching clinic data without auth by matching the public slug
+- TV display pages benefit from high contrast (dark bg, white text) and large fonts
+- Auto-refresh should use useCallback for the fetch function to avoid stale closures
+---

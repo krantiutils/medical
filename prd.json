@@ -641,7 +641,6 @@
       "passes": true,
       "notes": "Implemented: Dashboard claims page showing all user's verification requests with status badges, dates, rejection reasons for rejected claims, document preview modal, and link to resubmit. API endpoint at /api/dashboard/claims returns user's requests with professional info."
     },
-
     {
       "id": "US-035",
       "title": "E2E Tests: Playwright setup and configuration",
@@ -964,7 +963,6 @@
       "passes": true,
       "notes": "CI e2e job configured with: PostgreSQL 16 service, Playwright chromium browser, pnpm db:push for migrations, global-setup.ts for test seeding, artifact upload on failure. Branch ralph/swasthya-platform added to CI triggers. PR mergeability requires branch protection settings (not CI config)."
     },
-
     {
       "id": "US-050",
       "title": "Database schema: Clinic model",
@@ -1523,7 +1521,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 81,
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -1666,7 +1664,6 @@
       "passes": false,
       "notes": ""
     },
-
     {
       "id": "US-090",
       "title": "Database schema: Pharmacy models",
@@ -1825,7 +1822,6 @@
       "passes": false,
       "notes": ""
     },
-
     {
       "id": "US-099",
       "title": "Database schema: EMR and Lab models",
@@ -1949,7 +1945,6 @@
       "passes": false,
       "notes": ""
     },
-
     {
       "id": "US-106",
       "title": "Telemedicine: Schema and doctor settings",
