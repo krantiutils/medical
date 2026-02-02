@@ -1495,3 +1495,49 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - JSON-LD script should be inside <main> element, before content div
 
 ---
+
+## 2026-02-02 - US-075
+**E2E Tests: Clinic public page**
+
+### What was implemented
+- Created apps/web/e2e/clinic-public.spec.ts with 45 comprehensive tests covering:
+  - Basic Functionality (7 tests): page load with name, type badge, address, verified badge, phone/email/website links
+  - Contact Information (3 tests): section heading, phone label, email label
+  - Operating Hours (4 tests): section heading, all days of week, closed status for Sunday, open times for weekdays
+  - Services (2 tests): section heading, service tags with correct labels
+  - Doctors List (5 tests): medical team section, affiliated doctors display, type badges, View Profile links, navigation to doctor page
+  - 404 Handling (3 tests): non-existent clinic, unverified clinic, 404 page content
+  - SEO Meta Tags (5 tests): page title, meta description, OpenGraph title/description, canonical URL
+  - JSON-LD Structured Data (6 tests): script presence, MedicalClinic schema for polyclinic, Pharmacy schema, address/telephone/openingHours
+  - Different Clinic Types (3 tests): Hospital (skipped), Pharmacy, Polyclinic type display
+  - Language Support (4 tests): Nepali page load, Nepali day names, Nepali section headings, language alternates
+  - Photo Gallery (1 test): no gallery when no photos
+  - Responsive Design (2 tests): mobile viewport, tablet viewport
+- Updated seed.ts:
+  - Added timings data to Dashboard Test Clinic with operating hours
+  - Added Prisma import for type casting
+  - Updated seedClinics to use timings from seed data
+- Updated test-utils.ts:
+  - Added TEST_PHARMACY and TEST_CLINIC_UNVERIFIED to CLINICS data
+  - Added type field to clinic test data
+
+### Test Results
+- 44 tests pass
+- 1 test skipped (no verified hospital in seed data)
+- 0 failures
+
+### Files changed
+- apps/web/e2e/clinic-public.spec.ts (NEW)
+- apps/web/e2e/fixtures/seed.ts (MODIFIED)
+- apps/web/e2e/fixtures/test-utils.ts (MODIFIED)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Script elements are hidden by default in Playwright - use textContent() instead of toBeVisible() for script assertions
+- Seed data for operating hours should use service IDs (general, specialist, lab) not full names to match predefined services mapping
+- Operating hours test needs to find section by heading and look for text within parent container
+- Different schema types for different clinic types: MedicalClinic (clinic/polyclinic), Hospital, Pharmacy
+- Test clinics: Dashboard Test Clinic (verified, polyclinic), Test Pharmacy (verified, pharmacy), Test Clinic One (unverified)
+- Use Prisma.InputJsonValue cast for JSON field data in seed functions
+
+---

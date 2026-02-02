@@ -1410,8 +1410,8 @@
         "All tests pass: pnpm test:e2e clinic-public.spec.ts"
       ],
       "priority": 75,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "44 tests pass, 1 skipped (no verified hospital in seed data). Tests cover: basic functionality (name, type badge, address, verified badge, contact info), operating hours display, services section, doctors list with navigation, 404 handling for invalid and unverified clinics, SEO meta tags, JSON-LD structured data, different clinic types, language support (EN/NE), and responsive design."
     },
     {
       "id": "US-076",
