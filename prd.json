@@ -1011,8 +1011,8 @@
         "Typecheck passes"
       ],
       "priority": 52,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Patient model with id (uuid), clinic_id (FK), patient_number (clinic-specific), full_name, phone, email, date_of_birth (DateTime), gender, blood_group, address, emergency_contact (Json), allergies (String[]), medical_history (Json), insurance_info (Json), photo_url, created_at, updated_at. Added unique constraints on (clinic_id, patient_number) and (clinic_id, phone). Added index on phone for lookup and clinic_id for FK. Bidirectional relation to Clinic model (Clinic.patients). Used prisma db push for database sync. Typecheck passes."
     },
     {
       "id": "US-053",

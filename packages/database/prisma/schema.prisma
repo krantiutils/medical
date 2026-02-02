@@ -200,6 +200,9 @@ model Clinic {
   // Doctors affiliated with this clinic
   doctors ClinicDoctor[]
 
+  // Patients registered at this clinic
+  patients Patient[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -218,4 +221,32 @@ model ClinicDoctor {
   @@unique([clinic_id, doctor_id])
   @@index([clinic_id])
   @@index([doctor_id])
+}
+
+model Patient {
+  id                String    @id @default(uuid())
+  patient_number    String    // Clinic-specific patient number
+  full_name         String
+  phone             String?
+  email             String?
+  date_of_birth     DateTime?
+  gender            String?
+  blood_group       String?
+  address           String?
+  emergency_contact Json?
+  allergies         String[]
+  medical_history   Json?
+  insurance_info    Json?
+  photo_url         String?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  // Relations
+  clinic_id String
+  clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  @@unique([clinic_id, patient_number])
+  @@unique([clinic_id, phone])
+  @@index([phone])
+  @@index([clinic_id])
 }

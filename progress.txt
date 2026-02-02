@@ -593,3 +593,43 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Bidirectional relations in Prisma require adding the array field on both sides of the many-to-many
 
 ---
+
+## 2026-02-02 - US-052
+**Database schema: Patient model**
+
+### What was implemented
+- Created Patient model in Prisma schema with:
+  - id (uuid) as primary key
+  - clinic_id (FK to Clinic) with onDelete: Cascade
+  - patient_number (String) for clinic-specific patient numbering
+  - full_name (String)
+  - phone (String optional)
+  - email (String optional)
+  - date_of_birth (DateTime optional)
+  - gender (String optional)
+  - blood_group (String optional)
+  - address (String optional)
+  - emergency_contact (Json optional)
+  - allergies (String[])
+  - medical_history (Json optional)
+  - insurance_info (Json optional)
+  - photo_url (String optional)
+  - created_at, updated_at timestamps
+- Added unique constraint on (clinic_id, patient_number)
+- Added unique constraint on (clinic_id, phone)
+- Added index on phone for lookup
+- Added index on clinic_id for FK performance
+- Added bidirectional relation: Clinic.patients: Patient[]
+- Ran prisma db push successfully
+- Typecheck passes
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+
+### Learnings for future iterations
+- Patient model uses clinic_id scoped unique constraints so each clinic can have their own patient numbering scheme
+- The (clinic_id, phone) unique constraint allows null phones but enforces uniqueness within a clinic when provided
+- Allergies as String[] array allows easy add/remove operations
+- emergency_contact, medical_history, and insurance_info are Json for flexible schema-less data
+
+---
