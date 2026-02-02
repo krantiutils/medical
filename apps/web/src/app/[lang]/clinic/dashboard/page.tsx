@@ -70,6 +70,8 @@ export default function ClinicDashboardPage() {
       viewQueueDesc: "Manage today's appointments",
       manageSchedules: "Manage Schedules",
       manageSchedulesDesc: "Configure doctor schedules",
+      manageDoctors: "Manage Doctors",
+      manageDoctorsDesc: "Add or remove clinic doctors",
     },
     ne: {
       title: "क्लिनिक ड्यासबोर्ड",
@@ -104,6 +106,8 @@ export default function ClinicDashboardPage() {
       viewQueueDesc: "आजका अपोइन्टमेन्टहरू व्यवस्थापन गर्नुहोस्",
       manageSchedules: "तालिका व्यवस्थापन",
       manageSchedulesDesc: "डाक्टर तालिका कन्फिगर गर्नुहोस्",
+      manageDoctors: "डाक्टर व्यवस्थापन",
+      manageDoctorsDesc: "क्लिनिक डाक्टर थप्नुहोस् वा हटाउनुहोस्",
     },
   };
 
@@ -428,7 +432,7 @@ export default function ClinicDashboardPage() {
         {/* Quick Actions Section */}
         <div className="mb-8">
           <h2 className="text-xl font-bold text-foreground mb-4">{tr.quickActions}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Add Patient */}
             <Link href={`/${lang}/clinic/dashboard/patients/new`}>
               <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
@@ -510,6 +514,35 @@ export default function ClinicDashboardPage() {
                     <div>
                       <h3 className="font-bold text-foreground text-lg">{tr.manageSchedules}</h3>
                       <p className="text-sm text-foreground/60">{tr.manageSchedulesDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Manage Doctors */}
+            <Link href={`/${lang}/clinic/dashboard/doctors`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-verified rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.manageDoctors}</h3>
+                      <p className="text-sm text-foreground/60">{tr.manageDoctorsDesc}</p>
                     </div>
                   </div>
                 </CardContent>
