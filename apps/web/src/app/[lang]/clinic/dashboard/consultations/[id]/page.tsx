@@ -115,6 +115,42 @@ interface ClinicalNote {
   appointment: Appointment | null;
 }
 
+interface LabTest {
+  id: string;
+  name: string;
+  short_name: string | null;
+  code: string | null;
+  category: string | null;
+  sample_type: string | null;
+  normal_range: string | null;
+  unit: string | null;
+  price: number;
+}
+
+interface LabResult {
+  id: string;
+  result_value: string | null;
+  unit: string | null;
+  normal_range: string | null;
+  flag: "NORMAL" | "LOW" | "HIGH" | "CRITICAL_LOW" | "CRITICAL_HIGH" | "ABNORMAL" | null;
+  remarks: string | null;
+  verified: boolean;
+  lab_test: LabTest;
+}
+
+interface LabOrder {
+  id: string;
+  order_number: string;
+  priority: "ROUTINE" | "URGENT" | "STAT";
+  status: "ORDERED" | "SAMPLE_COLLECTED" | "PROCESSING" | "COMPLETED" | "CANCELLED";
+  clinical_notes: string | null;
+  sample_collected: string | null;
+  sample_id: string | null;
+  completed_at: string | null;
+  created_at: string;
+  results: LabResult[];
+}
+
 // Translations
 const translations = {
   en: {
@@ -239,6 +275,51 @@ const translations = {
     prescriptionValid: "Valid until",
     autoCalculate: "Auto-calculate based on duration and frequency",
     perDay: "per day",
+    // Lab
+    lab: "Lab Tests",
+    searchLabTest: "Search lab tests...",
+    addLabTest: "Add Test",
+    selectedTests: "Selected Tests",
+    noLabTests: "No lab tests selected",
+    orderLabTests: "Order Tests",
+    ordering: "Ordering...",
+    labOrderSuccess: "Lab order placed successfully",
+    labOrderRequired: "Add at least one lab test to order",
+    labOrders: "Lab Orders",
+    noLabOrders: "No lab orders yet",
+    orderNumber: "Order #",
+    priority: "Priority",
+    routine: "Routine",
+    urgent: "Urgent",
+    stat: "STAT",
+    labStatus: "Status",
+    ordered: "Ordered",
+    sampleCollected: "Sample Collected",
+    processing: "Processing",
+    completed: "Completed",
+    cancelled: "Cancelled",
+    testName: "Test Name",
+    result: "Result",
+    normalRange: "Normal Range",
+    flag: "Flag",
+    sampleType: "Sample Type",
+    viewResults: "View Results",
+    enterResults: "Enter Results",
+    printReport: "Print Report",
+    labFlagNormal: "Normal",
+    labFlagLow: "Low",
+    labFlagHigh: "High",
+    labFlagCriticalLow: "Critical Low",
+    labFlagCriticalHigh: "Critical High",
+    labFlagAbnormal: "Abnormal",
+    labClinicalNotes: "Clinical Notes",
+    labCategories: "Categories",
+    labAllCategories: "All",
+    labVerified: "Verified",
+    labPending: "Pending",
+    bloodSample: "Blood",
+    urineSample: "Urine",
+    stoolSample: "Stool",
   },
   ne: {
     title: "परामर्श",
@@ -362,6 +443,51 @@ const translations = {
     prescriptionValid: "मान्य",
     autoCalculate: "अवधि र आवृत्तिको आधारमा स्वचालित गणना",
     perDay: "प्रति दिन",
+    // Lab
+    lab: "प्रयोगशाला परीक्षण",
+    searchLabTest: "प्रयोगशाला परीक्षण खोज्नुहोस्...",
+    addLabTest: "परीक्षण थप्नुहोस्",
+    selectedTests: "छानिएका परीक्षणहरू",
+    noLabTests: "कुनै प्रयोगशाला परीक्षण छानिएको छैन",
+    orderLabTests: "परीक्षण अर्डर गर्नुहोस्",
+    ordering: "अर्डर गर्दै...",
+    labOrderSuccess: "प्रयोगशाला अर्डर सफलतापूर्वक राखियो",
+    labOrderRequired: "अर्डर गर्न कम्तीमा एउटा परीक्षण थप्नुहोस्",
+    labOrders: "प्रयोगशाला अर्डरहरू",
+    noLabOrders: "अझै कुनै प्रयोगशाला अर्डर छैन",
+    orderNumber: "अर्डर #",
+    priority: "प्राथमिकता",
+    routine: "सामान्य",
+    urgent: "अर्जेन्ट",
+    stat: "तुरुन्त",
+    labStatus: "स्थिति",
+    ordered: "अर्डर भयो",
+    sampleCollected: "नमूना लिइयो",
+    processing: "प्रक्रियामा",
+    completed: "सम्पन्न",
+    cancelled: "रद्द",
+    testName: "परीक्षणको नाम",
+    result: "नतिजा",
+    normalRange: "सामान्य दायरा",
+    flag: "चिन्ह",
+    sampleType: "नमूनाको प्रकार",
+    viewResults: "नतिजा हेर्नुहोस्",
+    enterResults: "नतिजा प्रविष्ट गर्नुहोस्",
+    printReport: "रिपोर्ट छाप्नुहोस्",
+    labFlagNormal: "सामान्य",
+    labFlagLow: "कम",
+    labFlagHigh: "उच्च",
+    labFlagCriticalLow: "अत्यन्त कम",
+    labFlagCriticalHigh: "अत्यन्त उच्च",
+    labFlagAbnormal: "असामान्य",
+    labClinicalNotes: "क्लिनिकल नोटहरू",
+    labCategories: "श्रेणीहरू",
+    labAllCategories: "सबै",
+    labVerified: "प्रमाणित",
+    labPending: "पेन्डिङ",
+    bloodSample: "रगत",
+    urineSample: "पिसाब",
+    stoolSample: "दिसा",
   },
 };
 
@@ -380,7 +506,7 @@ export default function ConsultationDetailPage() {
   const [loading, setLoading] = useState(true);
   const [noClinic, setNoClinic] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [activeTab, setActiveTab] = useState<"vitals" | "notes" | "diagnosis" | "prescription">("vitals");
+  const [activeTab, setActiveTab] = useState<"vitals" | "notes" | "diagnosis" | "prescription" | "lab">("vitals");
   const [saving, setSaving] = useState(false);
   const [finalizing, setFinalizing] = useState(false);
   const [showFinalizeModal, setShowFinalizeModal] = useState(false);
@@ -431,6 +557,18 @@ export default function ConsultationDetailPage() {
     duration_unit: "days",
     instructions: "",
   });
+
+  // Lab state
+  const [labOrders, setLabOrders] = useState<LabOrder[]>([]);
+  const [labTestSearch, setLabTestSearch] = useState("");
+  const [labTestResults, setLabTestResults] = useState<LabTest[]>([]);
+  const [labCategories, setLabCategories] = useState<string[]>([]);
+  const [selectedLabCategory, setSelectedLabCategory] = useState("");
+  const [searchingLabTests, setSearchingLabTests] = useState(false);
+  const [selectedLabTests, setSelectedLabTests] = useState<LabTest[]>([]);
+  const [orderingLab, setOrderingLab] = useState(false);
+  const [labPriority, setLabPriority] = useState<"ROUTINE" | "URGENT" | "STAT">("ROUTINE");
+  const [labClinicalNotes, setLabClinicalNotes] = useState("");
 
   // Auto-save debounce
   const autoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -563,6 +701,353 @@ export default function ConsultationDetailPage() {
       console.error("Error fetching prescription:", error);
     }
   }, [noteId]);
+
+  // Fetch lab orders for this clinical note
+  const fetchLabOrders = useCallback(async () => {
+    if (!noteId) return;
+
+    try {
+      const response = await fetch(`/api/clinic/lab-orders?clinical_note_id=${noteId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setLabOrders(data.labOrders || []);
+      }
+    } catch (error) {
+      console.error("Error fetching lab orders:", error);
+    }
+  }, [noteId]);
+
+  // Search lab tests
+  const searchLabTests = useCallback(async (query: string, category?: string) => {
+    setSearchingLabTests(true);
+    try {
+      let url = `/api/clinic/lab-tests?q=${encodeURIComponent(query)}`;
+      if (category) {
+        url += `&category=${encodeURIComponent(category)}`;
+      }
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setLabTestResults(data.tests || []);
+        if (data.categories && labCategories.length === 0) {
+          setLabCategories(data.categories);
+        }
+      }
+    } catch (error) {
+      console.error("Error searching lab tests:", error);
+    } finally {
+      setSearchingLabTests(false);
+    }
+  }, [labCategories.length]);
+
+  // Order lab tests
+  const handleOrderLabTests = async () => {
+    if (!clinicalNote || selectedLabTests.length === 0) {
+      setMessage({ type: "error", text: t.labOrderRequired });
+      return;
+    }
+
+    setOrderingLab(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/clinic/lab-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          patient_id: clinicalNote.patient.id,
+          ordered_by_id: clinicalNote.doctor.id,
+          clinical_note_id: clinicalNote.id,
+          appointment_id: clinicalNote.appointment?.id || null,
+          priority: labPriority,
+          clinical_notes: labClinicalNotes || null,
+          tests: selectedLabTests.map((t) => t.id),
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to order lab tests");
+      }
+
+      const data = await response.json();
+      setLabOrders((prev) => [data.labOrder, ...prev]);
+      setSelectedLabTests([]);
+      setLabClinicalNotes("");
+      setLabPriority("ROUTINE");
+      setMessage({ type: "success", text: t.labOrderSuccess });
+    } catch (error) {
+      console.error("Error ordering lab tests:", error);
+      setMessage({ type: "error", text: t.error });
+    } finally {
+      setOrderingLab(false);
+    }
+  };
+
+  // Add lab test to selection
+  const handleAddLabTest = (test: LabTest) => {
+    if (selectedLabTests.some((t) => t.id === test.id)) return;
+    setSelectedLabTests((prev) => [...prev, test]);
+    setLabTestSearch("");
+    setLabTestResults([]);
+  };
+
+  // Remove lab test from selection
+  const handleRemoveLabTest = (testId: string) => {
+    setSelectedLabTests((prev) => prev.filter((t) => t.id !== testId));
+  };
+
+  // Get flag color
+  const getFlagColor = (flag: string | null): string => {
+    switch (flag) {
+      case "NORMAL":
+        return "bg-verified text-white";
+      case "LOW":
+        return "bg-primary-blue text-white";
+      case "HIGH":
+        return "bg-primary-yellow text-foreground";
+      case "CRITICAL_LOW":
+      case "CRITICAL_HIGH":
+        return "bg-primary-red text-white";
+      case "ABNORMAL":
+        return "bg-orange-500 text-white";
+      default:
+        return "bg-gray-200 text-gray-600";
+    }
+  };
+
+  // Get flag label
+  const getFlagLabel = (flag: string | null): string => {
+    switch (flag) {
+      case "NORMAL":
+        return t.labFlagNormal;
+      case "LOW":
+        return t.labFlagLow;
+      case "HIGH":
+        return t.labFlagHigh;
+      case "CRITICAL_LOW":
+        return t.labFlagCriticalLow;
+      case "CRITICAL_HIGH":
+        return t.labFlagCriticalHigh;
+      case "ABNORMAL":
+        return t.labFlagAbnormal;
+      default:
+        return "-";
+    }
+  };
+
+  // Get status color
+  const getLabStatusColor = (status: string): string => {
+    switch (status) {
+      case "ORDERED":
+        return "bg-primary-yellow text-foreground";
+      case "SAMPLE_COLLECTED":
+        return "bg-primary-blue text-white";
+      case "PROCESSING":
+        return "bg-orange-500 text-white";
+      case "COMPLETED":
+        return "bg-verified text-white";
+      case "CANCELLED":
+        return "bg-gray-400 text-white";
+      default:
+        return "bg-gray-200 text-gray-600";
+    }
+  };
+
+  // Get status label
+  const getLabStatusLabel = (status: string): string => {
+    switch (status) {
+      case "ORDERED":
+        return t.ordered;
+      case "SAMPLE_COLLECTED":
+        return t.sampleCollected;
+      case "PROCESSING":
+        return t.processing;
+      case "COMPLETED":
+        return t.completed;
+      case "CANCELLED":
+        return t.cancelled;
+      default:
+        return status;
+    }
+  };
+
+  // Print lab report
+  const handlePrintLabReport = (order: LabOrder) => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const orderDate = new Date(order.created_at).toLocaleDateString();
+    const completedDate = order.completed_at
+      ? new Date(order.completed_at).toLocaleDateString()
+      : "-";
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Lab Report - ${order.order_number}</title>
+        <style>
+          @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          }
+          body {
+            font-family: 'Outfit', Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 14px;
+          }
+          .header {
+            border-bottom: 3px solid #121212;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+          }
+          .clinic-info { text-align: left; }
+          .clinic-name { font-size: 24px; font-weight: bold; color: #1040C0; }
+          .report-info { text-align: right; }
+          .order-no { font-size: 18px; font-weight: bold; font-family: monospace; }
+          .patient-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border: 2px solid #121212;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+          }
+          th, td {
+            border: 2px solid #121212;
+            padding: 10px;
+            text-align: left;
+          }
+          th {
+            background: #1040C0;
+            color: white;
+            text-transform: uppercase;
+            font-size: 12px;
+          }
+          .abnormal { background: #FEF3CD; }
+          .critical { background: #F8D7DA; }
+          .flag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+          }
+          .flag-high, .flag-low { background: #F0C020; color: #121212; }
+          .flag-critical { background: #D02020; color: white; }
+          .flag-abnormal { background: #FF9800; color: white; }
+          .flag-normal { background: #4CAF50; color: white; }
+          .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #121212;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+          }
+          .signature {
+            text-align: right;
+            padding-top: 40px;
+          }
+          .no-print { display: none; }
+          @media print {
+            .no-print { display: none !important; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="clinic-info">
+            <div class="clinic-name">Swasthya</div>
+            <div>Laboratory Report</div>
+          </div>
+          <div class="report-info">
+            <div class="order-no">${order.order_number}</div>
+            <div>Order Date: ${orderDate}</div>
+            <div>Report Date: ${completedDate}</div>
+          </div>
+        </div>
+
+        <div class="patient-info">
+          <div>
+            <strong>Patient:</strong> ${clinicalNote?.patient.full_name || ""}
+          </div>
+          <div>
+            <strong>Patient #:</strong> ${clinicalNote?.patient.patient_number || ""}
+          </div>
+          <div>
+            <strong>Age/Gender:</strong> ${clinicalNote?.patient.date_of_birth ? getAge(clinicalNote.patient.date_of_birth) : "-"} / ${clinicalNote?.patient.gender || "-"}
+          </div>
+          <div>
+            <strong>Sample ID:</strong> ${order.sample_id || "-"}
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Test</th>
+              <th>Result</th>
+              <th>Unit</th>
+              <th>Normal Range</th>
+              <th>Flag</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${order.results.map((r) => {
+              const flagClass = r.flag === "CRITICAL_LOW" || r.flag === "CRITICAL_HIGH" ? "critical" :
+                               r.flag && r.flag !== "NORMAL" ? "abnormal" : "";
+              const flagStyle = r.flag === "NORMAL" ? "flag-normal" :
+                               r.flag === "LOW" || r.flag === "HIGH" ? "flag-high" :
+                               r.flag === "CRITICAL_LOW" || r.flag === "CRITICAL_HIGH" ? "flag-critical" :
+                               r.flag === "ABNORMAL" ? "flag-abnormal" : "";
+              return `
+                <tr class="${flagClass}">
+                  <td><strong>${r.lab_test.name}</strong>${r.lab_test.short_name ? ` (${r.lab_test.short_name})` : ""}</td>
+                  <td><strong>${r.result_value || "-"}</strong></td>
+                  <td>${r.unit || r.lab_test.unit || "-"}</td>
+                  <td>${r.normal_range || r.lab_test.normal_range || "-"}</td>
+                  <td>${r.flag ? `<span class="flag ${flagStyle}">${r.flag}</span>` : "-"}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <div>
+            <strong>Ordered by:</strong> Dr. ${clinicalNote?.doctor.full_name || ""}<br>
+            Reg. No: ${clinicalNote?.doctor.registration_number || ""}
+          </div>
+          <div class="signature">
+            <div>_______________________</div>
+            <div>Lab Technician Signature</div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
+          Generated via Swasthya Healthcare Platform
+        </div>
+
+        <div class="no-print" style="text-align: center; margin-top: 20px;">
+          <button onclick="window.print()" style="padding: 10px 30px; font-size: 16px; cursor: pointer;">
+            Print Report
+          </button>
+        </div>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
 
   // Search drugs
   const searchDrugs = useCallback(async (query: string) => {
@@ -1031,12 +1516,15 @@ export default function ConsultationDetailPage() {
     if (status === "authenticated") {
       fetchClinicalNote();
       fetchPrescription();
+      fetchLabOrders();
       // Load frequency/duration options
       searchDrugs("");
+      // Load lab test categories
+      searchLabTests("");
     } else if (status === "unauthenticated") {
       setLoading(false);
     }
-  }, [status, fetchClinicalNote, fetchPrescription, searchDrugs]);
+  }, [status, fetchClinicalNote, fetchPrescription, fetchLabOrders, searchDrugs, searchLabTests]);
 
   // ICD-10 search with debounce
   useEffect(() => {
@@ -1059,6 +1547,17 @@ export default function ConsultationDetailPage() {
 
     return () => clearTimeout(timer);
   }, [drugSearch, searchDrugs]);
+
+  // Lab test search with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (labTestSearch || selectedLabCategory) {
+        searchLabTests(labTestSearch, selectedLabCategory);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [labTestSearch, selectedLabCategory, searchLabTests]);
 
   // Handle form input change
   const handleInputChange = (field: string, value: string) => {
@@ -1356,7 +1855,7 @@ export default function ConsultationDetailPage() {
 
         {/* Tabs */}
         <div className="flex border-b-2 border-foreground mb-6 overflow-x-auto">
-          {(["vitals", "notes", "diagnosis", "prescription"] as const).map((tab) => (
+          {(["vitals", "notes", "diagnosis", "prescription", "lab"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -1366,7 +1865,7 @@ export default function ConsultationDetailPage() {
                   : "hover:bg-gray-100"
               }`}
             >
-              {tab === "vitals" ? t.vitals : tab === "notes" ? t.notes : tab === "diagnosis" ? t.diagnosis : t.prescription}
+              {tab === "vitals" ? t.vitals : tab === "notes" ? t.notes : tab === "diagnosis" ? t.diagnosis : tab === "prescription" ? t.prescription : t.lab}
             </button>
           ))}
         </div>
@@ -2069,6 +2568,284 @@ export default function ConsultationDetailPage() {
                   <div className="mt-4 p-3 bg-verified/10 border-2 border-verified rounded text-sm">
                     <strong>{t.prescriptionValid}:</strong>{" "}
                     {new Date(prescription.valid_until).toLocaleDateString()}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === "lab" && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Lab Test Search Panel */}
+            <Card>
+              <CardHeader>
+                <h2 className="text-xl font-bold">{t.addLabTest}</h2>
+              </CardHeader>
+              <CardContent>
+                {/* Category filter */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">{t.labCategories}</label>
+                  <select
+                    value={selectedLabCategory}
+                    onChange={(e) => setSelectedLabCategory(e.target.value)}
+                    className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                  >
+                    <option value="">{t.labAllCategories}</option>
+                    {labCategories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Search input */}
+                <div className="relative mb-4">
+                  <input
+                    type="text"
+                    value={labTestSearch}
+                    onChange={(e) => setLabTestSearch(e.target.value)}
+                    className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                    placeholder={t.searchLabTest}
+                  />
+                  {searchingLabTests && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="w-4 h-4 border-2 border-primary-blue border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Search results */}
+                <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                  {labTestResults.map((test) => {
+                    const isAdded = selectedLabTests.some((t) => t.id === test.id);
+                    return (
+                      <div
+                        key={test.id}
+                        className={`p-3 border-2 rounded ${
+                          isAdded
+                            ? "border-gray-300 bg-gray-50"
+                            : "border-foreground hover:bg-gray-50 cursor-pointer"
+                        }`}
+                        onClick={() => !isAdded && handleAddLabTest(test)}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold">{test.name}</span>
+                              {test.short_name && (
+                                <span className="text-xs bg-gray-200 px-2 py-0.5 rounded">{test.short_name}</span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">
+                              {test.category && <span>{test.category}</span>}
+                              {test.sample_type && (
+                                <span className="text-primary-blue">• {test.sample_type}</span>
+                              )}
+                            </div>
+                            {test.price > 0 && (
+                              <div className="text-sm font-medium text-primary-red mt-1">
+                                Rs. {test.price}
+                              </div>
+                            )}
+                          </div>
+                          {!isAdded && (
+                            <button className="text-primary-blue font-medium text-sm hover:underline">
+                              {t.addLabTest}
+                            </button>
+                          )}
+                          {isAdded && (
+                            <span className="text-verified text-sm">Added</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Selected tests for ordering */}
+                {selectedLabTests.length > 0 && (
+                  <div className="mt-6 pt-4 border-t-2 border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-bold">{t.selectedTests}</h3>
+                      <span className="bg-primary-blue text-white px-2 py-1 rounded text-sm">
+                        {selectedLabTests.length}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 mb-4">
+                      {selectedLabTests.map((test) => (
+                        <div
+                          key={test.id}
+                          className="flex items-center justify-between p-2 bg-blue-50 border-2 border-primary-blue rounded"
+                        >
+                          <span className="font-medium">{test.name}</span>
+                          <button
+                            onClick={() => handleRemoveLabTest(test.id)}
+                            className="text-primary-red hover:underline text-sm"
+                          >
+                            {t.removeDiagnosis}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Priority */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-1">{t.priority}</label>
+                      <select
+                        value={labPriority}
+                        onChange={(e) => setLabPriority(e.target.value as "ROUTINE" | "URGENT" | "STAT")}
+                        className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none"
+                      >
+                        <option value="ROUTINE">{t.routine}</option>
+                        <option value="URGENT">{t.urgent}</option>
+                        <option value="STAT">{t.stat}</option>
+                      </select>
+                    </div>
+
+                    {/* Clinical notes */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-1">{t.labClinicalNotes}</label>
+                      <textarea
+                        value={labClinicalNotes}
+                        onChange={(e) => setLabClinicalNotes(e.target.value)}
+                        className="w-full p-2 border-2 border-foreground rounded focus:border-primary-blue outline-none resize-none"
+                        rows={2}
+                        placeholder="Reason for ordering tests..."
+                      />
+                    </div>
+
+                    <Button
+                      variant="primary"
+                      className="w-full"
+                      onClick={handleOrderLabTests}
+                      disabled={orderingLab || selectedLabTests.length === 0}
+                    >
+                      {orderingLab ? t.ordering : t.orderLabTests}
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Lab Orders Panel */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold">{t.labOrders}</h2>
+                  <span className="bg-primary-blue text-white px-2 py-1 rounded text-sm">
+                    {labOrders.length}
+                  </span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {labOrders.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <p>{t.noLabOrders}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                    {labOrders.map((order) => (
+                      <div
+                        key={order.id}
+                        className="border-2 border-foreground rounded p-4"
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-3">
+                          <div>
+                            <div className="font-mono font-bold text-lg">{order.order_number}</div>
+                            <div className="text-sm text-gray-500">
+                              {new Date(order.created_at).toLocaleDateString()} {new Date(order.created_at).toLocaleTimeString()}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {order.priority !== "ROUTINE" && (
+                              <span className={`px-2 py-1 rounded text-xs font-bold ${
+                                order.priority === "STAT" ? "bg-primary-red text-white" : "bg-primary-yellow text-foreground"
+                              }`}>
+                                {order.priority}
+                              </span>
+                            )}
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${getLabStatusColor(order.status)}`}>
+                              {getLabStatusLabel(order.status)}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Results table */}
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b-2 border-foreground">
+                                <th className="text-left py-2 px-2">{t.testName}</th>
+                                <th className="text-left py-2 px-2">{t.result}</th>
+                                <th className="text-left py-2 px-2">{t.normalRange}</th>
+                                <th className="text-left py-2 px-2">{t.flag}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {order.results.map((result) => (
+                                <tr
+                                  key={result.id}
+                                  className={`border-b ${
+                                    result.flag === "CRITICAL_LOW" || result.flag === "CRITICAL_HIGH"
+                                      ? "bg-red-50"
+                                      : result.flag && result.flag !== "NORMAL"
+                                      ? "bg-yellow-50"
+                                      : ""
+                                  }`}
+                                >
+                                  <td className="py-2 px-2">
+                                    <div className="font-medium">{result.lab_test.name}</div>
+                                    {result.lab_test.short_name && (
+                                      <div className="text-xs text-gray-500">{result.lab_test.short_name}</div>
+                                    )}
+                                  </td>
+                                  <td className="py-2 px-2 font-bold">
+                                    {result.result_value || "-"}
+                                    {result.unit && <span className="font-normal text-gray-500 ml-1">{result.unit}</span>}
+                                  </td>
+                                  <td className="py-2 px-2 text-gray-600">
+                                    {result.normal_range || result.lab_test.normal_range || "-"}
+                                  </td>
+                                  <td className="py-2 px-2">
+                                    {result.flag ? (
+                                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${getFlagColor(result.flag)}`}>
+                                        {getFlagLabel(result.flag)}
+                                      </span>
+                                    ) : (
+                                      <span className="text-gray-400">-</span>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex gap-2 mt-3 pt-3 border-t">
+                          {order.status === "COMPLETED" && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handlePrintLabReport(order)}
+                            >
+                              {t.printReport}
+                            </Button>
+                          )}
+                          <Link href={`/${lang}/clinic/dashboard/lab/${order.id}`}>
+                            <Button variant="outline" size="sm">
+                              {order.status === "COMPLETED" ? t.viewResults : t.enterResults}
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
