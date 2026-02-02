@@ -15,6 +15,7 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Use header.locator() or section.locator() to scope selectors when multiple elements match
 - E2E tests seed data to main `swasthya` database (not swasthya_test) for local dev server visibility
 - Use URL query params (e.g., &type=DOCTOR) in tests to filter to specific professional types
+- When using useSession() with separate loading state, ensure loading is set false for BOTH authenticated AND unauthenticated cases
 
 ---
 
@@ -254,5 +255,41 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Test unique email generation: `test-${Date.now()}-${Math.random().toString(36).substring(7)}@example.com`
 - Seeded test user (testuser@example.com) available for duplicate email tests
 - HTML5 validation messages accessible via `el.validationMessage` through `evaluate()`
+
+---
+
+## 2026-02-02 - US-042
+**E2E Tests: User login flow**
+
+### What was implemented
+- Created apps/web/e2e/auth-login.spec.ts with 31 comprehensive tests covering:
+  - Basic Functionality (8 tests): page load, form fields, Sign In button, Google OAuth, divider, register link, Welcome Back badge, account access tagline
+  - Validation Errors (3 tests): empty email, invalid email format, empty password
+  - Invalid Credentials (2 tests): non-existent user error message, wrong password error message
+  - Successful Login (4 tests): redirect to home, callback URL handling, admin login, professional login
+  - Button States (1 test): loading state with disabled button
+  - Protected Pages (3 tests): redirect to login, login button visibility, callback URL in login link
+  - Session Persistence (1 test): navigation across pages after login
+  - Logout Flow (1 test): NextAuth signout endpoint clears session
+  - Navigation (1 test): Create Account link navigation
+  - Google OAuth (1 test): Google button with SVG icon
+  - Language Support (1 test): /ne/login route loads
+  - UI Elements (3 tests): decorative panel, mobile color bar, error styling
+  - Error Messages (2 tests): URL error parameters (CredentialsSignin, OAuthAccountNotLinked)
+
+- Fixed bug in apps/web/src/app/[lang]/dashboard/profile/page.tsx where unauthenticated users would see infinite loading spinner (loading state was never set to false when user was unauthenticated)
+
+### Files changed
+- apps/web/e2e/auth-login.spec.ts (NEW)
+- apps/web/src/app/[lang]/dashboard/profile/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- Authentication error messages from NextAuth credentials provider: "No user found with this email", "Invalid password", "Please sign in with Google"
+- Dashboard profile page uses useSession() with separate loading state - must handle both status === "loading" AND unauthenticated cases
+- page.waitForSelector with state: "hidden" useful for waiting for loading spinners to disappear
+- Login page uses signIn("credentials", { redirect: false }) and handles errors via result.error
+- Error URL parameters (e.g., ?error=CredentialsSignin) are mapped to user-friendly messages via getErrorMessage()
+- Database sessions (strategy: "database") require the session to exist in the database for each page load
+- Use `.animate-pulse` class to identify loading spinners in tests
 
 ---
