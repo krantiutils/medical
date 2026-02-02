@@ -441,3 +441,25 @@ Started: Mon Feb  2 01:28:58 AM +0545 2026
   - Auth pages don't need header/footer from layout - they have their own full-page design
   - Auto-login after registration uses signIn with redirect: false, then router.push and router.refresh
 ---
+
+## 2026-02-02 02:00 +0545 - US-027
+- **What was implemented**: Claim profile button and search page
+- **Files changed**:
+  - `apps/web/src/components/claim/claim-profile-button.tsx` - Client component showing "Claim this profile" on unclaimed pages (only when logged in)
+  - `apps/web/src/components/providers/session-provider.tsx` - SessionProvider wrapper for next-auth useSession hook
+  - `apps/web/src/app/[lang]/claim/page.tsx` - Claim page with registration number search, professional display, and claim initiation
+  - `apps/web/src/app/api/professionals/search/route.ts` - API endpoint for searching by registration number
+  - `apps/web/src/app/[lang]/layout.tsx` - Added SessionProvider to enable useSession in client components
+  - `apps/web/src/app/[lang]/doctor/[slug]/page.tsx` - Integrated ClaimProfileButton at bottom of professional detail card
+  - `apps/web/messages/en.json` - Added claim namespace translations
+  - `apps/web/messages/ne.json` - Added claim namespace translations in Nepali
+  - `prd.json` - Marked US-027 as passes: true
+- **Learnings for future iterations:**
+  - SessionProvider must wrap NextIntlClientProvider for useSession to work in localized pages
+  - Use `useRef` with boolean flag for one-time initial search to avoid useEffect dependency warnings
+  - API routes for database queries go in `apps/web/src/app/api/` directory with route.ts files
+  - Registration number search uses case-insensitive matching: `mode: "insensitive"` in Prisma query
+  - Claim button shows login prompt to unauthenticated users with callback URL preserving registration param
+  - `useCallback` with dependency array solves react-hooks/exhaustive-deps warning for async functions
+  - Button component can be wrapped in Link for navigation - no need for onClick + router.push
+---
