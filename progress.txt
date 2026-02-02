@@ -1457,3 +1457,41 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Role labels need case-insensitive matching (role.toLowerCase())
 
 ---
+
+## 2026-02-02 - US-074
+**Clinic public page: SEO and structured data**
+
+### What was implemented
+- Added generateMetadata function to clinic public page with:
+  - Dynamic title: "{Clinic Name} - {Type} in {Location} | Swasthya"
+  - Description with clinic details and services
+  - Canonical URL with language alternates (en/ne)
+  - OpenGraph tags (title, description, image, type: website)
+  - Twitter card tags (summary)
+- Added JSON-LD structured data with schema.org types:
+  - MedicalClinic for CLINIC and POLYCLINIC types
+  - Hospital for HOSPITAL type
+  - Pharmacy for PHARMACY type
+- JSON-LD includes:
+  - name, url, @id
+  - image (logo_url) and photo array (clinic photos)
+  - address with PostalAddress schema
+  - geo with GeoCoordinates (latitude, longitude) when available
+  - telephone, email, sameAs (website)
+  - openingHours in schema.org format ("Mo 09:00-17:00") from timings JSON
+  - availableService array with MedicalProcedure schema for services
+  - medicalSpecialty based on services (Emergency or GeneralPractice)
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/[slug]/page.tsx (MODIFIED)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Use different schema.org types based on clinic type: MedicalClinic, Hospital, Pharmacy
+- OpenGraph type should be "website" for facility pages (not "profile" like professionals)
+- schema.org openingHours format: "Mo 09:00-17:00" with two-letter day codes
+- Available services can be represented as MedicalProcedure schema type
+- getClinicTypeLabelEn helper avoids duplication with existing getClinicTypeLabel (which takes lang param)
+- JSON-LD script should be inside <main> element, before content div
+
+---
