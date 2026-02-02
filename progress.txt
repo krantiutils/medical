@@ -2467,3 +2467,42 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Inventory batches have is_active flag that should be set to false when quantity reaches 0
 
 ---
+
+## 2026-02-02 - US-095
+**Purchase: Stock receiving**
+
+### What was implemented
+- Created API endpoint at `/api/clinic/pharmacy/purchases`:
+  - GET: Fetches purchase/receiving history with pagination and filters (supplier, invoice number, date range)
+  - POST: Receives stock by creating or updating InventoryBatch records
+  - Handles duplicate batch numbers by updating quantity instead of creating duplicates
+  - Validates all items (product ownership, batch number, expiry date in future, prices)
+  - Returns summary with created/updated counts
+
+- Created Purchase Receiving page at `/[lang]/clinic/dashboard/pharmacy/purchases`:
+  - **Receive Stock tab**:
+    - Supplier selection dropdown (required)
+    - Invoice number, invoice date, received date fields
+    - Product search with dropdown for adding items
+    - Multi-item entry table with: batch number, expiry date, quantity, purchase price, MRP, selling price
+    - Real-time total calculation (items, quantity, value)
+    - Clear all / Receive Stock actions
+  - **Purchase History tab**:
+    - Table view of all received batches
+    - Filters: supplier, invoice number, date range
+    - Pagination support
+  - Bilingual support (English/Nepali) with inline translations
+
+### Files changed
+- apps/web/src/app/api/clinic/pharmacy/purchases/route.ts (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/pharmacy/purchases/page.tsx (NEW)
+- prd.json (MODIFIED - marked US-095 as passes: true)
+
+### Learnings for future iterations
+- When receiving stock with same batch number, update existing batch quantity instead of creating duplicate
+- InventoryBatch has unique constraint on (clinic_id, product_id, batch_number) - useful for upsert-like behavior
+- The existing pharmacy pages follow consistent patterns: useSession() for auth, noClinic state handling, inline translations object
+- Product search dropdown pattern: filter products array, show top 10 matches, close on selection
+- Purchase receiving is different from stock adjustment - adjustments change existing batch quantities, receiving creates new batches
+
+---

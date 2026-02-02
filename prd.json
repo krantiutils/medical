@@ -1767,8 +1767,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 95,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: API endpoint at /api/clinic/pharmacy/purchases (GET/POST) for purchase history and stock receiving. Created Purchase Receiving page at /[lang]/clinic/dashboard/pharmacy/purchases with Receive Stock form and Purchase History tabs. Supports multi-item entry with batch/expiry/prices, creates InventoryBatch records, supplier invoice tracking, bilingual (EN/NE). Typecheck passes."
     },
     {
       "id": "US-096",
