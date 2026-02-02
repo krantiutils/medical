@@ -743,8 +743,8 @@
         "All tests pass: pnpm test:e2e professional-detail.spec.ts"
       ],
       "priority": 39,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: professional-detail.spec.ts with 37 tests covering doctor/dentist/pharmacist detail pages, verified badge display, claim button UI, 404 handling, SEO meta tags, JSON-LD structured data, language support, and legacy route redirects."
     },
     {
       "id": "US-040",

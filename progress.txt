@@ -168,5 +168,36 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Filter tags are links with SVG icons - use locator().filter({ has: locator("svg") })
 - Pagination uses "← Previous" and "Next →" with arrow symbols
 - Cards are <div> elements not <article> - use getByRole("heading", { level: 3 }) for card titles
+- For "Verified" badge tests, scope to main content: `page.locator("main").getByText("Verified", { exact: true })`
+- Specialties appear in multiple places (header + details) - use sibling selector `locator("~ dd")` to scope to details section
+
+---
+
+## 2026-02-02 20:00 - US-039
+**E2E Tests: Professional detail pages**
+
+### What was implemented
+- Created apps/web/e2e/professional-detail.spec.ts with 37 comprehensive tests:
+  - Doctor Detail Page - Basic Functionality (5 tests): page load with name, registration number, degree, address, specialties
+  - Doctor Detail Page - Verified Badge (2 tests): shows for verified, hidden for unverified
+  - Doctor Detail Page - Claim Profile Button (3 tests): login to claim UI, claim callback URL, no button for claimed
+  - Doctor Detail Page - 404 Error (2 tests): 404 status for invalid slug, 404 page content
+  - Doctor Detail Page - SEO (4 tests): JSON-LD Physician schema, meta title, meta description, Open Graph tags
+  - Dentist Detail Page (6 tests): page load, registration number, verified badge, JSON-LD Dentist schema, 404
+  - Pharmacist Detail Page (8 tests): page load, NPC registration, category, location, verified badge, JSON-LD Person schema, 404
+  - Cross-type Navigation (3 tests): search to doctor/dentist/pharmacist detail pages
+  - Language Support (3 tests): doctor/dentist/pharmacist pages in Nepali
+  - Legacy Route Redirect (1 test): /doctor/[slug] redirects to /doctors/[slug]
+
+### Files changed
+- apps/web/e2e/professional-detail.spec.ts (NEW)
+
+### Learnings for future iterations
+- "Verified" badge text appears in main content, scope with `page.locator("main")` to avoid footer matches
+- Specialties list items are in definition (dd) after term (dt) - use sibling selector
+- Login session state doesn't persist reliably in Playwright tests - test login callback URL instead of full auth flow
+- Different professional types use different JSON-LD schemas: Physician, Dentist, Person
+- Pharmacists don't have "Dr." prefix and use NPC (not NMC) registration
+- ClaimProfileButton shows "Login to Claim" when not authenticated, "Claim This Profile" when authenticated
 
 ---
