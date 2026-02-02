@@ -62,6 +62,17 @@ const CLINIC_TYPES: { value: ClinicType; labelEn: string; labelNe: string }[] = 
   { value: "PHARMACY", labelEn: "Pharmacy", labelNe: "फार्मेसी" },
 ];
 
+// Predefined services list
+const PREDEFINED_SERVICES: { id: string; labelEn: string; labelNe: string }[] = [
+  { id: "general_consultation", labelEn: "General Consultation", labelNe: "सामान्य परामर्श" },
+  { id: "specialist_consultation", labelEn: "Specialist Consultation", labelNe: "विशेषज्ञ परामर्श" },
+  { id: "lab_tests", labelEn: "Lab Tests", labelNe: "प्रयोगशाला परीक्षण" },
+  { id: "xray", labelEn: "X-Ray", labelNe: "एक्स-रे" },
+  { id: "pharmacy", labelEn: "Pharmacy", labelNe: "फार्मेसी" },
+  { id: "emergency", labelEn: "Emergency", labelNe: "आपतकालीन" },
+  { id: "surgery", labelEn: "Surgery", labelNe: "शल्यक्रिया" },
+];
+
 export default function ClinicRegisterPage() {
   const { data: session, status } = useSession();
   const { lang } = useParams<{ lang: string }>();
@@ -84,6 +95,8 @@ export default function ClinicRegisterPage() {
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [operatingHours, setOperatingHours] = useState<WeeklySchedule>(DEFAULT_SCHEDULE);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [customServiceInput, setCustomServiceInput] = useState("");
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -172,6 +185,22 @@ export default function ClinicRegisterPage() {
     closesAt: isNepali ? "बन्द हुने समय" : "Closes",
     to: isNepali ? "देखि" : "to",
     open24Hours: isNepali ? "२४ घण्टा खुला" : "24 hours",
+    // Services translations
+    servicesLabel: isNepali ? "सेवाहरू" : "Services",
+    servicesHint: isNepali
+      ? "तपाईंको क्लिनिकले प्रदान गर्ने सेवाहरू छान्नुहोस् वा थप्नुहोस्"
+      : "Select or add services your clinic offers",
+    customServicePlaceholder: isNepali
+      ? "आफ्नो सेवा थप्नुहोस्..."
+      : "Add your own service...",
+    addService: isNepali ? "थप्नुहोस्" : "Add",
+    removeService: isNepali ? "हटाउनुहोस्" : "Remove",
+    noServicesSelected: isNepali
+      ? "कुनै सेवा छानिएको छैन"
+      : "No services selected",
+    selectedServicesCount: isNepali
+      ? (count: number) => `${count} सेवा${count > 1 ? "हरू" : ""} छानिएको`
+      : (count: number) => `${count} service${count !== 1 ? "s" : ""} selected`,
   };
 
   // Validate single file (logo)
@@ -290,6 +319,51 @@ export default function ClinicRegisterPage() {
     }));
   };
 
+  // Handle service toggle (predefined)
+  const handleServiceToggle = (serviceId: string) => {
+    setSelectedServices((prev) =>
+      prev.includes(serviceId)
+        ? prev.filter((id) => id !== serviceId)
+        : [...prev, serviceId]
+    );
+  };
+
+  // Handle adding custom service
+  const handleAddCustomService = () => {
+    const trimmed = customServiceInput.trim();
+    if (trimmed && !selectedServices.includes(trimmed)) {
+      setSelectedServices((prev) => [...prev, trimmed]);
+      setCustomServiceInput("");
+    }
+  };
+
+  // Handle removing a service (custom or predefined)
+  const handleRemoveService = (service: string) => {
+    setSelectedServices((prev) => prev.filter((s) => s !== service));
+  };
+
+  // Handle Enter key in custom service input
+  const handleCustomServiceKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddCustomService();
+    }
+  };
+
+  // Check if a service is predefined
+  const isPredefinedService = (service: string): boolean => {
+    return PREDEFINED_SERVICES.some((s) => s.id === service);
+  };
+
+  // Get display label for a service
+  const getServiceLabel = (service: string): string => {
+    const predefined = PREDEFINED_SERVICES.find((s) => s.id === service);
+    if (predefined) {
+      return isNepali ? predefined.labelNe : predefined.labelEn;
+    }
+    return service; // Custom service, return as-is
+  };
+
   // Validate form
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -357,6 +431,7 @@ export default function ClinicRegisterPage() {
     console.log("Logo file:", logoFile);
     console.log("Photo files:", photoFiles);
     console.log("Operating hours:", operatingHours);
+    console.log("Services:", selectedServices);
     setIsLoading(false);
   };
 
@@ -911,6 +986,127 @@ export default function ClinicRegisterPage() {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Services */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2">
+                {t.servicesLabel}
+              </label>
+              <p className="text-xs text-foreground/60 mb-4">{t.servicesHint}</p>
+
+              {/* Predefined services checkboxes */}
+              <div className="border-4 border-foreground bg-white p-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {PREDEFINED_SERVICES.map((service) => {
+                    const isSelected = selectedServices.includes(service.id);
+                    return (
+                      <button
+                        key={service.id}
+                        type="button"
+                        onClick={() => handleServiceToggle(service.id)}
+                        className={`flex items-center gap-3 p-3 border-2 transition-colors text-left ${
+                          isSelected
+                            ? "border-primary-blue bg-primary-blue/10"
+                            : "border-foreground/20 hover:border-foreground/40"
+                        }`}
+                      >
+                        <div
+                          className={`w-5 h-5 border-2 flex items-center justify-center ${
+                            isSelected
+                              ? "border-primary-blue bg-primary-blue"
+                              : "border-foreground/40"
+                          }`}
+                        >
+                          {isSelected && (
+                            <svg
+                              className="w-3 h-3 text-white"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={3}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                        <span className={`text-sm font-medium ${isSelected ? "text-primary-blue" : ""}`}>
+                          {isNepali ? service.labelNe : service.labelEn}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Custom service input */}
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="text"
+                  value={customServiceInput}
+                  onChange={(e) => setCustomServiceInput(e.target.value)}
+                  onKeyDown={handleCustomServiceKeyDown}
+                  placeholder={t.customServicePlaceholder}
+                  className="flex-1 px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40 transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddCustomService}
+                  disabled={!customServiceInput.trim()}
+                  className="px-6 py-3 bg-primary-blue text-white font-bold uppercase tracking-wider border-4 border-foreground shadow-[4px_4px_0_0_black] hover:shadow-[2px_2px_0_0_black] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0"
+                >
+                  {t.addService}
+                </button>
+              </div>
+
+              {/* Selected services tags */}
+              {selectedServices.length > 0 && (
+                <div className="border-4 border-foreground bg-white p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold uppercase tracking-widest text-foreground/60">
+                      {t.selectedServicesCount(selectedServices.length)}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedServices.map((service) => (
+                      <span
+                        key={service}
+                        className={`inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border-2 ${
+                          isPredefinedService(service)
+                            ? "bg-primary-blue/10 border-primary-blue text-primary-blue"
+                            : "bg-primary-yellow/20 border-primary-yellow text-foreground"
+                        }`}
+                      >
+                        {getServiceLabel(service)}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveService(service)}
+                          className="hover:opacity-70 transition-opacity"
+                          title={t.removeService}
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <Button
