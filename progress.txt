@@ -2408,3 +2408,62 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Login link strict mode: scope to main content with `page.locator("main").getByRole("link", ...)` when header has duplicate links
 
 ---
+
+## 2026-02-02 - US-094
+**Inventory: Stock and expiry tracking**
+
+### What was implemented
+- Created inventory dashboard page at `/[lang]/clinic/dashboard/pharmacy/inventory/page.tsx`
+- Created inventory API route at `/api/clinic/pharmacy/inventory/route.ts`
+
+**Dashboard Features:**
+- Overview tab with summary statistics:
+  - Total products and active products count
+  - Total batches and stock units
+  - Stock value calculation (MRP × quantity)
+  - Low stock alerts count (clickable to view)
+  - Expiry status cards (expired, 30/60/90 days)
+- Low stock tab:
+  - Lists products where current stock <= min_stock_level
+  - Shows stock deficit, category, supplier, nearest expiry
+  - Pagination support
+  - "Order More" action button
+- Expiring items tab:
+  - Filterable by period (30/60/90/180 days, all)
+  - Shows batch details with days until expiry
+  - Status badges (expired/critical/warning/caution)
+  - Stock value per batch
+- Stock adjustment modal:
+  - Supports adjustment types: damage, loss, theft, expired, found, correction, other
+  - "Found" and "correction" increase stock, others decrease
+  - Logs adjustments to batch notes with timestamp
+  - Validates quantity doesn't go below 0
+
+**API Endpoints:**
+- GET `/api/clinic/pharmacy/inventory?view=overview` - Summary statistics
+- GET `/api/clinic/pharmacy/inventory?view=low-stock` - Low stock products with pagination
+- GET `/api/clinic/pharmacy/inventory?view=expiring&expiryDays=30` - Expiring batches with filters
+- POST `/api/clinic/pharmacy/inventory` - Stock adjustment
+
+**UI Features:**
+- Bilingual support (English/Nepali)
+- Bauhaus design system (border-4, hard shadows, uppercase labels)
+- Responsive layout with grid views
+- Tab navigation with badge counts
+- Pagination controls
+- Modal for stock adjustments
+- Loading, error, unauthenticated, and no-clinic states
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/pharmacy/inventory/page.tsx (NEW)
+- apps/web/src/app/api/clinic/pharmacy/inventory/route.ts (NEW)
+
+### Learnings for future iterations
+- Pharmacy inventory API uses raw SQL queries for complex aggregations (low stock count, stock value sum)
+- Low stock calculation requires grouping by product and comparing SUM(batch.quantity) to min_stock_level
+- Stock adjustment logs are appended to batch.notes field with timestamp
+- "Found" and "correction" adjustment types are the only ones that increase stock
+- Use $queryRaw for decimal sum calculations to avoid Prisma Decimal handling issues
+- Inventory batches have is_active flag that should be set to false when quantity reaches 0
+
+---

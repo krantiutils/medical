@@ -1750,8 +1750,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 94,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Inventory dashboard page at /clinic/dashboard/pharmacy/inventory with overview stats (total products, batches, stock value), low stock alerts with deficit tracking, expiring items list with 30/60/90 day filters, stock adjustment modal for damage/loss/theft/expired/found/correction. API route at /api/clinic/pharmacy/inventory handles overview, low-stock, and expiring views with pagination. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-095",
