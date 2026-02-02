@@ -173,6 +173,9 @@ model Professional {
   // Appointments for this professional
   appointments Appointment[]
 
+  // Reviews for this professional
+  reviews Review[]
+
   @@unique([type, registration_number])
   @@index([slug])
   @@index([type])
@@ -266,6 +269,9 @@ model Clinic {
   // Invoices generated at this clinic
   invoices Invoice[]
 
+  // Reviews for this clinic
+  reviews Review[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -313,6 +319,9 @@ model Patient {
 
   // Invoices for this patient
   invoices Invoice[]
+
+  // Reviews submitted by this patient
+  reviews Review[]
 
   @@unique([clinic_id, patient_number])
   @@unique([clinic_id, phone])
@@ -385,6 +394,9 @@ model Appointment {
   // Invoice linked to this appointment (optional)
   invoice Invoice?
 
+  // Review linked to this appointment (optional)
+  review Review?
+
   @@index([clinic_id, appointment_date, doctor_id])
   @@index([clinic_id])
   @@index([patient_id])
@@ -439,4 +451,31 @@ model Invoice {
   @@index([appointment_id])
   @@index([created_by_id])
   @@index([payment_status])
+}
+
+model Review {
+  id              String    @id @default(uuid())
+  rating          Int       // 1-5 star rating
+  review_text     String?   @db.Text
+  categories      Json?     // e.g., {"cleanliness": 5, "wait_time": 4, "staff": 5}
+  doctor_response String?   @db.Text
+  is_published    Boolean   @default(true)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  // Relations
+  clinic_id      String
+  clinic         Clinic        @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  doctor_id      String?       // Nullable - review may be for clinic only, not a specific doctor
+  doctor         Professional? @relation(fields: [doctor_id], references: [id], onDelete: SetNull)
+  patient_id     String
+  patient        Patient       @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  appointment_id String?       @unique // Nullable - review may or may not be linked to an appointment
+  appointment    Appointment?  @relation(fields: [appointment_id], references: [id])
+
+  @@index([clinic_id, is_published])
+  @@index([clinic_id])
+  @@index([doctor_id])
+  @@index([patient_id])
+  @@index([rating])
 }
