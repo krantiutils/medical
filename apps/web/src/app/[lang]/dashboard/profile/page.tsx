@@ -190,6 +190,9 @@ export default function DashboardProfilePage() {
   useEffect(() => {
     if (status === "authenticated") {
       fetchProfile();
+    } else if (status === "unauthenticated") {
+      // Stop loading when we know the user is not authenticated
+      setLoading(false);
     }
   }, [status, fetchProfile]);
 
