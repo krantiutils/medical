@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@swasthya/database";
 
 /**
- * GET /api/clinic/[id]/booking-info
+ * GET /api/clinic/[clinicId]/booking-info
  *
  * Get clinic and doctor information for the booking page.
- * Accepts either clinic ID or slug as the [id] parameter.
+ * Accepts either clinic ID or slug as the [clinicId] parameter.
  *
  * Query params:
  * - doctor_id: Required - The ID of the doctor
@@ -14,10 +14,10 @@ import { prisma } from "@swasthya/database";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ clinicId: string }> }
 ) {
   try {
-    const { id: clinicIdOrSlug } = await params;
+    const { clinicId: clinicIdOrSlug } = await params;
     const { searchParams } = new URL(request.url);
     const doctorId = searchParams.get("doctor_id");
 

@@ -76,7 +76,7 @@ function isSlotDuringLeave(
 }
 
 /**
- * GET /api/clinic/[id]/slots
+ * GET /api/clinic/[clinicId]/slots
  *
  * Get available appointment slots for a specific doctor on a specific date.
  *
@@ -88,10 +88,10 @@ function isSlotDuringLeave(
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ clinicId: string }> }
 ) {
   try {
-    const { id: clinicId } = await params;
+    const { clinicId } = await params;
     const { searchParams } = new URL(request.url);
     const doctorId = searchParams.get("doctor_id");
     const dateStr = searchParams.get("date");

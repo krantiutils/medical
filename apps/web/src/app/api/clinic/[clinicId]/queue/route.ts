@@ -3,25 +3,28 @@ import { prisma, AppointmentStatus } from "@swasthya/database";
 
 interface RouteParams {
   params: Promise<{
-    slug: string;
+    clinicId: string;
   }>;
 }
 
 /**
- * GET /api/clinic/[slug]/queue
+ * GET /api/clinic/[clinicId]/queue
  *
- * Public endpoint to fetch today's queue for a clinic by slug.
+ * Public endpoint to fetch today's queue for a clinic by slug or ID.
  * Used by the TV queue display page.
  * Returns current token per doctor and waiting queue.
  */
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { slug } = await params;
+    const { clinicId } = await params;
 
-    // Find verified clinic by slug
+    // Find verified clinic by slug or ID
     const clinic = await prisma.clinic.findFirst({
       where: {
-        slug,
+        OR: [
+          { slug: clinicId },
+          { id: clinicId },
+        ],
         verified: true,
       },
       select: {
