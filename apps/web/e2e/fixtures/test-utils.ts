@@ -117,6 +117,24 @@ export const TEST_DATA = {
       rating: 2,
     },
   },
+
+  // Pharmacy POS test data
+  PRODUCTS: {
+    PARACETAMOL: { name: "Paracetamol 500mg", barcode: "PARA500", price: 30, gstRate: 5 },
+    AMOXICILLIN: { name: "Amoxicillin 250mg", barcode: "AMOX250", price: 100, gstRate: 5 },
+    VITAMIN_C: { name: "Vitamin C 1000mg", barcode: "VITC1000", price: 200, gstRate: 12 },
+    THERMOMETER: { name: "Digital Thermometer", barcode: "THERM001", price: 350, gstRate: 18 },
+  },
+
+  BATCHES: {
+    PARA_BATCH_1: { number: "PARA-BATCH-001", expiresInDays: 60, qty: 100 }, // Expires sooner (FEFO test)
+    PARA_BATCH_2: { number: "PARA-BATCH-002", expiresInDays: 180, qty: 200 }, // Expires later
+  },
+
+  CREDIT_ACCOUNTS: {
+    RAM_BAHADUR: { name: "Ram Bahadur", phone: "9801234567", balance: 500 },
+    SITA_KUMARI: { name: "Sita Kumari", phone: "9802345678", balance: 0 },
+  },
 };
 
 /**

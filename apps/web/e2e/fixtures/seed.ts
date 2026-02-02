@@ -19,6 +19,7 @@ import {
   AppointmentStatus,
   AppointmentType,
   AppointmentSource,
+  ProductCategory,
 } from "@swasthya/database";
 import { hash } from "bcryptjs";
 
@@ -311,6 +312,148 @@ export const SEED_DATA = {
       address: "Lalitpur, Nepal",
     },
   ],
+
+  // Test pharmacy products for POS tests
+  PRODUCTS: [
+    {
+      name: "Paracetamol 500mg",
+      generic_name: "Paracetamol",
+      category: ProductCategory.MEDICINE,
+      barcode: "PARA500",
+      gst_rate: 5,
+      unit: "strip",
+      pack_size: 10,
+      min_stock_level: 50,
+    },
+    {
+      name: "Amoxicillin 250mg",
+      generic_name: "Amoxicillin",
+      category: ProductCategory.MEDICINE,
+      barcode: "AMOX250",
+      gst_rate: 5,
+      unit: "strip",
+      pack_size: 10,
+      min_stock_level: 30,
+    },
+    {
+      name: "Vitamin C 1000mg",
+      generic_name: "Ascorbic Acid",
+      category: ProductCategory.SUPPLEMENT,
+      barcode: "VITC1000",
+      gst_rate: 12,
+      unit: "bottle",
+      pack_size: 30,
+      min_stock_level: 20,
+    },
+    {
+      name: "Digital Thermometer",
+      generic_name: null,
+      category: ProductCategory.MEDICAL_DEVICE,
+      barcode: "THERM001",
+      gst_rate: 18,
+      unit: "piece",
+      pack_size: 1,
+      min_stock_level: 10,
+    },
+    {
+      name: "Expired Medicine Test",
+      generic_name: "Test Drug",
+      category: ProductCategory.MEDICINE,
+      barcode: "EXPIRED001",
+      gst_rate: 5,
+      unit: "strip",
+      pack_size: 10,
+      min_stock_level: 10,
+    },
+  ],
+
+  // Test inventory batches for POS tests (linked to products above)
+  // Index maps to PRODUCTS index
+  BATCHES: [
+    // Paracetamol batches - multiple for FEFO testing
+    {
+      productIndex: 0,
+      batch_number: "PARA-BATCH-001",
+      expiry_date: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // 60 days from now (expires sooner - should be selected first)
+      quantity: 100,
+      original_qty: 100,
+      purchase_price: 20,
+      mrp: 35,
+      selling_price: 30,
+    },
+    {
+      productIndex: 0,
+      batch_number: "PARA-BATCH-002",
+      expiry_date: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // 180 days from now (expires later)
+      quantity: 200,
+      original_qty: 200,
+      purchase_price: 22,
+      mrp: 38,
+      selling_price: 32,
+    },
+    // Amoxicillin batch
+    {
+      productIndex: 1,
+      batch_number: "AMOX-BATCH-001",
+      expiry_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+      quantity: 50,
+      original_qty: 50,
+      purchase_price: 80,
+      mrp: 120,
+      selling_price: 100,
+    },
+    // Vitamin C batch
+    {
+      productIndex: 2,
+      batch_number: "VITC-BATCH-001",
+      expiry_date: new Date(Date.now() + 730 * 24 * 60 * 60 * 1000), // 2 years from now
+      quantity: 30,
+      original_qty: 30,
+      purchase_price: 150,
+      mrp: 250,
+      selling_price: 200,
+    },
+    // Digital Thermometer batch
+    {
+      productIndex: 3,
+      batch_number: "THERM-BATCH-001",
+      expiry_date: new Date(Date.now() + 1825 * 24 * 60 * 60 * 1000), // 5 years from now
+      quantity: 15,
+      original_qty: 15,
+      purchase_price: 200,
+      mrp: 450,
+      selling_price: 350,
+    },
+    // Expired product batch (for testing expired items don't show)
+    {
+      productIndex: 4,
+      batch_number: "EXP-BATCH-001",
+      expiry_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Expired 30 days ago
+      quantity: 10,
+      original_qty: 10,
+      purchase_price: 10,
+      mrp: 20,
+      selling_price: 15,
+    },
+  ],
+
+  // Test credit accounts for pharmacy POS
+  CREDIT_ACCOUNTS: [
+    {
+      customer_name: "Ram Bahadur",
+      phone: "9801234567",
+      address: "Kathmandu, Nepal",
+      credit_limit: 10000,
+      current_balance: 500, // Has existing balance
+    },
+    {
+      customer_name: "Sita Kumari",
+      phone: "9802345678",
+      address: "Lalitpur, Nepal",
+      credit_limit: 5000,
+      current_balance: 0, // Fresh account
+    },
+  ],
 };
 
 /**
@@ -347,6 +490,17 @@ export const TEST_PATIENT_TWO_NAME = SEED_DATA.PATIENTS[1].full_name;
 // Review test data constants
 export const TEST_REVIEW_TEXT = "Excellent service and professional staff. Highly recommend!";
 export const TEST_REVIEW_DOCTOR_RESPONSE = "Thank you for your kind feedback. We are glad to have helped.";
+
+// Pharmacy POS test data constants
+export const TEST_PRODUCT_PARACETAMOL = SEED_DATA.PRODUCTS[0].name;
+export const TEST_PRODUCT_AMOXICILLIN = SEED_DATA.PRODUCTS[1].name;
+export const TEST_PRODUCT_VITAMIN_C = SEED_DATA.PRODUCTS[2].name;
+export const TEST_PRODUCT_THERMOMETER = SEED_DATA.PRODUCTS[3].name;
+export const TEST_PRODUCT_BARCODE = SEED_DATA.PRODUCTS[0].barcode;
+export const TEST_BATCH_PARACETAMOL_1 = SEED_DATA.BATCHES[0].batch_number;
+export const TEST_BATCH_PARACETAMOL_2 = SEED_DATA.BATCHES[1].batch_number;
+export const TEST_CREDIT_CUSTOMER = SEED_DATA.CREDIT_ACCOUNTS[0].customer_name;
+export const TEST_PHARMACY_SLUG = SEED_DATA.CLINICS[2].slug; // Test Pharmacy
 
 /**
  * Seed test users
@@ -1115,6 +1269,134 @@ async function seedReviews(
 }
 
 /**
+ * Seed pharmacy products for POS tests
+ */
+async function seedPharmacyProducts(
+  clinicIds: Map<string, string>
+): Promise<Map<string, string>> {
+  const productIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping pharmacy products seeding");
+    return productIds;
+  }
+
+  // Delete existing products for this clinic
+  await prisma.product.deleteMany({
+    where: { clinic_id: dashboardClinicId },
+  });
+
+  for (let i = 0; i < SEED_DATA.PRODUCTS.length; i++) {
+    const productData = SEED_DATA.PRODUCTS[i];
+    const product = await prisma.product.create({
+      data: {
+        clinic_id: dashboardClinicId,
+        name: productData.name,
+        generic_name: productData.generic_name,
+        category: productData.category,
+        barcode: productData.barcode,
+        gst_rate: productData.gst_rate,
+        unit: productData.unit,
+        pack_size: productData.pack_size,
+        min_stock_level: productData.min_stock_level,
+        is_active: true,
+      },
+    });
+    productIds.set(`PRODUCT_${i}`, product.id);
+  }
+
+  return productIds;
+}
+
+/**
+ * Seed inventory batches for POS tests
+ */
+async function seedInventoryBatches(
+  clinicIds: Map<string, string>,
+  productIds: Map<string, string>
+): Promise<Map<string, string>> {
+  const batchIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping inventory batches seeding");
+    return batchIds;
+  }
+
+  // Delete existing batches for this clinic
+  await prisma.inventoryBatch.deleteMany({
+    where: { clinic_id: dashboardClinicId },
+  });
+
+  for (let i = 0; i < SEED_DATA.BATCHES.length; i++) {
+    const batchData = SEED_DATA.BATCHES[i];
+    const productId = productIds.get(`PRODUCT_${batchData.productIndex}`);
+
+    if (!productId) {
+      console.log(`  ⚠ Product ${batchData.productIndex} not found, skipping batch ${i}`);
+      continue;
+    }
+
+    const batch = await prisma.inventoryBatch.create({
+      data: {
+        clinic_id: dashboardClinicId,
+        product_id: productId,
+        batch_number: batchData.batch_number,
+        expiry_date: batchData.expiry_date,
+        quantity: batchData.quantity,
+        original_qty: batchData.original_qty,
+        purchase_price: batchData.purchase_price,
+        mrp: batchData.mrp,
+        selling_price: batchData.selling_price,
+        is_active: true,
+      },
+    });
+    batchIds.set(`BATCH_${i}`, batch.id);
+  }
+
+  return batchIds;
+}
+
+/**
+ * Seed credit accounts for POS tests
+ */
+async function seedCreditAccounts(
+  clinicIds: Map<string, string>
+): Promise<Map<string, string>> {
+  const creditAccountIds = new Map<string, string>();
+  const dashboardClinicId = clinicIds.get("dashboard-test-clinic");
+
+  if (!dashboardClinicId) {
+    console.log("  ⚠ Dashboard test clinic not found, skipping credit accounts seeding");
+    return creditAccountIds;
+  }
+
+  // Delete existing credit accounts for this clinic
+  await prisma.creditAccount.deleteMany({
+    where: { clinic_id: dashboardClinicId },
+  });
+
+  for (let i = 0; i < SEED_DATA.CREDIT_ACCOUNTS.length; i++) {
+    const accountData = SEED_DATA.CREDIT_ACCOUNTS[i];
+    const creditAccount = await prisma.creditAccount.create({
+      data: {
+        clinic_id: dashboardClinicId,
+        customer_name: accountData.customer_name,
+        phone: accountData.phone,
+        address: accountData.address,
+        credit_limit: accountData.credit_limit,
+        current_balance: accountData.current_balance,
+        is_active: true,
+      },
+    });
+    creditAccountIds.set(`CREDIT_${i}`, creditAccount.id);
+  }
+
+  return creditAccountIds;
+}
+
+/**
  * Clean up all test data
  * IMPORTANT: Order matters due to foreign key constraints
  */
@@ -1128,6 +1410,57 @@ async function cleanupTestData(): Promise<void> {
 
   // Delete reviews (before appointments and patients)
   await prisma.review.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  // Delete pharmacy data (sales, credit transactions, batches, products, credit accounts)
+  await prisma.creditTransaction.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  await prisma.sale.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  await prisma.inventoryBatch.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  await prisma.product.deleteMany({
+    where: {
+      clinic: {
+        slug: {
+          in: testClinicSlugs,
+        },
+      },
+    },
+  });
+
+  await prisma.creditAccount.deleteMany({
     where: {
       clinic: {
         slug: {
@@ -1335,6 +1668,18 @@ export async function seedTestData(): Promise<{
   // Seed reviews for review tests
   const reviewIds = await seedReviews(clinicIds, patientIds, professionalIds, appointmentIds);
   console.log(`  ✓ Seeded ${reviewIds.size} reviews for review tests`);
+
+  // Seed pharmacy products for POS tests
+  const productIds = await seedPharmacyProducts(clinicIds);
+  console.log(`  ✓ Seeded ${productIds.size} pharmacy products`);
+
+  // Seed inventory batches for POS tests
+  const batchIds = await seedInventoryBatches(clinicIds, productIds);
+  console.log(`  ✓ Seeded ${batchIds.size} inventory batches`);
+
+  // Seed credit accounts for POS tests
+  const creditAccountIds = await seedCreditAccounts(clinicIds);
+  console.log(`  ✓ Seeded ${creditAccountIds.size} credit accounts`);
 
   console.log("✅ Test data seeding complete!");
 
