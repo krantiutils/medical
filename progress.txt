@@ -785,3 +785,85 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - ClinicType enum values: CLINIC, POLYCLINIC, HOSPITAL, PHARMACY
 
 ---
+
+## 2026-02-02 - US-057
+**Clinic registration: Logo and photos upload**
+
+### What was implemented
+- Added logo upload field to clinic registration form:
+  - Single file upload with file input
+  - Image preview in 24x24 bordered container
+  - Change and Remove actions when logo selected
+  - Dashed upload zone when no logo
+- Added photos upload field with multiple file support:
+  - Maximum 5 photos allowed
+  - Grid preview (3 columns mobile, 5 columns desktop)
+  - Individual photo removal with X button on hover
+  - Photo count indicator (X/5 photos)
+  - Add More Photos option when under limit
+- Implemented file validation:
+  - Accepted types: JPG and PNG only (image/jpeg, image/png)
+  - Maximum size: 5MB per file
+  - Error messages for invalid type or size
+- Added bilingual translations (EN/NE) for:
+  - Upload labels and hints
+  - Button text (Upload, Change, Remove, Add More)
+  - Error messages
+  - Drag and drop hint
+- Bauhaus styling:
+  - Dashed border upload zones (border-4 border-dashed)
+  - Hover state with border-primary-blue
+  - Image icon placeholder
+  - Consistent with existing form styling
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/register/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- Use useRef for file input elements to enable programmatic reset
+- FileReader.readAsDataURL for creating image previews from File objects
+- Multiple file input uses Array.from(e.target.files || []) to convert FileList
+- Reset input.value to "" to allow selecting the same file again after removal
+- next/image with fill prop requires parent container with relative position and defined dimensions
+- File validation should happen before creating previews for performance
+- group/group-hover pattern for showing remove buttons on photo hover
+
+---
+
+## 2026-02-02 - US-058
+**Clinic registration: Operating hours configuration**
+
+### What was implemented
+- Added weekly schedule grid to clinic registration form with:
+  - Toggle switch for each day (Sunday-Saturday) to mark open/closed
+  - Time inputs for open and close times when day is marked open
+  - Default all days to closed (isOpen: false)
+  - Default times set to 09:00-17:00 when day is toggled open
+- Data types for operating hours:
+  - DaySchedule interface: { isOpen: boolean, openTime: string, closeTime: string }
+  - WeeklySchedule type: Record of day key to DaySchedule
+- Bilingual support (EN/NE):
+  - Day names: Sunday/आइतबार, Monday/सोमबार, etc.
+  - Labels: Operating Hours/खुल्ने समय, Open/खुला, Closed/बन्द
+- Bauhaus styling:
+  - Toggle switches with border-2 border-foreground
+  - Green (bg-verified) for open state, gray for closed
+  - Time inputs with border-2 border-foreground
+  - Mobile-responsive stacked layout
+- State management:
+  - operatingHours state stores weekly schedule
+  - handleDayToggle toggles isOpen for a day
+  - handleTimeChange updates openTime or closeTime
+  - Console.log outputs operatingHours for US-060 API integration
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/register/page.tsx (MODIFIED)
+
+### Learnings for future iterations
+- Toggle switches use button with relative positioning and transform for the knob
+- Time inputs use type="time" for native browser time picker
+- Mobile layout uses flex-col with sm:flex-row for responsive design
+- DAYS_OF_WEEK constant with key, labelEn, labelNe for bilingual day names
+- Status indicator badges hidden on mobile (hidden sm:block) for cleaner layout
+
+---

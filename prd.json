@@ -1094,8 +1094,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 57,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Logo upload with single file support and preview. Photos upload with multiple files (max 5) and grid preview. File validation for types (JPG, PNG only) and size (max 5MB each). Bilingual translations (EN/NE) for all upload labels, hints, and error messages. Image previews with remove functionality. Bauhaus styling with dashed upload zones and hover states. Typecheck passes."
     },
     {
       "id": "US-058",
@@ -1111,8 +1111,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 58,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: Weekly schedule grid with toggle for each day (Sunday-Saturday). Time inputs for open/close times. Default all days to closed. Bilingual translations (EN/NE) for all labels. Bauhaus-styled toggles with verified-green for open state. Mobile-responsive layout. State stored in operatingHours for JSON timings field. Typecheck passes."
     },
     {
       "id": "US-059",
