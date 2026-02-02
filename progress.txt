@@ -2033,3 +2033,39 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Server errors during E2E tests may indicate database connection issues or missing seed data
 
 ---
+
+## 2026-02-02 - US-087
+**Database schema: Review model**
+
+### What was implemented
+- Created Review model in packages/database/prisma/schema.prisma with fields:
+  - id (UUID), rating (Int 1-5), review_text (Text), categories (Json)
+  - doctor_response (Text), is_published (Boolean default true)
+  - created_at, updated_at timestamps
+- Added relations:
+  - clinic_id -> Clinic (required, onDelete CASCADE)
+  - doctor_id -> Professional (nullable, onDelete SET NULL)
+  - patient_id -> Patient (required, onDelete CASCADE)
+  - appointment_id -> Appointment (nullable, unique for one-to-one)
+- Added reverse relations in Clinic, Professional, Patient, and Appointment models
+- Created migration 20260202040000_add_review_model with:
+  - CreateTable for Review
+  - Unique index on appointment_id
+  - Composite index on (clinic_id, is_published) for efficient filtering
+  - Individual indexes on clinic_id, doctor_id, patient_id, rating
+  - Foreign key constraints with appropriate onDelete behavior
+- Created migration_lock.toml file (was missing from migrations directory)
+
+### Files changed
+- packages/database/prisma/schema.prisma (MODIFIED)
+- packages/database/prisma/migrations/20260202040000_add_review_model/migration.sql (NEW)
+- packages/database/prisma/migrations/migration_lock.toml (NEW)
+
+### Learnings for future iterations
+- migration_lock.toml is required for prisma migrate commands to work properly
+- prisma migrate dev doesn't work in non-interactive environments; use migrate diff to generate SQL, then migrate deploy to apply
+- When adding a model with relations, remember to add reverse relations in related models
+- For nullable foreign keys that should clean up on delete, use onDelete: SetNull
+- Composite indexes should be ordered by most selective column first for filtering efficiency
+
+---
