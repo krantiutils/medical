@@ -8,6 +8,10 @@ export default defineConfig({
   // Test directory
   testDir: "./e2e",
 
+  // Global setup and teardown for test data seeding
+  globalSetup: "./e2e/global-setup.ts",
+  globalTeardown: "./e2e/global-teardown.ts",
+
   // Run tests in parallel
   fullyParallel: true,
 

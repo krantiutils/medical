@@ -1,0 +1,502 @@
+/**
+ * E2E Test Data Seeding
+ *
+ * This module provides functions to seed and cleanup test data for E2E tests.
+ * Data is seeded using Prisma directly to ensure consistent test fixtures.
+ *
+ * IMPORTANT: This must match TEST_DATA constants in test-utils.ts
+ */
+
+import {
+  PrismaClient,
+  ProfessionalType,
+  UserRole,
+  VerificationStatus,
+} from "@swasthya/database";
+import { hash } from "bcryptjs";
+
+// Create a dedicated Prisma client for test seeding
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/swasthya_test",
+    },
+  },
+});
+
+/**
+ * Test data constants - MUST match TEST_DATA in test-utils.ts
+ */
+export const SEED_DATA = {
+  // Test users
+  USERS: {
+    REGULAR: {
+      email: "testuser@example.com",
+      password: "TestPassword123!",
+      name: "Test User",
+      role: UserRole.USER,
+    },
+    PROFESSIONAL: {
+      email: "professional@example.com",
+      password: "Professional123!",
+      name: "Dr. Test Professional",
+      role: UserRole.PROFESSIONAL,
+    },
+    ADMIN: {
+      email: "admin@example.com",
+      password: "AdminPassword123!",
+      name: "Admin User",
+      role: UserRole.ADMIN,
+    },
+  },
+
+  // Test doctors (5 total)
+  DOCTORS: [
+    {
+      registration_number: "12345",
+      full_name: "Dr. Ram Sharma",
+      full_name_ne: "डा. राम शर्मा",
+      slug: "dr-ram-sharma-12345",
+      gender: "Male",
+      address: "Kathmandu, Nepal",
+      degree: "MBBS, MD",
+      specialties: ["General Medicine", "Internal Medicine"],
+      verified: true,
+    },
+    {
+      registration_number: "12346",
+      full_name: "Dr. Sita Thapa",
+      full_name_ne: "डा. सीता थापा",
+      slug: "dr-sita-thapa-12346",
+      gender: "Female",
+      address: "Lalitpur, Nepal",
+      degree: "MBBS, MS",
+      specialties: ["Surgery", "General Surgery"],
+      verified: true,
+    },
+    {
+      registration_number: "12347",
+      full_name: "Dr. Hari Prasad",
+      full_name_ne: "डा. हरि प्रसाद",
+      slug: "dr-hari-prasad-12347",
+      gender: "Male",
+      address: "Bhaktapur, Nepal",
+      degree: "MBBS",
+      specialties: ["General Practice"],
+      verified: false,
+    },
+    {
+      registration_number: "99999",
+      full_name: "Dr. Unclaimed Doctor",
+      full_name_ne: "डा. अनक्लेम्ड डक्टर",
+      slug: "dr-unclaimed-doctor-99999",
+      gender: "Male",
+      address: "Pokhara, Nepal",
+      degree: "MBBS",
+      specialties: ["General Practice"],
+      verified: false,
+      // This doctor is intentionally unclaimed for testing claim flow
+    },
+    {
+      registration_number: "88888",
+      full_name: "Dr. Verified Doctor",
+      full_name_ne: "डा. भेरिफाइड डक्टर",
+      slug: "dr-verified-doctor-88888",
+      gender: "Female",
+      address: "Chitwan, Nepal",
+      degree: "MBBS, MD, DM",
+      specialties: ["Cardiology"],
+      verified: true,
+    },
+  ],
+
+  // Test dentists (3 total)
+  DENTISTS: [
+    {
+      registration_number: "D1001",
+      full_name: "Dr. Dental One",
+      full_name_ne: "डा. डेन्टल वन",
+      slug: "dr-dental-one-D1001",
+      gender: "Male",
+      address: "Kathmandu, Nepal",
+      degree: "BDS, MDS",
+      specialties: ["Orthodontics"],
+      verified: true,
+    },
+    {
+      registration_number: "D1002",
+      full_name: "Dr. Dental Two",
+      full_name_ne: "डा. डेन्टल टू",
+      slug: "dr-dental-two-D1002",
+      gender: "Female",
+      address: "Lalitpur, Nepal",
+      degree: "BDS",
+      specialties: ["General Dentistry"],
+      verified: false,
+    },
+    {
+      registration_number: "D1003",
+      full_name: "Dr. Dental Three",
+      full_name_ne: "डा. डेन्टल थ्री",
+      slug: "dr-dental-three-D1003",
+      gender: "Male",
+      address: "Bhaktapur, Nepal",
+      degree: "BDS, MDS",
+      specialties: ["Periodontics", "Oral Surgery"],
+      verified: true,
+    },
+  ],
+
+  // Test pharmacists (2 total)
+  PHARMACISTS: [
+    {
+      registration_number: "P1001",
+      full_name: "Pharmacist One",
+      full_name_ne: "फार्मासिस्ट वन",
+      slug: "pharmacist-one-P1001",
+      gender: "Male",
+      address: "Kathmandu, Nepal",
+      degree: "B.Pharm",
+      specialties: [],
+      verified: true,
+    },
+    {
+      registration_number: "P1002",
+      full_name: "Pharmacist Two",
+      full_name_ne: "फार्मासिस्ट टू",
+      slug: "pharmacist-two-P1002",
+      gender: "Female",
+      address: "Pokhara, Nepal",
+      degree: "B.Pharm, M.Pharm",
+      specialties: [],
+      verified: false,
+    },
+  ],
+};
+
+/**
+ * Exported test data constants for easy access
+ */
+export const TEST_DOCTOR_SLUG = SEED_DATA.DOCTORS[0].slug;
+export const TEST_DENTIST_SLUG = SEED_DATA.DENTISTS[0].slug;
+export const TEST_PHARMACIST_SLUG = SEED_DATA.PHARMACISTS[0].slug;
+export const TEST_UNCLAIMED_DOCTOR_SLUG = SEED_DATA.DOCTORS[3].slug;
+export const TEST_USER_EMAIL = SEED_DATA.USERS.REGULAR.email;
+export const TEST_ADMIN_EMAIL = SEED_DATA.USERS.ADMIN.email;
+export const TEST_PROFESSIONAL_EMAIL = SEED_DATA.USERS.PROFESSIONAL.email;
+
+/**
+ * Seed test users
+ */
+async function seedUsers(): Promise<Map<string, string>> {
+  const userIds = new Map<string, string>();
+
+  for (const [key, userData] of Object.entries(SEED_DATA.USERS)) {
+    const passwordHash = await hash(userData.password, 12);
+
+    const user = await prisma.user.upsert({
+      where: { email: userData.email },
+      update: {
+        name: userData.name,
+        password_hash: passwordHash,
+        role: userData.role,
+      },
+      create: {
+        email: userData.email,
+        name: userData.name,
+        password_hash: passwordHash,
+        role: userData.role,
+        emailVerified: new Date(), // Mark as verified for tests
+      },
+    });
+
+    userIds.set(key, user.id);
+  }
+
+  return userIds;
+}
+
+/**
+ * Seed test professionals (doctors, dentists, pharmacists)
+ */
+async function seedProfessionals(
+  claimedByUserId?: string
+): Promise<Map<string, string>> {
+  const professionalIds = new Map<string, string>();
+
+  // Seed doctors
+  for (const doctor of SEED_DATA.DOCTORS) {
+    const prof = await prisma.professional.upsert({
+      where: {
+        type_registration_number: {
+          type: ProfessionalType.DOCTOR,
+          registration_number: doctor.registration_number,
+        },
+      },
+      update: {
+        full_name: doctor.full_name,
+        full_name_ne: doctor.full_name_ne,
+        slug: doctor.slug,
+        gender: doctor.gender,
+        address: doctor.address,
+        degree: doctor.degree,
+        specialties: doctor.specialties,
+        verified: doctor.verified,
+      },
+      create: {
+        type: ProfessionalType.DOCTOR,
+        registration_number: doctor.registration_number,
+        full_name: doctor.full_name,
+        full_name_ne: doctor.full_name_ne,
+        slug: doctor.slug,
+        gender: doctor.gender,
+        address: doctor.address,
+        degree: doctor.degree,
+        specialties: doctor.specialties,
+        verified: doctor.verified,
+        registration_date: new Date("2020-01-01"),
+      },
+    });
+
+    professionalIds.set(`DOCTOR_${doctor.registration_number}`, prof.id);
+  }
+
+  // Seed dentists
+  for (const dentist of SEED_DATA.DENTISTS) {
+    const prof = await prisma.professional.upsert({
+      where: {
+        type_registration_number: {
+          type: ProfessionalType.DENTIST,
+          registration_number: dentist.registration_number,
+        },
+      },
+      update: {
+        full_name: dentist.full_name,
+        full_name_ne: dentist.full_name_ne,
+        slug: dentist.slug,
+        gender: dentist.gender,
+        address: dentist.address,
+        degree: dentist.degree,
+        specialties: dentist.specialties,
+        verified: dentist.verified,
+      },
+      create: {
+        type: ProfessionalType.DENTIST,
+        registration_number: dentist.registration_number,
+        full_name: dentist.full_name,
+        full_name_ne: dentist.full_name_ne,
+        slug: dentist.slug,
+        gender: dentist.gender,
+        address: dentist.address,
+        degree: dentist.degree,
+        specialties: dentist.specialties,
+        verified: dentist.verified,
+        registration_date: new Date("2020-01-01"),
+      },
+    });
+
+    professionalIds.set(`DENTIST_${dentist.registration_number}`, prof.id);
+  }
+
+  // Seed pharmacists
+  for (const pharmacist of SEED_DATA.PHARMACISTS) {
+    const prof = await prisma.professional.upsert({
+      where: {
+        type_registration_number: {
+          type: ProfessionalType.PHARMACIST,
+          registration_number: pharmacist.registration_number,
+        },
+      },
+      update: {
+        full_name: pharmacist.full_name,
+        full_name_ne: pharmacist.full_name_ne,
+        slug: pharmacist.slug,
+        gender: pharmacist.gender,
+        address: pharmacist.address,
+        degree: pharmacist.degree,
+        specialties: pharmacist.specialties,
+        verified: pharmacist.verified,
+      },
+      create: {
+        type: ProfessionalType.PHARMACIST,
+        registration_number: pharmacist.registration_number,
+        full_name: pharmacist.full_name,
+        full_name_ne: pharmacist.full_name_ne,
+        slug: pharmacist.slug,
+        gender: pharmacist.gender,
+        address: pharmacist.address,
+        degree: pharmacist.degree,
+        specialties: pharmacist.specialties,
+        verified: pharmacist.verified,
+        registration_date: new Date("2020-01-01"),
+      },
+    });
+
+    professionalIds.set(`PHARMACIST_${pharmacist.registration_number}`, prof.id);
+  }
+
+  // Link professional user to a claimed doctor profile
+  if (claimedByUserId) {
+    const verifiedDoctor = SEED_DATA.DOCTORS.find(
+      (d) => d.registration_number === "88888"
+    );
+    if (verifiedDoctor) {
+      await prisma.professional.update({
+        where: {
+          type_registration_number: {
+            type: ProfessionalType.DOCTOR,
+            registration_number: verifiedDoctor.registration_number,
+          },
+        },
+        data: {
+          claimed_by_id: claimedByUserId,
+        },
+      });
+    }
+  }
+
+  return professionalIds;
+}
+
+/**
+ * Seed a pending verification request for testing
+ */
+async function seedVerificationRequest(
+  userId: string,
+  professionalId: string
+): Promise<string> {
+  // First clean up any existing verification request for this user/professional
+  await prisma.verificationRequest.deleteMany({
+    where: {
+      user_id: userId,
+      professional_id: professionalId,
+    },
+  });
+
+  const verificationRequest = await prisma.verificationRequest.create({
+    data: {
+      user_id: userId,
+      professional_id: professionalId,
+      status: VerificationStatus.PENDING,
+      government_id_url: "https://example.com/test-government-id.jpg",
+      certificate_url: "https://example.com/test-certificate.jpg",
+    },
+  });
+
+  return verificationRequest.id;
+}
+
+/**
+ * Clean up all test data
+ * IMPORTANT: Order matters due to foreign key constraints
+ */
+async function cleanupTestData(): Promise<void> {
+  // Delete in reverse order of dependencies
+  await prisma.auditLog.deleteMany({});
+  await prisma.verificationRequest.deleteMany({});
+
+  // Delete professionals with test registration numbers
+  const testRegistrationNumbers = [
+    ...SEED_DATA.DOCTORS.map((d) => d.registration_number),
+    ...SEED_DATA.DENTISTS.map((d) => d.registration_number),
+    ...SEED_DATA.PHARMACISTS.map((p) => p.registration_number),
+  ];
+
+  await prisma.professional.deleteMany({
+    where: {
+      registration_number: {
+        in: testRegistrationNumbers,
+      },
+    },
+  });
+
+  // Delete test users
+  const testEmails = Object.values(SEED_DATA.USERS).map((u) => u.email);
+  await prisma.session.deleteMany({
+    where: {
+      user: {
+        email: {
+          in: testEmails,
+        },
+      },
+    },
+  });
+  await prisma.account.deleteMany({
+    where: {
+      user: {
+        email: {
+          in: testEmails,
+        },
+      },
+    },
+  });
+  await prisma.user.deleteMany({
+    where: {
+      email: {
+        in: testEmails,
+      },
+    },
+  });
+}
+
+/**
+ * Main seed function - seeds all test data
+ * Returns IDs for reference in tests
+ */
+export async function seedTestData(): Promise<{
+  userIds: Map<string, string>;
+  professionalIds: Map<string, string>;
+  verificationRequestId: string;
+}> {
+  console.log("🌱 Seeding test data...");
+
+  // Seed users first
+  const userIds = await seedUsers();
+  console.log(`  ✓ Seeded ${userIds.size} users`);
+
+  // Seed professionals (with professional user claiming one)
+  const professionalUserId = userIds.get("PROFESSIONAL");
+  const professionalIds = await seedProfessionals(professionalUserId);
+  console.log(`  ✓ Seeded ${professionalIds.size} professionals`);
+
+  // Create a pending verification request (regular user claiming unclaimed doctor)
+  const regularUserId = userIds.get("REGULAR");
+  const unclaimedDoctorId = professionalIds.get("DOCTOR_99999");
+
+  if (!regularUserId || !unclaimedDoctorId) {
+    throw new Error("Failed to get user or professional IDs for verification request");
+  }
+
+  const verificationRequestId = await seedVerificationRequest(
+    regularUserId,
+    unclaimedDoctorId
+  );
+  console.log("  ✓ Seeded verification request");
+
+  console.log("✅ Test data seeding complete!");
+
+  return {
+    userIds,
+    professionalIds,
+    verificationRequestId,
+  };
+}
+
+/**
+ * Teardown function - cleans up all test data
+ */
+export async function teardownTestData(): Promise<void> {
+  console.log("🧹 Cleaning up test data...");
+  await cleanupTestData();
+  console.log("✅ Test data cleanup complete!");
+}
+
+/**
+ * Disconnect Prisma client
+ */
+export async function disconnectDb(): Promise<void> {
+  await prisma.$disconnect();
+}
+
+// Export the prisma client for direct use in tests if needed
+export { prisma };
