@@ -1191,3 +1191,113 @@ Started: Mon Feb  2 01:08:32 PM +0545 2026
 - Stat cards use similar pattern to profile page cards with decorator props
 
 ---
+
+## 2026-02-02 - US-067
+**Clinic dashboard: Quick action buttons**
+
+### What was implemented
+- Added Quick Actions section to clinic dashboard page
+- Three action buttons with Bauhaus styling:
+  - Add Patient: links to /clinic/dashboard/patients/new (blue icon)
+  - View Queue: links to /clinic/dashboard/queue (red icon)
+  - Manage Schedules: links to /clinic/dashboard/schedules (yellow icon)
+- Icon containers with:
+  - Rounded corners (rounded-lg)
+  - Border and hard shadow (border-2 border-foreground shadow-[4px_4px_0_0_#121212])
+  - Hover effect reduces shadow and translates icon
+- Card components with hover:-translate-y-1 for lift effect
+- Bilingual support (EN/NE) for all labels and descriptions
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/page.tsx (MODIFIED)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- Quick action buttons follow Card-inside-Link pattern for clickable cards
+- Use group and group-hover classes for coordinated hover effects
+- Icon containers should contrast with their parent (e.g., bg-primary-blue on white card)
+- Hard shadow hover effect pattern: reduce shadow and translate by same amount
+
+---
+
+## 2026-02-02 - US-068
+**Clinic dashboard: Add doctors to clinic**
+
+### What was implemented
+- Created app/[lang]/clinic/dashboard/doctors/page.tsx with:
+  - Protected route requiring authenticated user with verified clinic
+  - Current doctors list showing affiliated professionals
+  - Role badges (Permanent, Visiting, Consultant) with bilingual labels
+  - Doctor cards with photo/initial, name, registration number, degree, joined date
+  - View Profile and Schedules action buttons per doctor
+  - Remove doctor functionality with confirmation dialog
+- Created API endpoints:
+  - GET /api/clinic/doctors - List all doctors affiliated with user's clinic
+  - POST /api/clinic/doctors - Add doctor to clinic with role
+  - DELETE /api/clinic/doctors?id=X - Remove doctor from clinic
+  - GET /api/clinic/doctors/search?q=X - Search verified professionals by name or registration number
+- Add Doctor modal with:
+  - Search input for finding verified professionals
+  - Search results showing professional details
+  - Selected doctor panel with role selection (permanent/visiting/consultant)
+  - Add to Clinic button with loading state
+- Search excludes professionals already affiliated with the clinic
+- Only verified professionals can be added to clinics
+- Added "Manage Doctors" quick action button to clinic dashboard (green icon)
+- Updated dashboard grid from 3 to 4 columns
+- Bilingual support (EN/NE) for all labels and messages
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/doctors/page.tsx (NEW)
+- apps/web/src/app/api/clinic/doctors/route.ts (NEW)
+- apps/web/src/app/api/clinic/doctors/search/route.ts (NEW)
+- apps/web/src/app/[lang]/clinic/dashboard/page.tsx (MODIFIED)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- ClinicDoctor junction table uses composite unique constraint on (clinic_id, doctor_id) accessed via `clinic_id_doctor_id`
+- Search API should exclude already-affiliated professionals using `notIn` filter on doctor IDs
+- Role options stored as simple strings in ClinicDoctor.role field (not enum)
+- Protected clinic routes pattern: check session, find verified clinic by claimed_by_id, return appropriate error state
+- Modal state management: single boolean for showing modal, separate state for selected item
+- Type colors pattern: DOCTOR=blue, DENTIST=red, PHARMACIST=yellow
+
+---
+
+## 2026-02-02 - US-069
+**Clinic dashboard: Configure doctor schedule**
+
+### What was implemented
+- Created app/[lang]/clinic/dashboard/schedules/page.tsx with:
+  - Protected route requiring authenticated user with verified clinic
+  - Doctor selection panel showing all affiliated doctors with type badges
+  - Weekly schedule grid with 7 days (Sunday-Saturday)
+  - Toggle switch for each day to enable/disable availability
+  - Time inputs for start time and end time (HH:MM format)
+  - Slot duration dropdown (10, 15, 20, 30, 45, 60 minutes)
+  - Max patients per slot dropdown (1-5 patients)
+  - Visual indicators: green border/background for active days
+  - Success toast on save with auto-dismiss
+- Created API endpoint at /api/clinic/schedules with:
+  - GET: Fetch schedules for a specific doctor or all clinic schedules
+  - POST: Create/update schedules (replaces all existing for doctor)
+  - DELETE: Remove a specific schedule by ID
+  - Validation for time format, day_of_week range, minimum slot duration
+  - Authorization checks for clinic ownership
+- URL query parameter support (?doctor=id) for deep linking from doctors page
+- Bilingual support (EN/NE) for all labels and messages
+
+### Files changed
+- apps/web/src/app/[lang]/clinic/dashboard/schedules/page.tsx (NEW)
+- apps/web/src/app/api/clinic/schedules/route.ts (NEW)
+- prd.json (MODIFIED)
+
+### Learnings for future iterations
+- DoctorSchedule model uses day_of_week (0-6) where 0=Sunday, 6=Saturday
+- Schedule save operation deletes all existing schedules for doctor then creates new ones (full replacement pattern)
+- Time inputs use type="time" with HH:MM format string values
+- WeeklySchedule state pattern: Record<number, DaySchedule> with dayKey (0-6) as key
+- Toggle buttons use relative positioning with transform for the sliding knob effect
+- Schedules page supports ?doctor=id query param for pre-selecting doctor from doctors list "Schedules" button
+
+---

@@ -1288,8 +1288,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 68,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: app/[lang]/clinic/dashboard/doctors/page.tsx created with protected route. Search API at /api/clinic/doctors/search finds verified professionals by name or registration number (excludes already affiliated). CRUD API at /api/clinic/doctors for listing (GET), adding (POST), and removing (DELETE) doctors. Page shows current doctors list with role badges, registration numbers, degrees, joined dates. Add Doctor modal with search, doctor selection, and role selection (permanent/visiting/consultant). Remove functionality with confirmation. Quick action button added to dashboard. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-069",
@@ -1306,8 +1306,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 69,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented: app/[lang]/clinic/dashboard/schedules/page.tsx created with protected route. Doctor selection from clinic's affiliated doctors. Weekly schedule grid with toggle for each day (Sunday-Saturday), start/end time inputs, slot duration dropdown (10-60 min), max patients dropdown (1-5). API endpoint at /api/clinic/schedules handles GET (fetch schedules), POST (create/update schedules), DELETE (remove specific schedule). Save replaces all existing schedules for the doctor. Bilingual support (EN/NE). Bauhaus styling with toggles, success/error messages, and loading states. URL query param support for ?doctor=id. Typecheck passes."
     },
     {
       "id": "US-070",
