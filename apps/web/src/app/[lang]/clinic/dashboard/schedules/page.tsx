@@ -757,7 +757,7 @@ function ClinicSchedulesContent() {
                             {getTypeLabel(doctor.type)}
                           </span>
                           <h4 className="font-bold text-foreground text-sm truncate mt-0.5">
-                            {doctor.type === "DOCTOR" || doctor.type === "DENTIST" ? "Dr. " : ""}
+                            {(doctor.type === "DOCTOR" || doctor.type === "DENTIST") && !doctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
                             {doctor.full_name}
                           </h4>
                           <p className="text-xs text-foreground/60">{doctor.registration_number}</p>
@@ -823,7 +823,7 @@ function ClinicSchedulesContent() {
                     <div>
                       <h2 className="text-lg font-bold text-foreground">{tr.weeklySchedule}</h2>
                       <p className="text-sm text-foreground/60 mt-1">
-                        {selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST"
+                        {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.")
                           ? "Dr. "
                           : ""}
                         {selectedDoctor.full_name}
@@ -979,7 +979,7 @@ function ClinicSchedulesContent() {
               <CardHeader className="border-b-2 border-foreground/10">
                 <h2 className="text-lg font-bold text-foreground">{tr.leaveManagement}</h2>
                 <p className="text-sm text-foreground/60 mt-1">
-                  {selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST"
+                  {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.")
                     ? "Dr. "
                     : ""}
                   {selectedDoctor.full_name}

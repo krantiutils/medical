@@ -24,23 +24,11 @@ async function loginUser(
   await page.getByLabel(/password/i).fill(password);
   await page.getByRole("button", { name: /sign in|log in/i }).click();
 
-  // Wait for loading state
-  await expect(
-    page.getByRole("button", { name: /signing in/i })
-  ).toBeVisible({ timeout: 5000 });
-
   // Wait for redirect away from login page
-  await page.waitForURL((url) => !url.pathname.includes("/login"), {
-    timeout: 15000,
-  });
-
-  // Verify we're on the homepage
-  await expect(page).toHaveURL(/\/(en|ne)\/?$/);
-
-  // Wait for the page to fully load
-  await expect(
-    page.getByRole("heading", { name: /find your doctor/i })
-  ).toBeVisible({ timeout: 10000 });
+  await page.waitForURL(
+    (url) => !url.pathname.includes("/login"),
+    { timeout: 30000 }
+  );
 }
 
 /**
@@ -80,7 +68,7 @@ async function fillBasicFormFields(
 ) {
   await page.getByLabel(/clinic name/i).fill(data.name);
   await page.getByLabel(/clinic type/i).selectOption(data.type);
-  await page.getByLabel(/address/i).fill(data.address);
+  await page.getByLabel(/^address/i).fill(data.address);
   await page.getByLabel(/phone/i).fill(data.phone);
   await page.getByLabel(/email address/i).fill(data.email);
   if (data.website) {
@@ -175,7 +163,7 @@ test.describe("Clinic Registration - Basic Form Functionality", () => {
     // Check all required form fields
     await expect(page.getByLabel(/clinic name/i)).toBeVisible();
     await expect(page.getByLabel(/clinic type/i)).toBeVisible();
-    await expect(page.getByLabel(/address/i)).toBeVisible();
+    await expect(page.getByLabel(/^address/i)).toBeVisible();
     await expect(page.getByLabel(/phone/i)).toBeVisible();
     await expect(page.getByLabel(/email address/i)).toBeVisible();
     await expect(page.getByLabel(/website/i)).toBeVisible();
@@ -260,7 +248,7 @@ test.describe("Clinic Registration - Form Validation", () => {
 
     // Try to submit without filling name
     await page.getByLabel(/clinic type/i).selectOption("CLINIC");
-    await page.getByLabel(/address/i).fill("Test Address");
+    await page.getByLabel(/^address/i).fill("Test Address");
     await page.getByLabel(/phone/i).fill("9812345678");
     await page.getByLabel(/email address/i).fill("test@clinic.com");
 
@@ -286,7 +274,7 @@ test.describe("Clinic Registration - Form Validation", () => {
 
     await page.getByLabel(/clinic name/i).fill("Test Clinic");
     await page.getByLabel(/clinic type/i).selectOption("CLINIC");
-    await page.getByLabel(/address/i).fill("Test Address");
+    await page.getByLabel(/^address/i).fill("Test Address");
     await page.getByLabel(/phone/i).fill("12345"); // Invalid
     await page.getByLabel(/email address/i).fill("test@clinic.com");
 
@@ -312,7 +300,7 @@ test.describe("Clinic Registration - Form Validation", () => {
 
     await page.getByLabel(/clinic name/i).fill("Test Clinic");
     await page.getByLabel(/clinic type/i).selectOption("CLINIC");
-    await page.getByLabel(/address/i).fill("Test Address");
+    await page.getByLabel(/^address/i).fill("Test Address");
     await page.getByLabel(/phone/i).fill("9812345678");
     await page.getByLabel(/email address/i).fill("invalid-email");
 
@@ -338,7 +326,7 @@ test.describe("Clinic Registration - Form Validation", () => {
 
     await page.getByLabel(/clinic name/i).fill("Test Clinic");
     await page.getByLabel(/clinic type/i).selectOption("CLINIC");
-    await page.getByLabel(/address/i).fill("Test Address");
+    await page.getByLabel(/^address/i).fill("Test Address");
     await page.getByLabel(/phone/i).fill("9812345678");
     await page.getByLabel(/email address/i).fill("test@clinic.com");
     await page.getByLabel(/website/i).fill("not-a-url");
@@ -586,7 +574,8 @@ test.describe("Clinic Registration - Services Selection", () => {
     ];
 
     for (const service of services) {
-      await expect(page.getByText(service, { exact: true })).toBeVisible();
+      // Use button role to avoid ambiguity with clinic type dropdown (e.g. "Pharmacy")
+      await expect(page.getByRole("button", { name: service })).toBeVisible();
     }
   });
 

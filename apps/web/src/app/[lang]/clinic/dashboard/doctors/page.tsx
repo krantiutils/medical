@@ -472,7 +472,7 @@ export default function ClinicDoctorsPage() {
                           )}
                         </div>
                         <h3 className="font-bold text-foreground truncate">
-                          {doctor.type === "DOCTOR" || doctor.type === "DENTIST" ? "Dr. " : ""}
+                          {(doctor.type === "DOCTOR" || doctor.type === "DENTIST") && !doctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
                           {doctor.full_name}
                         </h3>
                         <p className="text-sm text-foreground/60">{doctor.registration_number}</p>
@@ -584,7 +584,7 @@ export default function ClinicDoctorsPage() {
                           {getTypeLabel(selectedDoctor.type)}
                         </span>
                         <h4 className="font-bold text-foreground">
-                          {selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST" ? "Dr. " : ""}
+                          {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
                           {selectedDoctor.full_name}
                         </h4>
                         <p className="text-sm text-foreground/60">{selectedDoctor.registration_number}</p>
@@ -660,7 +660,7 @@ export default function ClinicDoctorsPage() {
                               )}
                             </div>
                             <h4 className="font-bold text-foreground truncate">
-                              {professional.type === "DOCTOR" || professional.type === "DENTIST" ? "Dr. " : ""}
+                              {(professional.type === "DOCTOR" || professional.type === "DENTIST") && !professional.full_name.startsWith("Dr.") ? "Dr. " : ""}
                               {professional.full_name}
                             </h4>
                             <p className="text-sm text-foreground/60">{professional.registration_number}</p>

@@ -21,8 +21,8 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
-  // Use fewer workers on CI
-  workers: process.env.CI ? 1 : undefined,
+  // Limit workers to avoid overwhelming dev server with concurrent bcrypt logins
+  workers: process.env.CI ? 1 : 4,
 
   // Reporter to use
   reporter: process.env.CI

@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 interface SearchFiltersProps {
   lang: string;
   query: string;
@@ -17,8 +15,6 @@ export function SearchFilters({
   currentLocation,
   locations,
 }: SearchFiltersProps) {
-  const router = useRouter();
-
   function buildUrl(type?: string, location?: string) {
     const params = new URLSearchParams();
     if (query) params.set("q", query);
@@ -30,12 +26,14 @@ export function SearchFilters({
 
   function handleTypeChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const type = e.target.value || undefined;
-    router.push(buildUrl(type, currentLocation));
+    // Full navigation to trigger server component re-render
+    window.location.href = buildUrl(type, currentLocation);
   }
 
   function handleLocationChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const location = e.target.value || undefined;
-    router.push(buildUrl(currentType, location));
+    // Full navigation to trigger server component re-render
+    window.location.href = buildUrl(currentType, location);
   }
 
   return (

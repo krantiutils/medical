@@ -223,7 +223,7 @@ export async function login(
 
   // Wait for redirect to homepage or dashboard
   // Matches /en, /en/, /en/dashboard, /ne, /ne/, /ne/dashboard
-  await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/);
+  await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/, { timeout: 30000 });
 }
 
 /**

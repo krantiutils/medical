@@ -129,6 +129,19 @@ export const SEED_DATA = {
     },
   ],
 
+  // Extra doctors for pagination testing (21 needed to trigger page 2 with page size 20)
+  PAGINATION_DOCTORS: Array.from({ length: 20 }, (_, i) => ({
+    registration_number: `PG${String(i + 1).padStart(4, "0")}`,
+    full_name: `Dr. Pagination Doctor ${i + 1}`,
+    full_name_ne: `डा. पेजिनेशन डक्टर ${i + 1}`,
+    slug: `dr-pagination-doctor-${i + 1}-PG${String(i + 1).padStart(4, "0")}`,
+    gender: i % 2 === 0 ? "Male" : "Female",
+    address: "Kathmandu, Nepal",
+    degree: "MBBS",
+    specialties: ["General Practice"],
+    verified: true,
+  })),
+
   // Test dentists (3 total)
   DENTISTS: [
     {
@@ -551,7 +564,7 @@ async function seedUsers(): Promise<Map<string, string>> {
   const userIds = new Map<string, string>();
 
   for (const [key, userData] of Object.entries(SEED_DATA.USERS)) {
-    const passwordHash = await hash(userData.password, 12);
+    const passwordHash = await hash(userData.password, 4);
 
     const user = await prisma.user.upsert({
       where: { email: userData.email },
@@ -618,6 +631,41 @@ async function seedProfessionals(
     });
 
     professionalIds.set(`DOCTOR_${doctor.registration_number}`, prof.id);
+  }
+
+  // Seed pagination doctors (for pagination tests)
+  for (const doctor of SEED_DATA.PAGINATION_DOCTORS) {
+    await prisma.professional.upsert({
+      where: {
+        type_registration_number: {
+          type: ProfessionalType.DOCTOR,
+          registration_number: doctor.registration_number,
+        },
+      },
+      update: {
+        full_name: doctor.full_name,
+        full_name_ne: doctor.full_name_ne,
+        slug: doctor.slug,
+        gender: doctor.gender,
+        address: doctor.address,
+        degree: doctor.degree,
+        specialties: doctor.specialties,
+        verified: doctor.verified,
+      },
+      create: {
+        type: ProfessionalType.DOCTOR,
+        registration_number: doctor.registration_number,
+        full_name: doctor.full_name,
+        full_name_ne: doctor.full_name_ne,
+        slug: doctor.slug,
+        gender: doctor.gender,
+        address: doctor.address,
+        degree: doctor.degree,
+        specialties: doctor.specialties,
+        verified: doctor.verified,
+        registration_date: new Date("2020-01-01"),
+      },
+    });
   }
 
   // Seed dentists
@@ -1712,6 +1760,7 @@ async function cleanupTestData(): Promise<void> {
   // Delete professionals with test registration numbers
   const testRegistrationNumbers = [
     ...SEED_DATA.DOCTORS.map((d) => d.registration_number),
+    ...SEED_DATA.PAGINATION_DOCTORS.map((d) => d.registration_number),
     ...SEED_DATA.DENTISTS.map((d) => d.registration_number),
     ...SEED_DATA.PHARMACISTS.map((p) => p.registration_number),
   ];
