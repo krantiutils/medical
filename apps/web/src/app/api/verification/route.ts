@@ -4,6 +4,8 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { prisma } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
+import { sendVerificationSubmittedEmail } from "@/lib/email";
+import { logClaimSubmitted } from "@/lib/audit";
 
 // Generate a unique filename
 function generateUniqueFilename(originalName: string): string {
@@ -70,6 +72,7 @@ export async function POST(request: NextRequest) {
       where: { id: professionalId },
       select: {
         id: true,
+        full_name: true,
         claimed_by_id: true,
       },
     });
@@ -130,6 +133,33 @@ export async function POST(request: NextRequest) {
         certificate_url: `/uploads/verification/${certificateFilename}`,
         status: "PENDING",
       },
+    });
+
+    // Get user details for email
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { email: true, name: true },
+    });
+
+    // Send confirmation email (non-blocking)
+    if (user) {
+      sendVerificationSubmittedEmail(
+        { email: user.email, name: user.name || undefined },
+        professional.full_name,
+        "en" // Default to English, could be determined from request headers
+      ).catch((err) => {
+        console.error("[Verification] Failed to send confirmation email:", err);
+      });
+    }
+
+    // Log audit event (non-blocking)
+    logClaimSubmitted(
+      verificationRequest.id,
+      session.user.id,
+      professionalId,
+      professional.full_name
+    ).catch((err) => {
+      console.error("[Verification] Failed to log audit:", err);
     });
 
     return NextResponse.json({

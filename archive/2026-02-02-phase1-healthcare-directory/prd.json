@@ -1,0 +1,2024 @@
+{
+  "project": "Swasthya",
+  "branchName": "ralph/swasthya-platform",
+  "description": "Nepal's comprehensive healthcare platform: SEO-optimized directory (40k+ professionals), clinic management, pharmacy POS, hospital EMR, and telemedicine. Bauhaus design system with bilingual (EN/NE) support.",
+  "phases": {
+    "phase1": {
+      "name": "Healthcare Directory (MVP)",
+      "status": "in_progress",
+      "description": "SEO-optimized directory with auto-populated profiles from scraped NMC/NDA/NPC data"
+    },
+    "phase2": {
+      "name": "Clinic Management System",
+      "status": "pending",
+      "description": "Patient flow, scheduling, appointments, queue management, and basic billing"
+    },
+    "phase3": {
+      "name": "Pharmacy Management System",
+      "status": "pending",
+      "description": "POS, inventory, expiry tracking, supplier management, credit sales (Khata)"
+    },
+    "phase4": {
+      "name": "Hospital & Advanced Features",
+      "status": "pending",
+      "description": "IPD, lab integration, EMR, bed management, advanced billing"
+    },
+    "phase5": {
+      "name": "Telemedicine",
+      "status": "pending",
+      "description": "Video consultations, instant chat, e-prescriptions"
+    }
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Project setup: Next.js + Turborepo + Prisma",
+      "description": "As a developer, I need the project scaffolded with Next.js 14 (App Router), Turborepo monorepo, Prisma ORM, and basic configuration.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create monorepo structure with apps/web directory",
+        "Initialize Next.js 14 with App Router in apps/web",
+        "Add Prisma with PostgreSQL provider",
+        "Add docker-compose.yml with postgres service",
+        "Add packages/database with Prisma schema location",
+        "Add turbo.json with build/dev/lint tasks",
+        "Add .env.example with DATABASE_URL",
+        "pnpm dev starts successfully",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Verified: monorepo structure exists, Next.js 14 with App Router, Prisma with PostgreSQL, docker-compose, turbo.json, .env.example, pnpm dev starts, typecheck passes"
+    },
+    {
+      "id": "US-002",
+      "title": "Design system setup: Bauhaus tokens and base components",
+      "description": "As a developer, I need the Bauhaus design system configured with Tailwind tokens, Outfit font, and base component styles.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Install and configure Tailwind CSS",
+        "Add Outfit font from Google Fonts",
+        "Configure tailwind.config with Bauhaus colors (#D02020, #1040C0, #F0C020, #F0F0F0, #121212)",
+        "Add hard shadow utilities (shadow-[4px_4px_0_0_black])",
+        "Create globals.css with base styles",
+        "Background is off-white #F0F0F0",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Implemented: Tailwind CSS configured with Bauhaus tokens, Outfit font via next/font, hard shadows, off-white background. Typecheck passes."
+    },
+    {
+      "id": "US-003",
+      "title": "Database schema: Professional model",
+      "description": "As a developer, I need the Professional database model to store doctors, dentists, and pharmacists.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create Professional model with fields: id (uuid), type (enum: DOCTOR/DENTIST/PHARMACIST), registration_number, full_name, full_name_ne (Nepali), photo_url, gender, address, degree, specialties (string[]), registration_date, remarks, verified (bool), slug, created_at, updated_at, last_synced_at, meta (Json)",
+        "Add unique constraint on registration_number",
+        "Add index on slug",
+        "Add index on type",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "Verified: Professional model with all fields, unique constraint on registration_number, indexes on slug and type, migration created and applied, typecheck passes"
+    },
+    {
+      "id": "US-004",
+      "title": "Database schema: User and VerificationRequest models",
+      "description": "As a developer, I need User and VerificationRequest models for authentication and profile claiming.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create User model with: id, email, phone, password_hash, name, role (enum: USER/PROFESSIONAL/ADMIN), created_at, updated_at",
+        "Create VerificationRequest model with: id, user_id (FK), professional_id (FK), status (enum: PENDING/APPROVED/REJECTED), government_id_url, certificate_url, submitted_at, reviewed_at, reviewed_by",
+        "Add relation: User has many VerificationRequests",
+        "Add relation: Professional has optional claimed_by User",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "Verified: User model with all fields and UserRole enum, VerificationRequest with all fields and VerificationStatus enum, User has many VerificationRequests (via user_id and reviewed_by_id), Professional has optional claimed_by User, migration created and applied, typecheck passes"
+    },
+    {
+      "id": "US-005",
+      "title": "Data import script: Doctors CSV",
+      "description": "As a developer, I need a script to import doctors from nmc_doctors.csv into the database.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create scripts/import-doctors.ts",
+        "Read data/nmc_doctors.csv file",
+        "Parse CSV columns: nmc_no, full_name, address, gender, degree, remarks",
+        "Generate slug from name and nmc_no (e.g., dr-ram-sharma-12345)",
+        "Upsert Professional records with type=DOCTOR",
+        "Handle duplicates by registration_number",
+        "Log import statistics (created, updated, errors)",
+        "Add npm script: pnpm import:doctors",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": "Implemented: scripts/import-doctors.ts created with csv-parse, slug generation (dr-name-nmcno format), upsert by registration_number, progress logging. npm script pnpm import:doctors works. Typecheck passes."
+    },
+    {
+      "id": "US-006",
+      "title": "Data import script: Dentists CSV",
+      "description": "As a developer, I need a script to import dentists from nda_dentists.csv.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create scripts/import-dentists.ts",
+        "Read data/nda_dentists.csv file",
+        "Parse CSV columns: nmc_no, nda_id, name, location",
+        "Generate slug from name and nmc_no",
+        "Upsert Professional records with type=DENTIST",
+        "Log import statistics",
+        "Add npm script: pnpm import:dentists",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": "Implemented: scripts/import-dentists.ts created with CSV parsing, slug generation (dr-name-nmcno format), upsert by registration_number, NDA ID stored in meta field. npm script pnpm import:dentists works. Typecheck passes."
+    },
+    {
+      "id": "US-007",
+      "title": "Data import script: Pharmacists CSV",
+      "description": "As a developer, I need a script to import pharmacists from npc_pharmacists.csv.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create scripts/import-pharmacists.ts",
+        "Read data/npc_pharmacists.csv file",
+        "Parse CSV columns: reg_no, name, reg_date, category",
+        "Generate slug from name and reg_no",
+        "Upsert Professional records with type=PHARMACIST",
+        "Store category in meta JSON field",
+        "Log import statistics",
+        "Add npm script: pnpm import:pharmacists",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": true,
+      "notes": "Implemented: scripts/import-pharmacists.ts created with CSV parsing, slug generation (pharmacist-name-regno format), registration_date parsing, category stored in meta field, upsert by registration_number. npm script pnpm import:pharmacists works. Typecheck passes."
+    },
+    {
+      "id": "US-008",
+      "title": "UI Components: Button variants",
+      "description": "As a developer, I need Button components following Bauhaus design system.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create components/ui/button.tsx",
+        "Variants: primary (red #D02020), secondary (blue #1040C0), outline (white), ghost",
+        "All buttons have border-2 border-black",
+        "Primary/secondary/outline have shadow-[4px_4px_0_0_black]",
+        "Active state: translate-x-[2px] translate-y-[2px] shadow-none",
+        "Font: uppercase, font-bold, tracking-wider",
+        "Sizes: sm, md, lg",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": "Implemented: Button component with primary/secondary/outline/ghost variants, border-2 border-black, hard shadows, active pressed state with translate+shadow-none, uppercase font-bold tracking-wider, sm/md/lg sizes. Typecheck passes."
+    },
+    {
+      "id": "US-009",
+      "title": "UI Components: Card component",
+      "description": "As a developer, I need a Card component with Bauhaus styling for professional listings.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create components/ui/card.tsx",
+        "White background, border-4 border-black",
+        "shadow-[8px_8px_0_0_black]",
+        "Hover effect: -translate-y-1",
+        "Optional geometric decorator (small colored square in corner)",
+        "Subcomponents: CardHeader, CardContent, CardFooter",
+        "Typecheck passes"
+      ],
+      "priority": 9,
+      "passes": true,
+      "notes": "Implemented: Card component with white background, border-4 border-black, shadow-xl (8px hard shadow), hover:-translate-y-1 effect, optional geometric decorator with color/position options, CardHeader/CardContent/CardFooter subcomponents. Typecheck passes."
+    },
+    {
+      "id": "US-010",
+      "title": "Professional detail page: Basic route and layout",
+      "description": "As a patient, I want to view a doctor's profile page at /doctor/[slug].",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/doctor/[slug]/page.tsx with dynamic route",
+        "Fetch Professional from database by slug",
+        "Return 404 if not found",
+        "Display: name, photo (placeholder if none), registration number, degree, address",
+        "Use Card component for content sections",
+        "Page is mobile responsive",
+        "Typecheck passes"
+      ],
+      "priority": 10,
+      "passes": true,
+      "notes": "Implemented: app/[lang]/doctor/[slug]/page.tsx with dynamic route, database fetch by slug with notFound() for 404, displays name/photo/registration/degree/address/specialties/gender/remarks, uses Card component, mobile responsive layout with sm: breakpoints. [lang] layout created with en/ne validation. not-found.tsx added. Typecheck passes."
+    },
+    {
+      "id": "US-011",
+      "title": "Professional detail page: SEO meta tags",
+      "description": "As a patient, I want professional pages to appear in Google search results with proper metadata.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Add generateMetadata function to doctor/[slug]/page.tsx",
+        "Set title: 'Dr. [Name] - [Specialty] in [Location] | Swasthya'",
+        "Set description with credentials and location",
+        "Add OpenGraph tags: og:title, og:description, og:image, og:type",
+        "Add Twitter card tags",
+        "Add canonical URL",
+        "Typecheck passes"
+      ],
+      "priority": 11,
+      "passes": true,
+      "notes": "Implemented: generateMetadata function added with title format 'Dr. [Name] - [Specialty] in [Location] | Swasthya', description with credentials/location, OpenGraph (title, description, image, type: profile), Twitter card (summary), canonical URL with language alternates. Uses NEXT_PUBLIC_SITE_URL env var with fallback. Typecheck passes."
+    },
+    {
+      "id": "US-012",
+      "title": "Professional detail page: JSON-LD structured data",
+      "description": "As a patient, I want Google to understand doctor profiles as structured data.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Add JSON-LD script to professional detail page",
+        "Use schema.org Physician type for doctors",
+        "Include: name, image, medicalSpecialty, address, identifier (NMC number)",
+        "Validate with Google Rich Results Test format",
+        "Typecheck passes"
+      ],
+      "priority": 12,
+      "passes": true,
+      "notes": "Implemented: JSON-LD structured data using schema.org types (Physician for doctors, Dentist for dentists, Person+Occupation for pharmacists). Includes name, image, medicalSpecialty, address, identifier with registration number. Typecheck passes."
+    },
+    {
+      "id": "US-013",
+      "title": "Professional detail page: Styled with design system",
+      "description": "As a patient, I want the doctor profile page to look polished with clear typography hierarchy.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Name is text-4xl font-bold (clear hierarchy)",
+        "Specialty label is text-xs uppercase tracking-widest in primary-blue",
+        "Registration number is text-sm text-gray-600",
+        "Sections separated by border-t-2 border-black/20 dividers",
+        "Verified badge is green with Check icon in circle",
+        "Background is off-white #F0F0F0, cards are white",
+        "Icons use accent colors, not same as text",
+        "Typecheck passes"
+      ],
+      "priority": 13,
+      "passes": true,
+      "notes": "Implemented: Name is text-4xl font-bold, specialty label is text-xs uppercase tracking-widest in primary-blue, registration number is text-sm text-gray-600, sections separated by border-t-2 border-black/20 dividers, verified badge is green with Check icon in white circle, background is off-white #F0F0F0 with white cards, icons use accent colors in rounded containers. Typecheck passes."
+    },
+    {
+      "id": "US-014",
+      "title": "Homepage: Hero section",
+      "description": "As a patient, I want a compelling homepage hero to search for doctors.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/page.tsx homepage",
+        "Hero section with display text: 'FIND YOUR DOCTOR' (text-6xl lg:text-8xl font-black uppercase)",
+        "Subtitle explaining the platform",
+        "Search input with border-4 border-black",
+        "Primary red search button",
+        "Color blocking: right panel with blue #1040C0 background and geometric shapes",
+        "Mobile responsive",
+        "Typecheck passes"
+      ],
+      "priority": 14,
+      "passes": true,
+      "notes": "Implemented: Homepage with hero section - FIND YOUR DOCTOR display text (text-6xl lg:text-8xl font-black uppercase), subtitle, search input with border-4 border-foreground, primary red search button, blue right panel with geometric shapes (circle, square, triangle), mobile responsive with color accent bar, categories section. Typecheck passes."
+    },
+    {
+      "id": "US-015",
+      "title": "Search results page: Basic listing",
+      "description": "As a patient, I want to see search results for doctors.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/search/page.tsx",
+        "Accept query param: ?q=searchterm",
+        "Query database with ILIKE on full_name, degree, address",
+        "Display results in responsive grid (1 col mobile, 2 tablet, 4 desktop)",
+        "Each result is a Card with: name, degree, address, view button",
+        "Show 'No results found' if empty",
+        "Pagination (limit 20 per page)",
+        "Typecheck passes"
+      ],
+      "priority": 15,
+      "passes": true,
+      "notes": "Implemented: Search page with ?q and ?page query params, Prisma contains (ILIKE) on full_name/degree/address, responsive grid (1/2/4 cols), Card with decorator per type, 'No results found' with category links, pagination with 20 per page and page number navigation. Typecheck passes."
+    },
+    {
+      "id": "US-016",
+      "title": "Search results page: Filters",
+      "description": "As a patient, I want to filter search results by type, specialty, and location.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Add filter dropdowns: Type (Doctor/Dentist/Pharmacist), Location",
+        "Filters update URL params and re-query",
+        "Filters have border-2 border-black styling",
+        "Active filters shown as tags that can be removed",
+        "Results count displayed: 'X professionals found'",
+        "Typecheck passes"
+      ],
+      "priority": 16,
+      "passes": true,
+      "notes": "Implemented: Type filter (DOCTOR/DENTIST/PHARMACIST) and Location filter (from distinct addresses). Filters use border-2 border-foreground styling. Active filters shown as tags with X icon to remove. Results count shows 'X professionals found' with filter context. URL params preserved through pagination. Typecheck passes."
+    },
+    {
+      "id": "US-017",
+      "title": "Navigation header",
+      "description": "As a patient, I want a consistent navigation header across pages.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create components/layout/header.tsx",
+        "Logo on left (geometric shapes: circle, square, triangle in primary colors)",
+        "Nav links: Home, Doctors, Dentists, Pharmacists",
+        "Language switcher (EN/NE) on right",
+        "Login button (outline style) on right",
+        "Border-b-4 border-black",
+        "Mobile: hamburger menu",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": true,
+      "notes": "Implemented: Header component with geometric logo (circle/square/triangle in primary colors), nav links (Home/Doctors/Dentists/Pharmacists), language switcher (EN/NE) with active state highlighting, login button (outline style with hard shadow), border-b-4 border-foreground, mobile hamburger menu with slide-down navigation, sticky positioning, active link highlighting. Typecheck passes."
+    },
+    {
+      "id": "US-018",
+      "title": "Footer component",
+      "description": "As a patient, I want a footer with links and information.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create components/layout/footer.tsx",
+        "Background: black #121212, text white",
+        "Sections: About, For Doctors, For Clinics, Legal",
+        "Copyright notice",
+        "Social links with icons",
+        "Typecheck passes"
+      ],
+      "priority": 18,
+      "passes": true,
+      "notes": "Implemented: Footer component with bg-foreground (#121212) and white text. Four sections (About, For Doctors, For Clinics, Legal) with internal links. Copyright notice with dynamic year. Social links (Facebook, Twitter, LinkedIn, Instagram) with SVG icons. Bauhaus logo and 'Made in Nepal' decorative element. Integrated into [lang] layout with flex-col min-h-screen for sticky footer. Typecheck passes."
+    },
+    {
+      "id": "US-019",
+      "title": "Sitemap generation",
+      "description": "As the system, I need to generate sitemaps for Google to discover all professional pages.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/sitemap.ts using Next.js sitemap convention",
+        "Generate URLs for all professionals (doctor, dentist, pharmacist pages)",
+        "Include lastmod, changefreq (weekly), priority",
+        "Split into multiple sitemaps if >50k URLs (sitemap index)",
+        "Accessible at /sitemap.xml",
+        "Typecheck passes"
+      ],
+      "priority": 19,
+      "passes": true,
+      "notes": "Implemented: app/sitemap.ts created with Next.js sitemap convention using generateSitemaps for sitemap index support. Generates URLs for all professionals with both en/ne language variants, includes static pages (home, search, category pages). Includes lastmod (from updated_at), changeFrequency (weekly), priority (0.7-1.0 based on page type and verification). Handles >50k URLs with sitemap index via generateSitemaps function. Accessible at /sitemap.xml. Typecheck passes."
+    },
+    {
+      "id": "US-020",
+      "title": "robots.txt and SEO basics",
+      "description": "As the system, I need robots.txt and basic SEO configuration.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/robots.ts with Next.js convention",
+        "Allow all crawlers",
+        "Reference sitemap URL",
+        "Add default metadata in layout.tsx",
+        "Typecheck passes"
+      ],
+      "priority": 20,
+      "passes": true,
+      "notes": "Implemented: app/robots.ts created using Next.js MetadataRoute.Robots convention. Allows all crawlers and references sitemap.xml. Root layout.tsx updated with comprehensive default metadata including metadataBase, title template, description, keywords, OpenGraph, Twitter cards, robots directives, and Google verification placeholder. Typecheck passes."
+    },
+    {
+      "id": "US-021",
+      "title": "i18n setup: next-intl configuration",
+      "description": "As a developer, I need internationalization configured for English and Nepali.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Install and configure next-intl",
+        "Create messages/en.json with common translations",
+        "Create messages/ne.json with Nepali translations",
+        "Add middleware for locale detection",
+        "URL structure: /en/doctor/... and /ne/doctor/...",
+        "Default locale is 'en'",
+        "Typecheck passes"
+      ],
+      "priority": 21,
+      "passes": true,
+      "notes": "Implemented: next-intl installed and configured. Created messages/en.json and messages/ne.json with translations for common strings, home page, nav, footer, search, doctor details, not found, and metadata. Middleware configured for locale detection with 'always' prefix strategy. URL structure /en/... and /ne/... working. Default locale 'en'. Typecheck passes."
+    },
+    {
+      "id": "US-022",
+      "title": "Category page: Doctors listing",
+      "description": "As a patient, I want to browse all doctors at /doctors with pagination.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/doctors/page.tsx",
+        "List all professionals with type=DOCTOR",
+        "Display in grid of Cards",
+        "Pagination with page numbers",
+        "SEO: title 'Doctors in Nepal | Swasthya', description",
+        "Typecheck passes"
+      ],
+      "priority": 22,
+      "passes": true,
+      "notes": "Implemented: app/[lang]/doctors/page.tsx created with DOCTOR type listing, responsive grid (1/2/4 cols) with Card components, pagination with page numbers and ellipsis, SEO with generateMetadata (title, description, OpenGraph, Twitter), language alternates for en/ne, Bauhaus styling with blue accent. Typecheck passes."
+    },
+    {
+      "id": "US-023",
+      "title": "Category page: Dentists listing",
+      "description": "As a patient, I want to browse all dentists at /dentists.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/dentists/page.tsx",
+        "List all professionals with type=DENTIST",
+        "Display in grid of Cards with red accent color",
+        "Pagination",
+        "SEO optimized",
+        "Typecheck passes"
+      ],
+      "priority": 23,
+      "passes": true,
+      "notes": "Implemented: app/[lang]/dentists/page.tsx created with DENTIST type filtering, responsive grid (1/2/4 cols) with Card components, red accent color (decorator, labels, count), pagination with page numbers and ellipsis, SEO with generateMetadata (title, description, OpenGraph, Twitter), language alternates for en/ne. Links to /doctor/[slug] route for now. Typecheck passes."
+    },
+    {
+      "id": "US-024",
+      "title": "Category page: Pharmacists listing",
+      "description": "As a patient, I want to browse all pharmacists at /pharmacists.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/pharmacists/page.tsx",
+        "List all professionals with type=PHARMACIST",
+        "Display in grid of Cards with yellow accent color",
+        "Show category (Graduate/Assistant) badge",
+        "Pagination",
+        "SEO optimized",
+        "Typecheck passes"
+      ],
+      "priority": 24,
+      "passes": true,
+      "notes": "Implemented: app/[lang]/pharmacists/page.tsx created with PHARMACIST type filtering, responsive grid (1/2/4 cols) with Card components, yellow accent color (decorator, labels, count), category badge from meta.category (Graduate/Assistant), pagination with page numbers and ellipsis, SEO with generateMetadata (title, description, OpenGraph, Twitter), language alternates for en/ne. Links to /doctor/[slug] route for now. Typecheck passes."
+    },
+    {
+      "id": "US-025",
+      "title": "Authentication: NextAuth setup",
+      "description": "As a developer, I need authentication configured for user login.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Install and configure NextAuth.js",
+        "Add credentials provider (email + password)",
+        "Add Google OAuth provider",
+        "Create auth API routes",
+        "Session stored in database",
+        "Typecheck passes"
+      ],
+      "priority": 25,
+      "passes": true,
+      "notes": "Implemented: NextAuth.js v4 with Prisma adapter. Credentials provider for email/password login with bcryptjs hashing. Google OAuth provider configured (needs GOOGLE_CLIENT_ID/SECRET env vars). API routes at /api/auth/[...nextauth] and /api/auth/register. Session stored in database with custom session callback adding user.id and user.role. Added Account, Session, VerificationToken models and emailVerified/image fields to User. Typecheck passes."
+    },
+    {
+      "id": "US-026",
+      "title": "Authentication: Login and Register pages",
+      "description": "As a user, I want to login or register on the platform.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/login/page.tsx",
+        "Create app/[lang]/register/page.tsx",
+        "Forms with email, password inputs (Bauhaus styled)",
+        "Google sign-in button",
+        "Error messages displayed",
+        "Redirect to home after login",
+        "Typecheck passes"
+      ],
+      "priority": 26,
+      "passes": true,
+      "notes": "Implemented: Login page at /[lang]/login with email/password form and Google OAuth. Register page at /[lang]/register with name, email, password, confirm password fields. Both pages have Bauhaus styling (border-4 inputs, hard shadows, geometric decorative panels). Error messages displayed in red alert boxes. Auto-redirect to home after login. Auth config updated to use /en/login path. Translation strings added for en/ne. Typecheck passes."
+    },
+    {
+      "id": "US-027",
+      "title": "Claim profile: Claim button and search",
+      "description": "As a doctor, I want to search for and claim my profile.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Add 'Claim this profile' button on unclaimed professional pages (only shown if user logged in)",
+        "Create app/[lang]/claim/page.tsx with search by registration number",
+        "Search input for NMC/NDA/NPC number",
+        "Display matching professional for confirmation",
+        "Button to start claim process",
+        "Typecheck passes"
+      ],
+      "priority": 27,
+      "passes": true,
+      "notes": "Implemented: ClaimProfileButton component shows 'Claim this profile' on unclaimed professional pages (only when logged in, shows login prompt otherwise). Claim page at /[lang]/claim with search by registration number via API endpoint /api/professionals/search. Displays matching professional with details, shows 'already claimed' message if profile is claimed, or 'Start Claim Process' button linking to verification form. SessionProvider added for useSession hook support. Translations added for en/ne. Typecheck passes."
+    },
+    {
+      "id": "US-028",
+      "title": "Claim profile: Verification request form",
+      "description": "As a doctor, I want to submit verification documents for my claim.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create claim form after professional selected",
+        "Upload fields: Government ID, NMC certificate (file upload)",
+        "Submit creates VerificationRequest in database with status=PENDING",
+        "Show success message with 'pending review' status",
+        "Typecheck passes"
+      ],
+      "priority": 28,
+      "passes": true,
+      "notes": "Implemented: Verification form page at /[lang]/claim/[professionalId]/verify with file uploads for government ID and professional certificate. API endpoint at /api/verification handles file upload to local storage and creates VerificationRequest with status=PENDING. API endpoint /api/professionals/[id] fetches professional by ID. Success page shows pending review status with animation. Validates file types (JPG, PNG, PDF) and size (10MB max). Checks for already claimed profiles and existing pending requests. Translations added for en/ne. Typecheck passes."
+    },
+    {
+      "id": "US-029",
+      "title": "Admin: Claims dashboard",
+      "description": "As an admin, I want to review and approve/reject profile claims.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/admin/claims/page.tsx (protected, admin only)",
+        "List pending VerificationRequests with: user email, professional name, submitted date",
+        "View uploaded documents",
+        "Approve button: sets status=APPROVED, links professional.claimed_by to user",
+        "Reject button: sets status=REJECTED with reason stored in admin_notes",
+        "Typecheck passes"
+      ],
+      "priority": 29,
+      "passes": true,
+      "notes": "Implemented: Admin claims dashboard at /[lang]/admin/claims with role-based access control (admin only). Lists pending VerificationRequests with user email, professional name, submitted date. View uploaded documents modal for government ID and certificate. Approve action: sets status=APPROVED, links professional.claimed_by to user, sets professional.verified=true, updates user role to PROFESSIONAL. Reject action: sets status=REJECTED with required rejection reason stored in admin_notes. Audit logging for all claim actions. Email notifications sent on status change. Typecheck passes."
+    },
+    {
+      "id": "US-030",
+      "title": "Profile edit: Edit form for verified professionals",
+      "description": "As a verified doctor, I want to edit my profile details.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/dashboard/profile/page.tsx (protected, must have claimed profile)",
+        "Editable fields: bio, consultation_fee, languages, education details (stored in meta)",
+        "Form validation",
+        "Save updates Professional record",
+        "Show success toast on save",
+        "Typecheck passes"
+      ],
+      "priority": 30,
+      "passes": true,
+      "notes": "Implemented: Dashboard profile page at /[lang]/dashboard/profile with authentication guard (redirects to login if not authenticated, shows claim prompt if no claimed profile). Editable fields: bio (textarea, 1000 char max), consultation_fee (number input with NPR prefix), languages (tag input with add/remove), education (dynamic array with degree/institution/year fields). API endpoint at /api/dashboard/profile (GET to fetch, PUT to update) stores all fields in Professional.meta JSON. Form validation on both client and server (max lengths, type validation). Success toast displays on save with auto-hide after 5 seconds. Translations added for en/ne. Typecheck passes."
+    },
+    {
+      "id": "US-031",
+      "title": "CI Pipeline: GitHub Actions for quality checks",
+      "description": "As a developer, I need automated CI checks on pull requests to ensure code quality and prevent regressions.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create .github/workflows/ci.yml GitHub Actions workflow",
+        "Trigger on push to main and pull requests",
+        "Run linting (pnpm lint)",
+        "Run TypeScript type checking (pnpm typecheck)",
+        "Run Next.js production build (pnpm build)",
+        "Run dependency security audit (pnpm audit)",
+        "Cache pnpm dependencies for faster builds",
+        "Use PostgreSQL service for build (needed for Prisma)",
+        "All checks must pass for PR to be mergeable",
+        "Typecheck passes"
+      ],
+      "priority": 31,
+      "passes": true,
+      "notes": "Implemented: GitHub Actions CI workflow at .github/workflows/ci.yml with 4 parallel jobs: lint (ESLint), typecheck (TypeScript), build (Next.js production build with PostgreSQL service), security (pnpm audit). Triggers on push to main/ralph branch and PRs. Uses pnpm 8 with Node.js 20 and caching. Build job includes PostgreSQL service for Prisma."
+    },
+    {
+      "id": "US-032",
+      "title": "Enhanced verification: Email notifications",
+      "description": "As a user, I want to receive email notifications when my verification status changes.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Install and configure Resend email service",
+        "Create email templates for: submission confirmation, approval, rejection",
+        "Bilingual email support (EN/NE)",
+        "Send email on verification request submission",
+        "Send email on approval with congratulations",
+        "Send email on rejection with reason",
+        "Typecheck passes"
+      ],
+      "priority": 32,
+      "passes": true,
+      "notes": "Implemented: Resend email service with lazy initialization (no API key required for build). Email templates with Bauhaus styling for submission, approval, and rejection. Bilingual support via language parameter. Emails sent automatically on claim submission, approval, and rejection. Rejection emails include admin-provided reason."
+    },
+    {
+      "id": "US-033",
+      "title": "Enhanced verification: Audit logging",
+      "description": "As an admin, I want all claim actions to be logged for accountability.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create AuditLog database model",
+        "Log claim submission events",
+        "Log claim approval events",
+        "Log claim rejection events",
+        "Capture IP address and user agent",
+        "Store metadata (professional ID, names, rejection reasons)",
+        "Typecheck passes"
+      ],
+      "priority": 33,
+      "passes": true,
+      "notes": "Implemented: AuditLog model in Prisma schema with action, target_type, target_id, actor_id, metadata (JSON), ip_address, user_agent, created_at. Indexes on action, target, actor, and timestamp. Audit library at apps/web/src/lib/audit.ts with helper functions for claim submitted/approved/rejected events. Captures IP from x-forwarded-for/x-real-ip headers. Fails silently to not break main flow."
+    },
+    {
+      "id": "US-034",
+      "title": "User claims status page",
+      "description": "As a user, I want to see the status of my verification requests.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create app/[lang]/dashboard/claims/page.tsx",
+        "List all user's verification requests",
+        "Show status badges (PENDING=yellow, APPROVED=green, REJECTED=red)",
+        "Display submitted and reviewed dates",
+        "Show rejection reason for rejected claims",
+        "Document preview modal",
+        "Link to submit new request for rejected claims",
+        "Typecheck passes"
+      ],
+      "priority": 34,
+      "passes": true,
+      "notes": "Implemented: Dashboard claims page showing all user's verification requests with status badges, dates, rejection reasons for rejected claims, document preview modal, and link to resubmit. API endpoint at /api/dashboard/claims returns user's requests with professional info."
+    },
+
+    {
+      "id": "US-035",
+      "title": "E2E Tests: Playwright setup and configuration",
+      "description": "As a developer, I need Playwright configured for end-to-end testing.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Install Playwright: pnpm add -D @playwright/test --filter @swasthya/web",
+        "Create playwright.config.ts with baseURL pointing to localhost:3000",
+        "Configure webServer to start pnpm dev before tests",
+        "Create apps/web/e2e/ directory for test files",
+        "Add test:e2e script to package.json",
+        "Create apps/web/e2e/fixtures/test-utils.ts with common helpers (login, createTestUser, seedTestData)",
+        "Add .env.test with test database URL",
+        "Configure GitHub Actions to run E2E tests",
+        "Typecheck passes"
+      ],
+      "priority": 35,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-036",
+      "title": "E2E Tests: Test data seeding",
+      "description": "As a developer, I need test data fixtures for E2E tests.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/fixtures/seed.ts script",
+        "Seed test professionals: 5 doctors, 3 dentists, 2 pharmacists with known slugs",
+        "Seed test users: regular user, professional user, admin user with known credentials",
+        "Seed test verification request (pending status)",
+        "Create beforeAll/afterAll hooks to setup/teardown test data",
+        "Export test data constants (TEST_DOCTOR_SLUG, TEST_USER_EMAIL, etc.)",
+        "Typecheck passes"
+      ],
+      "priority": 36,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-037",
+      "title": "E2E Tests: Homepage and navigation",
+      "description": "As a QA, I want to verify homepage and navigation work correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/homepage.spec.ts",
+        "Test: Homepage loads with 'FIND YOUR DOCTOR' heading visible",
+        "Test: Search input is visible and functional",
+        "Test: Typing in search and clicking button navigates to /search?q=term",
+        "Test: Navigation header shows all links (Home, Doctors, Dentists, Pharmacists)",
+        "Test: Clicking each nav link navigates to correct page",
+        "Test: Logo click returns to homepage",
+        "Test: Footer is visible with all sections",
+        "Test: Mobile menu toggles on small viewport",
+        "All tests pass: pnpm test:e2e homepage.spec.ts"
+      ],
+      "priority": 37,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-038",
+      "title": "E2E Tests: Search functionality",
+      "description": "As a QA, I want to verify search works correctly end-to-end.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/search.spec.ts",
+        "Test: Search page loads with query param displayed",
+        "Test: Search results show cards for matching professionals",
+        "Test: 'No results found' message shows for invalid search",
+        "Test: Type filter dropdown filters results correctly",
+        "Test: Location filter dropdown filters results correctly",
+        "Test: Active filters show as removable tags",
+        "Test: Removing filter tag updates results",
+        "Test: Pagination shows correct page numbers",
+        "Test: Clicking page number updates results",
+        "Test: Results count displays correctly",
+        "All tests pass: pnpm test:e2e search.spec.ts"
+      ],
+      "priority": 38,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-039",
+      "title": "E2E Tests: Professional detail pages",
+      "description": "As a QA, I want to verify professional profile pages work correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/professional-detail.spec.ts",
+        "Test: Doctor page loads with correct name and details",
+        "Test: Registration number is displayed",
+        "Test: Degree/qualifications are displayed",
+        "Test: Address is displayed",
+        "Test: Verified badge shows for verified professionals",
+        "Test: 'Claim this profile' button shows for unclaimed profiles (when logged in)",
+        "Test: Page returns 404 for invalid slug",
+        "Test: JSON-LD script is present in page source",
+        "Test: Meta title contains doctor name",
+        "All tests pass: pnpm test:e2e professional-detail.spec.ts"
+      ],
+      "priority": 39,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-040",
+      "title": "E2E Tests: Category pages",
+      "description": "As a QA, I want to verify category listing pages work correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/category-pages.spec.ts",
+        "Test: /doctors page loads with doctors list",
+        "Test: /doctors shows only DOCTOR type professionals",
+        "Test: /dentists page loads with dentists list and red accent",
+        "Test: /dentists shows only DENTIST type professionals",
+        "Test: /pharmacists page loads with pharmacists list and yellow accent",
+        "Test: /pharmacists shows category badges (Graduate/Assistant)",
+        "Test: Each category page has correct SEO title",
+        "Test: Pagination works on each category page",
+        "Test: Clicking card navigates to professional detail",
+        "All tests pass: pnpm test:e2e category-pages.spec.ts"
+      ],
+      "priority": 40,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-041",
+      "title": "E2E Tests: User registration flow",
+      "description": "As a QA, I want to verify user registration works correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/auth-register.spec.ts",
+        "Test: Register page loads with form",
+        "Test: Form shows validation errors for empty fields",
+        "Test: Form shows validation error for invalid email format",
+        "Test: Form shows validation error for short password",
+        "Test: Form shows error for mismatched passwords",
+        "Test: Successful registration redirects to login or home",
+        "Test: Duplicate email shows appropriate error",
+        "Test: Google sign-in button is visible",
+        "All tests pass: pnpm test:e2e auth-register.spec.ts"
+      ],
+      "priority": 41,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-042",
+      "title": "E2E Tests: User login flow",
+      "description": "As a QA, I want to verify user login works correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/auth-login.spec.ts",
+        "Test: Login page loads with form",
+        "Test: Form shows validation errors for empty fields",
+        "Test: Invalid credentials show error message",
+        "Test: Successful login redirects to home",
+        "Test: After login, header shows user indicator instead of Login button",
+        "Test: Protected pages redirect to login when not authenticated",
+        "Test: Session persists across page navigation",
+        "Test: Logout clears session and redirects",
+        "All tests pass: pnpm test:e2e auth-login.spec.ts"
+      ],
+      "priority": 42,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-043",
+      "title": "E2E Tests: Claim profile flow",
+      "description": "As a QA, I want to verify the profile claim flow works correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/claim-profile.spec.ts",
+        "Test: Claim page loads when authenticated",
+        "Test: Claim page redirects to login when not authenticated",
+        "Test: Search by registration number finds matching professional",
+        "Test: Search shows 'not found' for invalid registration number",
+        "Test: Already claimed profile shows appropriate message",
+        "Test: 'Start Claim Process' button navigates to verification form",
+        "Test: Verification form loads with file upload fields",
+        "Test: File upload accepts valid files (JPG, PNG, PDF)",
+        "Test: File upload rejects invalid file types",
+        "Test: Successful submission shows confirmation message",
+        "All tests pass: pnpm test:e2e claim-profile.spec.ts"
+      ],
+      "priority": 43,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-044",
+      "title": "E2E Tests: Admin claims dashboard",
+      "description": "As a QA, I want to verify admin claims management works correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/admin-claims.spec.ts",
+        "Test: Admin dashboard redirects non-admin users",
+        "Test: Admin can access claims dashboard",
+        "Test: Pending claims list shows submitted requests",
+        "Test: Clicking 'View Documents' opens modal with images",
+        "Test: Approve button shows confirmation dialog",
+        "Test: Approve action updates claim status to APPROVED",
+        "Test: Reject button requires reason input",
+        "Test: Reject action updates claim status to REJECTED with reason",
+        "Test: Approved claims disappear from pending list",
+        "All tests pass: pnpm test:e2e admin-claims.spec.ts"
+      ],
+      "priority": 44,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-045",
+      "title": "E2E Tests: Professional profile editing",
+      "description": "As a QA, I want to verify profile editing works correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/profile-edit.spec.ts",
+        "Test: Profile edit page redirects to login when not authenticated",
+        "Test: Profile edit page shows claim prompt for non-professional users",
+        "Test: Professional user can access profile edit page",
+        "Test: Form loads with existing profile data",
+        "Test: Bio field accepts text input (max 1000 chars)",
+        "Test: Consultation fee field accepts number input",
+        "Test: Languages can be added and removed",
+        "Test: Education entries can be added and removed",
+        "Test: Save button submits form and shows success toast",
+        "Test: Updated data persists after page reload",
+        "All tests pass: pnpm test:e2e profile-edit.spec.ts"
+      ],
+      "priority": 45,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-046",
+      "title": "E2E Tests: User claims status page",
+      "description": "As a QA, I want to verify user claims status page works correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/user-claims.spec.ts",
+        "Test: Claims status page requires authentication",
+        "Test: Page shows list of user's verification requests",
+        "Test: Pending claims show yellow status badge",
+        "Test: Approved claims show green status badge",
+        "Test: Rejected claims show red status badge with reason",
+        "Test: Document preview modal opens on click",
+        "Test: Rejected claims show 'Submit New Request' link",
+        "Test: Dates are formatted correctly",
+        "All tests pass: pnpm test:e2e user-claims.spec.ts"
+      ],
+      "priority": 46,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-047",
+      "title": "E2E Tests: Language switching (i18n)",
+      "description": "As a QA, I want to verify language switching works correctly.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/i18n.spec.ts",
+        "Test: Default language is English (/en/...)",
+        "Test: Language switcher is visible in header",
+        "Test: Clicking NE switches to Nepali (/ne/...)",
+        "Test: Page content updates to Nepali translations",
+        "Test: URL updates to /ne/ prefix",
+        "Test: Clicking EN switches back to English",
+        "Test: Language preference persists across navigation",
+        "Test: Direct navigation to /ne/ URL loads Nepali content",
+        "Test: Invalid language in URL redirects to default",
+        "All tests pass: pnpm test:e2e i18n.spec.ts"
+      ],
+      "priority": 47,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-048",
+      "title": "E2E Tests: SEO and accessibility",
+      "description": "As a QA, I want to verify SEO and accessibility requirements.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/seo-accessibility.spec.ts",
+        "Test: Homepage has correct meta title",
+        "Test: All pages have meta description",
+        "Test: OpenGraph tags are present on key pages",
+        "Test: robots.txt is accessible and allows crawling",
+        "Test: sitemap.xml is accessible and contains URLs",
+        "Test: All images have alt text",
+        "Test: Form inputs have associated labels",
+        "Test: Focus states are visible on interactive elements",
+        "Test: Color contrast meets WCAG AA (spot check key elements)",
+        "Test: Keyboard navigation works for main flows",
+        "All tests pass: pnpm test:e2e seo-accessibility.spec.ts"
+      ],
+      "priority": 48,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-049",
+      "title": "E2E Tests: CI integration for E2E tests",
+      "description": "As a developer, I need E2E tests running in CI pipeline.",
+      "phase": 1,
+      "acceptanceCriteria": [
+        "Update .github/workflows/ci.yml to include E2E test job",
+        "E2E job runs after build job completes",
+        "Use Playwright GitHub Action for browser installation",
+        "Configure PostgreSQL service for E2E tests",
+        "Run database migrations before tests",
+        "Run seed script before tests",
+        "Upload test results and screenshots as artifacts on failure",
+        "E2E tests must pass for PR to be mergeable",
+        "Typecheck passes"
+      ],
+      "priority": 49,
+      "passes": false,
+      "notes": ""
+    },
+
+    {
+      "id": "US-050",
+      "title": "Database schema: Clinic model",
+      "description": "As a developer, I need the Clinic database model to store clinic/hospital information.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create Clinic model with: id (uuid), name, slug, type (enum: CLINIC/POLYCLINIC/HOSPITAL/PHARMACY), address, location_lat, location_lng, phone, email, website, logo_url, photos (string[]), services (string[]), timings (Json), verified (bool), claimed_by_id (FK User), google_place_id, osm_id, meta (Json), created_at, updated_at",
+        "Add unique constraint on slug",
+        "Add index on type",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 50,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-051",
+      "title": "Database schema: ClinicDoctor junction table",
+      "description": "As a developer, I need a junction table for clinic-doctor many-to-many relationship.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create ClinicDoctor model with: id, clinic_id (FK), doctor_id (FK Professional), role (e.g., 'visiting', 'permanent'), joined_at",
+        "Add unique constraint on (clinic_id, doctor_id)",
+        "Add relation to both Clinic and Professional",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 51,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-052",
+      "title": "Database schema: Patient model",
+      "description": "As a developer, I need the Patient model to store clinic-specific patient records.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create Patient model with: id (uuid), clinic_id (FK), patient_number (clinic-specific), full_name, phone, email, date_of_birth, gender, blood_group, address, emergency_contact (Json), allergies (string[]), medical_history (Json), insurance_info (Json), photo_url, created_at, updated_at",
+        "Add unique constraint on (clinic_id, patient_number)",
+        "Add unique constraint on (clinic_id, phone)",
+        "Add index on phone for lookup",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 52,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-053",
+      "title": "Database schema: DoctorSchedule model",
+      "description": "As a developer, I need DoctorSchedule model for doctor availability.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create DoctorSchedule model with: id, clinic_id (FK), doctor_id (FK Professional), day_of_week (0-6), start_time (String HH:MM), end_time, slot_duration_minutes (Int), max_patients_per_slot (Int), is_active (Bool), effective_from (DateTime), effective_to (DateTime nullable)",
+        "Add index on (clinic_id, doctor_id, day_of_week)",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 53,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-054",
+      "title": "Database schema: DoctorLeave model",
+      "description": "As a developer, I need DoctorLeave model to track unavailability.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create DoctorLeave model with: id, doctor_id (FK), clinic_id (FK), leave_date (DateTime), start_time (String nullable for full day), end_time (String nullable), reason (String), created_at",
+        "Add index on (doctor_id, leave_date)",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 54,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-055",
+      "title": "Database schema: Appointment model",
+      "description": "As a developer, I need the Appointment model for booking.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create AppointmentStatus enum: SCHEDULED, CHECKED_IN, IN_PROGRESS, COMPLETED, CANCELLED, NO_SHOW",
+        "Create AppointmentType enum: NEW, FOLLOW_UP, EMERGENCY",
+        "Create AppointmentSource enum: ONLINE, WALK_IN, PHONE",
+        "Create Appointment model with: id, clinic_id (FK), patient_id (FK), doctor_id (FK), appointment_date (DateTime), time_slot_start (String), time_slot_end (String), status, type, chief_complaint, token_number (Int), source, notes, created_at, updated_at",
+        "Add index on (clinic_id, appointment_date, doctor_id)",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 55,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-056",
+      "title": "Clinic registration: Basic form page",
+      "description": "As a clinic owner, I want a registration form for my clinic.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create app/[lang]/clinic/register/page.tsx",
+        "Form fields: name, type (dropdown), address, phone, email, website (optional)",
+        "Bauhaus styling with border-4 inputs",
+        "Client-side validation (required fields, email format, phone format)",
+        "Protected route (must be logged in)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 56,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-057",
+      "title": "Clinic registration: Logo and photos upload",
+      "description": "As a clinic owner, I want to upload logo and photos for my clinic.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Add logo upload field to clinic registration form",
+        "Add photos upload field (multiple, max 5)",
+        "Preview uploaded images before submit",
+        "Validate file types (JPG, PNG) and size (max 5MB each)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 57,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-058",
+      "title": "Clinic registration: Operating hours configuration",
+      "description": "As a clinic owner, I want to set operating hours for my clinic.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Add weekly schedule grid to clinic registration form",
+        "For each day: toggle open/closed, set open time and close time",
+        "Store as JSON in timings field",
+        "Default all days to closed, user enables specific days",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 58,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-059",
+      "title": "Clinic registration: Services selection",
+      "description": "As a clinic owner, I want to select services my clinic offers.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Add services multi-select to clinic registration form",
+        "Predefined list: General Consultation, Specialist Consultation, Lab Tests, X-Ray, Pharmacy, Emergency, Surgery",
+        "Allow adding custom services as tags",
+        "Store as string array in services field",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 59,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-060",
+      "title": "Clinic registration: API endpoint",
+      "description": "As a developer, I need an API endpoint to create clinic registrations.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create POST /api/clinic/register endpoint",
+        "Handle file uploads for logo and photos (save to local storage or S3)",
+        "Generate unique slug from clinic name",
+        "Create Clinic record with verified=false",
+        "Set claimed_by_id to current user",
+        "Return created clinic data",
+        "Typecheck passes"
+      ],
+      "priority": 60,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-061",
+      "title": "Clinic registration: Submit and confirmation",
+      "description": "As a clinic owner, I want to submit registration and see confirmation.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Connect clinic registration form to API endpoint",
+        "Show loading state during submission",
+        "On success: redirect to confirmation page with 'pending verification' message",
+        "Send confirmation email to clinic email address",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 61,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-062",
+      "title": "E2E Tests: Clinic registration flow",
+      "description": "As a QA, I want to verify clinic registration works correctly.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/clinic-registration.spec.ts",
+        "Test: Registration page requires authentication",
+        "Test: Form validation shows errors for invalid inputs",
+        "Test: Logo and photos can be uploaded",
+        "Test: Operating hours can be configured",
+        "Test: Services can be selected",
+        "Test: Successful submission shows confirmation",
+        "Test: Clinic appears in admin verification queue",
+        "All tests pass: pnpm test:e2e clinic-registration.spec.ts"
+      ],
+      "priority": 62,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-063",
+      "title": "Admin: Clinic verification list",
+      "description": "As an admin, I want to see pending clinic registrations.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Add /admin/clinics section to admin dashboard",
+        "List all clinics where verified=false",
+        "Show: name, type, address, submitted date, owner email",
+        "Link to view clinic details",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 63,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-064",
+      "title": "Admin: Clinic verification actions",
+      "description": "As an admin, I want to approve or reject clinic registrations.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create API endpoint POST /api/admin/clinics/[id] with action: approve/reject",
+        "Approve: sets verified=true, sends approval email",
+        "Reject: requires reason, sends rejection email with reason",
+        "Add approve/reject buttons to admin clinic list",
+        "Audit log all actions",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 64,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-065",
+      "title": "E2E Tests: Admin clinic verification",
+      "description": "As a QA, I want to verify admin clinic verification works correctly.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/admin-clinics.spec.ts",
+        "Test: Admin can see pending clinic registrations",
+        "Test: Clicking approve updates status",
+        "Test: Clicking reject requires reason",
+        "Test: Approved clinics become visible on public pages",
+        "All tests pass: pnpm test:e2e admin-clinics.spec.ts"
+      ],
+      "priority": 65,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-066",
+      "title": "Clinic dashboard: Overview page",
+      "description": "As a clinic admin, I want a dashboard to see clinic statistics.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create app/[lang]/clinic/dashboard/page.tsx",
+        "Protected route: must be logged in and own a verified clinic",
+        "Show today's appointments count",
+        "Show patients in queue count",
+        "Show total registered patients",
+        "Bauhaus styled with stat cards",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 66,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-067",
+      "title": "Clinic dashboard: Quick action buttons",
+      "description": "As a clinic admin, I want quick action buttons on dashboard.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Add quick action buttons: Add Patient, View Queue, Manage Schedules",
+        "Buttons link to respective pages",
+        "Bauhaus styled with icons",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 67,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-068",
+      "title": "Clinic dashboard: Add doctors to clinic",
+      "description": "As a clinic admin, I want to add doctors to my clinic.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create app/[lang]/clinic/dashboard/doctors/page.tsx",
+        "Search for verified professionals by name or registration number",
+        "Add doctor to clinic (creates ClinicDoctor record)",
+        "List current clinic doctors with role",
+        "Remove doctor from clinic option",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 68,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-069",
+      "title": "Clinic dashboard: Configure doctor schedule",
+      "description": "As a clinic admin, I want to set up doctor schedules.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create app/[lang]/clinic/dashboard/schedules/page.tsx",
+        "Select doctor from clinic's doctors list",
+        "Weekly schedule grid: for each day set start time, end time, slot duration",
+        "Save creates/updates DoctorSchedule records",
+        "API endpoint for schedule CRUD",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 69,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-070",
+      "title": "Clinic dashboard: Doctor leave management",
+      "description": "As a clinic admin, I want to mark doctor leaves.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Add leave section to schedules page",
+        "Form: select doctor, date, full day or time range, reason",
+        "List upcoming leaves with delete option",
+        "Show count of affected appointments before saving",
+        "API endpoint for leave CRUD",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 70,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-071",
+      "title": "E2E Tests: Clinic dashboard and schedule management",
+      "description": "As a QA, I want to verify clinic dashboard and scheduling works correctly.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/clinic-dashboard.spec.ts",
+        "Test: Dashboard shows statistics",
+        "Test: Can add doctors to clinic",
+        "Test: Can configure doctor schedules",
+        "Test: Can mark doctor leave",
+        "Test: Leave blocks appointment slots",
+        "All tests pass: pnpm test:e2e clinic-dashboard.spec.ts"
+      ],
+      "priority": 71,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-072",
+      "title": "Clinic public page: Basic layout",
+      "description": "As a patient, I want to view clinic details.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create app/[lang]/clinic/[slug]/page.tsx",
+        "Display: name, logo, type badge, address, phone, email, website link",
+        "Show operating hours from timings JSON",
+        "Show services offered",
+        "Return 404 if clinic not found or not verified",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 72,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-073",
+      "title": "Clinic public page: Photos gallery and doctors list",
+      "description": "As a patient, I want to see clinic photos and doctors.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Display photo gallery on clinic public page with modal",
+        "Display list of doctors from ClinicDoctor table",
+        "Show doctor photo, name, specialty, role",
+        "Link to doctor profile page",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 73,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-074",
+      "title": "Clinic public page: SEO and structured data",
+      "description": "As a patient, I want clinic pages to appear in Google.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Add generateMetadata for clinic pages",
+        "Add JSON-LD with MedicalClinic schema",
+        "Include: name, address, phone, openingHours, geo coordinates",
+        "Typecheck passes"
+      ],
+      "priority": 74,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-075",
+      "title": "E2E Tests: Clinic public page",
+      "description": "As a QA, I want to verify clinic public page works correctly.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/clinic-public.spec.ts",
+        "Test: Clinic page shows all details",
+        "Test: Photo gallery works",
+        "Test: Doctors list links to profiles",
+        "Test: 404 for invalid clinic",
+        "Test: SEO meta tags present",
+        "All tests pass: pnpm test:e2e clinic-public.spec.ts"
+      ],
+      "priority": 75,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-076",
+      "title": "Appointment booking: API for available slots",
+      "description": "As a developer, I need an API to get available appointment slots.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create GET /api/clinic/[id]/slots?doctor_id=X&date=YYYY-MM-DD endpoint",
+        "Calculate slots from DoctorSchedule for that day",
+        "Exclude slots that are already booked (from Appointment table)",
+        "Exclude slots during DoctorLeave",
+        "Return array of available time slots",
+        "Typecheck passes"
+      ],
+      "priority": 76,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-077",
+      "title": "Appointment booking: Date and slot selection UI",
+      "description": "As a patient, I want to select a date and time slot.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Add booking section to clinic public page",
+        "Select doctor from dropdown",
+        "Date picker (disable dates with no availability)",
+        "Fetch and display available slots for selected date",
+        "Select a slot",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 77,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-078",
+      "title": "Appointment booking: Patient details and confirmation",
+      "description": "As a patient, I want to enter details and complete booking.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Patient details form: name, phone, email (optional), reason",
+        "Create POST /api/appointments endpoint",
+        "Check slot availability (prevent double-booking)",
+        "Create Patient record if new",
+        "Create Appointment with status=SCHEDULED, source=ONLINE",
+        "Assign token number",
+        "Show confirmation with token and ICS download",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 78,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-079",
+      "title": "E2E Tests: Appointment booking flow",
+      "description": "As a QA, I want to verify appointment booking works correctly.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/appointment-booking.spec.ts",
+        "Test: Can select doctor and date",
+        "Test: Available slots are shown",
+        "Test: Cannot book unavailable slots",
+        "Test: Can enter patient details",
+        "Test: Successful booking shows confirmation with token",
+        "Test: Booked slot becomes unavailable",
+        "All tests pass: pnpm test:e2e appointment-booking.spec.ts"
+      ],
+      "priority": 79,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-080",
+      "title": "Reception: Walk-in registration and queue view",
+      "description": "As a receptionist, I want to register walk-ins and manage queue.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create app/[lang]/clinic/dashboard/reception/page.tsx",
+        "Quick registration: name, phone, reason, select doctor",
+        "Search existing patients by phone",
+        "Auto-assign token number",
+        "Show queue per doctor with status",
+        "Action buttons: Check-in, Call, Complete, No-show",
+        "Print token slip option",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 80,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-081",
+      "title": "Queue display: TV screen page",
+      "description": "As a clinic, I want a queue display for waiting room.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create app/[lang]/clinic/[slug]/queue-display/page.tsx",
+        "Full-screen TV-optimized layout",
+        "Show current token per doctor",
+        "Show next tokens waiting",
+        "Auto-refresh every 10 seconds",
+        "Large readable fonts",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 81,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-082",
+      "title": "E2E Tests: Reception and queue management",
+      "description": "As a QA, I want to verify reception and queue works correctly.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/reception-queue.spec.ts",
+        "Test: Can register walk-in patient",
+        "Test: Token is assigned automatically",
+        "Test: Queue shows all patients",
+        "Test: Can update patient status",
+        "Test: Queue display shows correct tokens",
+        "All tests pass: pnpm test:e2e reception-queue.spec.ts"
+      ],
+      "priority": 82,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-083",
+      "title": "Database schema: Service and Invoice models",
+      "description": "As a developer, I need models for billing.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create Service model: id, clinic_id, name, description, price (Decimal), category, is_active, created_at",
+        "Create Invoice model: id, clinic_id, patient_id, appointment_id (nullable), invoice_number, items (Json), subtotal, discount, tax, total, payment_mode, payment_status, created_by, created_at",
+        "Add index on (clinic_id, invoice_number)",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 83,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-084",
+      "title": "Billing: Service catalog and invoice generation",
+      "description": "As a receptionist, I want to manage services and create invoices.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create services management page",
+        "Create billing page with patient selection",
+        "Add services to invoice with quantity",
+        "Apply discount, calculate tax",
+        "Select payment mode",
+        "Generate invoice number and save",
+        "Print receipt option",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 84,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-085",
+      "title": "Billing: Daily reports",
+      "description": "As a clinic owner, I want billing reports.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create reports page",
+        "Daily collection summary",
+        "Payment mode breakdown",
+        "Date range filter",
+        "Export to CSV",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 85,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-086",
+      "title": "E2E Tests: Billing flow",
+      "description": "As a QA, I want to verify billing works correctly.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/billing.spec.ts",
+        "Test: Can add services to catalog",
+        "Test: Can create invoice for patient",
+        "Test: Discount and tax calculated correctly",
+        "Test: Invoice number generated",
+        "Test: Reports show correct totals",
+        "All tests pass: pnpm test:e2e billing.spec.ts"
+      ],
+      "priority": 86,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-087",
+      "title": "Database schema: Review model",
+      "description": "As a developer, I need a Review model for patient feedback.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create Review model: id, clinic_id, doctor_id (nullable), patient_id, appointment_id, rating (Int 1-5), review_text, categories (Json), doctor_response, is_published (Bool), created_at",
+        "Add index on (clinic_id, is_published)",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 87,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-088",
+      "title": "Reviews: Submit and display",
+      "description": "As a patient, I want to leave and see reviews.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create review submission page",
+        "Star rating and text input",
+        "Reviews display on clinic page",
+        "Admin moderation (publish/unpublish)",
+        "Doctor can respond to reviews",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 88,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-089",
+      "title": "E2E Tests: Reviews flow",
+      "description": "As a QA, I want to verify reviews work correctly.",
+      "phase": 2,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/reviews.spec.ts",
+        "Test: Can submit review after appointment",
+        "Test: Review appears on clinic page after approval",
+        "Test: Doctor can respond to review",
+        "Test: Admin can moderate reviews",
+        "All tests pass: pnpm test:e2e reviews.spec.ts"
+      ],
+      "priority": 89,
+      "passes": false,
+      "notes": ""
+    },
+
+    {
+      "id": "US-090",
+      "title": "Database schema: Pharmacy models",
+      "description": "As a developer, I need pharmacy database models.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "Create Product, InventoryBatch, Supplier, Sale, CreditAccount, CreditTransaction models",
+        "Product with: name, generic_name, category, schedule, barcode, gst_rate",
+        "InventoryBatch with: batch_number, expiry_date, quantity, prices",
+        "Sale with: items (Json), totals, payment_mode, is_credit",
+        "CreditAccount for khata tracking",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 90,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-091",
+      "title": "Pharmacy: Product and supplier management",
+      "description": "As a pharmacy owner, I want to manage products and suppliers.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "Product catalog CRUD page",
+        "Supplier management page",
+        "Search and filter products",
+        "Barcode assignment",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 91,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-092",
+      "title": "Pharmacy POS: Billing interface",
+      "description": "As a pharmacist, I want a POS billing interface.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "POS layout with cart and search",
+        "Product search and barcode scanner input",
+        "FEFO batch auto-selection",
+        "Cart management with quantities",
+        "Discount and payment processing",
+        "Receipt printing",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 92,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-093",
+      "title": "E2E Tests: Pharmacy POS",
+      "description": "As a QA, I want to verify pharmacy POS works correctly.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/pharmacy-pos.spec.ts",
+        "Test: Can search and add products",
+        "Test: FEFO selects correct batch",
+        "Test: Cart totals correctly",
+        "Test: Sale deducts inventory",
+        "Test: Receipt generates",
+        "All tests pass: pnpm test:e2e pharmacy-pos.spec.ts"
+      ],
+      "priority": 93,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-094",
+      "title": "Inventory: Stock and expiry tracking",
+      "description": "As a pharmacist, I want to track stock and expiry.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "Inventory dashboard with stock levels",
+        "Low stock alerts",
+        "Expiring items list (30/60/90 days)",
+        "Stock adjustment for damage/loss",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 94,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-095",
+      "title": "Purchase: Stock receiving",
+      "description": "As a pharmacy owner, I want to receive stock.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "Purchase receiving form",
+        "Add items with batch, expiry, prices",
+        "Creates InventoryBatch records",
+        "Supplier invoice tracking",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 95,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-096",
+      "title": "Credit sales: Khata management",
+      "description": "As a pharmacist, I want to manage credit sales.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "Credit customer accounts",
+        "Credit sale in POS",
+        "Payment recording",
+        "Customer ledger view",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 96,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-097",
+      "title": "Pharmacy: Reports",
+      "description": "As a pharmacy owner, I want business reports.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "Daily sales summary",
+        "Product-wise sales",
+        "Profit margins",
+        "Export to CSV",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 97,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-098",
+      "title": "E2E Tests: Pharmacy inventory and credit",
+      "description": "As a QA, I want to verify pharmacy features work correctly.",
+      "phase": 3,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/pharmacy-inventory.spec.ts",
+        "Test: Stock receiving creates batches",
+        "Test: Low stock alerts work",
+        "Test: Expiry tracking correct",
+        "Test: Credit sales and payments",
+        "Test: Reports accurate",
+        "All tests pass: pnpm test:e2e pharmacy-inventory.spec.ts"
+      ],
+      "priority": 98,
+      "passes": false,
+      "notes": ""
+    },
+
+    {
+      "id": "US-099",
+      "title": "Database schema: EMR and Lab models",
+      "description": "As a developer, I need EMR and lab database models.",
+      "phase": 4,
+      "acceptanceCriteria": [
+        "Create ClinicalNote, Prescription models for EMR",
+        "Create LabTest, LabOrder, LabResult models",
+        "Create Ward, Bed, Admission models for IPD",
+        "Proper indexes and relations",
+        "Run prisma migrate dev successfully",
+        "Typecheck passes"
+      ],
+      "priority": 99,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-100",
+      "title": "EMR: Consultation interface",
+      "description": "As a doctor, I want to record clinical notes.",
+      "phase": 4,
+      "acceptanceCriteria": [
+        "Consultation page with vitals, notes, diagnosis tabs",
+        "Vitals recording with BMI calculation",
+        "ICD-10 diagnosis search and selection",
+        "Auto-save draft",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 100,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-101",
+      "title": "E-prescription",
+      "description": "As a doctor, I want to generate prescriptions.",
+      "phase": 4,
+      "acceptanceCriteria": [
+        "Drug search and add to prescription",
+        "Dosage, frequency, duration inputs",
+        "Quantity auto-calculation",
+        "Print prescription",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 101,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-102",
+      "title": "Lab: Order and results",
+      "description": "As a doctor/lab tech, I want to manage lab orders.",
+      "phase": 4,
+      "acceptanceCriteria": [
+        "Order tests from consultation",
+        "Lab dashboard with pending orders",
+        "Results entry with abnormal flagging",
+        "Patient can view results online",
+        "PDF report download",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 102,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-103",
+      "title": "E2E Tests: EMR and Lab",
+      "description": "As a QA, I want to verify EMR and lab work correctly.",
+      "phase": 4,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/emr-lab.spec.ts",
+        "Test: Can record vitals and notes",
+        "Test: Can add diagnoses",
+        "Test: Can create prescription",
+        "Test: Can order lab tests",
+        "Test: Can enter results",
+        "Test: Patient can view results",
+        "All tests pass: pnpm test:e2e emr-lab.spec.ts"
+      ],
+      "priority": 103,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-104",
+      "title": "IPD: Bed and admission management",
+      "description": "As hospital staff, I want to manage beds and admissions.",
+      "phase": 4,
+      "acceptanceCriteria": [
+        "Ward and bed management pages",
+        "Visual bed map",
+        "Admission form with bed selection",
+        "Discharge with summary",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 104,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-105",
+      "title": "E2E Tests: IPD",
+      "description": "As a QA, I want to verify IPD works correctly.",
+      "phase": 4,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/ipd.spec.ts",
+        "Test: Can add beds to wards",
+        "Test: Can admit patient to bed",
+        "Test: Bed becomes occupied",
+        "Test: Can discharge patient",
+        "Test: Bed released after discharge",
+        "All tests pass: pnpm test:e2e ipd.spec.ts"
+      ],
+      "priority": 105,
+      "passes": false,
+      "notes": ""
+    },
+
+    {
+      "id": "US-106",
+      "title": "Telemedicine: Schema and doctor settings",
+      "description": "As a developer, I need telemedicine models and settings.",
+      "phase": 5,
+      "acceptanceCriteria": [
+        "Add telemedicine fields to Professional (enabled, fee, available_now)",
+        "Create VideoConsultation model",
+        "Doctor can enable telemedicine in profile",
+        "Set video consultation fee",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 106,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-107",
+      "title": "Telemedicine: Booking and video call",
+      "description": "As a patient, I want to book and join video consultations.",
+      "phase": 5,
+      "acceptanceCriteria": [
+        "Book video consultation on doctor page",
+        "Payment before booking",
+        "Video call integration (Daily.co or similar)",
+        "Waiting room and call controls",
+        "Post-consultation prescription",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 107,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-108",
+      "title": "Telemedicine: Instant consultation",
+      "description": "As a patient, I want instant consultations.",
+      "phase": 5,
+      "acceptanceCriteria": [
+        "Show available doctors (available_now=true)",
+        "Instant payment and matching",
+        "Doctor accept/reject with timeout",
+        "Start call immediately on accept",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 108,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-109",
+      "title": "E2E Tests: Telemedicine",
+      "description": "As a QA, I want to verify telemedicine works correctly.",
+      "phase": 5,
+      "acceptanceCriteria": [
+        "Create apps/web/e2e/telemedicine.spec.ts",
+        "Test: Doctor can enable telemedicine",
+        "Test: Patient can book video consultation",
+        "Test: Video room created correctly",
+        "Test: Call interface loads",
+        "Test: Instant consultation flow works",
+        "All tests pass: pnpm test:e2e telemedicine.spec.ts"
+      ],
+      "priority": 109,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

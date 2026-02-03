@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
+import { sendVerificationApprovedEmail, sendVerificationRejectedEmail } from "@/lib/email";
+import { logClaimApproved, logClaimRejected } from "@/lib/audit";
 
 export async function POST(
   request: NextRequest,
@@ -26,11 +28,19 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { action } = body;
+    const { action, reason } = body;
 
     if (!action || !["approve", "reject"].includes(action)) {
       return NextResponse.json(
         { error: "Invalid action. Must be 'approve' or 'reject'" },
+        { status: 400 }
+      );
+    }
+
+    // Require reason for rejection
+    if (action === "reject" && (!reason || typeof reason !== "string" || reason.trim().length === 0)) {
+      return NextResponse.json(
+        { error: "Rejection reason is required" },
         { status: 400 }
       );
     }
@@ -42,12 +52,16 @@ export async function POST(
         professional: {
           select: {
             id: true,
+            full_name: true,
+            slug: true,
             claimed_by_id: true,
           },
         },
         user: {
           select: {
             id: true,
+            email: true,
+            name: true,
           },
         },
       },
@@ -104,19 +118,61 @@ export async function POST(
         }),
       ]);
 
+      // Send approval email (non-blocking)
+      sendVerificationApprovedEmail(
+        { email: verificationRequest.user.email, name: verificationRequest.user.name || undefined },
+        verificationRequest.professional.slug,
+        "en"
+      ).catch((err) => {
+        console.error("[Admin] Failed to send approval email:", err);
+      });
+
+      // Log audit event (non-blocking)
+      logClaimApproved(
+        id,
+        session.user.id,
+        verificationRequest.user.id,
+        verificationRequest.professional.id,
+        verificationRequest.professional.full_name
+      ).catch((err) => {
+        console.error("[Admin] Failed to log audit:", err);
+      });
+
       return NextResponse.json({
         success: true,
         message: "Claim approved successfully",
       });
     } else {
-      // Reject the claim
+      // Reject the claim with reason
       await prisma.verificationRequest.update({
         where: { id },
         data: {
           status: "REJECTED",
+          admin_notes: reason.trim(),
           reviewed_at: new Date(),
           reviewed_by_id: session.user.id,
         },
+      });
+
+      // Send rejection email (non-blocking)
+      sendVerificationRejectedEmail(
+        { email: verificationRequest.user.email, name: verificationRequest.user.name || undefined },
+        reason.trim(),
+        "en"
+      ).catch((err) => {
+        console.error("[Admin] Failed to send rejection email:", err);
+      });
+
+      // Log audit event (non-blocking)
+      logClaimRejected(
+        id,
+        session.user.id,
+        verificationRequest.user.id,
+        verificationRequest.professional.id,
+        verificationRequest.professional.full_name,
+        reason.trim()
+      ).catch((err) => {
+        console.error("[Admin] Failed to log audit:", err);
       });
 
       return NextResponse.json({

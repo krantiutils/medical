@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { SearchFilters } from "@/components/search/search-filters";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -119,8 +120,16 @@ function getTypeLabel(type: string): string {
 }
 
 function getProfileUrl(professional: { type: string; slug: string }, lang: string): string {
-  // All professionals use /doctor/[slug] route for now
-  return `/${lang}/doctor/${professional.slug}`;
+  switch (professional.type) {
+    case "DOCTOR":
+      return `/${lang}/doctors/${professional.slug}`;
+    case "DENTIST":
+      return `/${lang}/dentists/${professional.slug}`;
+    case "PHARMACIST":
+      return `/${lang}/pharmacists/${professional.slug}`;
+    default:
+      return `/${lang}/doctors/${professional.slug}`;
+  }
 }
 
 // Helper to validate the type filter
@@ -204,56 +213,13 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
 
         {/* Filters Section */}
         <div className="mb-6">
-          <form action={`/${lang}/search`} method="GET" className="flex flex-wrap items-center gap-4">
-            {/* Preserve search query */}
-            {query && <input type="hidden" name="q" value={query} />}
-
-            {/* Type Filter Dropdown */}
-            <div className="flex items-center gap-2">
-              <label htmlFor="type-filter" className="text-sm font-bold uppercase tracking-wide">
-                Type:
-              </label>
-              <select
-                id="type-filter"
-                name="type"
-                defaultValue={typeFilter || ""}
-                onChange={(e) => {
-                  const form = e.target.closest("form");
-                  if (form) form.submit();
-                }}
-                className="px-4 py-2 bg-white border-2 border-foreground text-sm font-medium focus:outline-none focus:border-primary-blue cursor-pointer"
-              >
-                <option value="">All Types</option>
-                <option value="DOCTOR">Doctor</option>
-                <option value="DENTIST">Dentist</option>
-                <option value="PHARMACIST">Pharmacist</option>
-              </select>
-            </div>
-
-            {/* Location Filter Dropdown */}
-            <div className="flex items-center gap-2">
-              <label htmlFor="location-filter" className="text-sm font-bold uppercase tracking-wide">
-                Location:
-              </label>
-              <select
-                id="location-filter"
-                name="location"
-                defaultValue={location || ""}
-                onChange={(e) => {
-                  const form = e.target.closest("form");
-                  if (form) form.submit();
-                }}
-                className="px-4 py-2 bg-white border-2 border-foreground text-sm font-medium focus:outline-none focus:border-primary-blue cursor-pointer max-w-[200px]"
-              >
-                <option value="">All Locations</option>
-                {distinctLocations.map((loc) => (
-                  <option key={loc} value={loc}>
-                    {loc.length > 30 ? loc.slice(0, 30) + "..." : loc}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </form>
+          <SearchFilters
+            lang={lang}
+            query={query}
+            currentType={typeFilter}
+            currentLocation={location}
+            locations={distinctLocations}
+          />
         </div>
 
         {/* Active Filters Tags */}

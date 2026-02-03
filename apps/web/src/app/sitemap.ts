@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { prisma } from "@swasthya/database";
+import { prisma, ProfessionalType } from "@swasthya/database";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
@@ -70,6 +70,7 @@ export default async function sitemap({
   const professionals = await prisma.professional.findMany({
     select: {
       slug: true,
+      type: true,
       updated_at: true,
       verified: true,
     },
@@ -80,14 +81,29 @@ export default async function sitemap({
     take: MAX_URLS_PER_SITEMAP,
   });
 
+  // Map professional type to URL path
+  function getPathForType(type: ProfessionalType): string {
+    switch (type) {
+      case ProfessionalType.DOCTOR:
+        return "doctors";
+      case ProfessionalType.DENTIST:
+        return "dentists";
+      case ProfessionalType.PHARMACIST:
+        return "pharmacists";
+      default:
+        return "doctors";
+    }
+  }
+
   // Add professional pages
   for (const professional of professionals) {
     // Verified professionals get slightly higher priority
     const priority = professional.verified ? 0.8 : 0.7;
+    const path = getPathForType(professional.type);
 
     // English version
     entries.push({
-      url: `${SITE_URL}/en/doctor/${professional.slug}`,
+      url: `${SITE_URL}/en/${path}/${professional.slug}`,
       lastModified: professional.updated_at,
       changeFrequency: "weekly",
       priority,
@@ -95,7 +111,7 @@ export default async function sitemap({
 
     // Nepali version
     entries.push({
-      url: `${SITE_URL}/ne/doctor/${professional.slug}`,
+      url: `${SITE_URL}/ne/${path}/${professional.slug}`,
       lastModified: professional.updated_at,
       changeFrequency: "weekly",
       priority,

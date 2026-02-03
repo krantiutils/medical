@@ -88,7 +88,12 @@ async function importDoctors(): Promise<void> {
         const slug = generateSlug(fullName, nmcNo);
 
         const result = await prisma.professional.upsert({
-          where: { registration_number: nmcNo },
+          where: {
+            type_registration_number: {
+              type: ProfessionalType.DOCTOR,
+              registration_number: nmcNo,
+            },
+          },
           create: {
             type: ProfessionalType.DOCTOR,
             registration_number: nmcNo,

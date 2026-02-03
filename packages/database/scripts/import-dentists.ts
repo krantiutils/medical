@@ -10,6 +10,7 @@ interface DentistRecord {
   nda_id: string;
   name: string;
   location: string;
+  photo: string;
   scraped_at: string;
 }
 
@@ -38,14 +39,27 @@ async function importDentists(): Promise<void> {
 
   const parser = createReadStream(csvPath).pipe(
     parse({
-      columns: true,
       skip_empty_lines: true,
       trim: true,
+      relax_column_count: true,
+      from_line: 2, // Skip header
     })
   );
 
-  for await (const record of parser) {
-    records.push(record as DentistRecord);
+  for await (const row of parser) {
+    // Handle both 5-column and 6-column rows
+    // 5 cols: nmc_no, nda_id, name, location, scraped_at
+    // 6 cols: nmc_no, nda_id, name, location, photo, scraped_at
+    const arr = row as string[];
+    const record: DentistRecord = {
+      nmc_no: arr[0] || "",
+      nda_id: arr[1] || "",
+      name: arr[2] || "",
+      location: arr[3] || "",
+      photo: arr.length === 6 ? arr[4] : "",
+      scraped_at: arr.length === 6 ? arr[5] : arr[4] || "",
+    };
+    records.push(record);
   }
 
   console.log(`Parsed ${records.length} records from CSV`);
@@ -83,13 +97,24 @@ async function importDentists(): Promise<void> {
           meta.nda_id = record.nda_id.trim();
         }
 
+        // Build photo URL if photo filename exists
+        const photoUrl = record.photo?.trim()
+          ? `/uploads/dentists/${record.photo.trim()}`
+          : null;
+
         const result = await prisma.professional.upsert({
-          where: { registration_number: nmcNo },
+          where: {
+            type_registration_number: {
+              type: ProfessionalType.DENTIST,
+              registration_number: nmcNo,
+            },
+          },
           create: {
             type: ProfessionalType.DENTIST,
             registration_number: nmcNo,
             full_name: fullName,
             address: record.location?.trim() || null,
+            photo_url: photoUrl,
             slug,
             meta: Object.keys(meta).length > 0 ? meta : undefined,
             last_synced_at: record.scraped_at ? new Date(record.scraped_at) : new Date(),
@@ -97,6 +122,7 @@ async function importDentists(): Promise<void> {
           update: {
             full_name: fullName,
             address: record.location?.trim() || null,
+            photo_url: photoUrl,
             slug,
             meta: Object.keys(meta).length > 0 ? meta : undefined,
             last_synced_at: record.scraped_at ? new Date(record.scraped_at) : new Date(),

@@ -10,6 +10,7 @@ interface PharmacistRecord {
   name: string;
   reg_date: string;
   category: string;
+  photo: string;
   scraped_at: string;
 }
 
@@ -48,14 +49,27 @@ async function importPharmacists(): Promise<void> {
 
   const parser = createReadStream(csvPath).pipe(
     parse({
-      columns: true,
       skip_empty_lines: true,
       trim: true,
+      relax_column_count: true,
+      from_line: 2, // Skip header
     })
   );
 
-  for await (const record of parser) {
-    records.push(record as PharmacistRecord);
+  for await (const row of parser) {
+    // Handle both 5-column and 6-column rows
+    // 5 cols: reg_no, name, reg_date, category, scraped_at
+    // 6 cols: reg_no, name, reg_date, category, photo, scraped_at
+    const arr = row as string[];
+    const record: PharmacistRecord = {
+      reg_no: arr[0] || "",
+      name: arr[1] || "",
+      reg_date: arr[2] || "",
+      category: arr[3] || "",
+      photo: arr.length === 6 ? arr[4] : "",
+      scraped_at: arr.length === 6 ? arr[5] : arr[4] || "",
+    };
+    records.push(record);
   }
 
   console.log(`Parsed ${records.length} records from CSV`);
@@ -94,12 +108,23 @@ async function importPharmacists(): Promise<void> {
           meta.category = record.category.trim();
         }
 
+        // Build photo URL if photo filename exists
+        const photoUrl = record.photo?.trim()
+          ? `/uploads/pharmacists/${record.photo.trim()}`
+          : null;
+
         const result = await prisma.professional.upsert({
-          where: { registration_number: regNo },
+          where: {
+            type_registration_number: {
+              type: ProfessionalType.PHARMACIST,
+              registration_number: regNo,
+            },
+          },
           create: {
             type: ProfessionalType.PHARMACIST,
             registration_number: regNo,
             full_name: fullName,
+            photo_url: photoUrl,
             slug,
             registration_date: registrationDate,
             meta: Object.keys(meta).length > 0 ? meta : undefined,
@@ -107,6 +132,7 @@ async function importPharmacists(): Promise<void> {
           },
           update: {
             full_name: fullName,
+            photo_url: photoUrl,
             slug,
             registration_date: registrationDate,
             meta: Object.keys(meta).length > 0 ? meta : undefined,

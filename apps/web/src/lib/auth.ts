@@ -3,12 +3,12 @@ import { compare } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { prisma } from "@swasthya/database";
+import { prisma, UserRole } from "@swasthya/database";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: {
@@ -64,17 +64,26 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+    async jwt({ token, user }) {
+      // On sign-in, user object is available - store user data in token
+      if (user) {
+        token.id = user.id;
         // Fetch the user role from database
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
           select: { role: true },
         });
         if (dbUser) {
-          session.user.role = dbUser.role;
+          token.role = dbUser.role;
         }
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Populate session from JWT token
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as UserRole | undefined;
       }
       return session;
     },
