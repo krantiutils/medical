@@ -82,6 +82,8 @@ export default function ClinicDashboardPage() {
       consultationsDesc: "Manage patient consultations",
       ipd: "IPD Management",
       ipdDesc: "Wards, beds, and admissions",
+      manageLeaves: "Manage Leaves",
+      manageLeavesDesc: "Doctor leave & availability",
     },
     ne: {
       title: "क्लिनिक ड्यासबोर्ड",
@@ -128,6 +130,8 @@ export default function ClinicDashboardPage() {
       consultationsDesc: "बिरामी परामर्श व्यवस्थापन गर्नुहोस्",
       ipd: "IPD व्यवस्थापन",
       ipdDesc: "वार्ड, बेड, र भर्ना",
+      manageLeaves: "बिदा व्यवस्थापन",
+      manageLeavesDesc: "डाक्टर बिदा र उपलब्धता",
     },
   };
 
@@ -563,6 +567,35 @@ export default function ClinicDashboardPage() {
                     <div>
                       <h3 className="font-bold text-foreground text-lg">{tr.manageSchedules}</h3>
                       <p className="text-sm text-foreground/60">{tr.manageSchedulesDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Manage Leaves */}
+            <Link href={`/${lang}/clinic/dashboard/leaves`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-red rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.manageLeaves}</h3>
+                      <p className="text-sm text-foreground/60">{tr.manageLeavesDesc}</p>
                     </div>
                   </div>
                 </CardContent>

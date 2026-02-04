@@ -50,6 +50,7 @@ _archive/
 /apps/web/blob-report/
 /apps/web/playwright/.cache/
 
+
 # Gas Town (added by gt)
 .runtime/
 .claude/
