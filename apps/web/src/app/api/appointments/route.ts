@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { prisma, AppointmentStatus, AppointmentSource, AppointmentType } from "@swasthya/database";
+import { authOptions } from "@/lib/auth";
 
 /**
  * Helper function to parse "HH:MM" time string to minutes since midnight
@@ -59,6 +61,112 @@ async function generateTokenNumber(clinicId: string, date: Date): Promise<number
   });
 
   return count + 1;
+}
+
+/**
+ * GET /api/appointments
+ *
+ * Fetch appointments for the authenticated user.
+ * Matches the user to Patient records by email (and phone if available).
+ *
+ * Query params:
+ * - filter: "upcoming" | "past" | "all" (default: "all")
+ * - limit: number (default: 50)
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const filter = searchParams.get("filter") || "all";
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
+
+    // Get user details to match against Patient records
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { email: true, phone: true },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Find all Patient records matching this user's email or phone
+    const matchConditions: Array<{ email: string } | { phone: string }> = [];
+    if (user.email) {
+      matchConditions.push({ email: user.email });
+    }
+    if (user.phone) {
+      matchConditions.push({ phone: user.phone });
+    }
+
+    if (matchConditions.length === 0) {
+      return NextResponse.json({ appointments: [] });
+    }
+
+    const patients = await prisma.patient.findMany({
+      where: { OR: matchConditions },
+      select: { id: true },
+    });
+
+    if (patients.length === 0) {
+      return NextResponse.json({ appointments: [] });
+    }
+
+    const patientIds = patients.map((p) => p.id);
+
+    // Build date filter
+    const now = new Date();
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+
+    const dateFilter: Record<string, unknown> = {};
+    if (filter === "upcoming") {
+      dateFilter.appointment_date = { gte: todayStart };
+    } else if (filter === "past") {
+      dateFilter.appointment_date = { lt: todayStart };
+    }
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        patient_id: { in: patientIds },
+        ...dateFilter,
+      },
+      include: {
+        doctor: {
+          select: {
+            id: true,
+            full_name: true,
+            type: true,
+            photo_url: true,
+            specialties: true,
+          },
+        },
+        clinic: {
+          select: {
+            id: true,
+            name: true,
+            address: true,
+            phone: true,
+          },
+        },
+      },
+      orderBy: { appointment_date: "desc" },
+      take: limit,
+    });
+
+    return NextResponse.json({ appointments });
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch appointments" },
+      { status: 500 }
+    );
+  }
 }
 
 /**
