@@ -14,6 +14,7 @@ const navLinks = [
   { label: "Doctors", href: "/doctors" },
   { label: "Dentists", href: "/dentists" },
   { label: "Pharmacists", href: "/pharmacists" },
+  { label: "Clinics", href: "/clinics" },
 ];
 
 export function Header({ lang }: HeaderProps) {
