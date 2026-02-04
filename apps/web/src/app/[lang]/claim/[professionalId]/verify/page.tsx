@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatProfessionalName } from "@/lib/format-name";
 
 interface Professional {
   id: string;
@@ -136,7 +137,7 @@ export default function VerifyClaimPage() {
   }, [professionalId, tr.errorNotFound, tr.errorAlreadyClaimed]);
 
   const getDisplayName = (prof: Professional) => {
-    return prof.type === "PHARMACIST" ? prof.full_name : `Dr. ${prof.full_name}`;
+    return formatProfessionalName(prof.full_name, prof.type);
   };
 
   const getTypeLabel = (type: string) => {

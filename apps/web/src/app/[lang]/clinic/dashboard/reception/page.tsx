@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatDoctorName } from "@/lib/format-name";
 
 interface Doctor {
   id: string;
@@ -806,7 +807,7 @@ export default function ReceptionPage() {
                               {appointment.patient.patient_number} • {appointment.patient.phone}
                             </p>
                             <p className="text-sm text-foreground/70 mt-1">
-                              <strong>Dr. {appointment.doctor.full_name}</strong> • {appointment.time_slot_start} - {appointment.time_slot_end}
+                              <strong>{formatDoctorName(appointment.doctor.full_name)}</strong> • {appointment.time_slot_start} - {appointment.time_slot_end}
                             </p>
                             {appointment.chief_complaint && (
                               <p className="text-sm text-foreground/60 mt-1 truncate">

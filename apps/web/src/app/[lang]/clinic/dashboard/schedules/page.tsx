@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatProfessionalName } from "@/lib/format-name";
 
 interface Professional {
   id: string;
@@ -757,8 +758,7 @@ function ClinicSchedulesContent() {
                             {getTypeLabel(doctor.type)}
                           </span>
                           <h4 className="font-bold text-foreground text-sm truncate mt-0.5">
-                            {(doctor.type === "DOCTOR" || doctor.type === "DENTIST") && !doctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                            {doctor.full_name}
+                            {formatProfessionalName(doctor.full_name, doctor.type)}
                           </h4>
                           <p className="text-xs text-foreground/60">{doctor.registration_number}</p>
                         </div>
@@ -823,10 +823,7 @@ function ClinicSchedulesContent() {
                     <div>
                       <h2 className="text-lg font-bold text-foreground">{tr.weeklySchedule}</h2>
                       <p className="text-sm text-foreground/60 mt-1">
-                        {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.")
-                          ? "Dr. "
-                          : ""}
-                        {selectedDoctor.full_name}
+                        {formatProfessionalName(selectedDoctor.full_name, selectedDoctor.type)}
                       </p>
                     </div>
                     {successMessage && (
@@ -979,10 +976,7 @@ function ClinicSchedulesContent() {
               <CardHeader className="border-b-2 border-foreground/10">
                 <h2 className="text-lg font-bold text-foreground">{tr.leaveManagement}</h2>
                 <p className="text-sm text-foreground/60 mt-1">
-                  {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.")
-                    ? "Dr. "
-                    : ""}
-                  {selectedDoctor.full_name}
+                  {formatProfessionalName(selectedDoctor.full_name, selectedDoctor.type)}
                 </p>
               </CardHeader>
               <CardContent className="py-4">

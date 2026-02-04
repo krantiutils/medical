@@ -4,6 +4,7 @@ import { prisma, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { ClaimProfileButton } from "@/components/claim/claim-profile-button";
 import { BookConsultationButton } from "@/components/telemedicine/book-consultation-button";
+import { formatDoctorName } from "@/lib/format-name";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
@@ -55,7 +56,7 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
     };
   }
 
-  const displayName = `Dr. ${doctor.full_name}`;
+  const displayName = formatDoctorName(doctor.full_name);
 
   const specialty = doctor.specialties && doctor.specialties.length > 0
     ? doctor.specialties[0]
@@ -105,7 +106,7 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
 }
 
 function generateJsonLd(doctor: NonNullable<Awaited<ReturnType<typeof getDoctor>>>, lang: string) {
-  const displayName = `Dr. ${doctor.full_name}`;
+  const displayName = formatDoctorName(doctor.full_name);
 
   const baseJsonLd = {
     "@context": "https://schema.org",
@@ -153,7 +154,7 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
     notFound();
   }
 
-  const displayName = `Dr. ${doctor.full_name}`;
+  const displayName = formatDoctorName(doctor.full_name);
   const jsonLd = generateJsonLd(doctor, lang);
 
   return (

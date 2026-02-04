@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { prisma, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { ClaimProfileButton } from "@/components/claim/claim-profile-button";
+import { formatDoctorName } from "@/lib/format-name";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: DentistPageProps): Promise<Me
     };
   }
 
-  const displayName = `Dr. ${dentist.full_name}`;
+  const displayName = formatDoctorName(dentist.full_name);
 
   const specialty = dentist.specialties && dentist.specialties.length > 0
     ? dentist.specialties[0]
@@ -84,7 +85,7 @@ export async function generateMetadata({ params }: DentistPageProps): Promise<Me
 }
 
 function generateJsonLd(dentist: NonNullable<Awaited<ReturnType<typeof getDentist>>>, lang: string) {
-  const displayName = `Dr. ${dentist.full_name}`;
+  const displayName = formatDoctorName(dentist.full_name);
 
   const baseJsonLd = {
     "@context": "https://schema.org",
@@ -131,7 +132,7 @@ export default async function DentistPage({ params }: DentistPageProps) {
     notFound();
   }
 
-  const displayName = `Dr. ${dentist.full_name}`;
+  const displayName = formatDoctorName(dentist.full_name);
   const jsonLd = generateJsonLd(dentist, lang);
 
   return (

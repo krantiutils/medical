@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatDoctorName } from "@/lib/format-name";
 
 interface Patient {
   id: string;
@@ -494,7 +495,7 @@ export default function LabDashboardPage() {
                         </div>
                         <div>
                           <span className="text-gray-500">{t.orderedBy}:</span>
-                          <div className="font-medium">Dr. {order.ordered_by.full_name}</div>
+                          <div className="font-medium">{formatDoctorName(order.ordered_by.full_name)}</div>
                         </div>
                         <div>
                           <span className="text-gray-500">{t.orderedAt}:</span>

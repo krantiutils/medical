@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatDoctorName } from "@/lib/format-name";
 
 interface Patient {
   id: string;
@@ -541,7 +542,7 @@ export default function LabOrderDetailPage() {
 
         <div class="footer">
           <div>
-            <strong>Ordered by:</strong> Dr. ${labOrder.ordered_by.full_name}<br>
+            <strong>Ordered by:</strong> ${formatDoctorName(labOrder.ordered_by.full_name)}<br>
             Reg. No: ${labOrder.ordered_by.registration_number}
           </div>
           <div class="signature">
@@ -773,7 +774,7 @@ export default function LabOrderDetailPage() {
               </div>
               <div>
                 <span className="text-gray-500">{t.orderedBy}:</span>
-                <div className="font-medium">Dr. {labOrder.ordered_by.full_name}</div>
+                <div className="font-medium">{formatDoctorName(labOrder.ordered_by.full_name)}</div>
                 <div className="text-gray-500">{labOrder.ordered_by.registration_number}</div>
               </div>
               <div>

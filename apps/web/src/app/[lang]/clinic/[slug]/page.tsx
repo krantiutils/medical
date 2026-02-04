@@ -6,6 +6,7 @@ import Link from "next/link";
 import { PhotoGallery } from "@/components/clinic/PhotoGallery";
 import { BookingSection } from "@/components/clinic/BookingSection";
 import { ReviewsSection } from "@/components/clinic/ReviewsSection";
+import { formatProfessionalName } from "@/lib/format-name";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
 
@@ -823,10 +824,7 @@ export default async function ClinicPage({ params }: ClinicPageProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {clinic.doctors.map((clinicDoctor) => {
                   const doctor = clinicDoctor.doctor;
-                  const isDoctor = doctor.type === ProfessionalType.DOCTOR;
-                  const displayName = isDoctor
-                    ? `Dr. ${doctor.full_name}`
-                    : doctor.full_name;
+                  const displayName = formatProfessionalName(doctor.full_name, doctor.type);
 
                   return (
                     <Link

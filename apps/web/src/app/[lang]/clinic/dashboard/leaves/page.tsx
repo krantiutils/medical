@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatProfessionalName } from "@/lib/format-name";
 
 interface Professional {
   id: string;
@@ -196,12 +197,7 @@ function ClinicLeavesContent() {
   };
 
   const getDoctorDisplayName = (doctor: { type: string; full_name: string }) => {
-    const prefix =
-      (doctor.type === "DOCTOR" || doctor.type === "DENTIST") &&
-      !doctor.full_name.startsWith("Dr.")
-        ? "Dr. "
-        : "";
-    return `${prefix}${doctor.full_name}`;
+    return formatProfessionalName(doctor.full_name, doctor.type);
   };
 
   // Split leaves into upcoming and past based on today's date

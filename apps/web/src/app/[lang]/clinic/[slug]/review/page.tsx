@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatDoctorName } from "@/lib/format-name";
 import Link from "next/link";
 
 interface ReviewPageProps {
@@ -477,7 +478,7 @@ function ReviewPageContent({ params }: ReviewPageProps) {
                       {selectedDoctor.full_name.charAt(0)}
                     </div>
                     <div>
-                      <div className="font-bold">Dr. {selectedDoctor.full_name}</div>
+                      <div className="font-bold">{formatDoctorName(selectedDoctor.full_name)}</div>
                       <div className="text-sm text-foreground/70">
                         {t[selectedDoctor.type.toLowerCase() as keyof typeof t] ||
                           selectedDoctor.type}

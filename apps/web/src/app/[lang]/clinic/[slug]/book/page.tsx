@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { formatDoctorName, formatProfessionalName } from "@/lib/format-name";
 
 interface BookingPageProps {
   params: Promise<{
@@ -356,7 +357,7 @@ function BookingPageContent({ params }: BookingPageProps) {
         tokenNumber: data.tokenNumber,
         date,
         timeSlot: slot,
-        doctorName: doctor ? `Dr. ${doctor.full_name}` : data.doctorName,
+        doctorName: doctor ? formatDoctorName(doctor.full_name) : data.doctorName,
         clinicName: clinic.name,
         clinicAddress: clinic.address || "",
         patientName: fullName.trim(),
@@ -719,9 +720,7 @@ function BookingPageContent({ params }: BookingPageProps) {
                       <dt className="text-sm font-bold uppercase tracking-wider text-foreground/60">{t.doctor}</dt>
                       <dd className="mt-1">
                         <p className="font-bold">
-                          {(doctor.type === "DOCTOR" || doctor.type === "DENTIST")
-                            ? `Dr. ${doctor.full_name}`
-                            : doctor.full_name}
+                          {formatProfessionalName(doctor.full_name, doctor.type)}
                         </p>
                         {doctor.specialties && doctor.specialties.length > 0 && (
                           <p className="text-sm text-foreground/70">{doctor.specialties[0]}</p>

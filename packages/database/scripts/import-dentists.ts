@@ -78,9 +78,9 @@ async function importDentists(): Promise<void> {
     const upsertPromises = batch.map(async (record) => {
       try {
         const nmcNo = record.nmc_no?.trim();
-        const fullName = record.name?.trim();
+        const rawName = record.name?.trim();
 
-        if (!nmcNo || !fullName) {
+        if (!nmcNo || !rawName) {
           errors++;
           errorDetails.push({
             nmc_no: nmcNo || "MISSING",
@@ -89,6 +89,8 @@ async function importDentists(): Promise<void> {
           return;
         }
 
+        // Strip "Dr." prefix from name to store clean name in DB
+        const fullName = rawName.replace(/^Dr\.?\s*/i, "").trim();
         const slug = generateSlug(fullName, nmcNo);
 
         // Store NDA ID in meta if present

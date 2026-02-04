@@ -3,6 +3,7 @@ import { prisma, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SearchFilters } from "@/components/search/search-filters";
+import { formatProfessionalName } from "@/lib/format-name";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -298,10 +299,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {professionals.map((professional) => {
-                const isPharmacist = professional.type === "PHARMACIST";
-                const displayName = isPharmacist
-                  ? professional.full_name
-                  : `Dr. ${professional.full_name}`;
+                const displayName = formatProfessionalName(professional.full_name, professional.type);
 
                 return (
                   <Card

@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatDoctorName } from "@/lib/format-name";
 
 interface Doctor {
   id: string;
@@ -551,7 +552,7 @@ export default function VideoCallPage() {
             </div>
             <p className="text-white text-xl font-bold">
               {role === "patient"
-                ? `Dr. ${consultation.doctor.full_name}`
+                ? formatDoctorName(consultation.doctor.full_name)
                 : consultation.patient.name || "Patient"}
             </p>
             <p className="text-verified flex items-center justify-center gap-2 mt-2">

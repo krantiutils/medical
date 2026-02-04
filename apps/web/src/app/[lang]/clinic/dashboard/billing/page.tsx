@@ -6,6 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatDoctorName } from "@/lib/format-name";
 
 interface Service {
   id: string;
@@ -649,7 +650,7 @@ function BillingPageContent() {
               {printInvoice.appointment?.doctor && (
                 <div className="flex justify-between">
                   <span>{t.doctor}:</span>
-                  <span>Dr. {printInvoice.appointment.doctor.full_name}</span>
+                  <span>{formatDoctorName(printInvoice.appointment.doctor.full_name)}</span>
                 </div>
               )}
             </div>

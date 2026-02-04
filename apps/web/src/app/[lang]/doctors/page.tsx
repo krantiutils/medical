@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
+import { formatDoctorName } from "@/lib/format-name";
 
 const ITEMS_PER_PAGE = 20;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com.np";
@@ -216,7 +217,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
                     </span>
                     {/* Name */}
                     <h3 className="text-xl font-bold leading-tight line-clamp-2">
-                      Dr. {professional.full_name}
+                      {formatDoctorName(professional.full_name)}
                     </h3>
                   </CardHeader>
                   <CardContent className="py-2">

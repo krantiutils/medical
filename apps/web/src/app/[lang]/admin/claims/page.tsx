@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatProfessionalName } from "@/lib/format-name";
 
 interface VerificationRequest {
   id: string;
@@ -282,7 +283,7 @@ export default function AdminClaimsPage() {
   };
 
   const getDisplayName = (professional: VerificationRequest["professional"]) => {
-    return professional.type === "PHARMACIST" ? professional.full_name : `Dr. ${professional.full_name}`;
+    return formatProfessionalName(professional.full_name, professional.type);
   };
 
   // Loading state

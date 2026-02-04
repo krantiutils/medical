@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatProfessionalName } from "@/lib/format-name";
 
 interface Professional {
   id: string;
@@ -472,8 +473,7 @@ export default function ClinicDoctorsPage() {
                           )}
                         </div>
                         <h3 className="font-bold text-foreground truncate">
-                          {(doctor.type === "DOCTOR" || doctor.type === "DENTIST") && !doctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                          {doctor.full_name}
+                          {formatProfessionalName(doctor.full_name, doctor.type)}
                         </h3>
                         <p className="text-sm text-foreground/60">{doctor.registration_number}</p>
                         {doctor.degree && (
@@ -584,8 +584,7 @@ export default function ClinicDoctorsPage() {
                           {getTypeLabel(selectedDoctor.type)}
                         </span>
                         <h4 className="font-bold text-foreground">
-                          {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                          {selectedDoctor.full_name}
+                          {formatProfessionalName(selectedDoctor.full_name, selectedDoctor.type)}
                         </h4>
                         <p className="text-sm text-foreground/60">{selectedDoctor.registration_number}</p>
                       </div>
@@ -660,8 +659,7 @@ export default function ClinicDoctorsPage() {
                               )}
                             </div>
                             <h4 className="font-bold text-foreground truncate">
-                              {(professional.type === "DOCTOR" || professional.type === "DENTIST") && !professional.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                              {professional.full_name}
+                              {formatProfessionalName(professional.full_name, professional.type)}
                             </h4>
                             <p className="text-sm text-foreground/60">{professional.registration_number}</p>
                             {professional.degree && (

@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatDoctorName } from "@/lib/format-name";
 
 interface Patient {
   id: string;
@@ -1025,7 +1026,7 @@ export default function ConsultationDetailPage() {
 
         <div class="footer">
           <div>
-            <strong>Ordered by:</strong> Dr. ${clinicalNote?.doctor.full_name || ""}<br>
+            <strong>Ordered by:</strong> ${formatDoctorName(clinicalNote?.doctor.full_name || "")}<br>
             Reg. No: ${clinicalNote?.doctor.registration_number || ""}
           </div>
           <div class="signature">
@@ -1428,7 +1429,7 @@ export default function ConsultationDetailPage() {
         ` : ""}
 
         <div class="doctor-signature">
-          <div><strong>Dr. ${clinicalNote?.doctor.full_name || ""}</strong></div>
+          <div><strong>${formatDoctorName(clinicalNote?.doctor.full_name || "")}</strong></div>
           <div>${clinicalNote?.doctor.degree || ""}</div>
           <div>Reg. No: ${clinicalNote?.doctor.registration_number || ""}</div>
           <div style="margin-top: 40px;">_______________________</div>

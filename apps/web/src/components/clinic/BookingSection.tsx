@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ProfessionalType } from "@swasthya/database";
+import { formatProfessionalName } from "@/lib/format-name";
 
 interface Doctor {
   id: string;
@@ -296,10 +297,7 @@ export function BookingSection({
         >
           <option value="">{t.selectDoctor}...</option>
           {doctors.map((doctor) => {
-            const displayName =
-              doctor.type === "DOCTOR" || doctor.type === "DENTIST"
-                ? `Dr. ${doctor.full_name}`
-                : doctor.full_name;
+            const displayName = formatProfessionalName(doctor.full_name, doctor.type);
             const specialty =
               doctor.specialties && doctor.specialties.length > 0
                 ? doctor.specialties[0]
@@ -331,9 +329,7 @@ export function BookingSection({
               )}
             </div>
             <p className="font-bold mt-2">
-              {selectedDoctorData.type === "DOCTOR" || selectedDoctorData.type === "DENTIST"
-                ? `Dr. ${selectedDoctorData.full_name}`
-                : selectedDoctorData.full_name}
+              {formatProfessionalName(selectedDoctorData.full_name, selectedDoctorData.type)}
             </p>
             {selectedDoctorData.specialties && selectedDoctorData.specialties.length > 0 && (
               <p className="text-sm text-foreground/70">{selectedDoctorData.specialties.join(", ")}</p>

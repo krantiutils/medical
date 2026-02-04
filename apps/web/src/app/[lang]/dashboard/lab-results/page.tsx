@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatDoctorName } from "@/lib/format-name";
 
 interface Clinic {
   id: string;
@@ -286,7 +287,7 @@ export default function PatientLabResultsPage() {
         </div>
 
         <div style="margin-bottom: 20px; padding: 10px; background: #f5f5f5; border: 2px solid #121212;">
-          <strong>Ordered By:</strong> Dr. ${order.ordered_by.full_name}
+          <strong>Ordered By:</strong> ${formatDoctorName(order.ordered_by.full_name)}
           (${order.ordered_by.registration_number})
         </div>
 

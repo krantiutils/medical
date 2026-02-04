@@ -74,9 +74,9 @@ async function importDoctors(): Promise<void> {
     const upsertPromises = batch.map(async (record) => {
       try {
         const nmcNo = record.nmc_no?.trim();
-        const fullName = record.full_name?.trim();
+        const rawName = record.full_name?.trim();
 
-        if (!nmcNo || !fullName) {
+        if (!nmcNo || !rawName) {
           errors++;
           errorDetails.push({
             nmc_no: nmcNo || "MISSING",
@@ -85,6 +85,8 @@ async function importDoctors(): Promise<void> {
           return;
         }
 
+        // Strip "Dr." prefix from name to store clean name in DB
+        const fullName = rawName.replace(/^Dr\.?\s*/i, "").trim();
         const slug = generateSlug(fullName, nmcNo);
 
         const result = await prisma.professional.upsert({
