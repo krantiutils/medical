@@ -44,6 +44,7 @@ export async function GET(request: NextRequest) {
     const clinicalNoteId = searchParams.get("clinical_note_id");
     const patientId = searchParams.get("patient_id");
     const status = searchParams.get("status");
+    const searchQuery = searchParams.get("q");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
 
@@ -62,6 +63,15 @@ export async function GET(request: NextRequest) {
 
     if (status) {
       where.status = status;
+    }
+
+    if (searchQuery) {
+      where.OR = [
+        { prescription_no: { contains: searchQuery, mode: "insensitive" } },
+        { patient: { full_name: { contains: searchQuery, mode: "insensitive" } } },
+        { patient: { patient_number: { contains: searchQuery, mode: "insensitive" } } },
+        { doctor: { full_name: { contains: searchQuery, mode: "insensitive" } } },
+      ];
     }
 
     // Find prescriptions

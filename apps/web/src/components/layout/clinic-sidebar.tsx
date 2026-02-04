@@ -23,6 +23,7 @@ const mainLinks: SidebarLink[] = [
   { label: "Services", labelNe: "सेवाहरू", href: "/services" },
   { label: "Reception", labelNe: "रिसेप्सन", href: "/reception" },
   { label: "Consultations", labelNe: "परामर्श", href: "/consultations" },
+  { label: "Prescriptions", labelNe: "प्रेस्क्रिप्सन", href: "/prescriptions" },
   { label: "Billing", labelNe: "बिलिङ", href: "/billing" },
   { label: "Reports", labelNe: "रिपोर्ट", href: "/reports" },
   { label: "Lab", labelNe: "ल्याब", href: "/lab" },
