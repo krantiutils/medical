@@ -145,6 +145,13 @@ export function Header({ lang }: HeaderProps) {
                       Profile
                     </Link>
                     <Link
+                      href={getLinkHref("/dashboard/appointments")}
+                      className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      Appointments
+                    </Link>
+                    <Link
                       href={getLinkHref("/clinic/dashboard")}
                       className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
                       onClick={() => setUserMenuOpen(false)}

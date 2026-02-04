@@ -55,3 +55,4 @@ _archive/
 .claude/
 .beads/
 .logs/
+package-lock.json
