@@ -84,6 +84,8 @@ export default function ClinicDashboardPage() {
       ipdDesc: "Wards, beds, and admissions",
       manageLeaves: "Manage Leaves",
       manageLeavesDesc: "Doctor leave & availability",
+      patientRegistry: "Patient Registry",
+      patientRegistryDesc: "View all registered patients",
     },
     ne: {
       title: "क्लिनिक ड्यासबोर्ड",
@@ -132,6 +134,8 @@ export default function ClinicDashboardPage() {
       ipdDesc: "वार्ड, बेड, र भर्ना",
       manageLeaves: "बिदा व्यवस्थापन",
       manageLeavesDesc: "डाक्टर बिदा र उपलब्धता",
+      patientRegistry: "बिरामी रजिस्ट्री",
+      patientRegistryDesc: "सबै दर्ता बिरामीहरू हेर्नुहोस्",
     },
   };
 
@@ -389,36 +393,38 @@ export default function ClinicDashboardPage() {
           </Card>
 
           {/* Total Patients */}
-          <Card decorator="yellow" decoratorPosition="top-left" className="hover:-translate-y-1 transition-transform">
-            <CardContent className="py-6">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
-                    {tr.totalPatients}
-                  </p>
-                  <p className="text-4xl font-black text-foreground">
-                    {stats?.totalPatients ?? 0}
-                  </p>
-                  <p className="text-sm text-foreground/50 mt-1">{tr.registered}</p>
+          <Link href={`/${lang}/clinic/dashboard/patients`}>
+            <Card decorator="yellow" decoratorPosition="top-left" className="hover:-translate-y-1 transition-transform cursor-pointer">
+              <CardContent className="py-6">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                      {tr.totalPatients}
+                    </p>
+                    <p className="text-4xl font-black text-foreground">
+                      {stats?.totalPatients ?? 0}
+                    </p>
+                    <p className="text-sm text-foreground/50 mt-1">{tr.registered}</p>
+                  </div>
+                  <div className="w-12 h-12 bg-primary-yellow/10 rounded-full flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-primary-yellow"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
                 </div>
-                <div className="w-12 h-12 bg-primary-yellow/10 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-primary-yellow"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
           {/* Total Doctors */}
           <Card decorator="blue" decoratorPosition="top-left" className="hover:-translate-y-1 transition-transform">
@@ -480,6 +486,35 @@ export default function ClinicDashboardPage() {
                     <div>
                       <h3 className="font-bold text-foreground text-lg">{tr.addPatient}</h3>
                       <p className="text-sm text-foreground/60">{tr.addPatientDesc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Patient Registry */}
+            <Link href={`/${lang}/clinic/dashboard/patients`}>
+              <Card className="hover:-translate-y-1 transition-transform cursor-pointer group">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-primary-yellow rounded-lg flex items-center justify-center border-2 border-foreground shadow-[4px_4px_0_0_#121212] group-hover:shadow-[2px_2px_0_0_#121212] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                      <svg
+                        className="w-7 h-7 text-foreground"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-lg">{tr.patientRegistry}</h3>
+                      <p className="text-sm text-foreground/60">{tr.patientRegistryDesc}</p>
                     </div>
                   </div>
                 </CardContent>
