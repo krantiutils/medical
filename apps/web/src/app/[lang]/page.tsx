@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 interface HomePageProps {
@@ -11,13 +12,16 @@ interface HomePageProps {
 }
 
 export default function HomePage({ params }: HomePageProps) {
+  const { lang } = use(params);
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const t = useTranslations("home");
+  const tc = useTranslations("common");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/en/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/${lang}/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -31,19 +35,18 @@ export default function HomePage({ params }: HomePageProps) {
             <div className="max-w-2xl">
               {/* Small label */}
               <span className="inline-block px-4 py-2 mb-6 text-xs font-bold uppercase tracking-widest bg-primary-yellow border-2 border-foreground">
-                Nepal&apos;s Healthcare Directory
+                {t("tagline")}
               </span>
 
               {/* Main headline */}
               <h1 className="text-6xl lg:text-8xl font-black uppercase leading-[0.9] tracking-tight mb-6">
-                Find Your
-                <span className="block text-primary-red">Doctor</span>
+                {t("headline")}
+                <span className="block text-primary-red">{t("headlineHighlight")}</span>
               </h1>
 
               {/* Subtitle */}
               <p className="text-lg lg:text-xl text-foreground/80 mb-10 max-w-lg">
-                Search 40,000+ verified doctors, dentists, and pharmacists across Nepal.
-                Find the right healthcare professional for your needs.
+                {t("subtitle")}
               </p>
 
               {/* Search Form */}
@@ -51,7 +54,7 @@ export default function HomePage({ params }: HomePageProps) {
                 <div className="relative flex-1">
                   <input
                     type="text"
-                    placeholder="Search by name, specialty, or location..."
+                    placeholder={t("searchPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full px-6 py-4 text-lg bg-white border-4 border-foreground focus:outline-none focus:ring-0 focus:border-primary-blue placeholder:text-foreground/40"
@@ -63,7 +66,7 @@ export default function HomePage({ params }: HomePageProps) {
                   size="lg"
                   className="px-8 py-4 text-lg"
                 >
-                  Search
+                  {tc("search")}
                 </Button>
               </form>
 
@@ -71,18 +74,18 @@ export default function HomePage({ params }: HomePageProps) {
               <div className="flex flex-wrap gap-8 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-primary-blue" />
-                  <span className="font-bold">38,000+</span>
-                  <span className="text-foreground/60">Doctors</span>
+                  <span className="font-bold">{t("doctorsCount")}</span>
+                  <span className="text-foreground/60">{t("doctorsLabel")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-primary-red" />
-                  <span className="font-bold">2,500+</span>
-                  <span className="text-foreground/60">Dentists</span>
+                  <span className="font-bold">{t("dentistsCount")}</span>
+                  <span className="text-foreground/60">{t("dentistsLabel")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-primary-yellow" />
-                  <span className="font-bold">5,000+</span>
-                  <span className="text-foreground/60">Pharmacists</span>
+                  <span className="font-bold">{t("pharmacistsCount")}</span>
+                  <span className="text-foreground/60">{t("pharmacistsLabel")}</span>
                 </div>
               </div>
             </div>
@@ -139,13 +142,13 @@ export default function HomePage({ params }: HomePageProps) {
       {/* Categories section */}
       <section className="py-16 px-6 lg:px-16 border-t-4 border-foreground">
         <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight mb-12">
-          Browse by Category
+          {t("browseByCategory")}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Doctors Card */}
           <a
-            href="/en/doctors"
+            href={`/${lang}/doctors`}
             className="group relative bg-white border-4 border-foreground p-8 shadow-xl transition-all duration-200 hover:-translate-y-1 hover:shadow-blue"
           >
             <div className="absolute top-0 right-0 w-8 h-8 bg-primary-blue" />
@@ -154,16 +157,16 @@ export default function HomePage({ params }: HomePageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold uppercase mb-2">Doctors</h3>
-            <p className="text-foreground/60 mb-4">Find registered medical practitioners across Nepal</p>
+            <h3 className="text-2xl font-bold uppercase mb-2">{tc("doctors")}</h3>
+            <p className="text-foreground/60 mb-4">{t("doctorsDescription")}</p>
             <span className="text-sm font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
-              Browse Doctors →
+              {t("browseDoctors")} →
             </span>
           </a>
 
           {/* Dentists Card */}
           <a
-            href="/en/dentists"
+            href={`/${lang}/dentists`}
             className="group relative bg-white border-4 border-foreground p-8 shadow-xl transition-all duration-200 hover:-translate-y-1 hover:shadow-red"
           >
             <div className="absolute top-0 right-0 w-8 h-8 bg-primary-red" />
@@ -172,16 +175,16 @@ export default function HomePage({ params }: HomePageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold uppercase mb-2">Dentists</h3>
-            <p className="text-foreground/60 mb-4">Connect with dental professionals near you</p>
+            <h3 className="text-2xl font-bold uppercase mb-2">{tc("dentists")}</h3>
+            <p className="text-foreground/60 mb-4">{t("dentistsDescription")}</p>
             <span className="text-sm font-bold uppercase tracking-wider text-primary-red group-hover:underline">
-              Browse Dentists →
+              {t("browseDentists")} →
             </span>
           </a>
 
           {/* Pharmacists Card */}
           <a
-            href="/en/pharmacists"
+            href={`/${lang}/pharmacists`}
             className="group relative bg-white border-4 border-foreground p-8 shadow-xl transition-all duration-200 hover:-translate-y-1 hover:shadow-yellow"
           >
             <div className="absolute top-0 right-0 w-8 h-8 bg-primary-yellow" />
@@ -190,10 +193,10 @@ export default function HomePage({ params }: HomePageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold uppercase mb-2">Pharmacists</h3>
-            <p className="text-foreground/60 mb-4">Locate licensed pharmacists for medication advice</p>
+            <h3 className="text-2xl font-bold uppercase mb-2">{tc("pharmacists")}</h3>
+            <p className="text-foreground/60 mb-4">{t("pharmacistsDescription")}</p>
             <span className="text-sm font-bold uppercase tracking-wider text-primary-yellow group-hover:underline">
-              Browse Pharmacists →
+              {t("browsePharmacists")} →
             </span>
           </a>
         </div>

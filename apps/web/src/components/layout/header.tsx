@@ -4,24 +4,27 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 interface HeaderProps {
   lang: string;
 }
-
-const navLinks = [
-  { label: "Home", href: "" },
-  { label: "Doctors", href: "/doctors" },
-  { label: "Dentists", href: "/dentists" },
-  { label: "Pharmacists", href: "/pharmacists" },
-  { label: "Clinics", href: "/clinics" },
-];
 
 export function Header({ lang }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  const t = useTranslations("nav");
+  const tc = useTranslations("common");
+
+  const navLinks = [
+    { label: t("home"), href: "" },
+    { label: t("doctors"), href: "/doctors" },
+    { label: t("dentists"), href: "/dentists" },
+    { label: t("pharmacists"), href: "/pharmacists" },
+    { label: t("clinics"), href: "/clinics" },
+  ];
 
   const getLinkHref = (path: string) => `/${lang}${path}`;
 
@@ -51,7 +54,7 @@ export function Header({ lang }: HeaderProps) {
           <Link
             href={getLinkHref("")}
             className="flex items-center gap-2 group"
-            aria-label="Swasthya - Home"
+            aria-label={t("logoAriaLabel")}
           >
             {/* Geometric shapes logo */}
             <div className="flex items-center gap-1">
@@ -142,46 +145,46 @@ export function Header({ lang }: HeaderProps) {
                       className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
                       onClick={() => setUserMenuOpen(false)}
                     >
-                      Profile
+                      {t("profile")}
                     </Link>
                     <Link
                       href={getLinkHref("/dashboard/appointments")}
                       className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
                       onClick={() => setUserMenuOpen(false)}
                     >
-                      Appointments
+                      {t("appointments")}
                     </Link>
                     <Link
                       href={getLinkHref("/clinic/dashboard")}
                       className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
                       onClick={() => setUserMenuOpen(false)}
                     >
-                      Clinic Dashboard
+                      {t("clinicDashboard")}
                     </Link>
                     {(session.user as { role?: string }).role === "ADMIN" && (
                       <>
                         <div className="border-t-2 border-foreground/10 mt-1 mb-1" />
-                        <p className="px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-foreground/40">Admin</p>
+                        <p className="px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-foreground/40">{t("admin")}</p>
                         <Link
                           href={getLinkHref("/admin/claims")}
                           className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
                           onClick={() => setUserMenuOpen(false)}
                         >
-                          Doctor Claims
+                          {t("doctorClaims")}
                         </Link>
                         <Link
                           href={getLinkHref("/admin/clinics")}
                           className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
                           onClick={() => setUserMenuOpen(false)}
                         >
-                          Clinic Verification
+                          {t("clinicVerification")}
                         </Link>
                         <Link
                           href={getLinkHref("/admin/reviews")}
                           className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
                           onClick={() => setUserMenuOpen(false)}
                         >
-                          Review Moderation
+                          {t("reviewModeration")}
                         </Link>
                       </>
                     )}
@@ -190,7 +193,7 @@ export function Header({ lang }: HeaderProps) {
                       onClick={() => { setUserMenuOpen(false); signOut({ callbackUrl: `/${lang}` }); }}
                       className="w-full text-left px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-primary-red hover:bg-primary-red/10 transition-colors border-t-2 border-foreground/10"
                     >
-                      Sign Out
+                      {t("signOut")}
                     </button>
                   </div>
                 )}
@@ -200,7 +203,7 @@ export function Header({ lang }: HeaderProps) {
                 href={getLinkHref("/login")}
                 className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-bold uppercase tracking-wider bg-white text-foreground border-2 border-foreground shadow-[4px_4px_0_0_#121212] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100"
               >
-                Login
+                {tc("login")}
               </Link>
             )}
           </div>
@@ -211,7 +214,7 @@ export function Header({ lang }: HeaderProps) {
             className="lg:hidden p-2 border-2 border-foreground bg-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
-            aria-label="Toggle navigation menu"
+            aria-label={t("toggleMenu")}
           >
             {mobileMenuOpen ? (
               <svg
@@ -305,14 +308,14 @@ export function Header({ lang }: HeaderProps) {
                   <div className="w-5 h-5 rounded-full bg-primary-blue flex items-center justify-center text-white text-[10px] font-black">
                     {session.user.name?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  Dashboard
+                  {t("dashboard")}
                 </Link>
                 <button
                   type="button"
                   onClick={() => { setMobileMenuOpen(false); signOut({ callbackUrl: `/${lang}` }); }}
                   className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-bold uppercase tracking-wider text-primary-red border-2 border-primary-red active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100"
                 >
-                  Sign Out
+                  {t("signOut")}
                 </button>
               </div>
             ) : (
@@ -321,7 +324,7 @@ export function Header({ lang }: HeaderProps) {
                 className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-bold uppercase tracking-wider bg-white text-foreground border-2 border-foreground shadow-[4px_4px_0_0_#121212] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Login
+                {tc("login")}
               </Link>
             )}
           </div>

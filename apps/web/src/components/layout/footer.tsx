@@ -1,53 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface FooterProps {
   lang: string;
 }
-
-const footerSections = [
-  {
-    title: "Explore",
-    links: [
-      { label: "Find Doctors", href: "/doctors" },
-      { label: "Find Dentists", href: "/dentists" },
-      { label: "Find Pharmacists", href: "/pharmacists" },
-      { label: "Search", href: "/search" },
-      { label: "Contact Us", href: "/contact" },
-    ],
-  },
-  {
-    title: "For Doctors",
-    links: [
-      { label: "Claim Your Profile", href: "/claim" },
-      { label: "My Dashboard", href: "/dashboard" },
-      { label: "Instant Consultations", href: "/dashboard/instant-requests" },
-    ],
-  },
-  {
-    title: "For Clinics",
-    links: [
-      { label: "Register Clinic", href: "/clinic/register" },
-      { label: "Clinic Dashboard", href: "/clinic/dashboard" },
-    ],
-  },
-  {
-    title: "Account",
-    links: [
-      { label: "Login", href: "/login" },
-      { label: "Register", href: "/register" },
-      { label: "My Consultations", href: "/dashboard/consultations" },
-      { label: "Lab Results", href: "/dashboard/lab-results" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Terms of Service", href: "/terms" },
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "About", href: "/about" },
-    ],
-  },
-];
 
 const socialLinks = [
   {
@@ -101,6 +59,54 @@ const socialLinks = [
 ];
 
 export function Footer({ lang }: FooterProps) {
+  const t = useTranslations("footer");
+  const tc = useTranslations("common");
+
+  const footerSections = [
+    {
+      title: t("explore"),
+      links: [
+        { label: t("findDoctors"), href: "/doctors" },
+        { label: t("findDentists"), href: "/dentists" },
+        { label: t("findPharmacists"), href: "/pharmacists" },
+        { label: t("search"), href: "/search" },
+        { label: t("contactUs"), href: "/contact" },
+      ],
+    },
+    {
+      title: t("forDoctors"),
+      links: [
+        { label: t("claimProfile"), href: "/claim" },
+        { label: t("myDashboard"), href: "/dashboard" },
+        { label: t("instantConsultations"), href: "/dashboard/instant-requests" },
+      ],
+    },
+    {
+      title: t("forClinics"),
+      links: [
+        { label: t("registerClinic"), href: "/clinic/register" },
+        { label: t("clinicDashboard"), href: "/clinic/dashboard" },
+      ],
+    },
+    {
+      title: t("account"),
+      links: [
+        { label: t("login"), href: "/login" },
+        { label: t("register"), href: "/register" },
+        { label: t("myConsultations"), href: "/dashboard/consultations" },
+        { label: t("labResults"), href: "/dashboard/lab-results" },
+      ],
+    },
+    {
+      title: t("legal"),
+      links: [
+        { label: t("termsOfService"), href: "/terms" },
+        { label: t("privacyPolicy"), href: "/privacy" },
+        { label: t("about"), href: "/about" },
+      ],
+    },
+  ];
+
   const getLinkHref = (path: string) => `/${lang}${path}`;
   const currentYear = new Date().getFullYear();
 
@@ -116,7 +122,7 @@ export function Footer({ lang }: FooterProps) {
               <Link
                 href={getLinkHref("")}
                 className="flex items-center gap-2 mb-4"
-                aria-label="Swasthya - Home"
+                aria-label={t("logoAriaLabel")}
               >
                 {/* Geometric shapes logo */}
                 <div className="flex items-center gap-1">
@@ -132,8 +138,7 @@ export function Footer({ lang }: FooterProps) {
                 </span>
               </Link>
               <p className="text-sm text-white/70 leading-relaxed">
-                Nepal&apos;s comprehensive healthcare directory. Find verified doctors,
-                dentists, and pharmacists across the country.
+                {t("tagline")}
               </p>
             </div>
 
@@ -184,7 +189,7 @@ export function Footer({ lang }: FooterProps) {
         <div className="px-4 lg:px-8 py-6">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-white/50">
-              © {currentYear} Swasthya. All rights reserved.
+              {t("copyright", { year: currentYear })}
             </p>
             <div className="flex items-center gap-1">
               {/* Decorative Bauhaus element */}
@@ -195,7 +200,7 @@ export function Footer({ lang }: FooterProps) {
                 style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
               />
               <span className="text-xs text-white/50 ml-2">
-                Made in Nepal
+                {tc("madeInNepal")}
               </span>
             </div>
           </div>
