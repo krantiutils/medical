@@ -1,26 +1,64 @@
 import createMiddleware from "next-intl/middleware";
+import { NextRequest, NextResponse } from "next/server";
 import { locales, defaultLocale } from "./i18n/config";
 
-export default createMiddleware({
-  // A list of all locales that are supported
+const intlMiddleware = createMiddleware({
   locales,
-
-  // Used when no locale matches
   defaultLocale,
-
-  // Redirect to the default locale when the root path is accessed
   localePrefix: "always",
 });
 
-export const config = {
-  // Match only internationalized pathnames
-  matcher: [
-    // Enable a redirect to a matching locale at the root
-    "/",
+// Paths that require authentication (after stripping the locale prefix)
+const protectedPaths = ["/admin", "/clinic/dashboard", "/dashboard"];
 
-    // Match all pathnames except for
-    // - … if they start with `/api`, `/_next` or `/_vercel`
-    // - … the ones containing a dot (e.g. `favicon.ico`)
+function isProtectedPath(pathWithoutLocale: string): boolean {
+  return protectedPaths.some(
+    (p) => pathWithoutLocale === p || pathWithoutLocale.startsWith(p + "/")
+  );
+}
+
+function getPathWithoutLocale(pathname: string): string {
+  for (const locale of locales) {
+    const prefix = `/${locale}`;
+    if (pathname === prefix || pathname.startsWith(prefix + "/")) {
+      return pathname.slice(prefix.length) || "/";
+    }
+  }
+  return pathname;
+}
+
+export default function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const pathWithoutLocale = getPathWithoutLocale(pathname);
+
+  if (isProtectedPath(pathWithoutLocale)) {
+    // Check for session token cookie (NextAuth uses different cookie names in dev vs prod)
+    const hasSession =
+      request.cookies.has("next-auth.session-token") ||
+      request.cookies.has("__Secure-next-auth.session-token");
+
+    if (!hasSession) {
+      // Extract locale from the URL or fall back to default
+      let locale = defaultLocale;
+      for (const loc of locales) {
+        if (pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`) {
+          locale = loc;
+          break;
+        }
+      }
+
+      const loginUrl = new URL(`/${locale}/login`, request.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  return intlMiddleware(request);
+}
+
+export const config = {
+  matcher: [
+    "/",
     "/((?!api|_next|_vercel|.*\\..*).*)",
   ],
 };

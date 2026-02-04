@@ -6,39 +6,36 @@ interface FooterProps {
 
 const footerSections = [
   {
-    title: "About",
+    title: "Explore",
     links: [
-      { label: "About Us", href: "/about" },
-      { label: "Our Mission", href: "/mission" },
-      { label: "Contact", href: "/contact" },
-      { label: "Careers", href: "/careers" },
+      { label: "Find Doctors", href: "/doctors" },
+      { label: "Find Dentists", href: "/dentists" },
+      { label: "Find Pharmacists", href: "/pharmacists" },
+      { label: "Search", href: "/search" },
     ],
   },
   {
     title: "For Doctors",
     links: [
       { label: "Claim Your Profile", href: "/claim" },
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Verification", href: "/verification" },
-      { label: "Help Center", href: "/help/doctors" },
+      { label: "My Dashboard", href: "/dashboard" },
+      { label: "Instant Consultations", href: "/dashboard/instant-requests" },
     ],
   },
   {
     title: "For Clinics",
     links: [
-      { label: "Register Clinic", href: "/register-clinic" },
-      { label: "Manage Listings", href: "/dashboard/clinic" },
-      { label: "Advertising", href: "/advertising" },
-      { label: "Partnerships", href: "/partnerships" },
+      { label: "Register Clinic", href: "/clinic/register" },
+      { label: "Clinic Dashboard", href: "/clinic/dashboard" },
     ],
   },
   {
-    title: "Legal",
+    title: "Account",
     links: [
-      { label: "Terms of Service", href: "/terms" },
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Cookie Policy", href: "/cookies" },
-      { label: "Data Protection", href: "/data-protection" },
+      { label: "Login", href: "/login" },
+      { label: "Register", href: "/register" },
+      { label: "My Consultations", href: "/dashboard/consultations" },
+      { label: "Lab Results", href: "/dashboard/lab-results" },
     ],
   },
 ];

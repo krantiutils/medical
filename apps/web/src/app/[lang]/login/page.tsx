@@ -10,13 +10,42 @@ function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const explicitCallback = searchParams.get("callbackUrl");
+  const callbackUrl = explicitCallback || "/";
   const error = searchParams.get("error");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const getRoleRedirect = async (): Promise<string> => {
+    // If user provided an explicit callback, honour it
+    if (explicitCallback) return explicitCallback;
+
+    try {
+      const res = await fetch("/api/auth/session");
+      if (!res.ok) return `/${lang}/dashboard`;
+      const session = await res.json();
+      const role = session?.user?.role;
+
+      if (role === "ADMIN") return `/${lang}/admin/claims`;
+
+      // Check if user owns a clinic
+      if (role === "USER" || role === "PROFESSIONAL") {
+        try {
+          const clinicRes = await fetch("/api/clinic/dashboard");
+          if (clinicRes.ok) return `/${lang}/clinic/dashboard`;
+        } catch {
+          // No clinic — fall through
+        }
+      }
+
+      return `/${lang}/dashboard`;
+    } catch {
+      return `/${lang}/dashboard`;
+    }
+  };
 
   const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +63,8 @@ function LoginPageContent() {
       if (result?.error) {
         setFormError(result.error);
       } else if (result?.ok) {
-        router.push(callbackUrl);
+        const destination = await getRoleRedirect();
+        router.push(destination);
         router.refresh();
       }
     } catch {
@@ -44,8 +74,9 @@ function LoginPageContent() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    signIn("google", { callbackUrl });
+  const handleGoogleLogin = async () => {
+    const destination = explicitCallback || `/${lang}/dashboard`;
+    signIn("google", { callbackUrl: destination });
   };
 
   const getErrorMessage = (errorCode: string | null): string | null => {
