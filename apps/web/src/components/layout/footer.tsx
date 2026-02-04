@@ -12,6 +12,7 @@ const footerSections = [
       { label: "Find Dentists", href: "/dentists" },
       { label: "Find Pharmacists", href: "/pharmacists" },
       { label: "Search", href: "/search" },
+      { label: "Contact Us", href: "/contact" },
     ],
   },
   {
