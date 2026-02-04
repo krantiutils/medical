@@ -38,6 +38,14 @@ const footerSections = [
       { label: "Lab Results", href: "/dashboard/lab-results" },
     ],
   },
+  {
+    title: "Legal",
+    links: [
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "About", href: "/about" },
+    ],
+  },
 ];
 
 const socialLinks = [
@@ -146,7 +154,7 @@ export function Footer({ lang }: FooterProps) {
           </div>
 
           {/* Links sections */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-12">
             {footerSections.map((section) => (
               <div key={section.title}>
                 <h3 className="text-xs font-bold uppercase tracking-widest text-primary-yellow mb-4">
