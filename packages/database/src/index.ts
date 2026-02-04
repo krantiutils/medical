@@ -1,6 +1,34 @@
 import { PrismaClient } from "@prisma/client";
 
-export * from "@prisma/client";
+// Explicit re-exports for Next.js 16 Turbopack compatibility
+// (export * from CJS modules fails at runtime)
+export { Prisma, PrismaClient } from "@prisma/client";
+
+// Enums used across the app
+export {
+  ProfessionalType,
+  UserRole,
+  VerificationStatus,
+  ClinicType,
+  AppointmentStatus,
+  AppointmentType,
+  AppointmentSource,
+  PaymentMode,
+  PaymentStatus,
+  DrugSchedule,
+  ProductCategory,
+  CreditTransactionType,
+  ClinicalNoteStatus,
+  PrescriptionStatus,
+  LabOrderStatus,
+  LabOrderPriority,
+  LabResultFlag,
+  WardType,
+  BedStatus,
+  AdmissionStatus,
+  VideoConsultationStatus,
+  VideoConsultationType,
+} from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

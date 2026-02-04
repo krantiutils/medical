@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    console.log("DEBUG clinic register: session.user =", JSON.stringify(session.user));
     const formData = await request.formData();
 
     // Extract form fields
@@ -318,8 +319,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error registering clinic:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to register clinic" },
+      { error: "Failed to register clinic", details: process.env.NODE_ENV === "development" ? message : undefined },
       { status: 500 }
     );
   }
