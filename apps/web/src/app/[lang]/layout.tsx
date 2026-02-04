@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
@@ -36,7 +37,9 @@ export default async function LangLayout({ children, params }: LangLayoutProps) 
     <SessionProvider>
       <NextIntlClientProvider messages={messages}>
         <div data-lang={lang} className="min-h-screen flex flex-col">
-          <Header lang={lang} />
+          <Suspense>
+            <Header lang={lang} />
+          </Suspense>
           <main className="flex-1">{children}</main>
           <Footer lang={lang} />
         </div>
