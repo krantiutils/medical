@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
@@ -14,6 +14,8 @@ export function Header({ lang }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const t = useTranslations("nav");
   const tc = useTranslations("common");
@@ -25,6 +27,29 @@ export function Header({ lang }: HeaderProps) {
     { label: t("pharmacists"), href: "/pharmacists" },
     { label: t("clinics"), href: "/clinics" },
   ];
+
+  // Sync search input with current query when on search page
+  const isSearchPage = pathname.startsWith(`/${lang}/search`);
+  const [searchValue, setSearchValue] = useState(() =>
+    isSearchPage ? (searchParams.get("q") || "") : ""
+  );
+
+  useEffect(() => {
+    if (isSearchPage) {
+      setSearchValue(searchParams.get("q") || "");
+    } else {
+      setSearchValue("");
+    }
+  }, [isSearchPage, searchParams]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = searchValue.trim();
+    if (trimmed) {
+      router.push(`/${lang}/search?q=${encodeURIComponent(trimmed)}`);
+      setMobileMenuOpen(false);
+    }
+  };
 
   const getLinkHref = (path: string) => `/${lang}${path}`;
 
@@ -89,6 +114,29 @@ export function Header({ lang }: HeaderProps) {
               </Link>
             ))}
           </nav>
+
+          {/* Desktop Search Bar */}
+          <form
+            onSubmit={handleSearch}
+            className="hidden lg:flex items-center"
+          >
+            <input
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search doctors, clinics..."
+              className="w-48 xl:w-64 px-3 py-1.5 text-sm bg-white border-2 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40"
+            />
+            <button
+              type="submit"
+              className="px-3 py-1.5 bg-foreground text-white border-2 border-foreground hover:bg-primary-blue hover:border-primary-blue transition-colors"
+              aria-label="Search"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </form>
 
           {/* Right side: Language switcher + Login */}
           <div className="hidden lg:flex items-center gap-4">
@@ -252,6 +300,29 @@ export function Header({ lang }: HeaderProps) {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t-2 border-foreground bg-white">
+          {/* Mobile Search */}
+          <form
+            onSubmit={handleSearch}
+            className="flex items-center p-4 border-b-2 border-foreground/20"
+          >
+            <input
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search doctors, clinics..."
+              className="flex-1 px-4 py-3 text-sm bg-white border-2 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40"
+            />
+            <button
+              type="submit"
+              className="px-4 py-3 bg-foreground text-white border-2 border-foreground border-l-0 hover:bg-primary-blue hover:border-primary-blue transition-colors"
+              aria-label="Search"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </form>
+
           <nav className="flex flex-col">
             {navLinks.map((link) => (
               <Link
