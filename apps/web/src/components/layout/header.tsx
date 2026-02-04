@@ -26,6 +26,7 @@ export function Header({ lang }: HeaderProps) {
     { label: t("dentists"), href: "/dentists" },
     { label: t("pharmacists"), href: "/pharmacists" },
     { label: t("clinics"), href: "/clinics" },
+    { label: t("symptomChecker"), href: "/symptom-checker" },
   ];
 
   // Sync search input with current query when on search page
