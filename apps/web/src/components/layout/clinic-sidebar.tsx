@@ -32,6 +32,7 @@ const mainLinks: SidebarLink[] = [
   { label: "Reports", labelNe: "रिपोर्ट", href: "/reports" },
   { label: "Lab", labelNe: "ल्याब", href: "/lab" },
   { label: "Lab Walk-in", labelNe: "ल्याब वाक-इन", href: "/lab/walk-in", permission: "lab" },
+  { label: "Packages", labelNe: "प्याकेजहरू", href: "/packages" },
   { label: "Page Builder", labelNe: "पेज बिल्डर", href: "/page-builder" },
   { label: "Staff", labelNe: "कर्मचारी", href: "/staff", permission: "staff" },
   { label: "Settings", labelNe: "सेटिङ्हरू", href: "/settings", permission: "settings" },

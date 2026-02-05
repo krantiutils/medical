@@ -41,6 +41,7 @@
     "dentists": "Dentists",
     "pharmacists": "Pharmacists",
     "clinics": "Clinics",
+    "healthPackages": "Health Packages",
     "login": "Login",
     "signOut": "Sign Out",
     "toggleMenu": "Toggle navigation menu",

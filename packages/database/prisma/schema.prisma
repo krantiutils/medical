@@ -354,6 +354,9 @@ model Clinic {
   lab_tests  LabTest[]
   lab_orders LabOrder[]
 
+  // Health packages (Phase 4)
+  health_packages HealthPackage[]
+
   // IPD models (Phase 4)
   wards      Ward[]
   admissions Admission[]
@@ -962,6 +965,9 @@ model LabTest {
   // Results for this test type
   lab_results LabResult[]
 
+  // Health packages containing this test
+  health_package_tests HealthPackageTest[]
+
   @@unique([clinic_id, code])
   @@index([clinic_id, is_active])
   @@index([clinic_id, category])
@@ -1030,6 +1036,53 @@ model LabResult {
   @@index([lab_order_id])
   @@index([lab_test_id])
   @@index([flag])
+}
+
+// ============================================================================
+// HEALTH PACKAGE MODELS (Phase 4)
+// ============================================================================
+
+model HealthPackage {
+  id               String   @id @default(uuid())
+  name             String // e.g., "Full Body Checkup", "Diabetes Panel"
+  name_ne          String? // Nepali name
+  description      String?  @db.Text
+  description_ne   String?  @db.Text
+  category         String? // e.g., "Full Body", "Cardiac", "Diabetes", "Women's Health"
+  original_price   Decimal  @db.Decimal(10, 2) // Sum of individual test prices
+  price            Decimal  @db.Decimal(10, 2) // Discounted package price
+  discount_percent Decimal? @db.Decimal(5, 2) // Calculated discount percentage
+  preparation      String?  @db.Text // Patient preparation instructions
+  turnaround_hrs   Int? // Expected turnaround time in hours
+  is_active        Boolean  @default(true)
+  is_featured      Boolean  @default(false) // Featured on patient-facing page
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  // Relations
+  clinic_id String
+  clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  // Tests in this package
+  tests HealthPackageTest[]
+
+  @@index([clinic_id, is_active])
+  @@index([clinic_id, category])
+  @@index([clinic_id])
+}
+
+model HealthPackageTest {
+  id String @id @default(uuid())
+
+  // Relations
+  package_id String
+  package    HealthPackage @relation(fields: [package_id], references: [id], onDelete: Cascade)
+  lab_test_id String
+  lab_test    LabTest @relation(fields: [lab_test_id], references: [id], onDelete: Cascade)
+
+  @@unique([package_id, lab_test_id])
+  @@index([package_id])
+  @@index([lab_test_id])
 }
 
 // ============================================================================
