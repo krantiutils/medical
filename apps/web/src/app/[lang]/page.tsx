@@ -31,7 +31,7 @@ export async function generateMetadata({
   const canonicalUrl = `${SITE_URL}/${lang}`;
 
   return {
-    title,
+    title: { absolute: title },
     description,
     openGraph: {
       title,

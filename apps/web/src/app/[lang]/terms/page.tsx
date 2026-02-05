@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com.np";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface TermsPageProps {
   params: Promise<{
@@ -17,11 +17,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: TermsPageProps): Promise<Metadata> {
   const { lang } = await params;
 
-  const title = lang === "ne" ? "सेवाका शर्तहरू | स्वास्थ्य" : "Terms of Service | Swasthya";
+  const title = lang === "ne" ? "सेवाका शर्तहरू" : "Terms of Service";
   const description =
     lang === "ne"
       ? "स्वास्थ्य प्लेटफर्म प्रयोग गर्ने सेवाका शर्तहरू।"
-      : "Terms and conditions governing the use of the Swasthya healthcare directory platform.";
+      : "Terms and conditions governing the use of the DoctorSewa healthcare directory platform.";
 
   return {
     title,
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: TermsPageProps): Promise<Meta
       title,
       description,
       url: `${SITE_URL}/${lang}/terms`,
-      siteName: "Swasthya",
+      siteName: "DoctorSewa",
       type: "website",
     },
   };
@@ -54,14 +54,14 @@ export default async function TermsPage({ params }: TermsPageProps) {
     intro:
       lang === "ne"
         ? "स्वास्थ्य प्लेटफर्म (\"प्लेटफर्म\") मा स्वागत छ। यो प्लेटफर्म पहुँच वा प्रयोग गरेर, तपाईं यी सेवाका शर्तहरू (\"शर्तहरू\") मा बाँधिन सहमत हुनुहुन्छ। यदि तपाईं यी शर्तहरूमा सहमत हुनुहुन्न भने, कृपया प्लेटफर्म प्रयोग नगर्नुहोस्।"
-        : 'Welcome to the Swasthya platform ("Platform"). By accessing or using this Platform, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the Platform.',
+        : 'Welcome to the DoctorSewa platform ("Platform"). By accessing or using this Platform, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the Platform.',
     sections: [
       {
         heading: lang === "ne" ? "१. प्लेटफर्मको विवरण" : "1. Description of the Platform",
         content:
           lang === "ne"
             ? "स्वास्थ्य नेपालमा स्वास्थ्य सेवा डाइरेक्टरी हो जसले प्रयोगकर्ताहरूलाई प्रमाणित डाक्टरहरू, दन्त चिकित्सकहरू, फार्मासिस्टहरू, र क्लिनिकहरू खोज्न मद्दत गर्छ। प्लेटफर्मले टेलिमेडिसिन परामर्श, अपोइन्टमेन्ट बुकिङ, र क्लिनिक व्यवस्थापन उपकरणहरू पनि प्रदान गर्छ। स्वास्थ्यले प्रत्यक्ष रूपमा चिकित्सा सेवा प्रदान गर्दैन र स्वास्थ्य सेवा प्रदायक होइन।"
-            : "Swasthya is a healthcare directory in Nepal that helps users find verified doctors, dentists, pharmacists, and clinics. The Platform also provides telemedicine consultation facilitation, appointment booking, and clinic management tools. Swasthya does not directly provide medical services and is not a healthcare provider.",
+            : "DoctorSewa is a healthcare directory in Nepal that helps users find verified doctors, dentists, pharmacists, and clinics. The Platform also provides telemedicine consultation facilitation, appointment booking, and clinic management tools. DoctorSewa does not directly provide medical services and is not a healthcare provider.",
       },
       {
         heading: lang === "ne" ? "२. खाता दर्ता" : "2. Account Registration",
@@ -94,7 +94,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
         content:
           lang === "ne"
             ? "स्वास्थ्य एक सूचना र डाइरेक्टरी सेवा हो। प्लेटफर्ममा प्रदान गरिएको कुनै पनि जानकारी पेशेवर चिकित्सा सल्लाह, निदान, वा उपचारको विकल्प होइन। चिकित्सा निर्णयहरूको लागि सधैं योग्य स्वास्थ्य सेवा प्रदायकसँग सल्लाह लिनुहोस्। टेलिमेडिसिन परामर्श प्रदायक र बिरामी बीचमा हुन्छ; स्वास्थ्यले यसको गुणस्तर वा नतिजाको ग्यारेन्टी गर्दैन।"
-            : "Swasthya is an information and directory service. No information provided on the Platform constitutes professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for medical decisions. Telemedicine consultations occur between the provider and patient; Swasthya does not guarantee their quality or outcomes.",
+            : "DoctorSewa is an information and directory service. No information provided on the Platform constitutes professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for medical decisions. Telemedicine consultations occur between the provider and patient; DoctorSewa does not guarantee their quality or outcomes.",
       },
       {
         heading: lang === "ne" ? "५. प्रदायक सूचीकरण" : "5. Provider Listings",
@@ -108,14 +108,14 @@ export default async function TermsPage({ params }: TermsPageProps) {
         content:
           lang === "ne"
             ? "प्लेटफर्म र यसका सामग्रीहरू — डिजाइन, पाठ, ग्राफिक्स, लोगो, र सफ्टवेयर सहित — स्वास्थ्य वा यसका लाइसेन्सदाताहरूको सम्पत्ति हो र बौद्धिक सम्पत्ति कानूनहरूद्वारा सुरक्षित छ। तपाईंले पूर्व लिखित अनुमति बिना कुनै पनि सामग्री पुन: उत्पादन, वितरण, वा व्यावसायिक रूपमा प्रयोग गर्नु हुँदैन।"
-            : "The Platform and its content — including design, text, graphics, logos, and software — are the property of Swasthya or its licensors and are protected by intellectual property laws. You may not reproduce, distribute, or commercially exploit any content without prior written permission.",
+            : "The Platform and its content — including design, text, graphics, logos, and software — are the property of DoctorSewa or its licensors and are protected by intellectual property laws. You may not reproduce, distribute, or commercially exploit any content without prior written permission.",
       },
       {
         heading: lang === "ne" ? "७. दायित्वको सीमा" : "7. Limitation of Liability",
         content:
           lang === "ne"
             ? "कानूनले अनुमति दिएसम्म, स्वास्थ्य, यसका निर्देशकहरू, कर्मचारीहरू, वा सहयोगीहरू प्लेटफर्मको प्रयोगबाट उत्पन्न कुनै पनि अप्रत्यक्ष, आकस्मिक, विशेष, वा परिणामात्मक क्षतिहरूको लागि उत्तरदायी हुने छैनन्। यसमा प्रदायक सूचीकरणमा भरोसा, टेलिमेडिसिन परामर्शहरू, वा प्लेटफर्ममा कुनै अवरोधबाट हुने क्षतिहरू समावेश छन्।"
-            : "To the fullest extent permitted by law, Swasthya, its directors, employees, or affiliates shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of the Platform. This includes damages resulting from reliance on provider listings, telemedicine consultations, or any interruption to the Platform.",
+            : "To the fullest extent permitted by law, DoctorSewa, its directors, employees, or affiliates shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of the Platform. This includes damages resulting from reliance on provider listings, telemedicine consultations, or any interruption to the Platform.",
       },
       {
         heading: lang === "ne" ? "८. गोपनीयता" : "8. Privacy",
@@ -142,8 +142,8 @@ export default async function TermsPage({ params }: TermsPageProps) {
         heading: lang === "ne" ? "११. सम्पर्क" : "11. Contact",
         content:
           lang === "ne"
-            ? "यी शर्तहरूको बारेमा कुनै प्रश्न भएमा, कृपया हामीलाई support@swasthya.com.np मा सम्पर्क गर्नुहोस्।"
-            : "If you have any questions about these Terms, please contact us at support@swasthya.com.np.",
+            ? "यी शर्तहरूको बारेमा कुनै प्रश्न भएमा, कृपया हामीलाई support@doctorsewa.org मा सम्पर्क गर्नुहोस्।"
+            : "If you have any questions about these Terms, please contact us at support@doctorsewa.org.",
       },
     ],
   };

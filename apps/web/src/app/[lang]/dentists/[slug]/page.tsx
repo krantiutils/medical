@@ -48,22 +48,23 @@ export async function generateMetadata({ params }: DentistPageProps): Promise<Me
 
   if (!dentist) {
     return {
-      title: "Dentist Not Found | DoctorSewa",
+      title: "Dentist Not Found",
       description: "The requested dentist could not be found.",
     };
   }
 
-  const displayName = `Dr. ${dentist.full_name}`;
+  // full_name already includes "Dr." prefix from the database
+  const displayName = dentist.full_name;
 
   const specialty = dentist.specialties && dentist.specialties.length > 0
     ? dentist.specialties[0]
     : "Dentist";
 
-  const location = dentist.address || "Nepal";
+  const location = (dentist.address || "Nepal").replace(/[,\s]+$/, "");
 
-  const title = `${displayName} - ${specialty} in ${location} | DoctorSewa`;
+  const title = `${displayName} - ${specialty} in ${location}`;
 
-  const description = `${displayName} is a registered dentist practicing in ${location}. NMC Registration No: ${dentist.registration_number}. Find verified dental professionals on DoctorSewa.`;
+  const description = `${displayName} is a verified dentist${dentist.degree ? ` (${dentist.degree})` : ""} practicing in ${location}, Nepal. NDA Registration #${dentist.registration_number}.${dentist.specialties && dentist.specialties.length > 0 ? ` Specializes in ${dentist.specialties.join(", ")}.` : ""}`;
 
   const canonicalUrl = `${SITE_URL}/${lang}/dentists/${slug}`;
   const ogImageUrl = dentist.photo_url || `${SITE_URL}/og-default.png`;
@@ -107,7 +108,7 @@ function generateJsonLd(
   lang: string,
   reviews: Awaited<ReturnType<typeof getPublishedReviews>>,
 ) {
-  const displayName = `Dr. ${dentist.full_name}`;
+  const displayName = dentist.full_name;
 
   const baseJsonLd = {
     "@context": "https://schema.org",
@@ -171,7 +172,7 @@ export default async function DentistPage({ params }: DentistPageProps) {
   }
 
   const reviews = await getPublishedReviews(dentist.id);
-  const displayName = `Dr. ${dentist.full_name}`;
+  const displayName = dentist.full_name;
   const jsonLd = generateJsonLd(dentist, lang, reviews);
 
   return (

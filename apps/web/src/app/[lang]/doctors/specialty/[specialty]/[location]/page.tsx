@@ -16,7 +16,7 @@ import {
 } from "@/lib/specialties";
 
 const ITEMS_PER_PAGE = 20;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com.np";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface SpecialtyLocationPageProps {
   params: Promise<{
@@ -80,15 +80,15 @@ export async function generateMetadata({
   const locationInfo = getLocationBySlug(locationSlug);
 
   if (!specialtyInfo || !locationInfo) {
-    return { title: "Page Not Found | Swasthya" };
+    return { title: "Page Not Found" };
   }
 
   const specName = lang === "ne" ? specialtyInfo.nameNe : specialtyInfo.nameEn;
   const locName = lang === "ne" ? locationInfo.nameNe : locationInfo.nameEn;
 
   const title = lang === "ne"
-    ? `${specName} ${locName}मा | स्वास्थ्य`
-    : `${specialtyInfo.nameEn} in ${locationInfo.nameEn} | Swasthya`;
+    ? `${specName} ${locName}मा`
+    : `${specialtyInfo.nameEn} in ${locationInfo.nameEn}`;
 
   const description = lang === "ne"
     ? `${locName}मा ${specName} खोज्नुहोस्। प्रमाणित र NMC दर्ता भएका विशेषज्ञ डाक्टरहरू।`
@@ -104,7 +104,7 @@ export async function generateMetadata({
       description,
       url: canonicalUrl,
       type: "website",
-      siteName: lang === "ne" ? "स्वास्थ्य" : "Swasthya",
+      siteName: lang === "ne" ? "डक्टरसेवा" : "DoctorSewa",
     },
     twitter: {
       card: "summary",
@@ -139,7 +139,7 @@ function generateJsonLd(
     },
     isPartOf: {
       "@type": "MedicalBusiness",
-      name: "Swasthya",
+      name: "DoctorSewa",
       url: SITE_URL,
     },
   };

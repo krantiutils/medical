@@ -88,12 +88,12 @@ export async function generateMetadata({
   const { lang } = await params;
 
   const title = lang === "ne"
-    ? "नेपालका क्लिनिक र अस्पतालहरू | स्वास्थ्य"
-    : "Clinics & Hospitals in Nepal | DoctorSewa";
+    ? "नेपालका क्लिनिक र अस्पतालहरू"
+    : "Clinics & Hospitals in Nepal";
 
   const description = lang === "ne"
     ? "नेपालभरका प्रमाणित क्लिनिक, अस्पताल, पोलिक्लिनिक र औषधि पसलहरू खोज्नुहोस्। सेवाहरू, सम्पर्क जानकारी र अपोइन्टमेन्ट बुक गर्नुहोस्।"
-    : "Browse verified clinics, hospitals, polyclinics, and pharmacies across Nepal. Find services, contact info, and book appointments.";
+    : "Browse verified clinics, hospitals, polyclinics, and pharmacies across Nepal. Find healthcare services, contact info, and book appointments.";
 
   const canonicalUrl = `${SITE_URL}/${lang}/clinics`;
 

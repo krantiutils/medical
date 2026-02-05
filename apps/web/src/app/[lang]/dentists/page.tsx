@@ -61,12 +61,12 @@ export async function generateMetadata({
   const { lang } = await params;
 
   const title = lang === "ne"
-    ? "नेपालका दन्त चिकित्सकहरू | स्वास्थ्य"
-    : "Dentists in Nepal | DoctorSewa";
+    ? "नेपालका दन्त चिकित्सकहरू"
+    : "Dentists in Nepal";
 
   const description = lang === "ne"
-    ? "नेपालभरका दर्ता भएका दन्त चिकित्सकहरू खोज्नुहोस्। NDA प्रमाणपत्र सहितका प्रमाणित दन्त चिकित्सकहरू फेला पार्नुहोस्।"
-    : "Browse registered dentists across Nepal. Find verified dental professionals with NDA credentials.";
+    ? "नेपालभरका दर्ता भएका दन्त चिकित्सकहरू खोज्नुहोस्। NDA प्रमाणपत्र सहितका प्रमाणित दन्त चिकित्सकहरू नाम वा स्थान अनुसार फेला पार्नुहोस्।"
+    : "Browse 2,500+ registered dentists across Nepal. Find verified dental professionals by name or location with NDA credentials.";
 
   const canonicalUrl = `${SITE_URL}/${lang}/dentists`;
 

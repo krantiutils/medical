@@ -61,12 +61,12 @@ export async function generateMetadata({
   const { lang } = await params;
 
   const title = lang === "ne"
-    ? "नेपालका चिकित्सकहरू | स्वास्थ्य"
-    : "Doctors in Nepal | DoctorSewa";
+    ? "नेपालका चिकित्सकहरू"
+    : "Doctors in Nepal";
 
   const description = lang === "ne"
-    ? "नेपालभरका ३८,०००+ दर्ता भएका चिकित्सकहरू खोज्नुहोस्। NMC प्रमाणपत्र सहितका प्रमाणित डाक्टरहरू फेला पार्नुहोस्।"
-    : "Browse 38,000+ registered doctors across Nepal. Find verified physicians with NMC credentials.";
+    ? "नेपालभरका ३८,०००+ दर्ता भएका चिकित्सकहरू खोज्नुहोस्। NMC प्रमाणपत्र सहितका प्रमाणित डाक्टरहरू नाम, विशेषज्ञता वा स्थान अनुसार फेला पार्नुहोस्।"
+    : "Browse 38,000+ registered doctors across Nepal. Find verified physicians by name, specialty, or location with NMC credentials.";
 
   const canonicalUrl = `${SITE_URL}/${lang}/doctors`;
 

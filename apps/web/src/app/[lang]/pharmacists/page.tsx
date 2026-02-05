@@ -61,12 +61,12 @@ export async function generateMetadata({
   const { lang } = await params;
 
   const title = lang === "ne"
-    ? "नेपालका फार्मासिस्टहरू | स्वास्थ्य"
-    : "Pharmacists in Nepal | DoctorSewa";
+    ? "नेपालका फार्मासिस्टहरू"
+    : "Pharmacists in Nepal";
 
   const description = lang === "ne"
-    ? "नेपालभरका दर्ता भएका फार्मासिस्टहरू खोज्नुहोस्। NPC प्रमाणपत्र सहितका प्रमाणित फार्मासिस्टहरू फेला पार्नुहोस्।"
-    : "Browse registered pharmacists across Nepal. Find verified pharmacy professionals with NPC credentials.";
+    ? "नेपालभरका ५,०००+ दर्ता भएका फार्मासिस्टहरू खोज्नुहोस्। NPC प्रमाणपत्र सहितका प्रमाणित फार्मासिस्टहरू नाम वा स्थान अनुसार फेला पार्नुहोस्।"
+    : "Browse 5,000+ registered pharmacists across Nepal. Find verified pharmacy professionals by name or location with NPC credentials.";
 
   const canonicalUrl = `${SITE_URL}/${lang}/pharmacists`;
 

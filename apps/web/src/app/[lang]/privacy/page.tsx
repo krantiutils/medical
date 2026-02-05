@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com.np";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface PrivacyPageProps {
   params: Promise<{
@@ -17,11 +17,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PrivacyPageProps): Promise<Metadata> {
   const { lang } = await params;
 
-  const title = lang === "ne" ? "गोपनीयता नीति | स्वास्थ्य" : "Privacy Policy | Swasthya";
+  const title = lang === "ne" ? "गोपनीयता नीति" : "Privacy Policy";
   const description =
     lang === "ne"
       ? "स्वास्थ्य प्लेटफर्मले तपाईंको व्यक्तिगत डाटा कसरी सङ्कलन, प्रयोग, र सुरक्षा गर्छ।"
-      : "How Swasthya collects, uses, and protects your personal data on our healthcare directory platform.";
+      : "How DoctorSewa collects, uses, and protects your personal data on our healthcare directory platform.";
 
   return {
     title,
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PrivacyPageProps): Promise<Me
       title,
       description,
       url: `${SITE_URL}/${lang}/privacy`,
-      siteName: "Swasthya",
+      siteName: "DoctorSewa",
       type: "website",
     },
   };
@@ -54,7 +54,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
     intro:
       lang === "ne"
         ? "स्वास्थ्य (\"हामी\", \"हाम्रो\") मा तपाईंको गोपनीयता महत्वपूर्ण छ। यो गोपनीयता नीतिले हामीले तपाईंको व्यक्तिगत जानकारी कसरी सङ्कलन, प्रयोग, भण्डारण, र सुरक्षा गर्छौं भन्ने कुरा वर्णन गर्दछ। हाम्रो प्लेटफर्म प्रयोग गरेर, तपाईं यो नीतिमा वर्णित अभ्यासहरूमा सहमत हुनुहुन्छ।"
-        : 'At Swasthya ("we", "our"), your privacy matters. This Privacy Policy describes how we collect, use, store, and protect your personal information when you use our healthcare directory platform. By using our Platform, you consent to the practices described in this policy.',
+        : 'At DoctorSewa ("we", "our"), your privacy matters. This Privacy Policy describes how we collect, use, store, and protect your personal information when you use our healthcare directory platform. By using our Platform, you consent to the practices described in this policy.',
     sections: [
       {
         heading: lang === "ne" ? "१. हामीले सङ्कलन गर्ने जानकारी" : "1. Information We Collect",
@@ -121,7 +121,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
             : [
                 "With healthcare providers: When you book an appointment or request a consultation, relevant booking details are shared with the provider.",
                 "With service providers: Trusted third parties that help us operate Platform services such as hosting, email delivery, and analytics.",
-                "Legal requirements: When required by law, in compliance with court orders, or to protect Swasthya's legal rights.",
+                "Legal requirements: When required by law, in compliance with court orders, or to protect DoctorSewa's legal rights.",
                 "With your consent: In any other case where you have given explicit permission.",
               ],
       },
@@ -171,14 +171,14 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
                 "सच्याउने: तपाईंको खाता सेटिङहरूमा गलत वा अपूर्ण जानकारी अपडेट गर्नुहोस्।",
                 "मेटाउने: तपाईंको खाता र सम्बन्धित व्यक्तिगत डाटा मेट्ने अनुरोध गर्नुहोस्।",
                 "विरोध: केही प्रकारको डाटा प्रशोधनमा विरोध गर्नुहोस्।",
-                "यी अधिकारहरू प्रयोग गर्न, support@swasthya.com.np मा सम्पर्क गर्नुहोस्।",
+                "यी अधिकारहरू प्रयोग गर्न, support@doctorsewa.org मा सम्पर्क गर्नुहोस्।",
               ]
             : [
                 "Access: Request a copy of your personal data held by us.",
                 "Correction: Update inaccurate or incomplete information in your account settings.",
                 "Deletion: Request deletion of your account and associated personal data.",
                 "Objection: Object to certain types of data processing.",
-                "To exercise these rights, contact support@swasthya.com.np.",
+                "To exercise these rights, contact support@doctorsewa.org.",
               ],
       },
       {
@@ -206,8 +206,8 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
         heading: lang === "ne" ? "११. सम्पर्क" : "11. Contact",
         content:
           lang === "ne"
-            ? "यो गोपनीयता नीतिको बारेमा कुनै प्रश्न वा चिन्ता भएमा, कृपया हामीलाई support@swasthya.com.np मा सम्पर्क गर्नुहोस्।"
-            : "If you have any questions or concerns about this Privacy Policy, please contact us at support@swasthya.com.np.",
+            ? "यो गोपनीयता नीतिको बारेमा कुनै प्रश्न वा चिन्ता भएमा, कृपया हामीलाई support@doctorsewa.org मा सम्पर्क गर्नुहोस्।"
+            : "If you have any questions or concerns about this Privacy Policy, please contact us at support@doctorsewa.org.",
       },
     ],
   };

@@ -69,22 +69,23 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
 
   if (!doctor) {
     return {
-      title: "Doctor Not Found | DoctorSewa",
+      title: "Doctor Not Found",
       description: "The requested doctor could not be found.",
     };
   }
 
-  const displayName = `Dr. ${doctor.full_name}`;
+  // full_name already includes "Dr." prefix from the database
+  const displayName = doctor.full_name;
 
   const specialty = doctor.specialties && doctor.specialties.length > 0
     ? doctor.specialties[0]
-    : doctor.degree || "doctor";
+    : doctor.degree || "Doctor";
 
-  const location = doctor.address || "Nepal";
+  const location = (doctor.address || "Nepal").replace(/[,\s]+$/, "");
 
-  const title = `${displayName} - ${specialty} in ${location} | DoctorSewa`;
+  const title = `${displayName} - ${specialty} in ${location}`;
 
-  const description = `${displayName} is a registered doctor${doctor.degree ? ` with ${doctor.degree}` : ""} practicing in ${location}. Registration No: ${doctor.registration_number}. Find verified healthcare professionals on DoctorSewa.`;
+  const description = `${displayName} is a verified ${specialty.toLowerCase() !== "doctor" ? specialty + " " : ""}doctor${doctor.degree ? ` (${doctor.degree})` : ""} practicing in ${location}, Nepal. NMC Registration #${doctor.registration_number}.${doctor.specialties && doctor.specialties.length > 1 ? ` Specialties: ${doctor.specialties.join(", ")}.` : ""}`;
 
   const canonicalUrl = `${SITE_URL}/${lang}/doctors/${slug}`;
   const ogImageUrl = doctor.photo_url || `${SITE_URL}/og-default.png`;
@@ -128,7 +129,7 @@ function generateJsonLd(
   lang: string,
   reviews: Awaited<ReturnType<typeof getPublishedReviews>>,
 ) {
-  const displayName = `Dr. ${doctor.full_name}`;
+  const displayName = doctor.full_name;
 
   const baseJsonLd = {
     "@context": "https://schema.org",
@@ -193,7 +194,7 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
   }
 
   const reviews = await getPublishedReviews(doctor.id);
-  const displayName = `Dr. ${doctor.full_name}`;
+  const displayName = doctor.full_name;
   const jsonLd = generateJsonLd(doctor, lang, reviews);
 
   return (

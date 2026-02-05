@@ -48,21 +48,21 @@ export async function generateMetadata({ params }: PharmacistPageProps): Promise
 
   if (!pharmacist) {
     return {
-      title: "Pharmacist Not Found | DoctorSewa",
+      title: "Pharmacist Not Found",
       description: "The requested pharmacist could not be found.",
     };
   }
 
   const displayName = pharmacist.full_name;
-  const location = pharmacist.address || "Nepal";
+  const location = (pharmacist.address || "Nepal").replace(/[,\s]+$/, "");
 
   // Get category from meta if available
   const meta = pharmacist.meta as Record<string, string> | null;
   const category = meta?.category || "Pharmacist";
 
-  const title = `${displayName} - ${category} in ${location} | DoctorSewa`;
+  const title = `${displayName} - ${category} in ${location}`;
 
-  const description = `${displayName} is a registered pharmacist (${category}) in ${location}. NPC Registration No: ${pharmacist.registration_number}. Find verified pharmaceutical professionals on DoctorSewa.`;
+  const description = `${displayName} is a registered ${category.toLowerCase()} in ${location}, Nepal. NPC Registration #${pharmacist.registration_number}. Find verified pharmaceutical professionals on DoctorSewa.`;
 
   const canonicalUrl = `${SITE_URL}/${lang}/pharmacists/${slug}`;
   const ogImageUrl = pharmacist.photo_url || `${SITE_URL}/og-default.png`;

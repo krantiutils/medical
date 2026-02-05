@@ -171,22 +171,22 @@ export async function generateMetadata({ params }: ClinicPageProps): Promise<Met
 
   if (!clinic) {
     return {
-      title: "Clinic Not Found | DoctorSewa",
+      title: "Clinic Not Found",
       description: "The requested clinic could not be found or is not verified.",
     };
   }
 
   const clinicType = getClinicTypeLabelEn(clinic.type);
-  const location = clinic.address || "Nepal";
+  const location = (clinic.address || "Nepal").replace(/[,\s]+$/, "");
 
   // Build services description
   const servicesText = clinic.services && clinic.services.length > 0
     ? clinic.services.slice(0, 3).map(s => PREDEFINED_SERVICES[s]?.en || s).join(", ")
     : "";
 
-  const title = `${clinic.name} - ${clinicType} in ${location} | DoctorSewa`;
+  const title = `${clinic.name} - ${clinicType} in ${location}`;
 
-  const description = `${clinic.name} is a verified ${clinicType.toLowerCase()} located in ${location}.${servicesText ? ` Services: ${servicesText}.` : ""} Contact: ${clinic.phone || clinic.email || "See details"}. Find healthcare facilities on DoctorSewa.`;
+  const description = `${clinic.name} is a verified ${clinicType.toLowerCase()} in ${location}, Nepal.${servicesText ? ` Services include ${servicesText}.` : ""}${clinic.phone ? ` Contact: ${clinic.phone}.` : ""} Find healthcare facilities on DoctorSewa.`;
 
   const canonicalUrl = `${SITE_URL}/${lang}/clinic/${slug}`;
   const ogImageUrl = clinic.logo_url || `${SITE_URL}/og-default.png`;
