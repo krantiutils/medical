@@ -4,10 +4,60 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface HomePageClientProps {
   lang: string;
 }
+
+// Icons as components for cleaner JSX
+const VideoIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+  </svg>
+);
+
+const BuildingIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+  </svg>
+);
+
+const BadgeCheckIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+  </svg>
+);
+
+const ClipboardIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+  </svg>
+);
+
+const BeakerIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+  </svg>
+);
+
+const CalendarIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+);
+
+const StarIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+  </svg>
+);
+
+const QueueIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+  </svg>
+);
 
 export function HomePageClient({ lang }: HomePageClientProps) {
   const router = useRouter();
@@ -183,6 +233,320 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               {t("browsePharmacists")} →
             </span>
           </a>
+        </div>
+      </section>
+
+      {/* For Patients Section */}
+      <section className="py-16 px-6 lg:px-16 bg-primary-blue/5 border-t-4 border-foreground">
+        <div className="flex items-center gap-4 mb-12">
+          <div className="w-4 h-4 bg-primary-blue" />
+          <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight">
+            {lang === "ne" ? "बिरामीहरूको लागि" : "For Patients"}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Instant Consultation */}
+          <Link
+            href={`/${lang}/instant-consultation`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#2563eb]"
+          >
+            <div className="w-12 h-12 bg-primary-blue/10 flex items-center justify-center mb-4 text-primary-blue">
+              <VideoIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "तुरुन्त परामर्श" : "Instant Consultation"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "उपलब्ध डाक्टरसँग तुरुन्तै भिडियो कल गर्नुहोस्"
+                : "Video call with available doctors instantly"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
+              {lang === "ne" ? "सुरु गर्नुहोस्" : "Start Now"} →
+            </span>
+          </Link>
+
+          {/* Book Appointment */}
+          <Link
+            href={`/${lang}/clinics`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#2563eb]"
+          >
+            <div className="w-12 h-12 bg-primary-blue/10 flex items-center justify-center mb-4 text-primary-blue">
+              <CalendarIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "अपोइन्टमेन्ट बुक गर्नुहोस्" : "Book Appointment"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "क्लिनिक वा अस्पतालमा समय मिलाउनुहोस्"
+                : "Schedule visits at clinics and hospitals"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
+              {lang === "ne" ? "क्लिनिकहरू हेर्नुहोस्" : "Browse Clinics"} →
+            </span>
+          </Link>
+
+          {/* Lab Results */}
+          <Link
+            href={`/${lang}/dashboard/lab-results`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#2563eb]"
+          >
+            <div className="w-12 h-12 bg-primary-blue/10 flex items-center justify-center mb-4 text-primary-blue">
+              <BeakerIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "ल्याब रिजल्ट" : "Lab Results"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "आफ्नो परीक्षण नतिजाहरू अनलाइन हेर्नुहोस्"
+                : "View your test results online securely"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
+              {lang === "ne" ? "हेर्नुहोस्" : "View Results"} →
+            </span>
+          </Link>
+
+          {/* Write Reviews */}
+          <Link
+            href={`/${lang}/dashboard/reviews`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#2563eb]"
+          >
+            <div className="w-12 h-12 bg-primary-blue/10 flex items-center justify-center mb-4 text-primary-blue">
+              <StarIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "समीक्षा लेख्नुहोस्" : "Write Reviews"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "आफ्नो अनुभव साझा गर्नुहोस्"
+                : "Share your healthcare experiences"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
+              {lang === "ne" ? "समीक्षा गर्नुहोस्" : "Leave Review"} →
+            </span>
+          </Link>
+        </div>
+      </section>
+
+      {/* For Doctors Section */}
+      <section className="py-16 px-6 lg:px-16 bg-primary-red/5 border-t-4 border-foreground">
+        <div className="flex items-center gap-4 mb-12">
+          <div className="w-4 h-4 bg-primary-red" />
+          <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight">
+            {lang === "ne" ? "डाक्टरहरूको लागि" : "For Doctors"}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Claim Profile */}
+          <Link
+            href={`/${lang}/claim`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#dc2626]"
+          >
+            <div className="w-12 h-12 bg-primary-red/10 flex items-center justify-center mb-4 text-primary-red">
+              <BadgeCheckIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "प्रोफाइल क्लेम गर्नुहोस्" : "Claim Your Profile"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "आफ्नो NMC दर्ता प्रोफाइल भेरिफाई गर्नुहोस्"
+                : "Verify and manage your NMC registered profile"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-primary-red group-hover:underline">
+              {lang === "ne" ? "क्लेम गर्नुहोस्" : "Claim Now"} →
+            </span>
+          </Link>
+
+          {/* Telemedicine */}
+          <Link
+            href={`/${lang}/dashboard/instant-requests`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#dc2626]"
+          >
+            <div className="w-12 h-12 bg-primary-red/10 flex items-center justify-center mb-4 text-primary-red">
+              <VideoIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "टेलिमेडिसिन" : "Telemedicine"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "अनलाइन परामर्श दिनुहोस् र कमाउनुहोस्"
+                : "Provide online consultations and earn"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-primary-red group-hover:underline">
+              {lang === "ne" ? "सुरु गर्नुहोस्" : "Get Started"} →
+            </span>
+          </Link>
+
+          {/* Dashboard */}
+          <Link
+            href={`/${lang}/dashboard`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#dc2626]"
+          >
+            <div className="w-12 h-12 bg-primary-red/10 flex items-center justify-center mb-4 text-primary-red">
+              <ClipboardIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "डाक्टर ड्यासबोर्ड" : "Doctor Dashboard"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "आफ्नो प्रोफाइल र अपोइन्टमेन्ट व्यवस्थापन गर्नुहोस्"
+                : "Manage your profile and appointments"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-primary-red group-hover:underline">
+              {lang === "ne" ? "ड्यासबोर्ड" : "Dashboard"} →
+            </span>
+          </Link>
+        </div>
+      </section>
+
+      {/* For Clinics Section */}
+      <section className="py-16 px-6 lg:px-16 bg-primary-yellow/10 border-t-4 border-foreground">
+        <div className="flex items-center gap-4 mb-12">
+          <div className="w-4 h-4 bg-primary-yellow" />
+          <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight">
+            {lang === "ne" ? "क्लिनिकहरूको लागि" : "For Clinics & Hospitals"}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Register Clinic */}
+          <Link
+            href={`/${lang}/clinic/register`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#ca8a04]"
+          >
+            <div className="w-12 h-12 bg-primary-yellow/20 flex items-center justify-center mb-4 text-yellow-700">
+              <BuildingIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "क्लिनिक दर्ता" : "Register Clinic"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "आफ्नो क्लिनिक डाइरेक्टरीमा थप्नुहोस्"
+                : "Add your clinic to our directory"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-yellow-700 group-hover:underline">
+              {lang === "ne" ? "दर्ता गर्नुहोस्" : "Register"} →
+            </span>
+          </Link>
+
+          {/* OPD Queue */}
+          <Link
+            href={`/${lang}/clinic/dashboard/reception`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#ca8a04]"
+          >
+            <div className="w-12 h-12 bg-primary-yellow/20 flex items-center justify-center mb-4 text-yellow-700">
+              <QueueIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "OPD क्यू" : "OPD Queue"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "बिरामी लाइन डिजिटल रूपमा व्यवस्थापन गर्नुहोस्"
+                : "Manage patient queues digitally"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-yellow-700 group-hover:underline">
+              {lang === "ne" ? "हेर्नुहोस्" : "Learn More"} →
+            </span>
+          </Link>
+
+          {/* Billing & Invoices */}
+          <Link
+            href={`/${lang}/clinic/dashboard/billing`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#ca8a04]"
+          >
+            <div className="w-12 h-12 bg-primary-yellow/20 flex items-center justify-center mb-4 text-yellow-700">
+              <ClipboardIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "बिलिङ" : "Billing & Invoices"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "इन्भ्वाइस र भुक्तानी व्यवस्थापन गर्नुहोस्"
+                : "Generate invoices and track payments"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-yellow-700 group-hover:underline">
+              {lang === "ne" ? "हेर्नुहोस्" : "Learn More"} →
+            </span>
+          </Link>
+
+          {/* Lab & Prescriptions */}
+          <Link
+            href={`/${lang}/clinic/dashboard/lab`}
+            className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#ca8a04]"
+          >
+            <div className="w-12 h-12 bg-primary-yellow/20 flex items-center justify-center mb-4 text-yellow-700">
+              <BeakerIcon />
+            </div>
+            <h3 className="text-lg font-bold uppercase mb-2">
+              {lang === "ne" ? "ल्याब र प्रेस्क्रिप्शन" : "Lab & Prescriptions"}
+            </h3>
+            <p className="text-sm text-foreground/60 mb-3">
+              {lang === "ne"
+                ? "ल्याब अर्डर र औषधि व्यवस्थापन"
+                : "Manage lab orders and prescriptions"}
+            </p>
+            <span className="text-xs font-bold uppercase tracking-wider text-yellow-700 group-hover:underline">
+              {lang === "ne" ? "हेर्नुहोस्" : "Learn More"} →
+            </span>
+          </Link>
+        </div>
+
+        {/* Full Clinic Dashboard CTA */}
+        <div className="mt-8 p-6 bg-foreground text-white flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="text-xl font-bold uppercase mb-1">
+              {lang === "ne" ? "पूर्ण क्लिनिक व्यवस्थापन प्रणाली" : "Complete Clinic Management System"}
+            </h3>
+            <p className="text-white/70 text-sm">
+              {lang === "ne"
+                ? "IPD, फार्मेसी, रिपोर्टहरू, र थप सुविधाहरू"
+                : "IPD management, pharmacy, reports, and more"}
+            </p>
+          </div>
+          <Link
+            href={`/${lang}/clinic/dashboard`}
+            className="px-6 py-3 bg-primary-yellow text-foreground font-bold uppercase tracking-wider text-sm hover:bg-yellow-400 transition-colors whitespace-nowrap"
+          >
+            {lang === "ne" ? "ड्यासबोर्ड हेर्नुहोस्" : "Open Dashboard"} →
+          </Link>
+        </div>
+      </section>
+
+      {/* Hospitals Section */}
+      <section className="py-16 px-6 lg:px-16 border-t-4 border-foreground">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-12">
+          <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight">
+            {lang === "ne" ? "अस्पतालहरू" : "Featured Hospitals"}
+          </h2>
+          <Link
+            href={`/${lang}/clinics?type=HOSPITAL`}
+            className="text-sm font-bold uppercase tracking-wider text-primary-blue hover:underline"
+          >
+            {lang === "ne" ? "सबै हेर्नुहोस्" : "View All"} →
+          </Link>
+        </div>
+        <p className="text-foreground/60 mb-8 max-w-2xl">
+          {lang === "ne"
+            ? "नेपालका प्रमुख अस्पतालहरूमा डाक्टरहरू खोज्नुहोस् र अपोइन्टमेन्ट बुक गर्नुहोस्।"
+            : "Find doctors at major hospitals across Nepal and book appointments directly."}
+        </p>
+        <div className="flex items-center gap-4 text-sm text-foreground/60">
+          <span className="font-bold text-foreground">15+</span>
+          <span>{lang === "ne" ? "अस्पतालहरू सूचीबद्ध" : "Hospitals Listed"}</span>
+          <span className="text-foreground/30">•</span>
+          <span className="font-bold text-foreground">500+</span>
+          <span>{lang === "ne" ? "डाक्टर सम्बद्ध" : "Affiliated Doctors"}</span>
         </div>
       </section>
     </main>
