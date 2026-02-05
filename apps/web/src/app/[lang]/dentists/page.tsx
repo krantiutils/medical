@@ -7,7 +7,7 @@ import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 
 const ITEMS_PER_PAGE = 20;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com.np";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface DentistsPageProps {
   params: Promise<{
@@ -15,20 +15,32 @@ interface DentistsPageProps {
   }>;
   searchParams: Promise<{
     page?: string;
+    q?: string;
   }>;
 }
 
-async function getDentists(page: number) {
+async function getDentists(page: number, query?: string) {
   const skip = (page - 1) * ITEMS_PER_PAGE;
+
+  const where: object = query
+    ? {
+        type: ProfessionalType.DENTIST,
+        OR: [
+          { full_name: { contains: query, mode: "insensitive" as const } },
+          { degree: { contains: query, mode: "insensitive" as const } },
+          { address: { contains: query, mode: "insensitive" as const } },
+        ],
+      }
+    : { type: ProfessionalType.DENTIST };
 
   const [professionals, totalCount] = await Promise.all([
     prisma.professional.findMany({
-      where: { type: ProfessionalType.DENTIST },
+      where,
       skip,
       take: ITEMS_PER_PAGE,
       orderBy: { full_name: "asc" },
     }),
-    prisma.professional.count({ where: { type: ProfessionalType.DENTIST } }),
+    prisma.professional.count({ where }),
   ]);
 
   return {
@@ -50,7 +62,7 @@ export async function generateMetadata({
 
   const title = lang === "ne"
     ? "नेपालका दन्त चिकित्सकहरू | स्वास्थ्य"
-    : "Dentists in Nepal | Swasthya";
+    : "Dentists in Nepal | DoctorSewa";
 
   const description = lang === "ne"
     ? "नेपालभरका दर्ता भएका दन्त चिकित्सकहरू खोज्नुहोस्। NDA प्रमाणपत्र सहितका प्रमाणित दन्त चिकित्सकहरू फेला पार्नुहोस्।"
@@ -66,7 +78,7 @@ export async function generateMetadata({
       description,
       url: canonicalUrl,
       type: "website",
-      siteName: lang === "ne" ? "स्वास्थ्य" : "Swasthya",
+      siteName: lang === "ne" ? "डक्टरसेवा" : "DoctorSewa",
     },
     twitter: {
       card: "summary",
@@ -115,22 +127,23 @@ function generatePageNumbers(currentPage: number, totalPages: number): (number |
   return pages;
 }
 
-function buildPageUrl(lang: string, page: number): string {
-  if (page <= 1) {
-    return `/${lang}/dentists`;
-  }
-  return `/${lang}/dentists?page=${page}`;
+function buildPageUrl(lang: string, page: number, q?: string): string {
+  const params = new URLSearchParams();
+  if (q) params.set("q", q);
+  if (page > 1) params.set("page", String(page));
+  const qs = params.toString();
+  return `/${lang}/dentists${qs ? `?${qs}` : ""}`;
 }
 
 export default async function DentistsPage({ params, searchParams }: DentistsPageProps) {
   const { lang } = await params;
-  const { page: pageStr = "1" } = await searchParams;
+  const { page: pageStr = "1", q } = await searchParams;
 
   // Enable static rendering
   setRequestLocale(lang);
 
   const currentPage = Math.max(1, parseInt(pageStr, 10) || 1);
-  const { professionals, totalCount, totalPages } = await getDentists(currentPage);
+  const { professionals, totalCount, totalPages } = await getDentists(currentPage, q);
 
   // Translations (inline for now, could use next-intl)
   const t = {
@@ -149,9 +162,30 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
   };
 
   return (
-    <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: lang === "ne" ? "नेपालका दन्त चिकित्सकहरू" : "Dentists in Nepal",
+          description: lang === "ne"
+            ? "नेपालका प्रमाणित दन्त चिकित्सकहरूको सूची"
+            : "Browse verified dentists registered in Nepal",
+          url: `${SITE_URL}/${lang}/dentists`,
+          isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website` },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/${lang}` },
+              { "@type": "ListItem", position: 2, name: lang === "ne" ? "दन्त चिकित्सकहरू" : "Dentists" },
+            ],
+          },
+        }) }}
+      />
+      <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
         <div className="mb-8">
           {/* Bauhaus accent bar - red for dentists */}
           <div className="flex items-center gap-2 mb-4">
@@ -171,6 +205,22 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
             {" "}
             {lang === "ne" ? "दन्त चिकित्सकहरू भेटिए" : "dentists found"}
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-8">
+          <form action={`/${lang}/dentists`} method="GET" className="flex gap-2">
+            <input
+              type="text"
+              name="q"
+              defaultValue={q || ""}
+              placeholder={lang === "ne" ? "नाम, विशेषज्ञता, वा ठेगानाले खोज्नुहोस्..." : "Search by name, specialty, or location..."}
+              className="flex-1 px-4 py-3 border-4 border-foreground bg-white focus:outline-none focus:border-primary-red placeholder:text-foreground/40"
+            />
+            <Button type="submit" variant="primary" size="sm" className="px-6">
+              {lang === "ne" ? "खोज" : "Search"}
+            </Button>
+          </form>
         </div>
 
         {/* Results Grid */}
@@ -226,6 +276,21 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
                         {professional.degree}
                       </p>
                     )}
+                    {/* Specialty badges */}
+                    {professional.specialties && professional.specialties.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {professional.specialties.slice(0, 3).map((s, i) => (
+                          <span key={i} className="px-2 py-0.5 bg-primary-red/10 text-primary-red border border-primary-red text-xs font-bold">
+                            {s}
+                          </span>
+                        ))}
+                        {professional.specialties.length > 3 && (
+                          <span className="px-2 py-0.5 bg-foreground/5 text-foreground/60 border border-foreground/20 text-xs font-bold">
+                            +{professional.specialties.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     {/* Address */}
                     {professional.address && (
                       <div className="flex items-start gap-2 text-sm text-foreground/60">
@@ -272,7 +337,7 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
                 <div className="flex items-center gap-2">
                   {/* Previous button */}
                   {currentPage > 1 ? (
-                    <Link href={buildPageUrl(lang, currentPage - 1)}>
+                    <Link href={buildPageUrl(lang, currentPage - 1, q)}>
                       <Button variant="outline" size="sm">
                         ← {t.previous}
                       </Button>
@@ -295,7 +360,7 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
                       }
                       const isCurrentPage = pageNum === currentPage;
                       return (
-                        <Link key={pageNum} href={buildPageUrl(lang, pageNum)}>
+                        <Link key={pageNum} href={buildPageUrl(lang, pageNum, q)}>
                           <Button
                             variant={isCurrentPage ? "primary" : "outline"}
                             size="sm"
@@ -310,7 +375,7 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
 
                   {/* Next button */}
                   {currentPage < totalPages ? (
-                    <Link href={buildPageUrl(lang, currentPage + 1)}>
+                    <Link href={buildPageUrl(lang, currentPage + 1, q)}>
                       <Button variant="outline" size="sm">
                         {t.next} →
                       </Button>
@@ -325,7 +390,8 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
             )}
           </>
         )}
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }

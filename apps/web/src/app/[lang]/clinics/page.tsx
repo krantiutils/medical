@@ -8,7 +8,7 @@ import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 
 const ITEMS_PER_PAGE = 20;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com.np";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface ClinicsPageProps {
   params: Promise<{
@@ -89,7 +89,7 @@ export async function generateMetadata({
 
   const title = lang === "ne"
     ? "नेपालका क्लिनिक र अस्पतालहरू | स्वास्थ्य"
-    : "Clinics & Hospitals in Nepal | Swasthya";
+    : "Clinics & Hospitals in Nepal | DoctorSewa";
 
   const description = lang === "ne"
     ? "नेपालभरका प्रमाणित क्लिनिक, अस्पताल, पोलिक्लिनिक र औषधि पसलहरू खोज्नुहोस्। सेवाहरू, सम्पर्क जानकारी र अपोइन्टमेन्ट बुक गर्नुहोस्।"
@@ -105,7 +105,7 @@ export async function generateMetadata({
       description,
       url: canonicalUrl,
       type: "website",
-      siteName: lang === "ne" ? "स्वास्थ्य" : "Swasthya",
+      siteName: lang === "ne" ? "डक्टरसेवा" : "DoctorSewa",
     },
     twitter: {
       card: "summary",
@@ -255,9 +255,30 @@ export default async function ClinicsPage({ params, searchParams }: ClinicsPageP
   };
 
   return (
-    <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: lang === "ne" ? "नेपालका क्लिनिक र अस्पतालहरू" : "Clinics & Hospitals in Nepal",
+          description: lang === "ne"
+            ? "नेपालका प्रमाणित क्लिनिक र अस्पतालहरूको सूची"
+            : "Browse verified clinics and hospitals in Nepal",
+          url: `${SITE_URL}/${lang}/clinics`,
+          isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website` },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/${lang}` },
+              { "@type": "ListItem", position: 2, name: lang === "ne" ? "क्लिनिकहरू" : "Clinics" },
+            ],
+          },
+        }) }}
+      />
+      <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-3 h-3 bg-primary-red" />
@@ -541,7 +562,8 @@ export default async function ClinicsPage({ params, searchParams }: ClinicsPageP
             )}
           </>
         )}
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }

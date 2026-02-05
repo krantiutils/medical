@@ -7,7 +7,7 @@ import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 
 const ITEMS_PER_PAGE = 20;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com.np";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface PharmacistsPageProps {
   params: Promise<{
@@ -15,20 +15,32 @@ interface PharmacistsPageProps {
   }>;
   searchParams: Promise<{
     page?: string;
+    q?: string;
   }>;
 }
 
-async function getPharmacists(page: number) {
+async function getPharmacists(page: number, query?: string) {
   const skip = (page - 1) * ITEMS_PER_PAGE;
+
+  const where: object = query
+    ? {
+        type: ProfessionalType.PHARMACIST,
+        OR: [
+          { full_name: { contains: query, mode: "insensitive" as const } },
+          { degree: { contains: query, mode: "insensitive" as const } },
+          { address: { contains: query, mode: "insensitive" as const } },
+        ],
+      }
+    : { type: ProfessionalType.PHARMACIST };
 
   const [professionals, totalCount] = await Promise.all([
     prisma.professional.findMany({
-      where: { type: ProfessionalType.PHARMACIST },
+      where,
       skip,
       take: ITEMS_PER_PAGE,
       orderBy: { full_name: "asc" },
     }),
-    prisma.professional.count({ where: { type: ProfessionalType.PHARMACIST } }),
+    prisma.professional.count({ where }),
   ]);
 
   return {
@@ -50,7 +62,7 @@ export async function generateMetadata({
 
   const title = lang === "ne"
     ? "नेपालका फार्मासिस्टहरू | स्वास्थ्य"
-    : "Pharmacists in Nepal | Swasthya";
+    : "Pharmacists in Nepal | DoctorSewa";
 
   const description = lang === "ne"
     ? "नेपालभरका दर्ता भएका फार्मासिस्टहरू खोज्नुहोस्। NPC प्रमाणपत्र सहितका प्रमाणित फार्मासिस्टहरू फेला पार्नुहोस्।"
@@ -66,7 +78,7 @@ export async function generateMetadata({
       description,
       url: canonicalUrl,
       type: "website",
-      siteName: lang === "ne" ? "स्वास्थ्य" : "Swasthya",
+      siteName: lang === "ne" ? "डक्टरसेवा" : "DoctorSewa",
     },
     twitter: {
       card: "summary",
@@ -115,11 +127,12 @@ function generatePageNumbers(currentPage: number, totalPages: number): (number |
   return pages;
 }
 
-function buildPageUrl(lang: string, page: number): string {
-  if (page <= 1) {
-    return `/${lang}/pharmacists`;
-  }
-  return `/${lang}/pharmacists?page=${page}`;
+function buildPageUrl(lang: string, page: number, q?: string): string {
+  const params = new URLSearchParams();
+  if (q) params.set("q", q);
+  if (page > 1) params.set("page", String(page));
+  const qs = params.toString();
+  return `/${lang}/pharmacists${qs ? `?${qs}` : ""}`;
 }
 
 // Helper to extract category from meta JSON
@@ -135,13 +148,13 @@ function getCategory(meta: Prisma.JsonValue): string | null {
 
 export default async function PharmacistsPage({ params, searchParams }: PharmacistsPageProps) {
   const { lang } = await params;
-  const { page: pageStr = "1" } = await searchParams;
+  const { page: pageStr = "1", q } = await searchParams;
 
   // Enable static rendering
   setRequestLocale(lang);
 
   const currentPage = Math.max(1, parseInt(pageStr, 10) || 1);
-  const { professionals, totalCount, totalPages } = await getPharmacists(currentPage);
+  const { professionals, totalCount, totalPages } = await getPharmacists(currentPage, q);
 
   // Translations (inline for now, could use next-intl)
   const t = {
@@ -162,9 +175,30 @@ export default async function PharmacistsPage({ params, searchParams }: Pharmaci
   };
 
   return (
-    <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: lang === "ne" ? "नेपालका फार्मासिस्टहरू" : "Pharmacists in Nepal",
+          description: lang === "ne"
+            ? "नेपालका प्रमाणित फार्मासिस्टहरूको सूची"
+            : "Browse verified pharmacists registered in Nepal",
+          url: `${SITE_URL}/${lang}/pharmacists`,
+          isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website` },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/${lang}` },
+              { "@type": "ListItem", position: 2, name: lang === "ne" ? "फार्मासिस्टहरू" : "Pharmacists" },
+            ],
+          },
+        }) }}
+      />
+      <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
         <div className="mb-8">
           {/* Bauhaus accent bar - yellow for pharmacists */}
           <div className="flex items-center gap-2 mb-4">
@@ -184,6 +218,22 @@ export default async function PharmacistsPage({ params, searchParams }: Pharmaci
             {" "}
             {lang === "ne" ? "फार्मासिस्टहरू भेटिए" : "pharmacists found"}
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-8">
+          <form action={`/${lang}/pharmacists`} method="GET" className="flex gap-2">
+            <input
+              type="text"
+              name="q"
+              defaultValue={q || ""}
+              placeholder={lang === "ne" ? "नाम वा ठेगानाले खोज्नुहोस्..." : "Search by name or location..."}
+              className="flex-1 px-4 py-3 border-4 border-foreground bg-white focus:outline-none focus:border-primary-yellow placeholder:text-foreground/40"
+            />
+            <Button type="submit" variant="primary" size="sm" className="px-6">
+              {lang === "ne" ? "खोज" : "Search"}
+            </Button>
+          </form>
         </div>
 
         {/* Results Grid */}
@@ -286,7 +336,7 @@ export default async function PharmacistsPage({ params, searchParams }: Pharmaci
                 <div className="flex items-center gap-2">
                   {/* Previous button */}
                   {currentPage > 1 ? (
-                    <Link href={buildPageUrl(lang, currentPage - 1)}>
+                    <Link href={buildPageUrl(lang, currentPage - 1, q)}>
                       <Button variant="outline" size="sm">
                         ← {t.previous}
                       </Button>
@@ -309,7 +359,7 @@ export default async function PharmacistsPage({ params, searchParams }: Pharmaci
                       }
                       const isCurrentPage = pageNum === currentPage;
                       return (
-                        <Link key={pageNum} href={buildPageUrl(lang, pageNum)}>
+                        <Link key={pageNum} href={buildPageUrl(lang, pageNum, q)}>
                           <Button
                             variant={isCurrentPage ? "primary" : "outline"}
                             size="sm"
@@ -324,7 +374,7 @@ export default async function PharmacistsPage({ params, searchParams }: Pharmaci
 
                   {/* Next button */}
                   {currentPage < totalPages ? (
-                    <Link href={buildPageUrl(lang, currentPage + 1)}>
+                    <Link href={buildPageUrl(lang, currentPage + 1, q)}>
                       <Button variant="outline" size="sm">
                         {t.next} →
                       </Button>
@@ -339,7 +389,8 @@ export default async function PharmacistsPage({ params, searchParams }: Pharmaci
             )}
           </>
         )}
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }

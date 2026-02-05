@@ -7,7 +7,7 @@ import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 
 const ITEMS_PER_PAGE = 20;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com.np";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface DoctorsPageProps {
   params: Promise<{
@@ -15,20 +15,32 @@ interface DoctorsPageProps {
   }>;
   searchParams: Promise<{
     page?: string;
+    q?: string;
   }>;
 }
 
-async function getDoctors(page: number) {
+async function getDoctors(page: number, query?: string) {
   const skip = (page - 1) * ITEMS_PER_PAGE;
+
+  const where: object = query
+    ? {
+        type: ProfessionalType.DOCTOR,
+        OR: [
+          { full_name: { contains: query, mode: "insensitive" as const } },
+          { degree: { contains: query, mode: "insensitive" as const } },
+          { address: { contains: query, mode: "insensitive" as const } },
+        ],
+      }
+    : { type: ProfessionalType.DOCTOR };
 
   const [professionals, totalCount] = await Promise.all([
     prisma.professional.findMany({
-      where: { type: ProfessionalType.DOCTOR },
+      where,
       skip,
       take: ITEMS_PER_PAGE,
       orderBy: { full_name: "asc" },
     }),
-    prisma.professional.count({ where: { type: ProfessionalType.DOCTOR } }),
+    prisma.professional.count({ where }),
   ]);
 
   return {
@@ -50,7 +62,7 @@ export async function generateMetadata({
 
   const title = lang === "ne"
     ? "नेपालका चिकित्सकहरू | स्वास्थ्य"
-    : "Doctors in Nepal | Swasthya";
+    : "Doctors in Nepal | DoctorSewa";
 
   const description = lang === "ne"
     ? "नेपालभरका ३८,०००+ दर्ता भएका चिकित्सकहरू खोज्नुहोस्। NMC प्रमाणपत्र सहितका प्रमाणित डाक्टरहरू फेला पार्नुहोस्।"
@@ -66,7 +78,7 @@ export async function generateMetadata({
       description,
       url: canonicalUrl,
       type: "website",
-      siteName: lang === "ne" ? "स्वास्थ्य" : "Swasthya",
+      siteName: lang === "ne" ? "डक्टरसेवा" : "DoctorSewa",
     },
     twitter: {
       card: "summary",
@@ -115,22 +127,23 @@ function generatePageNumbers(currentPage: number, totalPages: number): (number |
   return pages;
 }
 
-function buildPageUrl(lang: string, page: number): string {
-  if (page <= 1) {
-    return `/${lang}/doctors`;
-  }
-  return `/${lang}/doctors?page=${page}`;
+function buildPageUrl(lang: string, page: number, q?: string): string {
+  const params = new URLSearchParams();
+  if (q) params.set("q", q);
+  if (page > 1) params.set("page", String(page));
+  const qs = params.toString();
+  return `/${lang}/doctors${qs ? `?${qs}` : ""}`;
 }
 
 export default async function DoctorsPage({ params, searchParams }: DoctorsPageProps) {
   const { lang } = await params;
-  const { page: pageStr = "1" } = await searchParams;
+  const { page: pageStr = "1", q } = await searchParams;
 
   // Enable static rendering
   setRequestLocale(lang);
 
-  const currentPage = Math.max(1, parseInt(pageStr, 10) || 1);
-  const { professionals, totalCount, totalPages } = await getDoctors(currentPage);
+  const currentPage = q ? Math.max(1, parseInt(pageStr, 10) || 1) : Math.max(1, parseInt(pageStr, 10) || 1);
+  const { professionals, totalCount, totalPages } = await getDoctors(currentPage, q);
 
   // Translations (inline for now, could use next-intl)
   const t = {
@@ -149,9 +162,30 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
   };
 
   return (
-    <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: lang === "ne" ? "नेपालका चिकित्सकहरू" : "Doctors in Nepal",
+          description: lang === "ne"
+            ? "नेपालका प्रमाणित चिकित्सकहरूको सूची"
+            : "Browse verified doctors registered with the Nepal Medical Council",
+          url: `${SITE_URL}/${lang}/doctors`,
+          isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website` },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/${lang}` },
+              { "@type": "ListItem", position: 2, name: lang === "ne" ? "चिकित्सकहरू" : "Doctors" },
+            ],
+          },
+        }) }}
+      />
+      <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
         <div className="mb-8">
           {/* Bauhaus accent bar */}
           <div className="flex items-center gap-2 mb-4">
@@ -171,6 +205,22 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
             {" "}
             {lang === "ne" ? "चिकित्सकहरू भेटिए" : "doctors found"}
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-8">
+          <form action={`/${lang}/doctors`} method="GET" className="flex gap-2">
+            <input
+              type="text"
+              name="q"
+              defaultValue={q || ""}
+              placeholder={lang === "ne" ? "नाम, विशेषज्ञता, वा ठेगानाले खोज्नुहोस्..." : "Search by name, specialty, or location..."}
+              className="flex-1 px-4 py-3 border-4 border-foreground bg-white focus:outline-none focus:border-primary-blue placeholder:text-foreground/40"
+            />
+            <Button type="submit" variant="primary" size="sm" className="px-6">
+              {lang === "ne" ? "खोज" : "Search"}
+            </Button>
+          </form>
         </div>
 
         {/* Results Grid */}
@@ -226,6 +276,21 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
                         {professional.degree}
                       </p>
                     )}
+                    {/* Specialty badges */}
+                    {professional.specialties && professional.specialties.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {professional.specialties.slice(0, 3).map((s, i) => (
+                          <span key={i} className="px-2 py-0.5 bg-primary-blue/10 text-primary-blue border border-primary-blue text-xs font-bold">
+                            {s}
+                          </span>
+                        ))}
+                        {professional.specialties.length > 3 && (
+                          <span className="px-2 py-0.5 bg-foreground/5 text-foreground/60 border border-foreground/20 text-xs font-bold">
+                            +{professional.specialties.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     {/* Address */}
                     {professional.address && (
                       <div className="flex items-start gap-2 text-sm text-foreground/60">
@@ -272,7 +337,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
                 <div className="flex items-center gap-2">
                   {/* Previous button */}
                   {currentPage > 1 ? (
-                    <Link href={buildPageUrl(lang, currentPage - 1)}>
+                    <Link href={buildPageUrl(lang, currentPage - 1, q)}>
                       <Button variant="outline" size="sm">
                         ← {t.previous}
                       </Button>
@@ -295,7 +360,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
                       }
                       const isCurrentPage = pageNum === currentPage;
                       return (
-                        <Link key={pageNum} href={buildPageUrl(lang, pageNum)}>
+                        <Link key={pageNum} href={buildPageUrl(lang, pageNum, q)}>
                           <Button
                             variant={isCurrentPage ? "primary" : "outline"}
                             size="sm"
@@ -310,7 +375,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
 
                   {/* Next button */}
                   {currentPage < totalPages ? (
-                    <Link href={buildPageUrl(lang, currentPage + 1)}>
+                    <Link href={buildPageUrl(lang, currentPage + 1, q)}>
                       <Button variant="outline" size="sm">
                         {t.next} →
                       </Button>
@@ -325,7 +390,8 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
             )}
           </>
         )}
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }
