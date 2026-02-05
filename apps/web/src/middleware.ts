@@ -53,7 +53,20 @@ export default function middleware(request: NextRequest) {
     }
   }
 
-  return intlMiddleware(request);
+  const response = intlMiddleware(request);
+
+  // Set x-locale header so root layout can read the detected language
+  // for the html lang attribute
+  let locale = defaultLocale;
+  for (const loc of locales) {
+    if (pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`) {
+      locale = loc;
+      break;
+    }
+  }
+  response.headers.set("x-locale", locale);
+
+  return response;
 }
 
 export const config = {

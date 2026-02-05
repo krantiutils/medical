@@ -9,13 +9,13 @@ const outfit = Outfit({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Swasthya - Healthcare Directory",
-    template: "%s | Swasthya",
+    default: "DoctorSewa - Healthcare Directory",
+    template: "%s | DoctorSewa",
   },
   description:
     "Find verified doctors, dentists, and pharmacists in Nepal. Search 40,000+ registered healthcare professionals with NMC, NDA, and NPC credentials.",
@@ -27,11 +27,11 @@ export const metadata: Metadata = {
     "NMC registered doctors",
     "find doctor Nepal",
     "medical professionals Nepal",
-    "Swasthya",
+    "DoctorSewa",
   ],
-  authors: [{ name: "Swasthya" }],
-  creator: "Swasthya",
-  publisher: "Swasthya",
+  authors: [{ name: "DoctorSewa" }],
+  creator: "DoctorSewa",
+  publisher: "DoctorSewa",
   formatDetection: {
     email: false,
     address: false,
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    siteName: "Swasthya",
-    title: "Swasthya - Healthcare Directory",
+    siteName: "DoctorSewa",
+    title: "DoctorSewa - Healthcare Directory",
     description:
       "Find verified doctors, dentists, and pharmacists in Nepal. Search 40,000+ registered healthcare professionals.",
     images: [
@@ -50,13 +50,13 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "Swasthya - Healthcare Directory",
+        alt: "DoctorSewa - Healthcare Directory",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Swasthya - Healthcare Directory",
+    title: "DoctorSewa - Healthcare Directory",
     description:
       "Find verified doctors, dentists, and pharmacists in Nepal. Search 40,000+ registered healthcare professionals.",
     images: ["/og-default.png"],
@@ -77,13 +77,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { headers } = await import("next/headers");
+  const headersList = await headers();
+  const lang = headersList.get("x-locale") ?? "en";
+
   return (
-    <html lang="en" className={outfit.variable}>
+    <html lang={lang} className={outfit.variable}>
       <body className={`${outfit.className} antialiased`}>{children}</body>
     </html>
   );
