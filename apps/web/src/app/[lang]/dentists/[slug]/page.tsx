@@ -25,6 +25,23 @@ async function getDentist(slug: string) {
   return professional;
 }
 
+async function getPublishedReviews(professionalId: string) {
+  return prisma.review.findMany({
+    where: {
+      doctor_id: professionalId,
+      is_published: true,
+    },
+    select: {
+      rating: true,
+      review_text: true,
+      created_at: true,
+      user: { select: { name: true } },
+      patient: { select: { full_name: true } },
+    },
+    orderBy: { created_at: "desc" },
+  });
+}
+
 export async function generateMetadata({ params }: DentistPageProps): Promise<Metadata> {
   const { lang, slug } = await params;
   const dentist = await getDentist(slug);
@@ -85,7 +102,11 @@ export async function generateMetadata({ params }: DentistPageProps): Promise<Me
   };
 }
 
-function generateJsonLd(dentist: NonNullable<Awaited<ReturnType<typeof getDentist>>>, lang: string) {
+function generateJsonLd(
+  dentist: NonNullable<Awaited<ReturnType<typeof getDentist>>>,
+  lang: string,
+  reviews: Awaited<ReturnType<typeof getPublishedReviews>>,
+) {
   const displayName = `Dr. ${dentist.full_name}`;
 
   const baseJsonLd = {
@@ -122,6 +143,22 @@ function generateJsonLd(dentist: NonNullable<Awaited<ReturnType<typeof getDentis
     medicalSpecialty: dentist.specialties && dentist.specialties.length > 0
       ? dentist.specialties[0]
       : "Dentistry",
+    ...(reviews.length > 0 ? {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1),
+        reviewCount: reviews.length,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      review: reviews.slice(0, 3).map(r => ({
+        "@type": "Review",
+        author: { "@type": "Person", name: r.user?.name || r.patient?.full_name || "Anonymous" },
+        reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5 },
+        reviewBody: r.review_text || undefined,
+        datePublished: r.created_at.toISOString().split("T")[0],
+      })),
+    } : {}),
   };
 }
 
@@ -133,8 +170,9 @@ export default async function DentistPage({ params }: DentistPageProps) {
     notFound();
   }
 
+  const reviews = await getPublishedReviews(dentist.id);
   const displayName = `Dr. ${dentist.full_name}`;
-  const jsonLd = generateJsonLd(dentist, lang);
+  const jsonLd = generateJsonLd(dentist, lang, reviews);
 
   return (
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
