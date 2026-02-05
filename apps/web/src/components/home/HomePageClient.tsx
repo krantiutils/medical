@@ -236,14 +236,117 @@ export function HomePageClient({ lang }: HomePageClientProps) {
         </div>
       </section>
 
+      {/* How It Works - Process Section */}
+      <section className="py-16 px-6 lg:px-16 bg-foreground text-white border-t-4 border-foreground">
+        <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight mb-4">
+          {lang === "ne" ? "कसरी काम गर्छ" : "How It Works"}
+        </h2>
+        <p className="text-white/60 mb-12 max-w-2xl">
+          {lang === "ne"
+            ? "३ सजिलो चरणमा डाक्टरसँग परामर्श गर्नुहोस्"
+            : "Get medical consultation in 3 simple steps"}
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Step 1 */}
+          <div className="relative">
+            <div className="text-6xl font-black text-white/10 absolute -top-4 -left-2">1</div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 bg-primary-blue flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold uppercase mb-2">
+                {lang === "ne" ? "डाक्टर खोज्नुहोस्" : "Find a Doctor"}
+              </h3>
+              <p className="text-white/60 text-sm">
+                {lang === "ne"
+                  ? "विशेषज्ञता, स्थान, वा अस्पताल अनुसार खोज्नुहोस्। २७,०००+ दर्ता डाक्टरहरू।"
+                  : "Search by specialty, location, or hospital. 27,000+ registered doctors."}
+              </p>
+            </div>
+          </div>
+
+          {/* Step 2 */}
+          <div className="relative">
+            <div className="text-6xl font-black text-white/10 absolute -top-4 -left-2">2</div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 bg-primary-red flex items-center justify-center mb-4">
+                <CalendarIcon />
+              </div>
+              <h3 className="text-xl font-bold uppercase mb-2">
+                {lang === "ne" ? "समय छान्नुहोस्" : "Book or Call"}
+              </h3>
+              <p className="text-white/60 text-sm">
+                {lang === "ne"
+                  ? "अपोइन्टमेन्ट बुक गर्नुहोस् वा तुरुन्त भिडियो कल सुरु गर्नुहोस्। २४/७ उपलब्ध।"
+                  : "Book appointment or start instant video call. Available 24/7."}
+              </p>
+            </div>
+          </div>
+
+          {/* Step 3 */}
+          <div className="relative">
+            <div className="text-6xl font-black text-white/10 absolute -top-4 -left-2">3</div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 bg-primary-yellow flex items-center justify-center mb-4">
+                <ClipboardIcon />
+              </div>
+              <h3 className="text-xl font-bold uppercase mb-2">
+                {lang === "ne" ? "प्रेस्क्रिप्शन पाउनुहोस्" : "Get Prescription"}
+              </h3>
+              <p className="text-white/60 text-sm">
+                {lang === "ne"
+                  ? "डिजिटल प्रेस्क्रिप्शन र ल्याब रिपोर्ट सिधै फोनमा। ७ दिन फ्री फलोअप।"
+                  : "Digital prescription & lab reports to your phone. 7-day free follow-up."}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Trust signals */}
+        <div className="mt-12 pt-8 border-t border-white/20 flex flex-wrap gap-8 justify-center">
+          <div className="text-center">
+            <div className="text-2xl font-black text-primary-yellow">24/7</div>
+            <div className="text-xs uppercase tracking-wider text-white/60">
+              {lang === "ne" ? "सधैं उपलब्ध" : "Always Available"}
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-black text-primary-blue">2 min</div>
+            <div className="text-xs uppercase tracking-wider text-white/60">
+              {lang === "ne" ? "जडान समय" : "Avg. Connect Time"}
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-black text-primary-red">100%</div>
+            <div className="text-xs uppercase tracking-wider text-white/60">
+              {lang === "ne" ? "गोप्य र सुरक्षित" : "Private & Secure"}
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-black text-white">Rs. 0</div>
+            <div className="text-xs uppercase tracking-wider text-white/60">
+              {lang === "ne" ? "खोज र बुकिङ" : "Search & Booking"}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* For Patients Section */}
       <section className="py-16 px-6 lg:px-16 bg-primary-blue/5 border-t-4 border-foreground">
-        <div className="flex items-center gap-4 mb-12">
+        <div className="flex items-center gap-4 mb-4">
           <div className="w-4 h-4 bg-primary-blue" />
           <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight">
             {lang === "ne" ? "बिरामीहरूको लागि" : "For Patients"}
           </h2>
         </div>
+        <p className="text-foreground/60 mb-12 max-w-2xl">
+          {lang === "ne"
+            ? "घरबाटै स्वास्थ्य सेवा प्राप्त गर्नुहोस्"
+            : "Access healthcare from the comfort of your home"}
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Instant Consultation */}
@@ -255,13 +358,19 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               <VideoIcon />
             </div>
             <h3 className="text-lg font-bold uppercase mb-2">
-              {lang === "ne" ? "तुरुन्त परामर्श" : "Instant Consultation"}
+              {lang === "ne" ? "तुरुन्त भिडियो कल" : "Instant Video Call"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "उपलब्ध डाक्टरसँग तुरुन्तै भिडियो कल गर्नुहोस्"
-                : "Video call with available doctors instantly"}
+                ? "२ मिनेटमा डाक्टरसँग जडान। प्रतीक्षा छैन।"
+                : "Connect with a doctor in under 2 minutes. No waiting."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-primary-blue/10 text-primary-blue px-2 py-0.5">24/7</span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "उपलब्ध" : "Available"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
               {lang === "ne" ? "सुरु गर्नुहोस्" : "Start Now"} →
             </span>
@@ -276,15 +385,23 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               <CalendarIcon />
             </div>
             <h3 className="text-lg font-bold uppercase mb-2">
-              {lang === "ne" ? "अपोइन्टमेन्ट बुक गर्नुहोस्" : "Book Appointment"}
+              {lang === "ne" ? "अपोइन्टमेन्ट बुक" : "Book Appointment"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "क्लिनिक वा अस्पतालमा समय मिलाउनुहोस्"
-                : "Schedule visits at clinics and hospitals"}
+                ? "१५+ अस्पताल र क्लिनिकमा अनलाइन बुकिङ। लाइनमा बस्नु पर्दैन।"
+                : "Online booking at 15+ hospitals. Skip the queue."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-verified/10 text-verified px-2 py-0.5">
+                {lang === "ne" ? "फ्री" : "FREE"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "बुकिङ शुल्क छैन" : "No booking fee"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
-              {lang === "ne" ? "क्लिनिकहरू हेर्नुहोस्" : "Browse Clinics"} →
+              {lang === "ne" ? "अस्पतालहरू हेर्नुहोस्" : "Browse Hospitals"} →
             </span>
           </Link>
 
@@ -297,36 +414,52 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               <BeakerIcon />
             </div>
             <h3 className="text-lg font-bold uppercase mb-2">
-              {lang === "ne" ? "ल्याब रिजल्ट" : "Lab Results"}
+              {lang === "ne" ? "ल्याब रिपोर्ट" : "Lab Reports"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "आफ्नो परीक्षण नतिजाहरू अनलाइन हेर्नुहोस्"
-                : "View your test results online securely"}
+                ? "रिपोर्ट तयार हुनेबित्तिकै सूचना। PDF डाउनलोड गर्नुहोस्।"
+                : "Get notified when ready. Download PDF reports instantly."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-primary-blue/10 text-primary-blue px-2 py-0.5">
+                {lang === "ne" ? "सुरक्षित" : "SECURE"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "इन्क्रिप्टेड" : "End-to-end encrypted"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
-              {lang === "ne" ? "हेर्नुहोस्" : "View Results"} →
+              {lang === "ne" ? "हेर्नुहोस्" : "View Reports"} →
             </span>
           </Link>
 
           {/* Write Reviews */}
           <Link
-            href={`/${lang}/dashboard/reviews`}
+            href={`/${lang}/doctors`}
             className="group bg-white border-4 border-foreground p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#2563eb]"
           >
             <div className="w-12 h-12 bg-primary-blue/10 flex items-center justify-center mb-4 text-primary-blue">
               <StarIcon />
             </div>
             <h3 className="text-lg font-bold uppercase mb-2">
-              {lang === "ne" ? "समीक्षा लेख्नुहोस्" : "Write Reviews"}
+              {lang === "ne" ? "समीक्षा र रेटिङ" : "Reviews & Ratings"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "आफ्नो अनुभव साझा गर्नुहोस्"
-                : "Share your healthcare experiences"}
+                ? "वास्तविक बिरामीहरूको समीक्षा पढ्नुहोस्। आफ्नो अनुभव साझा गर्नुहोस्।"
+                : "Read reviews from real patients. Share your experience."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-primary-yellow/20 text-yellow-700 px-2 py-0.5">
+                {lang === "ne" ? "भेरिफाइड" : "VERIFIED"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "समीक्षाहरू" : "Reviews only"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-primary-blue group-hover:underline">
-              {lang === "ne" ? "समीक्षा गर्नुहोस्" : "Leave Review"} →
+              {lang === "ne" ? "डाक्टर खोज्नुहोस्" : "Find Doctors"} →
             </span>
           </Link>
         </div>
@@ -334,12 +467,17 @@ export function HomePageClient({ lang }: HomePageClientProps) {
 
       {/* For Doctors Section */}
       <section className="py-16 px-6 lg:px-16 bg-primary-red/5 border-t-4 border-foreground">
-        <div className="flex items-center gap-4 mb-12">
+        <div className="flex items-center gap-4 mb-4">
           <div className="w-4 h-4 bg-primary-red" />
           <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight">
             {lang === "ne" ? "डाक्टरहरूको लागि" : "For Doctors"}
           </h2>
         </div>
+        <p className="text-foreground/60 mb-12 max-w-2xl">
+          {lang === "ne"
+            ? "आफ्नो अनलाइन उपस्थिति बढाउनुहोस् र नयाँ बिरामीहरूसम्म पुग्नुहोस्"
+            : "Grow your practice and reach patients across Nepal"}
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Claim Profile */}
@@ -353,11 +491,19 @@ export function HomePageClient({ lang }: HomePageClientProps) {
             <h3 className="text-lg font-bold uppercase mb-2">
               {lang === "ne" ? "प्रोफाइल क्लेम गर्नुहोस्" : "Claim Your Profile"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "आफ्नो NMC दर्ता प्रोफाइल भेरिफाई गर्नुहोस्"
-                : "Verify and manage your NMC registered profile"}
+                ? "तपाईंको NMC दर्ता पहिले नै हाम्रो डाटाबेसमा छ। भेरिफाई गर्नुहोस् र अपडेट गर्नुहोस्।"
+                : "Your NMC registration is already in our database. Verify and update your details."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-verified/10 text-verified px-2 py-0.5">
+                {lang === "ne" ? "फ्री" : "FREE"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "सधैंको लागि" : "Forever free"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-primary-red group-hover:underline">
               {lang === "ne" ? "क्लेम गर्नुहोस्" : "Claim Now"} →
             </span>
@@ -374,11 +520,19 @@ export function HomePageClient({ lang }: HomePageClientProps) {
             <h3 className="text-lg font-bold uppercase mb-2">
               {lang === "ne" ? "टेलिमेडिसिन" : "Telemedicine"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "अनलाइन परामर्श दिनुहोस् र कमाउनुहोस्"
-                : "Provide online consultations and earn"}
+                ? "आफ्नो समयमा अनलाइन परामर्श दिनुहोस्। आफ्नै शुल्क तोक्नुहोस्।"
+                : "Consult patients online on your schedule. Set your own fees."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-primary-red/10 text-primary-red px-2 py-0.5">
+                {lang === "ne" ? "कम कमिशन" : "LOW FEE"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "१०% मात्र" : "Only 10% commission"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-primary-red group-hover:underline">
               {lang === "ne" ? "सुरु गर्नुहोस्" : "Get Started"} →
             </span>
@@ -395,13 +549,21 @@ export function HomePageClient({ lang }: HomePageClientProps) {
             <h3 className="text-lg font-bold uppercase mb-2">
               {lang === "ne" ? "डाक्टर ड्यासबोर्ड" : "Doctor Dashboard"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "आफ्नो प्रोफाइल र अपोइन्टमेन्ट व्यवस्थापन गर्नुहोस्"
-                : "Manage your profile and appointments"}
+                ? "अपोइन्टमेन्ट, समीक्षा, र कमाइ ट्र्याक गर्नुहोस्। डिजिटल प्रेस्क्रिप्शन लेख्नुहोस्।"
+                : "Track appointments, reviews & earnings. Write digital prescriptions."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-primary-blue/10 text-primary-blue px-2 py-0.5">
+                {lang === "ne" ? "एनालिटिक्स" : "ANALYTICS"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "समावेश" : "Included"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-primary-red group-hover:underline">
-              {lang === "ne" ? "ड्यासबोर्ड" : "Dashboard"} →
+              {lang === "ne" ? "ड्यासबोर्ड" : "Open Dashboard"} →
             </span>
           </Link>
         </div>
@@ -409,12 +571,17 @@ export function HomePageClient({ lang }: HomePageClientProps) {
 
       {/* For Clinics Section */}
       <section className="py-16 px-6 lg:px-16 bg-primary-yellow/10 border-t-4 border-foreground">
-        <div className="flex items-center gap-4 mb-12">
+        <div className="flex items-center gap-4 mb-4">
           <div className="w-4 h-4 bg-primary-yellow" />
           <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight">
-            {lang === "ne" ? "क्लिनिकहरूको लागि" : "For Clinics & Hospitals"}
+            {lang === "ne" ? "क्लिनिक र अस्पतालहरूको लागि" : "For Clinics & Hospitals"}
           </h2>
         </div>
+        <p className="text-foreground/60 mb-12 max-w-2xl">
+          {lang === "ne"
+            ? "पूर्ण डिजिटल क्लिनिक व्यवस्थापन प्रणाली - कुनै सेटअप शुल्क छैन"
+            : "Complete digital clinic management system - no setup fees"}
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Register Clinic */}
@@ -426,15 +593,23 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               <BuildingIcon />
             </div>
             <h3 className="text-lg font-bold uppercase mb-2">
-              {lang === "ne" ? "क्लिनिक दर्ता" : "Register Clinic"}
+              {lang === "ne" ? "क्लिनिक दर्ता" : "List Your Clinic"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "आफ्नो क्लिनिक डाइरेक्टरीमा थप्नुहोस्"
-                : "Add your clinic to our directory"}
+                ? "अनलाइन बुकिङ सक्षम गर्नुहोस्। Google मा देखिनुहोस्।"
+                : "Enable online bookings. Get found on Google."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-verified/10 text-verified px-2 py-0.5">
+                {lang === "ne" ? "फ्री" : "FREE"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "लिस्टिङ" : "Listing"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-yellow-700 group-hover:underline">
-              {lang === "ne" ? "दर्ता गर्नुहोस्" : "Register"} →
+              {lang === "ne" ? "दर्ता गर्नुहोस्" : "Register Now"} →
             </span>
           </Link>
 
@@ -447,15 +622,23 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               <QueueIcon />
             </div>
             <h3 className="text-lg font-bold uppercase mb-2">
-              {lang === "ne" ? "OPD क्यू" : "OPD Queue"}
+              {lang === "ne" ? "OPD क्यू" : "OPD Queue System"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "बिरामी लाइन डिजिटल रूपमा व्यवस्थापन गर्नुहोस्"
-                : "Manage patient queues digitally"}
+                ? "टोकन प्रणाली। बिरामीलाई SMS मा पालो सूचना।"
+                : "Token system. SMS notifications to patients about their turn."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-primary-blue/10 text-primary-blue px-2 py-0.5">
+                {lang === "ne" ? "SMS" : "SMS"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "स्वचालित" : "Auto-notify"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-yellow-700 group-hover:underline">
-              {lang === "ne" ? "हेर्नुहोस्" : "Learn More"} →
+              {lang === "ne" ? "हेर्नुहोस्" : "See Demo"} →
             </span>
           </Link>
 
@@ -468,15 +651,23 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               <ClipboardIcon />
             </div>
             <h3 className="text-lg font-bold uppercase mb-2">
-              {lang === "ne" ? "बिलिङ" : "Billing & Invoices"}
+              {lang === "ne" ? "बिलिङ सिस्टम" : "Billing System"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "इन्भ्वाइस र भुक्तानी व्यवस्थापन गर्नुहोस्"
-                : "Generate invoices and track payments"}
+                ? "IRD कम्प्लायन्ट इन्भ्वाइस। दैनिक र मासिक रिपोर्ट।"
+                : "IRD-compliant invoices. Daily & monthly reports."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-primary-red/10 text-primary-red px-2 py-0.5">
+                {lang === "ne" ? "IRD" : "IRD"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "कम्प्लायन्ट" : "Compliant"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-yellow-700 group-hover:underline">
-              {lang === "ne" ? "हेर्नुहोस्" : "Learn More"} →
+              {lang === "ne" ? "हेर्नुहोस्" : "See Demo"} →
             </span>
           </Link>
 
@@ -489,15 +680,23 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               <BeakerIcon />
             </div>
             <h3 className="text-lg font-bold uppercase mb-2">
-              {lang === "ne" ? "ल्याब र प्रेस्क्रिप्शन" : "Lab & Prescriptions"}
+              {lang === "ne" ? "ल्याब र EMR" : "Lab & EMR"}
             </h3>
-            <p className="text-sm text-foreground/60 mb-3">
+            <p className="text-sm text-foreground/60 mb-2">
               {lang === "ne"
-                ? "ल्याब अर्डर र औषधि व्यवस्थापन"
-                : "Manage lab orders and prescriptions"}
+                ? "ल्याब अर्डर, रिपोर्ट अपलोड। बिरामी इतिहास एकै ठाउँमा।"
+                : "Lab orders, report uploads. Complete patient history in one place."}
             </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold bg-primary-yellow/20 text-yellow-700 px-2 py-0.5">
+                {lang === "ne" ? "क्लाउड" : "CLOUD"}
+              </span>
+              <span className="text-xs text-foreground/40">
+                {lang === "ne" ? "सुरक्षित भण्डारण" : "Secure storage"}
+              </span>
+            </div>
             <span className="text-xs font-bold uppercase tracking-wider text-yellow-700 group-hover:underline">
-              {lang === "ne" ? "हेर्नुहोस्" : "Learn More"} →
+              {lang === "ne" ? "हेर्नुहोस्" : "See Demo"} →
             </span>
           </Link>
         </div>
@@ -506,47 +705,83 @@ export function HomePageClient({ lang }: HomePageClientProps) {
         <div className="mt-8 p-6 bg-foreground text-white flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="text-xl font-bold uppercase mb-1">
-              {lang === "ne" ? "पूर्ण क्लिनिक व्यवस्थापन प्रणाली" : "Complete Clinic Management System"}
+              {lang === "ne" ? "पूर्ण HMIS प्रणाली" : "Complete HMIS Solution"}
             </h3>
             <p className="text-white/70 text-sm">
               {lang === "ne"
-                ? "IPD, फार्मेसी, रिपोर्टहरू, र थप सुविधाहरू"
-                : "IPD management, pharmacy, reports, and more"}
+                ? "IPD, फार्मेसी, HR, इन्भेन्टरी, र थप। १ हप्तामा सेटअप।"
+                : "IPD, pharmacy, HR, inventory & more. Setup in 1 week."}
             </p>
           </div>
           <Link
             href={`/${lang}/clinic/dashboard`}
             className="px-6 py-3 bg-primary-yellow text-foreground font-bold uppercase tracking-wider text-sm hover:bg-yellow-400 transition-colors whitespace-nowrap"
           >
-            {lang === "ne" ? "ड्यासबोर्ड हेर्नुहोस्" : "Open Dashboard"} →
+            {lang === "ne" ? "डेमो हेर्नुहोस्" : "Request Demo"} →
           </Link>
         </div>
       </section>
 
       {/* Hospitals Section */}
       <section className="py-16 px-6 lg:px-16 border-t-4 border-foreground">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-12">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight">
-            {lang === "ne" ? "अस्पतालहरू" : "Featured Hospitals"}
+            {lang === "ne" ? "अस्पतालहरू" : "Partner Hospitals"}
           </h2>
           <Link
             href={`/${lang}/clinics?type=HOSPITAL`}
             className="text-sm font-bold uppercase tracking-wider text-primary-blue hover:underline"
           >
-            {lang === "ne" ? "सबै हेर्नुहोस्" : "View All"} →
+            {lang === "ne" ? "सबै हेर्नुहोस्" : "View All Hospitals"} →
           </Link>
         </div>
         <p className="text-foreground/60 mb-8 max-w-2xl">
           {lang === "ne"
-            ? "नेपालका प्रमुख अस्पतालहरूमा डाक्टरहरू खोज्नुहोस् र अपोइन्टमेन्ट बुक गर्नुहोस्।"
-            : "Find doctors at major hospitals across Nepal and book appointments directly."}
+            ? "नेपालका प्रमुख अस्पतालहरूमा कुन डाक्टर कुन दिन आउनुहुन्छ हेर्नुहोस् र अनलाइन अपोइन्टमेन्ट लिनुहोस्।"
+            : "See which doctors are available at major hospitals and book appointments online."}
         </p>
-        <div className="flex items-center gap-4 text-sm text-foreground/60">
-          <span className="font-bold text-foreground">15+</span>
-          <span>{lang === "ne" ? "अस्पतालहरू सूचीबद्ध" : "Hospitals Listed"}</span>
-          <span className="text-foreground/30">•</span>
-          <span className="font-bold text-foreground">500+</span>
-          <span>{lang === "ne" ? "डाक्टर सम्बद्ध" : "Affiliated Doctors"}</span>
+
+        {/* Stats row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-primary-blue/5 border-2 border-foreground/10 p-4 text-center">
+            <div className="text-3xl font-black text-primary-blue">15+</div>
+            <div className="text-xs uppercase tracking-wider text-foreground/60 mt-1">
+              {lang === "ne" ? "अस्पतालहरू" : "Hospitals"}
+            </div>
+          </div>
+          <div className="bg-primary-red/5 border-2 border-foreground/10 p-4 text-center">
+            <div className="text-3xl font-black text-primary-red">500+</div>
+            <div className="text-xs uppercase tracking-wider text-foreground/60 mt-1">
+              {lang === "ne" ? "डाक्टरहरू" : "Doctors"}
+            </div>
+          </div>
+          <div className="bg-primary-yellow/10 border-2 border-foreground/10 p-4 text-center">
+            <div className="text-3xl font-black text-yellow-700">50+</div>
+            <div className="text-xs uppercase tracking-wider text-foreground/60 mt-1">
+              {lang === "ne" ? "विशेषज्ञता" : "Specialties"}
+            </div>
+          </div>
+          <div className="bg-verified/5 border-2 border-foreground/10 p-4 text-center">
+            <div className="text-3xl font-black text-verified">24/7</div>
+            <div className="text-xs uppercase tracking-wider text-foreground/60 mt-1">
+              {lang === "ne" ? "बुकिङ" : "Booking"}
+            </div>
+          </div>
+        </div>
+
+        {/* Hospital names preview */}
+        <div className="flex flex-wrap gap-2">
+          {["HAMS Hospital", "Medicare Hospital", "B&B Hospital", "Nepal Mediciti", "Grande Hospital"].map((name) => (
+            <span key={name} className="text-xs bg-foreground/5 border border-foreground/10 px-3 py-1.5 text-foreground/70">
+              {name}
+            </span>
+          ))}
+          <Link
+            href={`/${lang}/clinics?type=HOSPITAL`}
+            className="text-xs bg-primary-blue/10 border border-primary-blue/20 px-3 py-1.5 text-primary-blue font-bold hover:bg-primary-blue/20"
+          >
+            +10 {lang === "ne" ? "थप" : "more"}
+          </Link>
         </div>
       </section>
     </main>
