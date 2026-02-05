@@ -1,0 +1,698 @@
+{
+  "hospital_key": "star-hospital",
+  "hospital_name": "Star Hospital",
+  "doctors": [
+    {
+      "name": "DR. BINAY KUMAR ADHIKARI",
+      "specialty": "Cardiology",
+      "department": null,
+      "degree": "– PhD in Cardiology (Norman Bethune Health Science Center, Jilin University) - MD in Internal Medicine – Cardiology (Norman Bethune Health Science Center, Jilin University) - MBBS (Norman Bethune Health Science Center, Jilin University)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1583664390.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. JYOTI NEUPANE LIMBU",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "MBBS, MD",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1583814600.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SURAJ BAJRACHARYA",
+      "specialty": "Orthopedics (Trauma, Arthoplasty,Sports Injury, Joint replacement Surgery & Spine Surgery)",
+      "department": null,
+      "degree": "MBBS, MS (Orthopedics), AO Spine Fellowship",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1583815103.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SATYAM RIMAL",
+      "specialty": "Padiatrics",
+      "department": null,
+      "degree": "- Fellowship (Pediatric Gastroenterology) – Sir Gangaram Hospital, NewDelhi - MD – Manipal Hospital, Bangalore - MBBS - Dhaka",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1590041930.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. LAXMI ACHARYA GAUTAM",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "- Advance Ultrasound Training – Rainbow Healthcare IVF, Agra – India –2016 - Fellowship in Gynecological Laparospic Surgery – Feni Private Hospital and Laparospic Institute and OBS/Gynae society – Bangladesh - 2019 - MD – Chuvash State University Imeni I. N. Ul'yanova – Russia - MBBS – Saratov State medical university (SSMU)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1705909898.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. LOCHANA SHRESTHA",
+      "specialty": "Geriatric Service",
+      "department": null,
+      "degree": "Education",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691129660.jpeg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. DIRGHA RAJ R.C",
+      "specialty": "Orthopedics (Trauma, Arthoplasty,Sports Injury, Joint replacement Surgery & Spine Surgery)",
+      "department": null,
+      "degree": "MBBS, MS (Ortho)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1583816894.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "PROF. DR. SUNIL SHRESTHA",
+      "specialty": "GI Surgery & Digestive Diseases",
+      "department": null,
+      "degree": "MBBS, MS (General Surgery) fellowship upper GI & amp; HPB Surgery (Royal Prince Alfred Hospital), Sydney, Australia",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691127083.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SUMAN BABU MARAHATTA",
+      "specialty": "Orthopedics (Trauma, Arthoplasty,Sports Injury, Joint replacement Surgery & Spine Surgery)",
+      "department": null,
+      "degree": "Fellowship in Knee and Hip Replacement- Fortis Hospital NOIDA, AJRI - Chennai - MS – Orthopedics – NAMS, Bir Hospital - MBBS, Nepal Medical College – Kathmandu University",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1583817332.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SUNDIP DWARE CHHETRI",
+      "specialty": "Ophthalmology (Eye)",
+      "department": null,
+      "degree": "-MBBS (Kathmandu University School of Medical Sciences, KU) - MD, Ophthalmology (Tilganga Institute of Ophthalmology, NAMS)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691078743.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. KUMKUM GUPTA JHA",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "MBBS, MD",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1590043234.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. LAXMI R.C",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "- FICS (USA) - MD – NGHC (KU, Kohalpur) - DGO - IPGHER (Bangladesh, Dhaka) - MBBS – LHI",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1583818299.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SANDESH MASKEY",
+      "specialty": "Burns, Plastic & Reconstructive Surgery",
+      "department": null,
+      "degree": "MS (IOM), Fellow Plastic & Reconstructive Surgery (Japan)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1583818753.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. MILAN MAHARJAN",
+      "specialty": "ENT (Ears, Nose and Throat)",
+      "department": null,
+      "degree": "MBBS, MD, ENT HN-Surgeon",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1655018547.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. DIPESH LAL GURUBACHARYA",
+      "specialty": "Gastroenterology and Hepatology",
+      "department": null,
+      "degree": "MBBS, MD, DM Gastroenterology and Hepatology (IOM,TUTH)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691130295.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. PREMAL KUMAR JOSHI",
+      "specialty": "ENT (Ears, Nose and Throat)",
+      "department": null,
+      "degree": "MBBS, MD, PhD (ENT)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1663735146.jpeg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "PROF. DR. SAROJ SHARMA",
+      "specialty": "Radiology",
+      "department": null,
+      "degree": "– MD - NAMS - MBBS – Kathmandu University",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1663735270.jpeg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. ANIL POKHREL",
+      "specialty": "Nephrology",
+      "department": null,
+      "degree": "– DM (Nephrology) – NAMS, Bir Hospital - MD (Internal Medicine) – NAMS Bir Hospital - MBBS – USTC, Bangladesh",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1590042169.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. KHAGENDRA CHHETRI",
+      "specialty": "Dental and Maxillo Facial Surgery",
+      "department": null,
+      "degree": "D.M.D , M.D.S",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1590043415.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. RAJEEV SINGH",
+      "specialty": "Dental and Maxillo Facial Surgery",
+      "department": null,
+      "degree": "- FICCDE - POS (Singapore) - BDS - R.V Dental (RGUHS)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1655017851.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SHAKTI SHAKYA",
+      "specialty": "Dental and Maxillo Facial Surgery",
+      "department": null,
+      "degree": "Not updated",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1626781340.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SUSHIL PAKHRIN",
+      "specialty": "Anesthesiology",
+      "department": null,
+      "degree": "MBBS, MD",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691078706.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. AMIT TRIPATI",
+      "specialty": "Endocrinology",
+      "department": null,
+      "degree": "– PGCAT (Thyroid) – Indore, India - PGCDM (Diabetes) – Indore, India - Fellowship in Endocrinology &amp; Metabolism (Ganga Ram Hospital – Delhi) - Residency Training in internal Medicine (Cebu, Philippines) - MBBS (Chongqing, China)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1655018467.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. THUPTEN KELSANG LAMA",
+      "specialty": "Gastroenterology and Hepatology",
+      "department": null,
+      "degree": "MBBS, MD (Hepatology), Specialty Liver Disease",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1626782081.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. BINOD SHRESTHA",
+      "specialty": "Uro Surgery",
+      "department": null,
+      "degree": "- Education – Fellowship in Uro-oncology, Japan - Training in Genitourinary Reconstruction, UK - FCPS (Urology) - Pakistan - MRCS. Ed (UK) - MCPS. PK – Pakistan - MBBS – TU, IOM Tribhuvan University",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691304705.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "PROF. DR. SUSPANA HIRACHAND",
+      "specialty": "Pathology",
+      "department": null,
+      "degree": "MBBS, MD (BPKIHS)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691126268.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. ANISH MAN SINGH",
+      "specialty": "Neuro-Sciences (Neuro-Surgical & Neurological Services)",
+      "department": null,
+      "degree": "– Fellowship in spine (Cleveland Clinic, Ohio, USA) - Fellowship in skull base (Hiroshima University, Japan) - MS (zhengzhou University, China) - MBBS (Nepal Medical College)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1655017767.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SRIJANA KOIRALA",
+      "specialty": "Pathology",
+      "department": null,
+      "degree": "MBBS, MD",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1663735251.jpeg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SRIJAN MAN PRADHAN",
+      "specialty": "Gastroenterology and Hepatology",
+      "department": null,
+      "degree": "MBBS,MD",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1696926694.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. ASHOK KUNWAR",
+      "specialty": "Uro Surgery",
+      "department": null,
+      "degree": "MBBS, MS (Urology)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1663735118.jpeg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. R.K SHAH",
+      "specialty": "Cardiology",
+      "department": null,
+      "degree": "Education – FACC, USA - MD Cardiology - Dhaka University, Bangladesh - MBBS – Chitagong University, Bangladesh",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1655018744.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. HARI NARAYAN GUPTA",
+      "specialty": "Dermatovenerology and Cosmetology",
+      "department": null,
+      "degree": "MBBS, DDV (Dhaka), Skin & VD",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1663735206.jpeg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SIMANT ANKIT",
+      "specialty": "Dermatovenerology and Cosmetology",
+      "department": null,
+      "degree": "MBBS,DDV(Dhaka) Skin & VD",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691078583.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. RAJEEV RAJ MANANDHAR",
+      "specialty": "Orthopedics (Trauma, Arthoplasty,Sports Injury, Joint replacement Surgery & Spine Surgery)",
+      "department": null,
+      "degree": "MBBS, MS (Orth), ISAKOS Fellow Arthroscopy & Sports Medicine",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1663735233.jpeg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. NAMRATA PRADHAN",
+      "specialty": "Neuro Psychiatric",
+      "department": null,
+      "degree": "- MD in Psychiatry. - Chongqiing Medical University, China - MBBS - Chongqiing Medical University, China - ISC – Nalanda College, South India, ISC - SLC – Brihaspati Vidyasadan, Naxal",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1644158020.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. KIRAN SHRESTHA",
+      "specialty": "Cardio Thoracic & Vascular Surgery",
+      "department": null,
+      "degree": "Chief Cardiothoracic & Vascular Surgery Unit (NAMS)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691078958.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SIMIT SAPKOTA",
+      "specialty": "Oncology",
+      "department": null,
+      "degree": "MBBS, MD Clinical Oncology (PGIMER Chandigarh)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691078623.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SUVEKSHYA MAHARJAN",
+      "specialty": "Internal Medicine",
+      "department": null,
+      "degree": "– MD – Internal Medicine at Nepal Medical College and Teaching Hospital. - MBBS at People’s Friendship University of Russia, Moscow.",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1655018617.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. GAURAV DHAKAL",
+      "specialty": "Orthopedics (Trauma, Arthoplasty,Sports Injury, Joint replacement Surgery & Spine Surgery)",
+      "department": null,
+      "degree": "MBBS, MS",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691130276.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. MANITA SHRESTHA RAJKARNIKAR",
+      "specialty": "Blood Transfusion Service & Transfusion Medicine",
+      "department": null,
+      "degree": "MD – Doctor General Medicine- Faculty of Medicine Comenius university in Bratislava, Czechoslovakia",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691165366.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. PRERNA JHA",
+      "specialty": "Neuro Psychiatric",
+      "department": null,
+      "degree": "MD -Tribhuvan University – Universal College of Medical Science. - MBBS – Kathmandu University – Ngial Medical College.",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1696926498.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. JEEGSHYA THAPA",
+      "specialty": "ENT (Ears, Nose and Throat)",
+      "department": null,
+      "degree": "M.S – Kathmandu University, KMC MBBS – Kathmandu university",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691129983.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. TRIJA DWA",
+      "specialty": "Padiatrics",
+      "department": null,
+      "degree": "- M.D – Bangabandhu Sheikh Mujib Medical University, Dhaka- Bangladesh - MBBS – National Medical College, Birgunj - I. SC – St. Xavier’s College, Maitighar- Kathmandu. - S.L.C- Kumidini Homes, Pokhara",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691126868.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. DIPAK MAHARJAN",
+      "specialty": "Orthopedics & Spinal Disorders",
+      "department": null,
+      "degree": "MBBS, Diploma in Orthopedics, Masters in Orthopedics, Fellowship in Spine(CMC Vellore)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691130259.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "DR. SUNIL SHRESTHA",
+      "specialty": "Oncology",
+      "department": null,
+      "degree": "Education",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1691129303.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Subin Byanjankar",
+      "specialty": "Orthopedics (Trauma, Arthoplasty,Sports Injury, Joint replacement Surgery & Spine Surgery)",
+      "department": null,
+      "degree": "MBBS, MS-Ortho Consultant Orthopedic Surgeon",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/drsubean.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Pushkar Pudasaini",
+      "specialty": "Orthopedics (Trauma, Arthoplasty,Sports Injury, Joint replacement Surgery & Spine Surgery)",
+      "department": null,
+      "degree": "MS, Orthopedics ( Kathmandu University)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1696925976.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Nimi Yadav",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "Master’s in Obstetrics and Gynecology",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1696926338.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Anju Laxmi Maharjan",
+      "specialty": "Psychiatry",
+      "department": null,
+      "degree": "1. MA Clinical Psychology, Tri- Chandra Multiple Campus",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1696925866.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr Pragati Karki Singh",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "MBBS( Nepal Medical College and Teaching Hospital Attarkhel Nepal) Masters in Obstetrics and Gynecology (zhengzhou University,Henan china) Diploma In Gynecological Laparoscopy Hysteroscopy and Urogynecology (Shimist and UKSH ) kathmandu",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1696927165.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Prof. Dr Tarun Pradhan",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "MD. Obstetrics and Gyneocology (BPKIHS, Dharan) Fellowship Urogynecology, Capetown, South Africa. Fellowship Reproductive Medicine and Minimally Invasive Gynaecology, Maharashtra, India.",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1729323023.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Arun Gautam",
+      "specialty": "Internal Medicine",
+      "department": null,
+      "degree": "MBBS, MD Internal Medicine",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1732867845.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Namita Bista",
+      "specialty": "Dental and Maxillo Facial Surgery",
+      "department": null,
+      "degree": "M.D.S,Consultant Periodontist",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733045293.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Anjali Shakya",
+      "specialty": "Pathology",
+      "department": null,
+      "degree": "MD Pathology",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733047814.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Rajesh Raj Shah",
+      "specialty": "Physical Medicine & Rehabilitation",
+      "department": null,
+      "degree": "Master in physiotherapy (MPT)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733307162.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Suraj Sharma",
+      "specialty": "Radiology",
+      "department": null,
+      "degree": "MBBS, MD (Radio-diagnosis) Consultant Radiologist",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733375176.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Binaya Dhakal",
+      "specialty": "General and Laparoscopic Surgery",
+      "department": null,
+      "degree": "MBBS , MD-MS ( General Surgery)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733375155.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Sudhanshu Kumar Thakur",
+      "specialty": "Radiology",
+      "department": null,
+      "degree": "M.D Radiology",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733468524.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Sandip Kumar Jaiswal",
+      "specialty": "Neuro-Sciences (Neuro-Surgical & Neurological Services)",
+      "department": null,
+      "degree": "Neurology (MBBS, MD, PhD)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733382197.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Tara Manandhar",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "MBBS , MD, Consultant Obstetrics and Gynecology",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733383634.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Sushil Sitaula",
+      "specialty": "Internal Medicine",
+      "department": null,
+      "degree": "MBBS, MD Internal medicine",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733383994.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Jit Prakash Shrestha",
+      "specialty": "Uro Surgery",
+      "department": null,
+      "degree": "MBBS, MS (Urology)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733384426.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Saugat Koirala",
+      "specialty": "Gynaecology and Obstetrics",
+      "department": null,
+      "degree": "• MBBS • MS Gynecology and Obstetrics, • Fellowship in Reproductive Medicine and Minimally Invasive Gynecology",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733462473.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Amit Jha",
+      "specialty": "ENT (Ears, Nose and Throat)",
+      "department": null,
+      "degree": "MBBS, MS (ENT-HNS)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1734589944.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Shudan Ruchal",
+      "specialty": "Padiatrics",
+      "department": null,
+      "degree": "MBBS, MD Pediatrics",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1733464471.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Krishna Manandhar",
+      "specialty": "Burns, Plastic & Reconstructive Surgery",
+      "department": null,
+      "degree": "MCh, Plastic Surgery, Ms, MD",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1734589360.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Arun Sigdel",
+      "specialty": "Orthopedics (Trauma, Arthoplasty,Sports Injury, Joint replacement Surgery & Spine Surgery)",
+      "department": null,
+      "degree": "M.S Orthopaedics and trauma surgery",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1734589785.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Aagon Krishna Shrestha",
+      "specialty": "Oncology",
+      "department": null,
+      "degree": "Master degree in General Surgery(MS) Fellowship in Department of Breast Oncosurgery in Tata Medical Center(TMC)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1734590332.png",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    },
+    {
+      "name": "Dr. Utsav Adhikari",
+      "specialty": "Internal Medicine",
+      "department": null,
+      "degree": "- MBBS, MD (Internal Medicine)",
+      "photo_url": "https://starhospitallimited.com/uploads/doctor/doctor1752817914.jpg",
+      "profile_url": null,
+      "hospital_key": "star-hospital",
+      "scraped_at": "2026-02-04T10:14:35.478Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T10:14:35.482Z",
+  "errors": []
+}

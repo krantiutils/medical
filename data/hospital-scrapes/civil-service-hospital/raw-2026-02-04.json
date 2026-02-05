@@ -1,0 +1,978 @@
+{
+  "hospital_key": "civil-service-hospital",
+  "hospital_name": "Civil Service Hospital",
+  "doctors": [
+    {
+      "name": "प्रा. डा.मोहन चन्द्र रेग्मी",
+      "specialty": "कार्यकारी निर्देशक",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/133_dGoVx6V2H9_b2n9q4w.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "डा.दिपक पौडेल",
+      "specialty": "मेडिकल डाइरेक्टर",
+      "department": "इन्डोकाइनेलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/31_D53Dh9IU3c_m4nj7x8.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "प्रा. डा.राम किशोर शाह",
+      "specialty": "वरिष्ठ कन्सल्ट्यान्ट",
+      "department": "कार्डियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/Untitled%20design_WQ5jOO6nXZ_p3l3krv.png",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "प्रा. डा.रोहित कुमार पोखरेल",
+      "specialty": "वरिष्ठ कन्सल्ट्यान्ट",
+      "department": "स्पाइन सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/Untitled%20design-2_ycozWwMLIH_stytj32.png",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "प्रा.डा. रजनी हाडा प्रधान",
+      "specialty": "वरिष्ठ कन्सल्ट्यान्ट",
+      "department": "नेफ्रोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/176_145bq2qgtp_hygcccn.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "डा.रवि प्रकाश शर्मा",
+      "specialty": "कन्सल्ट्यान्ट",
+      "department": "ग्याष्ट्रोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/36_kKyMNrl3HD_x242iwg.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "डा.सुरेश श्रेष्ठ",
+      "specialty": "कन्सल्ट्यान्ट",
+      "department": "रेडियसन अन्कोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/152_q1aLXqNMkx_l7jcz5z.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "डा.सम्पूर्ण मान तुलाधर",
+      "specialty": "कन्सल्ट्यान्ट",
+      "department": "सीटीभीएस",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/97_M3n6k185jm_genpupv.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "डा.अंशु कुमार ठाकुर",
+      "specialty": "विशेषज्ञ",
+      "department": "मेडिकल अन्कोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/Untitled%20design-2-2_GDthXdSGQK_iyotior.png",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "डा. सुभाष पण्डित",
+      "specialty": "विशेषज्ञ",
+      "department": "क्लिनिकल ओन्कोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/154_BG79YakuCk_zqfuy51.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "डा.विदेश विष्ट",
+      "specialty": "विशेषज्ञ",
+      "department": "पल्मोनरी, क्रिटिकल केयर एण्ड स्लीप मेडिसिन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/200_3iIWCbNCH3_ulpajtr.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.300Z"
+    },
+    {
+      "name": "प्रा.डा.अनुज जंग रायमाझी",
+      "specialty": "विशेषज्ञ",
+      "department": "पेन क्लिनिक",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/66_IKxCgKxGF5_cya30xa.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.परिमल आचार्य",
+      "specialty": "विशेषज्ञ",
+      "department": "अर्थोपेडिक सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/157_5hHKLSLZlc_kngmzvs.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.विशेष शर्मा पौड्याल",
+      "specialty": "विशेषज्ञ",
+      "department": "हेमाटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/147_6Ai4BsScoL_5pjclvv.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.जितेन्द्र परियार",
+      "specialty": "विशेषज्ञ",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/197_8ofWTbge0v_obqhzpk.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.प्रदीप श्रेष्ठ",
+      "specialty": "विशेषज्ञ",
+      "department": "फिजिसियन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/47_l0LAWdwnUy_twn5tgm.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.राजन पौडेल",
+      "specialty": "विशेषज्ञ",
+      "department": "कार्डियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/38_8iykdNe5Pr_nwhi6qz.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.प्रदीप तिवारी",
+      "specialty": "विशेषज्ञ",
+      "department": "क्रिटिकल केयर",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/68_ZbuvICuJzl_ef8ypsi.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.सुशिल शर्मा",
+      "specialty": "विशेषज्ञ",
+      "department": "अर्थोपाल्स्टिक",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/170_534eRw06yw_1lgg7ab.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.विपेन्द्र ध्वज कुलुङ राई",
+      "specialty": "विशेषज्ञ",
+      "department": "यूरोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/88_pc0zCB3KCd_np1ip37.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.निर्मला तामाङ",
+      "specialty": "विशेषज्ञ",
+      "department": "इएनटी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/189_4VyhEuVXAS_8vdnvto.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.अनिरराम मोह श्रेष्ठ",
+      "specialty": "विशेषज्ञ",
+      "department": "सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/89_yIuHE5YItf_ubl3lgb.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.शान्ति भट्ट",
+      "specialty": "विशेषज्ञ",
+      "department": "पेडियाट्रिक्स",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/103_ugygr4Gdog_uvslnvk.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.निशान भूर्तेल",
+      "specialty": "विशेषज्ञ",
+      "department": "नेफ्रोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/46_1sBydSPMIQ_asckrt9.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.धिरेन्द्र प्रसाद यादव",
+      "specialty": "विशेषज्ञ",
+      "department": "पेडियाट्रिक्स",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/107_UFyoQHjvp4_cqwrj4f.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.राम चन्द्र सुवेदी",
+      "specialty": "विशेषज्ञ",
+      "department": "न्यूरोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/57_KQVYDzZOGC_vus7gwc.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.ज्ञानेन्द्र जोशी",
+      "specialty": "विशेषज्ञ",
+      "department": "स्पाइन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/166_5tUydSr1OT_dlyjcco.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.विरेन्द्र कुमार राउत",
+      "specialty": "विशेषज्ञ",
+      "department": "क्रिटिकल केयर",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/70_TQEnRKvSvJ_ehlnukh.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.सवी प्रधानाङ्ग",
+      "specialty": "विशेषज्ञ",
+      "department": "प्याथोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/Dr.%20Sabi%20Pradhanang_6bfqsSJ9xL_jejb3jd.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.प्रसुना थापा",
+      "specialty": "प्रमुख डेन्टल सर्जन",
+      "department": "डेन्टिष्ट्री",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/62_2KKO3VkiZ4_yzv7esf.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सिर्जना कोइराला",
+      "specialty": "रजिष्ट्रार",
+      "department": "प्याथोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/24_0QZ2sZEolz_tsyybmb.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. समिर न्यौपाने",
+      "specialty": "रजिष्ट्रार",
+      "department": "प्याथोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/34_ULfdRYVmMo_kqsfhnm.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.वसन्त खतिवडा",
+      "specialty": "रजिष्ट्रार",
+      "department": "प्याथोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/26_T5bEGeUeQN_xh5owfk.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.शरद पन्थी",
+      "specialty": "रजिष्ट्रार",
+      "department": "रेडियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/16_wmH0bb6gFn_la97hpr.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.बब्लिनराज शाक्य",
+      "specialty": "रजिष्ट्रार",
+      "department": "रेडियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/18_gf0pipH9er_xxqm0n2.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.राज बावु व्यञ्जनकार",
+      "specialty": "रजिष्ट्रार",
+      "department": "रेडियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/8_Nd1iWdnUvU_erqc6ew.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.रविन्द्र देशार",
+      "specialty": "रजिष्ट्रार",
+      "department": "रेडियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/10_BTRMOerbQa_pmb9hsa.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.प्रभात कार्की",
+      "specialty": "रजिष्ट्रार",
+      "department": "रेडियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/13_izovlTLLrX_dckmgu3.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.प्रशान्त पौडेल",
+      "specialty": "रजिष्ट्रार",
+      "department": "एनेस्थेसियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/134_v6dOEflP6O_h1vljzx.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.सुवास चन्द्र पौडेल",
+      "specialty": "रजिष्ट्रार",
+      "department": "एनेस्थेसियोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/135_IKnUVJLTYK_ktwsgbf.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.रमेश पन्त",
+      "specialty": "रजिष्ट्रार",
+      "department": "फ्यामिली मेडिसिन एण्ड ईमरजेन्सी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/44_3vnpLd2LFw_crjkoxz.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा प्रमिला भुषाल",
+      "specialty": "रजिष्ट्रार",
+      "department": "फ्यामिली मेडिसिन एण्ड ईमरजेन्सी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/43_Cjl6X0RLcB_fiurmea.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा खुश्बु झा",
+      "specialty": "रजिष्ट्रार",
+      "department": "फ्यामिली मेडिसिन एण्ड ईमरजेन्सी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/48_DuXBeL5C6c_hnwfa52.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा बन्दन थापा",
+      "specialty": "रजिष्ट्रार",
+      "department": "फ्यामिली मेडिसिन एण्ड ईमरजेन्सी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/51_MX37tXqQe0_mv113mm.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा विनित नारायण जोशी",
+      "specialty": "रजिष्ट्रार",
+      "department": "फ्यामिली मेडिसिन एण्ड ईमरजेन्सी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/49_fevmXNg5zp_plgfpko.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा राजिब शंखदेव",
+      "specialty": "रजिष्ट्रार",
+      "department": "फ्यामिली मेडिसिन एण्ड ईमरजेन्सी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/50_J2Ed2IFNsa_nxvz5zo.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा दिपेश केसी",
+      "specialty": "रजिष्ट्रार",
+      "department": "फ्यामिली मेडिसिन एण्ड ईमरजेन्सी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/52_sLU5itFhxe_haxhilt.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा राजिव श्रेष्ठ",
+      "specialty": "रजिष्ट्रार",
+      "department": "फ्यामिली मेडिसिन एण्ड ईमरजेन्सी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/42_MXJ8t7LQwg_uc1gc5f.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. राजेश भुर्तेल",
+      "specialty": "विशेषज्ञ",
+      "department": "अप्थ्याल्मोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/7_cLb7p4FtQy_8ol3wrg.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. प्रज्ञा बस्नेत",
+      "specialty": "विशेषज्ञ",
+      "department": "अप्थ्याल्मोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/3_8tXgtifnIa_kz6gubz.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. जेन्नर कुरुम्वाङ",
+      "specialty": "रजिष्ट्रार",
+      "department": "इन्टरनल मेडिसिन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/32_h8TWLMhmVw_gpv0jfn.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सरिता श्रेष्ठ",
+      "specialty": "रजिष्ट्रार",
+      "department": "इन्टरनल मेडिसिन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/41_TIP8remmJG_mnwnp1t.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. मोहम्मद जफर आलम",
+      "specialty": "रजिष्ट्रार",
+      "department": "इन्टरनल मेडिसिन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/54_AowOrMrHDW_y9hm8mu.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सुदिप भण्डारी",
+      "specialty": "रजिष्ट्रार",
+      "department": "इन्टरनल मेडिसिन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/45_Ge5BefRfIQ_mxrsrin.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. अमित श्रीवास्तव",
+      "specialty": "रजिष्ट्रार",
+      "department": "इन्टरनल मेडिसिन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/amit_zXPZaFZ07m_8esrvae.png",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. रुपेश मिश्र",
+      "specialty": "रजिष्ट्रार",
+      "department": "क्लिनिकल जेनेटिकिस्ट",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/28_tqqJ7fOxkq_pipprn5.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सुशील पौडेल",
+      "specialty": "रजिष्ट्रार",
+      "department": "डर्माटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/74_a09wxzyKVz_z8tear5.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. रविन्द्र प्रसाद शर्मा",
+      "specialty": "रजिष्ट्रार",
+      "department": "डर्माटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/72_RvprInsfY9_jqibgwa.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. प्रज्वल पुडासैनी",
+      "specialty": "रजिष्ट्रार",
+      "department": "डर्माटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/78_xPJ6ZOqaK2_ie2obic.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सागर जी.सी.",
+      "specialty": "रजिष्ट्रार",
+      "department": "डर्माटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/76_tVu8rVRBSj_guf0fjb.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. दीपेश शाक्य",
+      "specialty": "रजिष्ट्रार",
+      "department": "इएनटी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/190_6iexNIi4mW_zj7gvqj.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. अपार पोखरेल",
+      "specialty": "रजिष्ट्रार",
+      "department": "इएनटी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/182_shwfSNXrHC_w7idisi.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. जिया सङतो",
+      "specialty": "टीसीएम चिकित्सक",
+      "department": "परम्परागत चिनियाँ मेडिसिन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/5_lXcM4hlj4w_sj1fjbq.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. श्रेया श्रेष्ठ",
+      "specialty": "रजिष्ट्रार",
+      "department": "र्युमाटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/39_6dzyLfiSho_hyiqwmy.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. अरबिन्द भुसाल",
+      "specialty": "रजिष्ट्रार",
+      "department": "साइकियाट्री",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/20_Caf5K2PJgB_dhoc6qq.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. विशाल मणि पौडेल",
+      "specialty": "रजिष्ट्रार",
+      "department": "साइकियाट्री",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/Untitled%20design-3_Kuqbk3ioQk_p1ex3bf.png",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सौहार्द लोहनी",
+      "specialty": "रजिष्ट्रार",
+      "department": "रेडियसन ओन्कोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/155_KspmwoOH7G_dk6hupb.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सचिता बानिया",
+      "specialty": "रजिष्ट्रार",
+      "department": "हेमाटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/149_O48ty0a97O_xgrxekf.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. बिक्रम कार्की",
+      "specialty": "रजिष्ट्रार",
+      "department": "हेमाटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/150_CM1Jo1AfzB_1wm6wdk.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. प्रेम राज श्रेष्ठ",
+      "specialty": "रजिष्ट्रार",
+      "department": "हेमाटोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/99_ikRaplBJxO_ir3xcbr.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सदीक्षा रिमाल",
+      "specialty": "रजिष्ट्रार",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/Untitled%20design_juVGJM2t9O_f10exwi.png",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. प्रेरणा भट्टराई",
+      "specialty": "रजिष्ट्रार",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/143_4Xass7Clxv_egeitbg.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. अरुण प्रसाद जोशी",
+      "specialty": "रजिष्ट्रार",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/195_NkWVrxg3DS_jqwsxnd.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. इशा श्रेष्ठ",
+      "specialty": "रजिष्ट्रार",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/192_dCpFKY2VtF_c4cucl9.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. रिमा महर्जन",
+      "specialty": "रजिष्ट्रार",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/_K4A0347_pDFk6tL3ll_vrnteui.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. पवित्र महर्जन",
+      "specialty": "रजिष्ट्रार",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/_K4A0347_29nUXZMbRw_coin9hl.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. पुनम लामा",
+      "specialty": "रजिष्ट्रार",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/13_cZ3YLpbqqV_oqye545.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. अनिशा श्रेष्ठ",
+      "specialty": "रजिष्ट्रार",
+      "department": "अब्स्ट्रेटिक्स एण्ड गाइनेकोलोजी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/198_6t7vYPxUFC_5bx67kr.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. प्रिन्स दवाडी",
+      "specialty": "रजिष्ट्रार",
+      "department": "सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/84_HmX19Dx3qe_q0gdhdo.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सागर उपाध्याय",
+      "specialty": "रजिष्ट्रार",
+      "department": "सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/82_gW6XzsVbkl_gpi8qfi.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. बिक्रम ब्याञ्जनकार",
+      "specialty": "रजिष्ट्रार",
+      "department": "सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/83_zlH3FRUR2o_06wsrij.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. रबिन पण्डित",
+      "specialty": "रजिष्ट्रार",
+      "department": "सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/63_MddJSlTc4Y_40cc55y.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. प्रार्थना पछाई",
+      "specialty": "रजिष्ट्रार",
+      "department": "सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/92_WKQiEIt98I_8vhsnyv.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. चन्द्रिका साह",
+      "specialty": "रजिष्ट्रार",
+      "department": "सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/80_Bs7sNYcBPS_okbkuon.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. इनेश सिवाकोटी",
+      "specialty": "रजिष्ट्रार",
+      "department": "सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/91_OyQp2WLXVF_uc1kyut.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. बन्धुराम पंगेनी",
+      "specialty": "रजिष्ट्रार",
+      "department": "अर्थोपेडिक सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/162_bo1Fa58fNM_qywnlfh.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. अरुण सिग्देल",
+      "specialty": "रजिष्ट्रार",
+      "department": "अर्थोपेडिक सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/159_hJScbQ3CK3_ew1uegb.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सुमन बाबु मरहट्टा",
+      "specialty": "रजिष्ट्रार",
+      "department": "अर्थोपेडिक सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/160_10vkJcy3WC_nbmvnd4.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. नवीन पौडेल",
+      "specialty": "रजिष्ट्रार",
+      "department": "अर्थोपेडिक सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/164_u2L7cAmXSm_i7t319x.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. अंकित निरौला",
+      "specialty": "रजिष्ट्रार",
+      "department": "अर्थोपेडिक सर्जरी",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/168_GQ1ErMyPMA_1r88a12.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. प्रकाश ज्योति पोखरेल",
+      "specialty": "रजिष्ट्रार",
+      "department": "पेडियाट्रिक्स",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/116_oMzMBLQCkN_5l4t2tq.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. दीपा ढकाल",
+      "specialty": "रजिष्ट्रार",
+      "department": "पेडियाट्रिक्स",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/110_x0USqPrUtx_brygebl.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. मच्छिन्द्र लामिछाने",
+      "specialty": "रजिष्ट्रार",
+      "department": "पेडियाट्रिक्स",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/114_uOf6ok3jTA_c7lqxjs.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. दिव्या के.सी.",
+      "specialty": "रजिष्ट्रार",
+      "department": "पेडियाट्रिक्स",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/112_gDp34H1j4Z_xvnaswz.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सुदर्शन कोइराला",
+      "specialty": "रजिष्ट्रार",
+      "department": "पेडियाट्रिक्स",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/105_rqJ7DEzl06_f1smjn4.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा. सञ्जी सिलवाल",
+      "specialty": "रजिष्ट्रार",
+      "department": "डेन्टिष्ट्री",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/60_ZpNaLzl4K6_izqaaxy.jpeg",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    },
+    {
+      "name": "डा.कमल प्रकाश साउद",
+      "specialty": "रजिष्ट्रार",
+      "department": "इन्टरनल मेडिसिन",
+      "degree": null,
+      "photo_url": "https://giwmscdnone.gov.np/media/albums/Untitled%20design-2_UFcX5fF4ic_9yjzizz.png",
+      "profile_url": null,
+      "hospital_key": "civil-service-hospital",
+      "scraped_at": "2026-02-04T11:14:34.301Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T11:14:34.310Z",
+  "errors": []
+}

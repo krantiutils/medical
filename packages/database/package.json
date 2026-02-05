@@ -15,7 +15,8 @@
     "typecheck": "tsc --noEmit",
     "import:doctors": "tsx scripts/import-doctors.ts",
     "import:dentists": "tsx scripts/import-dentists.ts",
-    "import:pharmacists": "tsx scripts/import-pharmacists.ts"
+    "import:pharmacists": "tsx scripts/import-pharmacists.ts",
+    "import:hospitals": "tsx scripts/import-hospitals.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",

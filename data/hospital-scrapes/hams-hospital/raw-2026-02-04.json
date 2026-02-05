@@ -1,0 +1,1018 @@
+{
+  "hospital_key": "hams-hospital",
+  "hospital_name": "HAMS Hospital",
+  "doctors": [
+    {
+      "name": "Dr. Aayush Aryal",
+      "specialty": "Orthopedics & Trauma",
+      "department": "Orthopedics & Trauma",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2025/02/WhatsApp-Image-2025-02-20-at-3.42.22-PM-1.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-aayush-aryal/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Abart Joshi",
+      "specialty": "Urology",
+      "department": "Urology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Abart-Joshi-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-abart-joshi/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Amit Shrestha",
+      "specialty": "Oncology",
+      "department": "Oncology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2023/06/Dr.-Amit-shrestha-1024x954.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-amit-shrestha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Amrit Bogati",
+      "specialty": "Cardiology",
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-4.57.21-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-amrit-bogati/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Anjan Shrestha",
+      "specialty": "Oncology",
+      "department": "Oncology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Anjan-Kumar-Shrestha.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-anjan-shrestha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Anuj Parajuli",
+      "specialty": "General/GI Surgery",
+      "department": "General/GI Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Anuj-Parajuli-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-anuj-parajuli/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Archana Pokharel",
+      "specialty": "Ophthalmology",
+      "department": "Ophthalmology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2023/12/WhatsApp-Image-2025-02-02-at-5.24.22-PM-674x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-archana-pokharel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Arjun Karki",
+      "specialty": "Pulmonary & Critical Care",
+      "department": "Pulmonary & Critical Care",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Arjun-Karki.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-arjun-karki/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Atit Poudel",
+      "specialty": "Gynaecology",
+      "department": "Gynaecology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-15.26.46.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-atit-poudel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Avinab Prasad Shrestha",
+      "specialty": "Pre-Hospital Care & Emergency Medicine",
+      "department": "Pre-Hospital Care & Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2025/08/Dr-Avinab-Shrestha-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-avinab-prasad-shrestha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Bhaskar Raj Pant",
+      "specialty": "Orthopedics & Trauma",
+      "department": "Orthopedics & Trauma",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Bhaskar-Raj-Pant.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-bhaskar-raj-pant/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Bhola Rijal",
+      "specialty": "Gynaecology",
+      "department": "Gynaecology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Bhola-Rijal-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-bhola-rijal/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:47.063Z"
+    },
+    {
+      "name": "Dr. Bibek Kumar Purbey",
+      "specialty": "Gastro-Enterology",
+      "department": "Gastro-Enterology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Bibek-Kumar-Purbey-1024x1020.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-bibek-kumar-purbey/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Bimal Subedi",
+      "specialty": "Pathology",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2023/12/Dr-Bimal-Subedi-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-bimal-subedi/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Binaya Bhattarai",
+      "specialty": "Endocrinology & Metabolism",
+      "department": "Endocrinology & Metabolism",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Binaya-Bhattarai-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-binaya-bhattarai/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Bipendra D.K Rai",
+      "specialty": "Urology",
+      "department": "Urology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Bipendra-D.K-Rai-1024x989.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-bipendra-d-k-rai/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Bishal Pandey",
+      "specialty": "Ophthalmology",
+      "department": "Ophthalmology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/bishal@4x-100-e1734428262128.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-bishal-pandey/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Chaturanand Yadav",
+      "specialty": "Pre-Hospital Care & Emergency Medicine",
+      "department": "Pre-Hospital Care & Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2025/07/Dr-Chaturanand-Yadav-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-chaturanand-yadav/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Choplal Bhusal",
+      "specialty": "ENT",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Choplal-Bhusal-998x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-choplal-bhusal/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Deewakar Sharma",
+      "specialty": "Cardiology",
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Deewakar-Sharma.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-deewakar-sharma/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Devendra Bhattarai",
+      "specialty": "Internal Medicine",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/08/Dr-Devendra-Bhattarai-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-devendra-bhattarai/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Dibesh Shrestha",
+      "specialty": "General/GI Surgery",
+      "department": "General/GI Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Dibesh-Shrestha-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-dibesh-shrestha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Dinesh Chataut",
+      "specialty": "Radiology",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Dinesh-chataut-Radiology-17-955x1024.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-dinesh-chataut/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Dinesh Psd. Koirala",
+      "specialty": "Pediatric Surgery",
+      "department": "Pediatric Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Dinesh-Prasad-Koirala-682x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-dinesh-psd-koirala/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:52.314Z"
+    },
+    {
+      "name": "Dr. Geha Raj Dahal",
+      "specialty": "Pediatric Surgery",
+      "department": "Pediatric Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Geha-Raj-Dahal.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-geha-raj-dahal/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Gita Sayami",
+      "specialty": "Pathology",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Gita-Sayami-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-gita-sayami/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Iccha Uprety",
+      "specialty": "Gynaecology",
+      "department": "Gynaecology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/11/Dr-Iccha-Upreti-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-iccha-uprety/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Ichchha Dhakal",
+      "specialty": "Oncology",
+      "department": "Oncology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2023/06/Dr.-Ichchha-Dhakal.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-ichchha-dhakal/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Ishwar Lohani",
+      "specialty": "Plastic, Cosmetic & Hand Surgery",
+      "department": "Plastic, Cosmetic & Hand Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-16.04.45.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-ishwar-lohani/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Jyotindra Sharma",
+      "specialty": "Cardiovascular Surgery",
+      "department": "Cardiovascular Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-16.06.18.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-jyotindra-sharma/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Kamal Raj Dhital",
+      "specialty": "Aesthetic Medicine and Dermatology",
+      "department": "Aesthetic Medicine and Dermatology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Kamal-Raj-Dhital.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-kamal-raj-dhital/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Karishma Pandey",
+      "specialty": "Gynaecology",
+      "department": "Gynaecology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Karishma-Pandey-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-karishma-pandey/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Kashyap Dahal",
+      "specialty": "Nephrology",
+      "department": "Nephrology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Kashyap-Dahal.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-kashyap-dahal/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Keshav Buddhathoki",
+      "specialty": "Cardiology",
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2025/06/WhatsApp-Image-2025-06-12-at-11.14.07.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-keshav-buddhathoki/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Khagendra Chhetri",
+      "specialty": "Aesthetic Medicine and Dermatology",
+      "department": "Aesthetic Medicine and Dermatology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/12/WhatsApp-Image-2025-02-02-at-15.13.40-1024x682.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-khagendra-chhetri/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Koshis N Pokharel",
+      "specialty": "Bariatric Surgery",
+      "department": "Bariatric Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/11/WhatsApp-Image-2025-02-02-at-4.16.40-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-koshis-n-pokharel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:45:57.557Z"
+    },
+    {
+      "name": "Dr. Krishna Dhungana",
+      "specialty": "Neurology",
+      "department": "Neurology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Krishna-Dhungana.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-krishna-dhungana/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Lokendra Limbu",
+      "specialty": "Aesthetic Medicine and Dermatology",
+      "department": "Aesthetic Medicine and Dermatology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/12/WhatsApp-Image-2025-02-02-at-4.24.22-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-lokendra-limbu/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Madhu Sudhan Ghale Gurung",
+      "specialty": "Orthopedics & Trauma",
+      "department": "Orthopedics & Trauma",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2025/04/WhatsApp-Image-2025-04-21-at-14.26.29-e1745227398845.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-madhu-sudhan-ghale-gurung/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Mahesh Raj Sigdel",
+      "specialty": "Nephrology",
+      "department": "Nephrology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Asset-1@4x-100.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-mahesh-raj-sigdel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Man Bahadur K. C.",
+      "specialty": "Cardiology",
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-16.02.49-872x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-man-bahadur-k-c/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Manoj Bohara",
+      "specialty": "Neurosurgery",
+      "department": "Neurosurgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-4.27.32-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-manoj-bohara/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Monisma Malla",
+      "specialty": "Pre-Hospital Care & Emergency Medicine",
+      "department": "Pre-Hospital Care & Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2026/01/Dr-Monisma-Malla-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-monisma-malla/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Mukunda Sharma",
+      "specialty": "Cardiology",
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Mukunda-Sharma.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-mukunda-sharma/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Murari Raj Upreti",
+      "specialty": "Anesthesiology",
+      "department": "Anesthesiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Murari-Raj-Upreti.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-murari-raj-upreti/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Nandu Silwal Poudel",
+      "specialty": "Gastro-Enterology",
+      "department": "Gastro-Enterology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/nandu@4x-100-e1734428201609.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-nandu-silwal-poudel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Padam Raj Pant",
+      "specialty": "Gynaecology",
+      "department": "Gynaecology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Padam-Raj-Pant.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-padam-raj-pant/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Pankaj Ray",
+      "specialty": "Pediatrics",
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Pankaj-Ray-746x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-pankaj-ray/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:02.778Z"
+    },
+    {
+      "name": "Dr. Paras Panjiyar",
+      "specialty": "Ophthalmology",
+      "department": "Ophthalmology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/dr-paras-panjiyar-1024x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-paras-panjiyar/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Parash Koirala",
+      "specialty": "Cardiology",
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Parash-Koirala-Cardiology-784x1024.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-prakash-koirala/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Prabhakar Pokharel",
+      "specialty": "Neuropsychiatry",
+      "department": "Neuropsychiatry",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-4.40.43-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-prabhakar-pokharel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Prabin Bikram Thapa",
+      "specialty": "General/GI Surgery",
+      "department": "General/GI Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Prabin-Bikram-Thapa-791x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-prabin-bikram-thapa/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Pradeep Baral",
+      "specialty": "Radiology",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Pradeep-Baral-1024x1024.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-pradeep-baral/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Pradeep Shrestha",
+      "specialty": "Rheumatology",
+      "department": "Rheumatology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2023/06/Dr.-Predeep-Shrestha.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-pradeep-shrestha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Pragati Thapa",
+      "specialty": "Aesthetic Medicine and Dermatology",
+      "department": "Aesthetic Medicine and Dermatology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/IMG-20210824-WA0001-810x1024.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-pragati-thapa/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Prakash Bista",
+      "specialty": "Neurosurgery",
+      "department": "Neurosurgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Prakash-Bista.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-prakash-bista/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Prakash Kafle",
+      "specialty": "ENT",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Prakash-Kumar-Kafle-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-prakash-kafle/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Prakash Sayami",
+      "specialty": "Thoracic, Breast & Thyroid Surgery & Oncology",
+      "department": "Thoracic, Breast & Thyroid Surgery & Oncology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-4.43.51-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-prakash-sayami/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Praphul Kumar Jha",
+      "specialty": "Pre-Hospital Care & Emergency Medicine",
+      "department": "Pre-Hospital Care & Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/11/Dr-Praphul-Kumar-Jha-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-praphul-kumar-jha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Prashant Adhikari",
+      "specialty": "Orthopedics & Trauma",
+      "department": "Orthopedics & Trauma",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Prashant-Adhikari.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-prashant-adhikari/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:08.103Z"
+    },
+    {
+      "name": "Dr. Raju Pangeni",
+      "specialty": "Pulmonary & Critical Care",
+      "department": "Pulmonary & Critical Care",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Raju-Pangeni.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-raju-pangeni/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Rakshya Pandey",
+      "specialty": "Pulmonary & Critical Care",
+      "department": "Pulmonary & Critical Care",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Rakshya-Pandey-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-rakshya-pandey/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Ram Chandra Adhikari",
+      "specialty": "Pathology",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Ram-Chandra-Adhikari-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-ram-chandra-adhikari/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Raman Koirala",
+      "specialty": "Neuropsychiatry",
+      "department": "Neuropsychiatry",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-4.50.15-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-raman-koirala/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Ranjan Sapkota",
+      "specialty": "Thoracic, Breast & Thyroid Surgery & Oncology",
+      "department": "Thoracic, Breast & Thyroid Surgery & Oncology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Ranjan@4x-100.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-ranjan-sapkota/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Ravi Baral",
+      "specialty": "Cardiovascular Surgery",
+      "department": "Cardiovascular Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-4.53.15-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-ravi-baral/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Rishikesh Thakur",
+      "specialty": "ENT",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/01/WhatsApp-Image-2025-02-02-at-5.00.52-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-rishikesh-thakur/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Roshan Ghimire",
+      "specialty": "General/GI Surgery",
+      "department": "General/GI Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Roshan-Ghimire-GI-947x1024.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-roshan-ghimire/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Roshan Raut",
+      "specialty": "Cardiology",
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Roshan-Raut.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-roshan-raut/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Rukma Acharya",
+      "specialty": "Pediatrics",
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/rukma-acharya.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-rukma-acharya/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Rupesh Raj Joshi",
+      "specialty": "ENT",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Rupesh@4x-100-e1734428189950.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-rupesh-raj-joshi/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Sabin Koirala",
+      "specialty": "Critical Care",
+      "department": "Critical Care",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/12/Dr-Sabin-Koirala.jpg",
+      "profile_url": "https://hamshospital.com/doctor/dr-sabin-koirala/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:13.358Z"
+    },
+    {
+      "name": "Dr. Sagar Adhikari",
+      "specialty": "Internal Medicine",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/07/Dr-Sagar-Adhikari-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-sagar-adhikari/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Sandeep Bhandari",
+      "specialty": "Orthopedics & Trauma",
+      "department": "Orthopedics & Trauma",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Sandeep-Bhandari-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-sandeep-bhandari/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Sandesh Poudel",
+      "specialty": "Gynaecology",
+      "department": "Gynaecology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-5.05.22-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-sandesh-poudel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Sangita Shrestha",
+      "specialty": "ENT",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/11/Dr.-Sangita-Shrestha.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-sangita-shrestha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Sanjaya Karki",
+      "specialty": "Pre-Hospital Care & Emergency Medicine",
+      "department": "Pre-Hospital Care & Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-5.10.21-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-sanjaya-karki/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Sanjit Karki",
+      "specialty": "Gastro-Enterology",
+      "department": "Gastro-Enterology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Sanjit-Karki-.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-sanjit-karki/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Santosh Chhetri",
+      "specialty": "Nephrology",
+      "department": "Nephrology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/06/WhatsApp-Image-2025-02-02-at-5.11.18-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-santosh-chhetri/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Santosh Neupane",
+      "specialty": "Pre-Hospital Care & Emergency Medicine",
+      "department": "Pre-Hospital Care & Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/11/Dr.-Santosh-Neupane-1024x1007.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-santosh-neupane/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Sarita Khainju",
+      "specialty": "Gynaecology",
+      "department": "Gynaecology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Sarita-Khaiju-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-reshies-shrestha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Shraddha Baniya",
+      "specialty": "Radiology",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2026/01/Dr-Shraddha-Baniya-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-shraddha-baniya/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Shraddha Phuyal",
+      "specialty": "ENT",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Shraddha-Phuyal-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-shraddha-phuyal/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Shrujana Shrestha",
+      "specialty": "Aesthetic Medicine and Dermatology",
+      "department": "Aesthetic Medicine and Dermatology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/12/WhatsApp-Image-2025-02-02-at-5.12.26-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-shrujana-shrestha/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:18.608Z"
+    },
+    {
+      "name": "Dr. Sitaram Parajuli",
+      "specialty": "Pre-Hospital Care & Emergency Medicine",
+      "department": "Pre-Hospital Care & Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/11/Dr-Sitaram-Parajuli--819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-sitaram-parajuli/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Subi Kharel",
+      "specialty": "Endocrinology & Metabolism",
+      "department": "Endocrinology & Metabolism",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Subi-Kharel-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-subi-kharel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Sujata Panta",
+      "specialty": "Radiology",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2025/02/Dr-Sujata-Panta-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-sujata-panta/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Sujit Poudel",
+      "specialty": "Urology",
+      "department": "Urology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-5.13.40-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-sujit-poudel/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Suman Chapagain",
+      "specialty": "Urology",
+      "department": "Urology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-5.14.39-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-suman-chapagain/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Sunil Koirala",
+      "specialty": "Neurology",
+      "department": "Neurology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/WhatsApp-Image-2025-02-02-at-5.16.04-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-sunil-koirala/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Suraj Lamichhane",
+      "specialty": "Anesthesiology",
+      "department": "Anesthesiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Suraj-Lamichhane-984x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-suraj-lamichhane/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Sushma Bhattachan",
+      "specialty": "ENT",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Sushma-Bhattachan-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-sushma-bhattachan/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Sushma Thapaliya",
+      "specialty": "Pre-Hospital Care & Emergency Medicine",
+      "department": "Pre-Hospital Care & Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr-Sushma-Thapaliya-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/dr-sushma-thapaliya/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Tulsi Ram Shrestha",
+      "specialty": "Anesthesiology",
+      "department": "Anesthesiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2025/03/WhatsApp-Image-2025-03-31-at-1.20.18-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-tulsi-ram-shrestha-2/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Ujjwal Bhattarai",
+      "specialty": "Radiology",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Ujwal-Bhattarai-922x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-ujjwal-bhattarai/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Urza Bhattarai",
+      "specialty": "Geriatric Medicine",
+      "department": "Geriatric Medicine",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2025/05/WhatsApp-Image-2025-05-22-at-5.04.50-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-urza-bhattarai/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:23.842Z"
+    },
+    {
+      "name": "Dr. Yadav Deo Bhatta",
+      "specialty": "Cardiology",
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2022/09/Dr.-Yadav-Deo-Bhatta-791x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-yadav-deo-bhatta/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:29.116Z"
+    },
+    {
+      "name": "Dr.Bishal Mani Poudel",
+      "specialty": "Neuropsychiatry",
+      "department": "Neuropsychiatry",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2023/11/WhatsApp-Image-2025-02-02-at-5.29.52-PM.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-bishal-mani-poudel-2/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:29.116Z"
+    },
+    {
+      "name": "Dr.Pukar Thapa",
+      "specialty": "Hepatology",
+      "department": "Hepatology",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2023/11/Dr.-Pukar-Thapa.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/dr-pukar-thapa/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:29.116Z"
+    },
+    {
+      "name": "Prof. Dr. Deepak Prasad Mahara",
+      "specialty": "Orthopedics & Trauma",
+      "department": "Orthopedics & Trauma",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2024/06/Dr-Deepak-Mahara-819x1024.png",
+      "profile_url": "https://hamshospital.com/doctor/prof-dr-deepak-prakash-mahara/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:29.116Z"
+    },
+    {
+      "name": "Prof.Dr. Bhagawan Koirala",
+      "specialty": "Cardiovascular Surgery",
+      "department": "Cardiovascular Surgery",
+      "degree": null,
+      "photo_url": "https://hamshospital.com/wp-content/uploads/2023/12/Dr.-Bhagawan-Koirala-799x1024.jpeg",
+      "profile_url": "https://hamshospital.com/doctor/pro-dr-bhagwan-koirala/",
+      "hospital_key": "hams-hospital",
+      "scraped_at": "2026-02-04T09:46:29.116Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T09:46:29.129Z",
+  "errors": []
+}

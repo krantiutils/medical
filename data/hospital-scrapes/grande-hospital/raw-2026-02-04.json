@@ -1,0 +1,1668 @@
+{
+  "hospital_key": "grande-hospital",
+  "hospital_name": "Grande International Hospital",
+  "doctors": [
+    {
+      "name": "Dr. Archan Adhikari",
+      "specialty": "Chief Consultant Anaesthesiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F1%2F6143_Dr.ArchanAdhikari.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Avinash Gurung",
+      "specialty": "Consultant Anesthesiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F2%2F3105_Dr.AvinashGurung.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Sujata Niroula",
+      "specialty": "Consultant Anesthesiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F3%2F2891_Dr.SujataNiroula.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Binaya Lamichhane",
+      "specialty": "Consultant Anesthesiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F4%2F8606_Dr.Binayalamichhane.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Navin Chandra Gautam",
+      "specialty": "Consultant Cardiac Surgeon",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F5%2F6399_Dr.NavinChandraGutam.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Nivesh Rajbhandari",
+      "specialty": "Consultant Cardiovascular & Thoracic Surgeon",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F7%2F7170_Dr.NiveshRajbhandari.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Nishes Basnet",
+      "specialty": "Consultant Cardiovascular & Thoracic Surgeon",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F6%2F3711_Dr.NishesBasnet.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Milan Prakash Shrestha",
+      "specialty": "Consultant Cardiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F8%2F1344_Dr.MilanPrakashShrestha.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Naresh Maharjan",
+      "specialty": "Consultant Cardiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F9%2F1308_Dr.NareshMaharjan.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Prof. Dr. Chandra Mani Adhikari",
+      "specialty": "Consultant Interventional Cardiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F174%2F3447_DRCHANDRAMANIADHIKARI.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Bhawani Manandhar",
+      "specialty": "Consultant Cardiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F12%2F5441_Dr.BhawaniManandhar.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Asst. Prof. Dr. Surya Devkota",
+      "specialty": "Consultant Interventional Cardiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F173%2F5681_DrSuryaDevkota.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:19.365Z"
+    },
+    {
+      "name": "Dr. Sujan Shrestha",
+      "specialty": "Registrar Cardiologist",
+      "department": "Cardiology and Interventional Cardiology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F169%2F1987_SujanShrestha.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:31.436Z"
+    },
+    {
+      "name": "Dr. Bijay Khadka",
+      "specialty": "Registrar Cardiologist",
+      "department": "Cardiology and Interventional Cardiology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F170%2F9632_Bijaykhadka.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:31.436Z"
+    },
+    {
+      "name": "Dr. Om Prakash Adhikari",
+      "specialty": "Registrar Cardiologist",
+      "department": "Cardiology and Interventional Cardiology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F171%2F8247_Dr.-Om-Prakash-Adhikari.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:31.436Z"
+    },
+    {
+      "name": "Dr. Shuva Jung Bahadur Rana",
+      "specialty": "Registrar Cardiologist",
+      "department": "Cardiology and Interventional Cardiology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F172%2F8644_DrShuvaJungBahadurRana.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:31.436Z"
+    },
+    {
+      "name": "Dr. Prakash Sayami",
+      "specialty": "Consultant Thoracic, Breast & Thyroid Surgeon",
+      "department": "Cardiothoracic and Vascular Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F14%2F4990_Dr.-Sayami.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:34.445Z"
+    },
+    {
+      "name": "Prof. Dr. Uttam Krishna Shrestha",
+      "specialty": "Consultant Vascular & Endovascular Surgeon",
+      "department": "Cardiothoracic and Vascular Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F13%2F7181_Dr.-Uttam-K-stha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:34.445Z"
+    },
+    {
+      "name": "Dr. Ranjan Sapkota",
+      "specialty": "Consultant Thoracic, Breast & Thyroid Surgeon",
+      "department": "Cardiothoracic and Vascular Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F16%2F6082_WhatsAppImage2025-04-25at12.47.07.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:34.445Z"
+    },
+    {
+      "name": "Dr. Shirish Raj Joshi",
+      "specialty": "Consultant Anesthesiologist & Critical  Care Medicine",
+      "department": "Critical Care Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F176%2F6908_ShirishRajJoshi.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:37.456Z"
+    },
+    {
+      "name": "Dr. Ankit Rimal",
+      "specialty": "Consultant Critical Care Medicine",
+      "department": "Critical Care Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F175%2F4342_AnkitRimal.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:37.456Z"
+    },
+    {
+      "name": "Dr. Amit Rana Magar",
+      "specialty": "Associate Consultant Anesthesiologist and Critical Care Medicine",
+      "department": "Critical Care Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F20%2F9536_amit-rana-magar.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:37.456Z"
+    },
+    {
+      "name": "Dr. Sagun Ram Vaidya",
+      "specialty": "Senior Registrar Anesthesiologist & Critical Care Medicine",
+      "department": "Critical Care Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F196%2F6039_SagunRamVaidya.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:37.456Z"
+    },
+    {
+      "name": "Dr. Rajswee Rana",
+      "specialty": "Registrar Anesthesiologist and Critical Care Medicine",
+      "department": "Critical Care Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F23%2F1674_Dr-Rajswee-Rana.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:37.456Z"
+    },
+    {
+      "name": "Dr. Deepika Joshi",
+      "specialty": "NBMS Sub Specialty Resident-Critical Care",
+      "department": "Critical Care Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F24%2F2178_Dr.-Dipika-Joshi-1.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:37.456Z"
+    },
+    {
+      "name": "Dr. Anup Bagale",
+      "specialty": "NBMS Sub Specialty Resident-Critical Care",
+      "department": "Critical Care Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F197%2F5643_Dr.AnupBagale.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:37.456Z"
+    },
+    {
+      "name": "Dr. Utkarsh Karki",
+      "specialty": "Consultant Child, Adolescent and Adult Psychiatrist",
+      "department": "Child, Adolescent and Adult Psychiatry",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F15%2F5337_Dr.-Utkarsa.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:40.466Z"
+    },
+    {
+      "name": "Dr. Amit Khanal",
+      "specialty": "HOD/Consultant Oral Maxillofacial Surgeon",
+      "department": "Dentistry and Dental Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F21%2F6983_Dr.AmitKhanal.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:43.475Z"
+    },
+    {
+      "name": "Dr. Bandana Shah (Thapa)",
+      "specialty": "Consultant Dental Surgeon",
+      "department": "Dentistry and Dental Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F37%2F9486_Bandana-Shah.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:43.475Z"
+    },
+    {
+      "name": "Dr. Sheetal Shrestha",
+      "specialty": "Consultant Dental Surgeon",
+      "department": "Dentistry and Dental Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F34%2F2929_Dr.SheetalShrestha.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:43.475Z"
+    },
+    {
+      "name": "Dr. Madhya Bhandari",
+      "specialty": "Consultant Dental Surgeon",
+      "department": "Dentistry and Dental Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F39%2F1545_madhya-bhandari.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:43.475Z"
+    },
+    {
+      "name": "Dr. Sumi Malla",
+      "specialty": "Consultant Prosthodontic & Implantologist",
+      "department": "Dentistry and Dental Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F29%2F3333_Sumi-Malla.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:43.475Z"
+    },
+    {
+      "name": "Dr. Alka Gupta",
+      "specialty": "Consultant Orthodontist",
+      "department": "Dentistry and Dental Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F44%2F7432_Dr.AlkaGupta.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:43.475Z"
+    },
+    {
+      "name": "Prof. Dr. Sagar Mani Jha",
+      "specialty": "Consultant Dermatologist & STD",
+      "department": "Dermatology & STD",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F26%2F5576_Sagar-Mani-Jha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:46.488Z"
+    },
+    {
+      "name": "Dr. Utsav Sharma",
+      "specialty": "Consultant Dermatologist",
+      "department": "Dermatology & STD",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F27%2F2970_WhatsAppImage2025-04-25at12.24.22.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:46.488Z"
+    },
+    {
+      "name": "Dr. Anu Subedi",
+      "specialty": "Dermatologist",
+      "department": "Dermatology & STD",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F25%2F1356_Dr.-Anu-Subedi.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:46.488Z"
+    },
+    {
+      "name": "Dr. Rajeeb Raj Thapaliya",
+      "specialty": "HOD/Consultant, Emergency Medicine and Pre-Hospital Care, UN Examining Physician",
+      "department": "Emergency Medicine & Pre-Hospital Care (EMS / HEMS)",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F32%2F9681_rajeeb-raj.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:49.501Z"
+    },
+    {
+      "name": "Dr. Shree Ram Shrestha",
+      "specialty": "Consultant Emergency Medicine and Pre-Hospital Care",
+      "department": "Emergency Medicine & Pre-Hospital Care (EMS / HEMS)",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F33%2F6962_Shree-Ram-Shrestha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:49.501Z"
+    },
+    {
+      "name": "Dr. Suraj Gyawali",
+      "specialty": "Associate Consultant Emergency Medicine and Pre-Hospital Care",
+      "department": "Emergency Medicine & Pre-Hospital Care (EMS / HEMS)",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F35%2F8967_Dr-Suraj-Gyawali.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:49.501Z"
+    },
+    {
+      "name": "Dr. Prasanna Rajbhandari",
+      "specialty": "Registrar Emergency Medicine and Pre-Hospital Care",
+      "department": "Emergency Medicine & Pre-Hospital Care (EMS / HEMS)",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F36%2F2589_prasanna-rajbhandari.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:49.501Z"
+    },
+    {
+      "name": "Dr. Prajjwal Malla",
+      "specialty": "Registrar Emergency Medicine and Pre-Hospital Care",
+      "department": "Emergency Medicine & Pre-Hospital Care (EMS / HEMS)",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F211%2F6641_Dr.PRAJJWALMALLA.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:49.501Z"
+    },
+    {
+      "name": "Dr. Olita Shilpakar",
+      "specialty": "Consultant Emergency Medicine and Pre-Hospital Care",
+      "department": "Emergency Medicine & Pre-Hospital Care (EMS / HEMS)",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F31%2F1796_Olita-Shilpakar.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:49.501Z"
+    },
+    {
+      "name": "Dr. Subash Kharel",
+      "specialty": "Registrar Emergency Medicine and Pre-Hospital Care",
+      "department": "Emergency Medicine & Pre-Hospital Care (EMS / HEMS)",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F214%2F2319_Dr.SubashKharel.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:49.501Z"
+    },
+    {
+      "name": "Prof. Dr. Anil Shrestha",
+      "specialty": "Consultant Interventional Pain Physician",
+      "department": "Interventional Pain Management",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F28%2F7421_Dr.-Anil-Shrestha.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:52.509Z"
+    },
+    {
+      "name": "Dr. Sandesh Panthi",
+      "specialty": "HOD/Consultant Endocrinologist and Diabetologist",
+      "department": "Endocrinology and Diabetology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F38%2F2898_Sandesh-Panthi.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:55.517Z"
+    },
+    {
+      "name": "Dr. Subarna Dhoj Thapa",
+      "specialty": "Consultant Endocrinologist & Diabetologist",
+      "department": "Endocrinology and Diabetology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F40%2F8110_Suwarna-Dhoj-Thapa.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:55.517Z"
+    },
+    {
+      "name": "Dr. Anand Ghimire",
+      "specialty": "HOD/Consultant ENT, Head & Neck Surgeon",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F43%2F5351_Anand-Ghimire.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Prof. Dr. Bimal Kumar Sinha",
+      "specialty": "Consultant ENT, Head & Neck Surgeon",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F42%2F9800_Bimal-Kumar-Sinha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Dr. Prakash Kumar Kafle",
+      "specialty": "Consultant ENT, Head & Neck Surgeon",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F45%2F5517_Dr.PrakashKafle.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Dr. Kunjan Acharya",
+      "specialty": "Consultant ENT, Head & Neck Surgeon",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F47%2F6046_Dr.KunjanAcharya.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Dr. Neeta Shakya Malla",
+      "specialty": "Consultant ENT, Head & Neck Surgeon",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F49%2F2938_Dr.-Neeta-Shakya.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Dr. Jenu Suwal Dongol",
+      "specialty": "ENT, Head & Neck Surgeon",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F50%2F8300_Jenu-Silwal.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Dr. Bigyan Raj Gyawali",
+      "specialty": "Consultant ENT, Head & Neck Surgeon",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F46%2F6176_dr-bigyan.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Prof. Dr. Deepak Regmi",
+      "specialty": "Consultant ENT, Head & Neck Surgeon",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F190%2F5250_Prof.Dr.DeepakRegmi.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Aud. Ambrish Tiwari",
+      "specialty": "Audiologist and Speech Language Pathologist",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F52%2F9225_Ambrish-Tiwari-1.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Aud. Dharmapal Dongol",
+      "specialty": "Audiologist and Speech Language Pathologist",
+      "department": "ENT, Head & Neck Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F51%2F6107_Dharma-Pal-Dangol.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:17:58.527Z"
+    },
+    {
+      "name": "Dr. Bishwa Raj Dawadi",
+      "specialty": "Consultant Family Physician",
+      "department": "Family Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F48%2F8757_Biswa-Raj-Dawadi.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:01.535Z"
+    },
+    {
+      "name": "Dr. Vivek Sharma",
+      "specialty": "Director, Department of Medical Gastroenterology & Hepatology",
+      "department": "Gastroenterology and Hepatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F54%2F8837_Vivek-Sharma.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:04.544Z"
+    },
+    {
+      "name": "Assoc. Prof. Dr. Akhilesh Kumar Kasyap",
+      "specialty": "Executive Director, Department of Medical Gastroenterology and Hepatology",
+      "department": "Gastroenterology and Hepatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F63%2F1416_Assoc.Prof.Dr.AkhileshKumarKasyap.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:04.544Z"
+    },
+    {
+      "name": "Dr. Rabin Hamal",
+      "specialty": "Consultant Gastroenterologist & Hepatologist",
+      "department": "Gastroenterology and Hepatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F66%2F9572_rabin-hamal.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:04.544Z"
+    },
+    {
+      "name": "Dr Sunil Kumar Marik",
+      "specialty": "Registrar Gastroenterologist and Hepatologist",
+      "department": "Gastroenterology and Hepatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F67%2F3148_Dr.SunilKumarMarik.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:04.544Z"
+    },
+    {
+      "name": "Dr. Prabin Bikram Thapa",
+      "specialty": "Consultant GI & Hepato Pancreatico Biliary Surgeon",
+      "department": "Department of Digestive, General Surgery, Hepatopancreaticobiliary and Laparoscopy Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F53%2F4987_Prabin-Bikram-Thapa.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:07.554Z"
+    },
+    {
+      "name": "Dr. Dhiresh Kumar Maharjan",
+      "specialty": "Consultant General/GI & Laparoscopic Surgeon",
+      "department": "Department of Digestive, General Surgery, Hepatopancreaticobiliary and Laparoscopy Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F55%2F8418_Dhiresh-Maharjan.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:07.554Z"
+    },
+    {
+      "name": "Dr. Roshan Ghimire",
+      "specialty": "Consultant General/GI & Laparoscopic Surgeon",
+      "department": "Department of Digestive, General Surgery, Hepatopancreaticobiliary and Laparoscopy Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F56%2F1048_Roshan-Ghimire.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:07.554Z"
+    },
+    {
+      "name": "Dr. Santosh Shrestha",
+      "specialty": "Consultant General Surgeon",
+      "department": "Department of Digestive, General Surgery, Hepatopancreaticobiliary and Laparoscopy Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F57%2F1537_Santosh-Shrestha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:07.554Z"
+    },
+    {
+      "name": "Dr. Bidur Prasad Acharya",
+      "specialty": "General Surgeon",
+      "department": "Department of Digestive, General Surgery, Hepatopancreaticobiliary and Laparoscopy Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F178%2F7498_Dr.BidurPrasadAcharya.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:07.554Z"
+    },
+    {
+      "name": "Assoc. Prof. Dr. Rinku Joshi",
+      "specialty": "Consultant Clinical Haematologist",
+      "department": "Haematology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F61%2F4801_Dr.-Rinku.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:10.562Z"
+    },
+    {
+      "name": "Assoc. Prof. Dr. Amar Narayan Shrestha",
+      "specialty": "Consultant Clinical Haematologist",
+      "department": "Haematology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F60%2F6127_amar-narayan.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:10.562Z"
+    },
+    {
+      "name": "Dr. Rakesh Kumar Sah",
+      "specialty": "Consultant Gastroenterology Surgeon",
+      "department": "Hepato Pancreatico Billiary Bariatric and Gastro Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F62%2F4544_Rakesh-Kumar-Sah.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:13.571Z"
+    },
+    {
+      "name": "Dr. Rameshor Bhandari",
+      "specialty": "Registrar Colorectal Surgeon",
+      "department": "Hepato Pancreatico Billiary Bariatric and Gastro Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F59%2F4221_Dr.-Rameshor-Bhandari.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:13.571Z"
+    },
+    {
+      "name": "Dr. Binaya Kumar Regmi",
+      "specialty": "HOD/Consultant Internal Medicine & Rheumatologist",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F65%2F1292_Binay-Regmi.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:16.580Z"
+    },
+    {
+      "name": "Dr. Amit Gauli",
+      "specialty": "Consultant Internal Medicine, UN Examining Physician",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F69%2F5457_Amit-Gauli.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:16.580Z"
+    },
+    {
+      "name": "Dr. Prashant Tripathi",
+      "specialty": "Consultant Internal Medicine",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F68%2F3655_Prashant-Tripathi.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:16.580Z"
+    },
+    {
+      "name": "Dr. Mukti Nath Sankhi",
+      "specialty": "Physician",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F213%2F9135_Dr.MuktinathSankhi.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:16.580Z"
+    },
+    {
+      "name": "Dr. Bikash Shrestha",
+      "specialty": "Registrar Internal Medicine",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F72%2F1301_bikash.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:16.580Z"
+    },
+    {
+      "name": "Dr. Elina Mulmi",
+      "specialty": "Registrar Internal Medicine",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F75%2F8019_Dr.-Elina-Mulmi.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:16.580Z"
+    },
+    {
+      "name": "Dr. Rashi Tamrakar",
+      "specialty": "Registrar Emergency Medicine and Pre-Hospital Care",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F198%2F3973_Dr.RashiTamrakar.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:16.580Z"
+    },
+    {
+      "name": "Prof. Dr. Dibya Singh Shah",
+      "specialty": "Consultant Nephrologist and Renal Transplant Physician",
+      "department": "Nephrology and Transplant Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F191%2F9781_Prof.Dr.DibyaSinghShah.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:22.597Z"
+    },
+    {
+      "name": "Dr. Bishnu Pahari",
+      "specialty": "Consultant Nephrologist and Renal Transplant Physician",
+      "department": "Nephrology and Transplant Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F70%2F9218_Bishnu-Pahari.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:22.597Z"
+    },
+    {
+      "name": "Dr. Upendra Joshi",
+      "specialty": "Consultant Nephrologist and Renal Transplant Physician",
+      "department": "Nephrology and Transplant Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F71%2F4405_Upendra-Joshi.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:22.597Z"
+    },
+    {
+      "name": "Dr. Satish Chandra Yadav",
+      "specialty": "Registrar Nephrologist",
+      "department": "Nephrology and Transplant Medicine",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F73%2F2437_Satish-Chandra-Yadav-1.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:22.597Z"
+    },
+    {
+      "name": "Dr. Raju Paudel",
+      "specialty": "Consultant Neurologist",
+      "department": "Neuroscience",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F78%2F2844_Dr.RajuPaudel.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:25.606Z"
+    },
+    {
+      "name": "Dr. Gopal Sedain",
+      "specialty": "Consultant Neurosurgeon",
+      "department": "Neuroscience",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F79%2F6012_dr-gopal.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:25.606Z"
+    },
+    {
+      "name": "Dr. Rupendra Bahadur Adhikari",
+      "specialty": "Consultant Neurosurgeon",
+      "department": "Neuroscience",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F80%2F7355_Rupendra-Adhikari.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:25.606Z"
+    },
+    {
+      "name": "Dr. Ram Chandra Subedi",
+      "specialty": "Consultant Neurologist",
+      "department": "Neuroscience",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F82%2F2312_Dr.-RAM-Chandra.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:25.606Z"
+    },
+    {
+      "name": "Dr. Suvekchya Pandey",
+      "specialty": "Clinical Fellow in Neurology",
+      "department": "Neuroscience",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F206%2F6469_Dr.SuvekchyaPandey.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:25.606Z"
+    },
+    {
+      "name": "Dr. Pratik Paudel",
+      "specialty": "Clinical Fellow in Neurology",
+      "department": "Neuroscience",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F207%2F7593_Dr.PratikPaudel.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:25.606Z"
+    },
+    {
+      "name": "Ds. Usha Shah",
+      "specialty": "Nutritionist",
+      "department": "Nutrition and Dietetics",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F84%2F5346_Usha-Shah.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:28.613Z"
+    },
+    {
+      "name": "Prof. Dr. Padam Raj Pant",
+      "specialty": "HOD/Consultant, Obstetrics and Gynecology",
+      "department": "Obstetrics and Gynecology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F87%2F5937_Padam-Raj-Panta.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:31.622Z"
+    },
+    {
+      "name": "Dr. Abha Shakya Shrestha",
+      "specialty": "Consultant Obstetrician & Gynecologist",
+      "department": "Obstetrics and Gynecology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F88%2F3217_Abha-Shrestha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:31.622Z"
+    },
+    {
+      "name": "Dr. Samira Shafi Khan",
+      "specialty": "Consultant Obstetrician & Gynecologist",
+      "department": "Obstetrics and Gynecology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F89%2F6791_Samira-Shafi-Khan.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:31.622Z"
+    },
+    {
+      "name": "Dr. Bandana Shrestha",
+      "specialty": "Consultant Obstetrician & Gynecologist",
+      "department": "Obstetrics and Gynecology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F90%2F5416_Bandana-Shrestha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:31.622Z"
+    },
+    {
+      "name": "Dr. Nilam Subedi",
+      "specialty": "Consultant Obstetrician & Gynecologist",
+      "department": "Obstetrics and Gynecology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F91%2F9895_Neelam-Subedi.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:31.622Z"
+    },
+    {
+      "name": "Dr. Irina Kansakar (Tuladhar)",
+      "specialty": "HOD/Consultant Ophthalmologist",
+      "department": "Ophthalmology & Vision Sciences",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F93%2F2322_Dr.IrinaKansakar(Tuladhar).png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:34.631Z"
+    },
+    {
+      "name": "Dr. Paras Panjiyar",
+      "specialty": "Consultant Ophthalmologist",
+      "department": "Ophthalmology & Vision Sciences",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F94%2F2307_Dr.ParasPanjiyar.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:34.631Z"
+    },
+    {
+      "name": "Dr. Prerana Kansakar",
+      "specialty": "Consultant Ophthalmologist",
+      "department": "Ophthalmology & Vision Sciences",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F95%2F7623_Dr.PreranaKansakar.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:34.631Z"
+    },
+    {
+      "name": "Dr. Binod Bijukachhe",
+      "specialty": "Medical Director, Chief-Department of Orthopedics, Director- Division of Spine Surgery",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F96%2F8713_Dr.BinodBijukachhe.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Byapak Paudel",
+      "specialty": "Asst. Director, Spine Services, Consultant Orthopedics & Spine Surgeon",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F97%2F1581_Dr.ByapakPaudel.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Bibhuti Nath Mishra",
+      "specialty": "Consultant Arthroscopy, Sports & Joint Replacement Surgeon",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F98%2F8752_Dr.BibhutiNathMishra.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Rabindra Regmi",
+      "specialty": "Consultant Orthopedics & Arthroplasty Surgeon",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F99%2F4907_Dr.RabindraRegmi.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Shilu Shrestha",
+      "specialty": "Consultant Orthopedics Surgeon",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F192%2F6112_Dr.ShiluShrestha.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Ram Krishna Dahal",
+      "specialty": "Associate Consultant Orthopedics and Spine Surgeon",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F100%2F3827_Dr.RamkrishnaDahal.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Aayush Shrestha",
+      "specialty": "Associate Consultant Orthopedics and Spine Surgeon",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F101%2F1124_Dr.AayushShrestha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Sachindra Raj Joshi",
+      "specialty": "Clinical Fellow in Spine Reconstructive Surgery",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F201%2F1528_Dr.SachindarRajJoshi.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Sufiyan Babu",
+      "specialty": "Orthopedics Resident",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F104%2F8802_Dr.SufiyanBabu.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Rajib Sapkota",
+      "specialty": "Orthopedics Resident",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F105%2F5681_Dr.RajibSapkota.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Dr. Mukesh Jayswal",
+      "specialty": "Orthopedics Resident",
+      "department": "Orthopedics and Traumatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F212%2F5661_MUKESHJAYSWAL.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:37.641Z"
+    },
+    {
+      "name": "Prof. Dr. Gita Sayami Joshi",
+      "specialty": "HOD/Consultant Pathologist",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F110%2F4207_Prof.Dr.GitaSayamiJoshi.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Assoc. Prof. Dr. Anil Dev Pant",
+      "specialty": "Co-ordinator/Consultant Pathologist",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F113%2F9163_Assoc.Prof.Dr.AnilDevPant.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Dr. Shova Banstola",
+      "specialty": "Consultant Pathologist",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F116%2F6426_Dr.ShovaBanstola.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Dr. Manim Amatya",
+      "specialty": "Associate Consultant Pathologist",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F119%2F1864_Dr.ManimAmatya.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Assoc. Prof. Dr. Shovana Karki",
+      "specialty": "Consultant Pathologist",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F121%2F8924_Dr.ShovanaKarki.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Dr. Alina Awale",
+      "specialty": "Registrar Pathologist",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F134%2F1482_DrAlinaAwale.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Dr. Ranjana Parajuli",
+      "specialty": "Consultant Microbiologist",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F124%2F8422_Dr.RanjanaParajuli.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Dr. Shaila Rana",
+      "specialty": "Clinical Biochemist & Lab Manager",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F130%2F5312_Dr.ShailaRana.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Dr. Sita Thapa",
+      "specialty": "Registrar Microbiologist",
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F179%2F9816_DrSitaThapa.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:40.648Z"
+    },
+    {
+      "name": "Assoc. Prof. Dr. Suman Bikram Adhikari",
+      "specialty": "Consultant Pediatric Surgeon",
+      "department": "Pediatric Surgery & Pediatric Urology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F114%2F4902_WhatsAppImage2025-04-25at12.47.36.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:43.658Z"
+    },
+    {
+      "name": "Assoc. Prof. Dr. Prashant Prasad Rijal",
+      "specialty": "Consultant Pediatric Pulmonologist",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F107%2F5747_Dr.PrashantPrasadRijal.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Sanjay Raj Thapa",
+      "specialty": "Consultant Pediatrician, Pediatric Asthma & Allergist",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F106%2F2103_Dr.SanjayRajThapa.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Amrit Ghimire",
+      "specialty": "Consultant Pediatric Pulmonologist",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F108%2F2144_Dr.AmritGhimire.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Anju Dangol",
+      "specialty": "Consultant General Pediatrician & Neonatologist",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F109%2F2411_Dr.AnjuDangol.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Ramita Shrestha",
+      "specialty": "Consultant Pediatrician & Neonatologist",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F111%2F4808_Dr.RamitaShrestha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Neema Shrestha",
+      "specialty": "Consultant Pediatrician & Neonatologist",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F112%2F8784_Dr.NeemaShrestha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Saroj Kumar Jha",
+      "specialty": "Pediatric Cardiologist",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F216%2F8990_Dr.SarojKumarJha.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Urmila Shakya",
+      "specialty": "Consultant Pediatric Cardiologist",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F115%2F7711_Dr.UrmilaShakya.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Sarbesh Kumar Das",
+      "specialty": "Registrar Pediatrician",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F118%2F5341_Dr.SarbeshKumarDas.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr. Saurav Kumar Singh",
+      "specialty": "Registrar Pediatrician",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F180%2F7492_Dr.SauravKumarSingh.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Dr Sumit Adhikari",
+      "specialty": "Registrar Pediatrician",
+      "department": "Pediatrics & Neonatology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F215%2F9749_Dr.SumitAdhikari.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:46.667Z"
+    },
+    {
+      "name": "Rajesh Singh",
+      "specialty": "HEAD-PHYSICAL THERAPY",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F123%2F8788_RajeshSingh.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Nima Sherpa",
+      "specialty": "INCHARGE-NEURO P.T",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F125%2F3946_NimaSherpa.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Pratik Pokharel",
+      "specialty": "INCHARGE-CARDIO/ICU P.T",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F126%2F5275_PratikPokharel.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Anish Chapagain",
+      "specialty": "Physiotherapist",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F132%2F2143_AnishChapagain.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Roshan Parajuli",
+      "specialty": "Physiotherapist",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F135%2F3524_RoshanParajuli.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Deepika Thapa",
+      "specialty": "Physiotherapist",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F133%2F2909_DeepikaThapa.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Sarthak Gautam",
+      "specialty": "Physiotherapist",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F186%2F3640_SarthakGautam.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Shilu Maharjan",
+      "specialty": "Physiotherapist",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F205%2F7417_SHILUMAHARJAN.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Sujata K.C",
+      "specialty": "Physiotherapist",
+      "department": "Physiotherapy and Rehabilitation",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F217%2F5006_SUJATAK.C.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:49.683Z"
+    },
+    {
+      "name": "Dr. Rachana Sharma Basnet",
+      "specialty": "Consultant Psychiatrist",
+      "department": "Psychiatry",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F136%2F3346_Dr.RachanaSharmaBasnet.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:52.694Z"
+    },
+    {
+      "name": "Dr. Raman Koirala",
+      "specialty": "Registrar Psychiatrist",
+      "department": "Psychiatry",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F142%2F1564_Dr.RamanKoirala.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:52.694Z"
+    },
+    {
+      "name": "Dr. Rojan Pokharel",
+      "specialty": "Consultant Psychiatrist",
+      "department": "Psychiatry",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F137%2F8834_Dr.RojanPokharel.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:52.694Z"
+    },
+    {
+      "name": "Dr. Nikeshmani Rajbhandari",
+      "specialty": "Consultant Psychiatrist",
+      "department": "Psychiatry",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F182%2F7963_Dr.NikeshmaniRajbhandari.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:52.694Z"
+    },
+    {
+      "name": "Cl. PSY Jug Maya Chaudhary",
+      "specialty": "Clinical Psychologist",
+      "department": "Psychiatry",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F139%2F2428_Cl.PSYJugMayaChaudhary.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:52.694Z"
+    },
+    {
+      "name": "Cl. PSY Shruti Rana",
+      "specialty": "Clinical Psychologist",
+      "department": "Psychiatry",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F140%2F1653_CL.PSYShrutiRana.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:52.694Z"
+    },
+    {
+      "name": "Assoc. Prof. Dr. Prajowl Shrestha",
+      "specialty": "Consultant Pulmonologist",
+      "department": "Pulmonology & Interventional Bronchoscopy",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F141%2F9216_AssociateProfessor.Dr.PrajwolShrestha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:55.703Z"
+    },
+    {
+      "name": "Dr. Ravi Mahat",
+      "specialty": "Consultant Pulmonologist",
+      "department": "Pulmonology & Interventional Bronchoscopy",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F138%2F7018_Dr.RaviMahat.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:55.703Z"
+    },
+    {
+      "name": "Dr. Sharma Paudel",
+      "specialty": "HOD/Consultant Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F143%2F5088_Dr.SharmaPaudel.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Prakash Kayastha",
+      "specialty": "Consultant Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F144%2F5754_Dr.PrakashKayastha.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Saurav Krishna Malla",
+      "specialty": "Consultant Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F145%2F8027_Dr.SauravKrishnaMalla.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Anamika Jha Kasyap",
+      "specialty": "Consultant Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F149%2F6785_DrAnamikaJhaKasyap.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Subash Phuyal",
+      "specialty": "Consultant Neuroimaging & Interventional Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F148%2F5127_Dr.SubashPhuyal.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Ashish Shrestha",
+      "specialty": "Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F151%2F2675_DrAshishShrestha.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Gaurab Shrestha",
+      "specialty": "Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F153%2F8825_DrGaurabShrestha.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Kapil Dawadi",
+      "specialty": "Associate Consultant Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F147%2F8652_Dr.KapilDawadi.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Manali Bhatta",
+      "specialty": "Radiologist",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F187%2F2158_Dr.ManaliBhatta.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Prakash Phuyal",
+      "specialty": "Consultant Interventional Neuro Radiology",
+      "department": "Radiology & Imaging Technology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F210%2F7255_DR.PRAKASHPHUYAL.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:18:58.712Z"
+    },
+    {
+      "name": "Dr. Bipin Nepal",
+      "specialty": "Consultant Transfusion Medicine Specialist",
+      "department": "Transfusion Medicine & Blood Bank",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F154%2F4315_Dr.BipinNepal.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:01.722Z"
+    },
+    {
+      "name": "Asst. Prof. Dr. Bhoj Raj Luitel",
+      "specialty": "Consultant Urology & Kidney Transplant Surgeon",
+      "department": "Urology & Kidney Transplantation Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F158%2F2886_Dr.BhojRajLuitel.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:04.731Z"
+    },
+    {
+      "name": "Prof. Dr. Prem Raj Gyawali",
+      "specialty": "Chief Consultant Urologist & Kidney Transplant Surgeon",
+      "department": "Urology & Kidney Transplantation Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F155%2F3837_Prof.Dr.PremRajGyawali.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:04.731Z"
+    },
+    {
+      "name": "Asst. Prof. Dr. Pawan Raj Chalise",
+      "specialty": "Consultant Urologist",
+      "department": "Urology & Kidney Transplantation Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F156%2F5012_Asst.Prof.Dr.PawanRajChalise.jpg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:04.731Z"
+    },
+    {
+      "name": "Dr. Surendra Bikram Adhikari",
+      "specialty": "Consultant Urology & Kidney Transplant Surgeon",
+      "department": "Urology & Kidney Transplantation Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F157%2F1422_Dr.SurendraBikramAdhikari.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:04.731Z"
+    },
+    {
+      "name": "Dr. Binti Shah",
+      "specialty": "Associate Consultant, General Physician",
+      "department": "Wellness Center",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F159%2F3207_Dr.BintiShah.png&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:07.739Z"
+    },
+    {
+      "name": "Dr. Prabhu Prasad Sah",
+      "specialty": "Consultant Medical Oncologist",
+      "department": "Medical Oncology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F188%2F1007_PrabhuPrasadSah.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:10.747Z"
+    },
+    {
+      "name": "Dr. Rajeeb Kumar Deo",
+      "specialty": "Consultant Medical Oncologist",
+      "department": "Medical Oncology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F189%2F1171_Dr.RajeebKumarDeo.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:10.747Z"
+    },
+    {
+      "name": "Dr. Sunil Shrestha",
+      "specialty": "Consultant Medical Oncologist",
+      "department": "Medical Oncology",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F195%2F2158_Dr.SunilShrestha.jpeg&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:10.747Z"
+    },
+    {
+      "name": "Dr Anoj Rajkarnikar",
+      "specialty": "Consultant Plastic, Reconstructive, Aesthetic and Hand Surgeon",
+      "department": "Plastic, Reconstructive, Aesthetic and Hand Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F208%2F8740_DR.ANOJRAJKARNIKAR.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:13.754Z"
+    },
+    {
+      "name": "Dr Ashok Rai",
+      "specialty": "Consultant Plastic, Reconstructive, Aesthetic and Hand Surgeon",
+      "department": "Plastic, Reconstructive, Aesthetic and Hand Surgery",
+      "degree": null,
+      "photo_url": "/_next/image?url=https%3A%2F%2Fcms.grandehospital.com%2Fstorage%2FDoctor%2F209%2F2575_AshokRai.JPG&w=750&q=75",
+      "profile_url": null,
+      "hospital_key": "grande-hospital",
+      "scraped_at": "2026-02-04T10:19:13.754Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T10:19:13.758Z",
+  "errors": []
+}

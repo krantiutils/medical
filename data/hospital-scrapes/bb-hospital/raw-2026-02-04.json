@@ -1,0 +1,1008 @@
+{
+  "hospital_key": "bb-hospital",
+  "hospital_name": "B&B Hospital",
+  "doctors": [
+    {
+      "name": "Prof. Dr. Jagdish Lal Baidya Chief of General Surgery & Urology",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/1ac3a3d2-934e-45f5-8f3c-8a1c0d4f7326.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Prof.JagdishLalBaidya%28URO%29",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Prof. Dr. Ashok Kumar Banskota Chief of Orthopaedic Surgery",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/30e0b4be-5d87-4800-b4be-13f835d73e3f.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Prof.AshokKumarBanskota",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Babu Kaji Shrestha Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/dcfcca53-0628-4b99-870d-5baf299fb4cc.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.BabuKajiShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Saroj Rijal Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/42e80510-912b-4160-8c39-445747abce44.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SarojRijal",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Ishor Pradhan Consultant Orthopaedic & Arthroscopic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/5aadc93d-be91-4a4c-a095-c2361aa154a0.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.IshorPradhan",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Prof. Dr. Amit Joshi Consultant Orthopaedic & Arthroscopy Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/b2ce099a-d1bd-409f-839e-084cd0cd2866.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AmitJoshi",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Tarun Rajbhandari Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/2fe9a140-4820-4c22-b29d-559e3e550f81.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.TarunRajbhandari",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Om Prasad Shrestha Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/e77c74de-19ca-4863-9342-25ec80cd8149.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.OmPrasadShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Bibek Banskota Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/af0d7144-84c2-4e80-830a-d9d3bcdacd1d.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.BibekBanskota",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Rajesh K. Chaudhary Consultant Orthopaedic Surgeon & Spine Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/94f120aa-5592-45e3-a6de-9ba46e69517c.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RajeshKumarChaudhary",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Ram Krishna Barakoti Consultant Orthopaedics and Spine Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/7f09dee2-ce55-4806-b936-422620e542ad.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RamKrishnaBarakoti",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Nagmani Singh Consultant Orthopaedic & Arthroscopy Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/d7e32fb6-3efc-43bf-aa07-6b890c215b51.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.NagmaniSingh",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Bibek Basukala Consultant Orthopaedic & Arthroscopy Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/3d59a887-6fed-497c-89e9-959926ea87fc.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.BibekBasukala",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Birendra Bahadur Chand Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/dfb6bf71-6cbb-48c8-9543-bc57dd496cd5.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.BirendraBahadurChand",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Rajendra Aryal Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/b1af4e36-4c88-48d1-92ed-76b127f22ef4.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RajendraAryal",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Rohit Bista Consultant Orthopaedic & Arthroscopy Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/572eb37b-3081-4a91-80ba-34ff4677d22a.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RohitBista",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Ansul Rajbhandari Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/68f23eb2-6d74-46eb-ba13-3fa1120b9339.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AnsulRajbhandari",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.211Z"
+    },
+    {
+      "name": "Dr. Yam Prakash Gurung Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/3e0dc4f1-b1af-4e35-a5d4-61b8e5af02d6.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=DrYamGurung",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Deepak Kaucha Consultant Orthopaedic & Spine Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/e08996ff-4bf5-4a40-9582-f2a8d04a6f42.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.DeepakKaucha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Niresh Shrestha Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/6095738f-e0a4-402c-bb13-80360229d66a.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.NireshShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Nitesh Raj Pandey Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/deb9eca3-c061-479b-968c-c4c7e2d8e9f3.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.NiteshRajPandey",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Rajiv Sharma Consultant Orthopedic and Arthroscopic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/f7b9fc4a-f7fb-4ab3-891e-2b7b07b871f9.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RajivSharma",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Santosh Batajoo Consultant Orthopaedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/cb13c3ef-2dec-46df-a0e0-52f4e5928e50.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SantoshBatajoo",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Subhash Regmi Consultant Orthopedic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/d60ce44d-63f2-443c-abeb-324321504cd0.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=DrSubhashRegmi",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Niraj Lal Baidya Consultant General & Laparoscopic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/2ba31897-9e01-4e65-a218-ac35dd907096.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.NirajLalBaidya",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. D.V. Karkee CONSULTANT GENERAL AND LAPAROSCOPIC SURGEON",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/4a383bda-f0df-42d5-a316-9e25a866fef3.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=drdvkarkee",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Arbin Joshi Consultant General Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/c0ddf90b-0782-4253-a2f1-3392cb083dce.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.ArbinJoshi",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Paleshwan Joshi Lakhey Consultant Gastrointestinal and Hepatopancreatobiliary Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/a2bda95d-26d8-4844-9c08-e77f37be5416.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.PaleshwanJoshiLakhey",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Banira Karki Consultant Breast Oncosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/868bc1d9-d105-42a8-bef1-65a1bd06b26f.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.BaniraKarki",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Pradez Sapkota Consultant HPB and Liver Transplant Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/5fd963b0-39b7-40d8-95f2-c69d641f76ef.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.PradezSapkota",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Rajesh Batajoo Consultant Urologist and Uro-Onco Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/0494b822-7f7f-4a56-86ec-41ae53ba4853.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RajeshBatajoo",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Binod Shrestha Senior Consultant Urologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/621e1346-d745-4fe5-813a-35443a9d8ef1.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.BinodShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Anil Shrestha Consultant Urologist & Kidney Transplant Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/b8056c3b-40ab-4d54-a314-10fea8c127c2.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AnilShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr.Saroj Baidya Consultant General Surgeon & Urologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/98de0dcb-72b6-4028-a8c8-01924459a987.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SarojBaidya",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Atul Kasaju Consultant Urologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/7342d500-cb21-4287-88ea-3b657f0f6982.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AtulKasaju",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Ijendra Prajapati General/Gastrointestinal Oncosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/2350dcdf-15ad-4ab1-8f9e-f420ed90161f.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.IjendraPrajapati",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sanjay Lakhey Consultant Physician",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/51c21479-d3d7-4b5a-916c-9f0bd9d0b748.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SanjayLakhey",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Om Prakash Adhikari Consultant Physician",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/1e5c8085-4c24-4682-ac33-4617f012a76f.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.OmPrakashAdhikari",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Ramesh Basnyat Consultant Chest Physician",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/b59c3068-b602-4e71-aee7-610440bc6c9a.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RameshBasnyat",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sarita Pandey Consultant Physician",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/30f7aae4-105e-4776-b9ba-cbc28012782d.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SaritaPandey",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Philip Shyam Ranjit Consultant Physician and Gastroenterologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/3582a5a4-adcf-40f9-976e-c1cf1c975fdb.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.PhilipShyamRanjit",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Deependra Karki Consultant Physician & Endocrinologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/1b674853-c1dd-48ea-a63f-aeae4f32fcd6.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.DeependraKarki",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Amit Man Joshi Consultant Gastroenterologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/33843b55-a12e-4406-a33f-e6c586db59b8.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AmitManJoshi",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sanu Raja Amatya Consultant Physician",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/1b8478b2-a173-4e4b-b82a-afadb86fef6b.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SanuRajaAmatya",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Arbindra Pokhrel Consultant Hepatologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/bf562de6-d8aa-4346-86d5-72b9771f4b5d.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.ArbindraPokhrel",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Ajit Shrestha Senior Consultant",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/e63995da-c20f-4e7b-8192-140059fff306.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AjitShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Shikher Shrestha Consultant Neurosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/0b3d9935-48ba-4797-ba9b-514252ca520e.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.ShikherShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Dinuj Shrestha Consultant Neurosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/1f067b0d-97ba-4c81-823a-ea5d9a4e35ec.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.DinujShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Naresh Kharbuja Consultant Neurologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/49d1b504-dd99-44c0-be62-da3e921bdfd5.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.Nareshkharbuja",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Prof. Dr. Kundu Yangzom Consultant Obstetrician & Gynaecologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/c374e3c3-d8bd-480a-896b-1e3cfa8c316e.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Prof.Dr.KunduYangzom",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Anjana Karki Consultant Obstetrician & Gynaecologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/dfe86d20-9784-4da5-b70f-87b3265375ca.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AnjanaKarki",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Nutan Sharma Sr. Consultant IVF & Reproductive Medicine, Gynae Robotic & Laparoscopic Surgeon, Obstetrician & Gynaecologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/16d12aef-646a-4839-999f-8c0eee50e97f.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.NutanSharma",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Shova Marikhu Consultant Obstetrician & Gynaecologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/8e1a1269-33ee-4cfe-a143-b70bee1216fe.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.ShovaMarikhu",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sangita Shakya Consultant Paediatrician",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/a1a84438-5f17-441f-9b64-fae66ad0fa49.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SangitaShakya",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sushil Dhungel Consultant General Pediatric & Laparoscopic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/ee42e268-005a-4cfc-a9bd-f4d931c4ff8f.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SushilDhungel",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Anwesh Bhatta Consultant Paediatrician",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/8879ad7a-9347-4f0c-830e-66ab31ea82d3.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AnweshBhatta",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Shailendra Shrestha Sr. Consultant Nephrologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/c6f39b95-7f1c-450c-957d-a354c6238d6e.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SailendraShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Krishna Manandhar Chief, Department of Plastic, Reconstructive and Aesthetic Surgery",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/8a271180-2921-46a4-8127-da8eb0a0c71d.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.Krishnamanandhar",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Anoj Rajkarnikar Plastic and Cosmetic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/687fa067-e287-43ff-8861-e6c78acf509d.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AnojRajkarnikar",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Rajib Rajbhandari Consultant Cardiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/3c83ba3a-a8a9-42d4-bcf6-16feb4b6c0e4.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RajibRajbhandari",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Jageshwar Prasad Shah Consultant Cardiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/234d4f96-470b-489a-910b-5cc15a489cd4.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.JageshworPrasadShah",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Ananda Khanal Consultant Cardiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/1633eb3b-988c-4847-b3a7-166b1179edcd.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AnandaKhanal",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Kishan kumar Kushwaha Consultant Physician & Cardiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/487d3f3f-589a-4dc4-a488-60e0fae5a8cd.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.KishankumarKushwaha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Prashant Bajracharya Consultant Cardiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/2e5b30a2-70d0-4945-b6f9-11c7c4e40202.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.PrashantBajracharya",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sanjay Singh K.C Consultant Cardiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/74f7a61b-7d55-4873-8403-a1785ad889f3.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SanjaySinghK.C",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Rajan Poudel Consultant Cardiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/ff466bdd-f170-4486-bd31-0debdf07e8f1.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RajanPoudel",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Inku Shrestha Basnet Sr. Consultant ENT Head and Neck Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/1e0b9852-6b17-40eb-8e9b-3ac9bcb76fb4.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.InkuShresthaBasnet",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sudip Ratna Shakya CONSULTANT GENERAL, LAPAROSCOPIC AND ONCOSURGEON",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/6cf9acf9-b46c-437f-bf52-4b1c0b0dce25.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SudipRatnaShakya",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Asbina K.C Consultant ENT, Head & Neck Surgeon, Endoscopic Ear Surgeon, Vertigo Specialist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/8e630d42-5a9b-4015-a9dc-bbe55751dfd1.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.AsbinaK.C",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Luna Mathema Shrestha Consultant ENT, Head & Neck Surgeon, Endoscopic Ear Surgeon, Allergy Specialist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/36dd52b2-3802-4f5a-a2c4-4b8bde2e1779.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.LunaMathemaShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Chetana Pathak ENT, Head & Neck Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/a46c4c17-9b33-446f-a901-7c1e43f58299.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.ChetanaPathak",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Rishikesh Narayan Shrestha Senior Consultant Oncosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/33209a1b-69d0-4fed-9483-58f2d3f9221f.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RishikeshNarayanShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sristee Shrestha Prajapati Consultant Gyne Oncosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/bd2ebe6e-d437-4b37-9cdc-c8510514e89a.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.ShristiShresthaPrajapati",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr.Roshan Prajapati Consultant Medical Oncologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/80da4314-c801-4e3e-9838-b95fcf33dbd2.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RoshanPrajapati",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Niraj Kumar Singh Consultant Haematologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/2c77218c-f9b4-4b92-875b-2d93178c0166.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.NirajKumarSingh",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Deep Lamichhane MBBS, MS, Fellowship in Surgical Oncology (TATA, Kolkata, India)",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/018b1035-e6c3-4996-9e98-26ec46331f42.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.DeepLamichhane",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr.Archana Amatya Consultant Oncosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/d7541f7a-8b9c-4aeb-b080-a80039bbc6a8.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.ArchanaAmatya",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sudip Thapa Junior Consultant Medical Oncologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/8e4d681e-fcda-4910-97fd-ebb27307b95d.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SudipThapa",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Bibek Khanal Consultant Oncosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/d373cb47-01a7-4b0d-9b66-b5b27311f0d1.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=drbibekkhanal",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Suraj Suwal Junior Consultant Oncosurgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/110fca19-1573-4512-9213-a502d72cbd42.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SurajSuwal",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Mipsang Lama Consultant Hematologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/f4baa09c-2617-4662-a3fb-5232822f2264.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.MipsangLama",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Sudhir Raj Silwal Consultant Radiation Oncologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/150d6d74-2ac5-45dd-995f-61b737674691.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SudhirRajSilwal",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Mahendra Maharjan Consultant Oral & Maxillofacial Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/da2f0028-87a7-4331-98a1-03437256bebb.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.MahendraMaharjan",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Juna Gurung Plastic and Cosmetic Surgeon",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/33327119-1cf3-4925-9dcb-036bf797600b.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.JunaGurung",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Prof. Dr. Sudarshan Narsingh Pradhan Consultant Neuro Psychiatrist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/89da7429-1dbd-4801-a922-a56d07156060.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Prof.Dr.SudarshanNarsinghPradhan",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Surendra Sherchan Consultant Psychiatrist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/536f2416-206c-4aa2-a58d-0f40029b9133.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SurendraSherchan",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Namrata Pradhan Consultant Psychiatrist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/38bd790e-65a9-4ffc-97ba-bd9373dd7f3b.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.NamrataPradhan",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Supriya Sherchan Consultant Psychiatrist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/730c7fff-cf21-411a-886a-a25cb5bf6590.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.SupriyaSherchan",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Prof. Dr. Dwarika Prasad Shrestha Consultant Dermatologist & Vanereologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/2b090f47-30f6-4279-8db3-3434d6f10e8b.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Prof.Dr.DwarikaPrasadShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Parash Shrestha Consultant Dermatologist & Venereologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/8001de06-1510-4ffb-94fd-076e1ce5d073.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.ParashShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Deepa Shah Consultant Rheumatologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/4f81c601-0138-40c6-8018-5cb006aad936.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.DeepaShah",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Prabhat Ranjan Baral Consultant Anesthesiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/c1bc416b-0f89-4209-9d71-51ebce5c83f4.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.PrabhatRanjanBaral",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Bhakta Bahadur Burathoki Consultant Anesthesiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/a60c21c4-f1e8-4ce8-9e22-eea6e6558ed7.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.BhaktaBahadurBurathoki",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Ramnath Dhoan Shrestha Consultant Anesthesiologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/e9b69c14-495c-4d43-afbc-576862580997.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.RamnathDhoanShrestha",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Yashasa Poudel Anesthesiologist and Pain Physician",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/8fab9b93-44db-4c7d-9659-a89cd07ebcdf.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.Yashasa%20Poudel",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.212Z"
+    },
+    {
+      "name": "Dr. Meena Kunwar Consultant Opthalmologist",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/2f833cea-fbf7-42c4-ac5d-cbd06c0cc629.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=Dr.MeenaKunwar",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.213Z"
+    },
+    {
+      "name": "Dr. Kajan Raj Shrestha SENIOR CONSULTANT",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/2a205169-0305-4e6b-aaa6-a162d346d2c8.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=DrKajanRajShrestha%28CTVS%29",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.213Z"
+    },
+    {
+      "name": "Dr. Prasiddha Bikram Kadel ASSOCIATE CONSULTANT",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/bd268236-1235-4bc2-b454-4448981a41d2.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=DrPrasiddhaBikram%28CTVS%29",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.213Z"
+    },
+    {
+      "name": "Dr. Satish vaidya Associate Consultant",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/38f0bd52-9cc6-4855-bc2e-e3cd64a93073.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=dr.Satishvaidya%28CTVS%29",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.213Z"
+    },
+    {
+      "name": "Dr. Rajat Pradhan Jr. Consultant",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://bbhospital.com.np/Content/img/ea406495-d560-4d45-ab2f-1d906d94d630.jpg",
+      "profile_url": "https://bbhospital.com.np/HomeUI/OurDoctorDetail?name=DrRajat%20Pradhan%28CTVS%29",
+      "hospital_key": "bb-hospital",
+      "scraped_at": "2026-02-04T10:14:21.213Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T10:14:21.234Z",
+  "errors": []
+}

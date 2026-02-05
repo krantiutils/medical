@@ -1,0 +1,688 @@
+{
+  "hospital_key": "sgnhc",
+  "hospital_name": "Shahid Gangalal National Heart Centre",
+  "doctors": [
+    {
+      "name": "Dr. RAAMESH KOIRALA",
+      "specialty": "Senior Consultant Cardiac Surgeon &  Head of Department",
+      "department": "cardic surgery",
+      "degree": "MD, MS",
+      "photo_url": "https://www.sgnhc.org.np/images/1748410710Raamesh.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/542",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.914Z"
+    },
+    {
+      "name": "Dr. SIDHARTHA PRADHAN",
+      "specialty": "Senior Consultant Cardiac Surgeon",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS, MCh",
+      "photo_url": "https://www.sgnhc.org.np/images/1739719859sidharha.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/544",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. RABINDRA B. TIMALA",
+      "specialty": "Senior Consultant Cardiac Surgeon",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS",
+      "photo_url": "https://www.sgnhc.org.np/images/1739719620Rabindra.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/536",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. NAVIN CHANDRA GAUTAM",
+      "specialty": "SENIOR CONSULTANT CARDIAC SURGEON",
+      "department": "cardic surgery",
+      "degree": "MD, MS",
+      "photo_url": "https://www.sgnhc.org.np/images/1610259209DrNavin.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/534",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. BISHOW POKHREL",
+      "specialty": "Cardiac Surgeon & Supervisor FCPS",
+      "department": "cardic surgery",
+      "degree": "MBBS, PhD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610268563BishowPokhrel.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/532",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. NIVESH RAJBHANDARI",
+      "specialty": "CARDIAC SURGEON",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS",
+      "photo_url": "https://www.sgnhc.org.np/images/1610261156drnivesh.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/538",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. NIRMAL PANTHEE",
+      "specialty": "CARDIAC SURGEON",
+      "department": "cardic surgery",
+      "degree": "PhD",
+      "photo_url": "https://www.sgnhc.org.np/images/1739720379Nirmal.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/533",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. AVASH KARKI",
+      "specialty": "CARDIAC SURGEON",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS",
+      "photo_url": "https://www.sgnhc.org.np/images/1739717622Avashkarki.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/537",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. APURBA THAKUR",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS",
+      "photo_url": "https://www.sgnhc.org.np/images/1739717124ApurbaThakur.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/541",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. NISHES BASNET",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS",
+      "photo_url": "https://www.sgnhc.org.np/images/160286048120201016_095509.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/539",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. RHEECHA JOSHI",
+      "specialty": "cardiac Surgeon",
+      "department": "cardic surgery",
+      "degree": "MBBS, FCPS",
+      "photo_url": "https://www.sgnhc.org.np/images/1707110321DSC00978.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/723",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. DHARMENDRA JOSHI",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS, CTVS",
+      "photo_url": "https://www.sgnhc.org.np/images/17661263611739718551dharmendra.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/748",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "DR. ALKA SINHG",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS, CTVS",
+      "photo_url": "https://www.sgnhc.org.np/images/1739718322Alka.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/730",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SAMRIDHA KARKI",
+      "specialty": "REGISTRAR",
+      "department": "cardic surgery",
+      "degree": "MBBS , MS, M.Ch CTVS (AIIMS)",
+      "photo_url": "https://www.sgnhc.org.np/images/1747496205Sambriddha.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/741",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. Vivek Kumar Jha",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS, CTVS",
+      "photo_url": "https://www.sgnhc.org.np/images/1766056417vivek_kumar_jha.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/746",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. Sangam K.C",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MS",
+      "photo_url": "https://www.sgnhc.org.np/images/1766056242DR_SANGAM_K_C.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/745",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. RABI MALLA",
+      "specialty": "Executive Director & Sr. Consultant Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1707112400WhatsApp Image 2023-12-27 at 16.18.47-Photoroom.png-Photoroom.png",
+      "profile_url": "https://www.sgnhc.org.np/profile/184",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. DIPANKER PRAJAPATI",
+      "specialty": "CONSULTANT Cardiologist & Head Of Department",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610268996Dipanker.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/264",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SUJEEB RAJBHANDARI",
+      "specialty": "Sr. Consultant Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1601529262DrSujeevrajbhandari.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/388",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. ARUN MASKEY",
+      "specialty": "Sr. Consultant Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610267370Arun Maskey.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/239",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SUBODH KANSAKAR",
+      "specialty": "Sr. Consultant Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610260620Sobodhkansakar.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/385",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. HIMAMSHU PRASAD NEPAL",
+      "specialty": "SR. CONSULTANT CARDIOLOGIST",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610267711himanshupsdnepal.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/271",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. CHANDRA MANI ADHIKARI",
+      "specialty": "CONSULTANT CARDIOLOGIST & ASSOCIATE PROFESSOR",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610256571Chandra_Adhikari.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/4",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. BINAY KUMAR RAUNIYAR",
+      "specialty": "CONSULTANT Cardiologist, Associate Professor & Supervisor FCPS",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1601544486DrBinayKumarRauniyar.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/248",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. MURARI DHUNGANA",
+      "specialty": "CONSULTANT CARDIOLOGIST & ASSOCIATE PROFESSOR",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610269264DrMurari.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/307",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. DHARMA NAH YADAV",
+      "specialty": "Consultant Cardiologist & HOD Of Preventive Cardiology",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1716529043Dharma Nath Yadav.jpeg",
+      "profile_url": "https://www.sgnhc.org.np/profile/260",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. RIKESH TAMRAKAR",
+      "specialty": "CONSULTANT Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD, DM",
+      "photo_url": "https://www.sgnhc.org.np/images/1601990421DrRikesh.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/349",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. RABINDRA SIMKHADA",
+      "specialty": "CONSULTANT Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD, DM",
+      "photo_url": "https://www.sgnhc.org.np/images/1610340070Rabindrasimkhada.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/334",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. RABINDRA PANDEY",
+      "specialty": "Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610340213rabindrapandey.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/331",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SATISH KUMAR SINGH",
+      "specialty": "Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610266401Satish.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/373",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. DEEPAK LIMBU",
+      "specialty": "Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1601447461Dr. Deepak Limbu.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/254",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. AMRIT BOGATI",
+      "specialty": "Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610256363amrit bogati.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/230",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SANJAY SINGH K.C. MBBS",
+      "specialty": "CARDIOLOGIST",
+      "department": "cardic surgery",
+      "degree": "MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1634618927Sanjay Singh KC.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/367",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. REEJU MANANDHAR",
+      "specialty": "CARDIOLOGIST",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610267541Reeju.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/345",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. KARTIKESH KUMAR THAKUR",
+      "specialty": "Consultant Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD, DM",
+      "photo_url": "https://www.sgnhc.org.np/images/x1610262334Kartikesh,P20kumar,P20thakur.jpg.pagespeed.ic.37-4IrlzA3.webp",
+      "profile_url": "https://www.sgnhc.org.np/profile/285",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. BIBEK BANIYA",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610255585bibek baniya.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/243",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SURAKSHYA JOSHI",
+      "specialty": "Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, FCPS",
+      "photo_url": "https://www.sgnhc.org.np/images/1610258110Surakshyajoshi.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/390",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SABINDRA BHUPAL MALLA",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610268062sabindra.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/530",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. RAVI SHAHI",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD, DM",
+      "photo_url": "https://www.sgnhc.org.np/images/1747113135Ravi Shahi.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/531",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. BIRAT KRISHNA TIMALSENA",
+      "specialty": "CARDIOLOGIST",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD, DM",
+      "photo_url": "https://www.sgnhc.org.np/images/1723449267Birat.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/724",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. MD. SAJJAD SAFI",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1662652346Dr.MdSajjadSafi.jpeg",
+      "profile_url": "https://www.sgnhc.org.np/profile/726",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. PARASH KOIRALA",
+      "specialty": "Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD, DM",
+      "photo_url": "https://www.sgnhc.org.np/images/1676953652Dr. Parash.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/727",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SANJIDA ANSARI",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1679071566Sanjida Ansari.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/728",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "DR. ANANDA KHANAL",
+      "specialty": "Registrar cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1701270299Anand.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/736",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. ANJANA ACHARYA",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, FCPS",
+      "photo_url": "https://www.sgnhc.org.np/images/1704302666Anjana.jpeg",
+      "profile_url": "https://www.sgnhc.org.np/profile/737",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SHAHID MURTUZA",
+      "specialty": "REGISTRAR",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1739200136Shahid.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/740",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. DARSHAN KUMAR GURUNG",
+      "specialty": "registrar cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1750231549WhatsApp Image 2025-06-18 at 12.53.55.jpeg",
+      "profile_url": "https://www.sgnhc.org.np/profile/743",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. DEEPAK RAJ BARAL",
+      "specialty": "registrar cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD, DM",
+      "photo_url": "https://www.sgnhc.org.np/images/1750135975dipakraj.jpeg",
+      "profile_url": "https://www.sgnhc.org.np/profile/742",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. Barkadin Khan",
+      "specialty": "Registrar Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, FCPS Cardiology",
+      "photo_url": "https://www.sgnhc.org.np/images/1756284594Dr. Barkadin khan.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/744",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. Shova Basnet",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1766056849Shova_Basnet.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/747",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. MANISH SHRESTHA",
+      "specialty": "CONSULTANT Pediatric Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610261428DrManish.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/303",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SUBHASH CHANDRA SHAH",
+      "specialty": "Pediatric Cardiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610266518SubashShah.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/383",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SHILPA ARYAL",
+      "specialty": "PEDIATRIC CARDIOLOGIST",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1610261559Shilpa Aryal.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/379",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. KUL RATNA THAPA",
+      "specialty": "PEDIATRIC REGISTRAR",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD (KU)",
+      "photo_url": "https://www.sgnhc.org.np/images/1718086089Kul.jpeg",
+      "profile_url": "https://www.sgnhc.org.np/profile/596",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. Vidhata Bhandari K.C.",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS",
+      "photo_url": "https://www.sgnhc.org.np/images/1722014694Vidhata.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/398",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SADIKSHYA PANDEY",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1768879241WhatsApp Image 2026-01-20 at 8.08.35 AM.jpeg",
+      "profile_url": "https://www.sgnhc.org.np/profile/750",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. RANJANA BISTA",
+      "specialty": null,
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1768987986Dr. Ranjana Bista.png",
+      "profile_url": "https://www.sgnhc.org.np/profile/749",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. ASHISH GOVINDA AMATYA",
+      "specialty": "Associate Professor,  Consultant Anesthesiologist & Head Of Department",
+      "department": "cardic surgery",
+      "degree": "MD, FICA",
+      "photo_url": "https://www.sgnhc.org.np/images/1611204071rbJEWVSKYN5RUKa4MVd90D6b.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/185",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr BATTU KUMAR SHRESTHA",
+      "specialty": "ANESTHESIOLOGIST &  Assistant Professor",
+      "department": "cardic surgery",
+      "degree": "MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1601889113DrBa.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/199",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SMRITI MAHAJU BAJRACHARYA",
+      "specialty": "ANESTHESIOLOGIST",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1601889683DrSmriy.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/543",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SANTOSH SHARMA PARAJULI",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1601890429DrSanoshparajuli.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/220",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. SANDIP BHANDARI",
+      "specialty": "ANESTHESIOLOGIST",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1738912093sandip bhandari.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/217",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "DR. SUBIGYA SITAULA",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1679071648Subigya sitaula.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/733",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. ABHAYA KHADKA",
+      "specialty": "REGISTRAR",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1739199351abhay khadka.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/739",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. NIRMAL PRASAD NEUPANE",
+      "specialty": "Radiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS , MD , EDIR",
+      "photo_url": "https://www.sgnhc.org.np/images/1636431674Nirmal Neupane.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/721",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "DR. MANISHA ARYAL",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1679034834DR. Manisha Aryal.png",
+      "profile_url": "https://www.sgnhc.org.np/profile/731",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "DR. KRITISHA RAJLAWOT",
+      "specialty": "Registrar",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1679071817Kritisha rajlawot.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/732",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    },
+    {
+      "name": "Dr. ASIM BABU SITAULA",
+      "specialty": "Registrar Radiologist",
+      "department": "cardic surgery",
+      "degree": "MBBS, MD",
+      "photo_url": "https://www.sgnhc.org.np/images/1738731216असिम.jpg",
+      "profile_url": "https://www.sgnhc.org.np/profile/598",
+      "hospital_key": "sgnhc",
+      "scraped_at": "2026-02-04T13:26:25.915Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T13:27:20.723Z",
+  "errors": []
+}

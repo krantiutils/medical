@@ -1,0 +1,708 @@
+{
+  "hospital_key": "medicare-hospital",
+  "hospital_name": "Medicare National Hospital & Research Center",
+  "doctors": [
+    {
+      "name": "Dr. Anil Shrestha",
+      "specialty": "ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1769946986.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-anil-shrestha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Krishna Kaji Bhomi",
+      "specialty": "CONSULTANT UROLOGIST | PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770026051.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-krishna-kaji-bhomi",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Tirtha Raj Burlakoti",
+      "specialty": "CHIEF CONSULTANT RADIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770027285.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-tirtha-raj-burlakoti",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Subindra Karki",
+      "specialty": "Prof | CONSULTANT RADIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770029286.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-subindra-karki",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Santosh Joshi",
+      "specialty": "RADIO DIAGNOSIS | RADIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770116960.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-santosh-joshi",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Shubhekshya Regmi",
+      "specialty": "SENIOR CONSULTANT | RADIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-shubhekshya-regmi",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Prashant Khatiwada",
+      "specialty": "RADIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770110119.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-prashant-khatiwada",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Lokesh Kaushal Bhattarai",
+      "specialty": "SENIOR CONSULTANT PULMONOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770111649.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-lokesh-kaushal-bhattarai",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Manisha Chapagain",
+      "specialty": "CONSULTANT PSYCHIATRIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770024215.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-manisha-chapagain",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Bishwa.B. Sharma",
+      "specialty": "CONSULTANT PSYCHIATRIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770021976.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-bishwa-b-sharma",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Ambika Shrestha",
+      "specialty": "CONSULTANT PSYCHIATRIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770018586.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-ambika-shrestha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Ajit Kumar Gurung",
+      "specialty": "SENIOR CONSULTANT PSYCHIATRIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770018104.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-ajit-kumar-gurung",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:17.066Z"
+    },
+    {
+      "name": "Dr. Rupendra Thapa",
+      "specialty": "CONSULTANT PATHOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-rupendra-thapa",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Mamata Lakhey",
+      "specialty": "CONSULTANT PATHOLOGIST | PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-mamata-lakhey",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Basudha Ghimire",
+      "specialty": "PEDIATRICS",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1767081906.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-basudha-ghimire",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Saurabh Pokhrel",
+      "specialty": "ORTHOPAEDIC SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-saurabh-pokhrel",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Suresh Upreti",
+      "specialty": "ORTHOPAEDIC SURGEON | PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1765101339.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-suresh-upreti",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Sumit Raj Adhikari",
+      "specialty": "ORTHOPAEDIC SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770110932.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-sumit-raj-adhikari",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Binod Sherchan",
+      "specialty": "ORTHOPAEDIC SURGEON|PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-binod-sherchan",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Sundip Dware Chhetri",
+      "specialty": "CONSULTANT OPHTHALAMOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1760262311.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-sundip-dware-chhetri",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Rita Kumari Mahaseth",
+      "specialty": "CONSULTANT CLINICAL ONCOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-rita-kumari-mahaseth",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Y.P.Singh",
+      "specialty": "SR.CONSULTANT|PROFESSOR & HEAD SURGICAL ONCOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1760262505.jpeg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-y-p-singh",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Amina Shrestha",
+      "specialty": "Professor, Sr. CONSULTANT NEUROLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1767953039.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-amina-shrestha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Bidur K.C.",
+      "specialty": "CONSULTANT NEUROSURGERY| PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1766140798.jpeg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-bidur-k-c",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:22.337Z"
+    },
+    {
+      "name": "Dr. Achyut P. Sharma",
+      "specialty": "NEURO SURGEON | PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1767952824.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-achyut-p-sharma",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Arun Sharma",
+      "specialty": "CONSULTANT PHYSICIAN NEPHROLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-arun-sharma",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Mukunda P. Kafle",
+      "specialty": "PHYSICIAN NEPHROLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1765102320.jpeg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-mukunda-p-kafle",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Rajlaxmi Sharma",
+      "specialty": "CONSULTANT GYNAECOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770108623.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-rajlaxmi-sharma",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Rita Marahatta (Khanal)",
+      "specialty": "CONSULTANT GYNAECOLOGIST & OBSTETRICIAN",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1767081129.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-rita-marahatta-khanal",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Meera Ojha",
+      "specialty": "CONSULTANT GYNAECOLOGIST & OBSTETRICIAN",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-meera-ojha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Ramesh Singh Bhandari",
+      "specialty": "GI & LAP SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770117409.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-ramesh-singh-bhandari",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Narendra Maharjan",
+      "specialty": "GI & LAP SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770030156.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-narendra-maharjan",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. P.K Yadav",
+      "specialty": "CONSULTANT GASTROENTEROLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1768549359.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-p-k-yadav",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Bibek Kumar Purbey",
+      "specialty": "CONSULTANT GASTROENTEROLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1767081710.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-bibek-kumar-purbey",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Prashant Tripathi",
+      "specialty": "CONSULTANT ENT SURGEON|ASSISTANT PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-prashant-tripathi",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Utsav Sharma",
+      "specialty": "DERMATOLOGIST & VENEREOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1766467069.jpeg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-utsav-sharma",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:27.551Z"
+    },
+    {
+      "name": "Dr. Binayak Gautam",
+      "specialty": "SENIOR CONSULTANT CARDIOLOGIST | ASSISTANT PROFESSOR OF CARDIOLOGY (NAMS) CONSULTANT CARDIOLOGIST (BIR HOSPITAL)",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1760262470.jpeg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-binayak-gautam",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Denis Shrestha",
+      "specialty": "CONSULTANT CARDIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1767262974.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-denis-shrestha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Abani Bhushan Upadhyaya",
+      "specialty": "CHIEF CONSULTANT CARDIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770108967.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-abani-bhushan-upadhyaya",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Rajiv Yadav",
+      "specialty": "ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-rajiv-yadav",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Chhatra Krishna Shrestha",
+      "specialty": "ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-chhatra-krishna-shrestha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Askal Devkota",
+      "specialty": "PEDIATRICS",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-askal-devkota",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Pashupati Babu Pokharel",
+      "specialty": "SR. CONSULTANT PLASTIC & BURN SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-pashupati-babu-pokharel",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Sunil Thapa",
+      "specialty": "CONSULTANT PLASTIC & BURN SURGEON | ASSISTANT PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770030137.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-sunil-thapa",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Rajesh K.C.",
+      "specialty": "RESPIRATORY MEDICINE",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-rajesh-k-c",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Mohan Khadka",
+      "specialty": "CONSULTANT SURGEON  UROLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1765101356.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-mohan-khadka",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Rabin Baidhya",
+      "specialty": "ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-rabin-baidhya",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:32.776Z"
+    },
+    {
+      "name": "Dr. Uttam  Krishna  Shrestha",
+      "specialty": "CONSULTANT CARDIO VASCULAR & THORACIC SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1765101300.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-uttam-krishna-shrestha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr.Sushma Bhattachan",
+      "specialty": "CONSULTANT ENT SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-sushma-bhattachan",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Ritesh Shrestha",
+      "specialty": "PAEDIATRIC SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-ritesh-shrestha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Bijaya Kharel",
+      "specialty": "Consultant Otolaryngologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1760262442.jpeg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-bijaya-kharel",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Kausal Tamang",
+      "specialty": "Anaesthesiologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-kausal-tamang",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Madhu Pandey",
+      "specialty": "Consultant Endocrinologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-madhu-pandey",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Prajwal Paudyal",
+      "specialty": "Urologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-prajwal-paudyal",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Prashanta Paudyal",
+      "specialty": "Consultant Otolaryngologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-prashanta-paudyal",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Priya Bhusal",
+      "specialty": "Consultant Dermatologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-priya-bhusal",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Rajat Pradhan",
+      "specialty": "CONSULTANT CARDIO VASCULAR & THORACIC SURGEON",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-rajat-pradhan",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr.NAM RAJ SHARMA PANDIT(NRS Pandit)",
+      "specialty": "Chest Physician, Consultant Pulmonologist",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1760262557.jpeg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-nam-raj-sharma-pandit-nrs-pandit",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:37.998Z"
+    },
+    {
+      "name": "Dr. Arjun Dev Bhatta (A.D Bhatta)",
+      "specialty": "Chief Consultant Urologist|Professor",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1770030769.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-arjun-dev-bhatta-a-d-bhatta",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "Dr. Bijay Pradhan",
+      "specialty": "Doctor",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-bijay-pradhan",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "DHARMA KANTA BASKOTA",
+      "specialty": "DOCTOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dharma-kanta-baskota",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "SMRITY MOOL JOSHI",
+      "specialty": "DOCTOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/smrity-mool-joshi",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "DR. SURAKSHYA JOSHI",
+      "specialty": "DOCTOR | CARDIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-surakshya-joshi",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "Dr.Prashun Upadhaya",
+      "specialty": "Clinical Haematology",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/user-fallback.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-prashun-upadhaya",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "Dr. B.D. Jha",
+      "specialty": "CONSULTANT ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1671709868.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-b-d-jha",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "DR. Jeju Nath Pokharel",
+      "specialty": "CONSULTANT ANAESTHESIOLOGIST|PROFESSOR",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1765100939.jpg",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-jeju-nath-pokharel",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "Dr. Manisha Adhikari",
+      "specialty": "CONSULTANT ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1671709961.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-manisha-adhikari",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "Dr. Shanta Sapkota",
+      "specialty": "CONSULTANT ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1671709995.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-shanta-sapkota",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "Dr. Shova Aryal",
+      "specialty": "CONSULTANT ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1671710029.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-shova-aryal",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    },
+    {
+      "name": "Dr. Roshan Piya",
+      "specialty": "CONSULTANT ANAESTHESIOLOGIST",
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.medicarehosp.com/images/team/1671710130.png",
+      "profile_url": "https://www.medicarehosp.com/doctor/dr-roshan-piya",
+      "hospital_key": "medicare-hospital",
+      "scraped_at": "2026-02-04T13:29:43.205Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T13:29:43.213Z",
+  "errors": []
+}

@@ -1,0 +1,568 @@
+{
+  "hospital_key": "kantipur-hospital",
+  "hospital_name": "Kantipur Hospital",
+  "doctors": [
+    {
+      "name": "Dr. Kiran Manandhar",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/3ef815416f775098fe977004015c6193.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=16",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Mukesh Sharma",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/e96ed478dab8595a7dbda4cbcbee168f.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=17",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.pankaj Deo",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/705f2172834666788607efbfca35afb3.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=18",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Srijan Malla",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/38b3eff8baf56627478ec76a704e9b52.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=19",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Dipesh Shrestha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/6da9003b743b65f4c0ccd295cc484e57.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=20",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Bikash Sahani",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/a97da629b098b75c294dffdc3e463904.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=21",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr Jay Dev Yadav , NMC NO . 10845",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/a3c65c2974270fd093ee8a9bf8ae7d0b.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=22",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.R.K Singh",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/7f6ffaa6bb0b408017b62254211691b5.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=23",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.yagya Bahadur Bhandari ,NMC No.:-968",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/73278a4a86960eeb576a8fd4c9ec6997.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=24",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Rabin Joshi,NMC No.:-2839",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/5fd0b37cd7dbbb00f97ba6ce92bf5add.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=25",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Uday Raj Upadhayay , NMC No:-783",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/eb160de1de89d9058fcb0b968dbbbd68.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=28",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Merina Manandhar , NMC No:-11039",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/5ef059938ba799aaa845e1c2e8a762bd.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=29",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Boblin Raj Shakya, NMC No:- 4785",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/4c56ff4ce4aaf9573aa5dff913df997a.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=32",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Avesh Koirala",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/a0a080f42e6f13b3a2df133f073095dd.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=33",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Rohit Chaudhary",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/069059b7ef840f0c74a814ec9237b6ec.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=37",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Ajay Kumar Jha ,NMC No:-3021",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/76dc611d6ebaafc66cc0879c71b5db5c.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=39",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Roshan Prajapati ,NMC No:-3520",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/d1f491a404d6854880943e5c3cd9ca25.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=40",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Sristee Prajapati,NMC No:-3492",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/1afa34a7f984eeabdbb0a7d494132ee5.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=42",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Neeyaj Kausar,NMC.No:-4784",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/65ded5353c5ee48d0b7d48c591b8f430.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=43",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Mukunda Sharma NMC No:-1859",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/9fc3d7152ba9336a670e36d0ed79bc43.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=44",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Krishna Gopal Bhuju",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/02522a2b2726fb0a03bb19f2d8d9524d.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=45",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Santosh Jha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/7f1de29e6da19d22b51c68001e7e0e54.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=46",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Amrita Shrestha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/42a0e188f5033bc65bf8d78622277c4e.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=47",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Nagendra Katuwal , NMC No:-5541",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/1c9ac0159c94d8d0cbedc973445af2da.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=49",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Kamal Subedi, NMC No:-8131",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/e00da03b685a0dd18fb6a08af0923de0.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=50",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Shrijan Malla , NMC No:-2649",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/0f28b5d49b3020afeecd95b4009adf4c.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=51",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Prabhakar Shah , NMC No:-8698",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/be83ab3ecd0db773eb2dc1b0a17836a1.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=52",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Rajendra Shrestha , NMC No:-4968",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/2b24d495052a8ce66358eb576b8912c8.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=55",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Rangina Laikangbam , NMC No:-7101",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/a5e00132373a7031000fd987a3c9f87b.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=56",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Rosy Malla, NMC No:-3340",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/8d5e957f297893487bd98fa830fa6413.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=57",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Ram Kewal Shah, NMC No:-731",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/47d1e990583c9c67424d369f3414728e.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=58",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Pankaj Chand, NMC No:-",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/f2217062e9a397a1dca429e7d70bc6ca.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=59",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Anil Kumar Mishra, NMC No:-1892",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/7ef605fc8dba5425d6965fbd4c8fbe1f.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=60",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. B.B.Thapa , NMC No:-3222",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/a8f15eda80c50adb0e71943adc8015cf.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=61",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Kapil Mani K.C,",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/37a749d808e46495a8da1e5352d03cae.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=62",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Sabin Chaulagain, NMC No:-20880",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/82aa4b0af34c2313a562076992e50aa3.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=64",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Krishna Dhungana ,NMC:-4973",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/f7e6c85504ce6e82442c770f7c8606f0.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=65",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Surendra Shah, NMC No:-4893",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/bf8229696f7a3bb4700cfddef19fa23f.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=66",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Rajib Pande",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/38af86134b65d0f10fe33d30dd76442e.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=68",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Rajan Paudel ,NMC No:-5713",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/8f85517967795eeef66c225f7883bdcb.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=70",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Dinesh KC, NMC. No:8938",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/8f53295a73878494e9bc8dd6c3c7104f.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=71",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Pooja Shrestha;NMC No:-26249",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/045117b0e0a11a242b9765e79cbf113f.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=72",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Arun Sigdel",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/9dcb88e0137649590b755372b040afad.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=73",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Lalit kumar Yadav",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/cfecdb276f634854f3ef915e2e980c31.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=74",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Bipin Rai ( Bipendra D.K. Rai), NMC.No:-3724",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/0aa1883c6411f7873cb83dacb17b0afc.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=75",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Suresh Kayastha, NMC. No: 11016",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/58a2fc6ed39fd083f55d4182bf88826d.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=76",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Deepa Chudal, NMC. No: 9110",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/bd686fd640be98efaae0091fa301e613.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=77",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Binamra Sigdel, NMC. No: 7524",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/a597e50502f5ff68e3e25b9114205d4a.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=78",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr. Saheen Ansari, NMC. No: 10876",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/0336dcbab05b9d5ad24f4333c7658a0e.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=79",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Prashant Gupta",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/eae27d77ca20db309e056e3d2dcd7d69.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=80",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Karan Rajbanshi",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/7eabe3a1649ffa2b3ff8c02ebfd5659f.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=81",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Prof.Dr. Kiran Manandhar, NMC.No:-2193",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/c0e190d8267e36708f955d7ab048990d.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=82",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Pradeep Shrestha,NMC No:-4441",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/ec8ce6abb3e952a85b8551ba726a1227.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=83",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Boblin shakya,NMC No:-10764",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/060ad92489947d410d897474079c1477.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=84",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Avesh Koraila,NMC No:",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/bcbe3365e6ac95ea2c0343a2395834dd.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=85",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    },
+    {
+      "name": "Dr.Ritesh Thapa,NMC No:-8778",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.kantipurhospital.com.np/cp/img/uploads/115f89503138416a242f40fb7d7f338e.jpg",
+      "profile_url": "https://www.kantipurhospital.com.np/doctor_detail.php?doctorid=86",
+      "hospital_key": "kantipur-hospital",
+      "scraped_at": "2026-02-04T13:25:49.810Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T13:25:49.817Z",
+  "errors": []
+}

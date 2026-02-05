@@ -1,0 +1,658 @@
+{
+  "hospital_key": "nepal-cancer-hospital",
+  "hospital_name": "Nepal Cancer Hospital & Research Center",
+  "doctors": [
+    {
+      "name": "Dr. Sudip Shrestha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764093380-Dr_page-0001.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/7",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Bijesh Raj Ghimire",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/board/Dr. Bijesh.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/8",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Gisupnikha Prasiko",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/board/IMG_4410.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/57",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Kapendra S. Amatya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/board/Dr Kapendra.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/15",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Sunita Maleku Amatya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/board/Dr Sunita.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/69",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Saroj Prakash Chataut",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764691122-DSC_5747.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/10",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Anju Shrestha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764086345-Dr. Anju.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/22",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Anu Bajracharya Shakya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764086704-Dr. Anu.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/120",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Prabhat Chandra Thakur",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764087196-Dr. Pravat.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/26",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Prafulla Shakya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764086007-Dr. Prafulla.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/17",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Ujit Kumar Karmacharya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764084715-Dr. Ujit.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/121",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Sampurna Man Tuladhar",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764088292-Dr. Sampurna Man Tuladhar.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/46",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Robin Joshi",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764088552-Dr. Robin.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/28",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Prabin Bikram Thapa",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764087678-pb.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/29",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Dhiresh Kumar Maharjan",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/placeholder-user.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/30",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Anjali Pandit",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764083092-Dr, Anjali.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/93",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr Madindra Basnet",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764090736-Dr Madindra.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/71",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr Manisha Mishra",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764085007-Dr. Manish Mishra.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/77",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr Neeraj Joshi",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764091273-niraj.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/75",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr Rekha Manandhar Shrestha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764089871-Dr. Rekha.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/84",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr Rishi Ram Poudel",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764088093-Dr. Rishi.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/42",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr Sagar Thapa",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764090436-Dr. Sagar.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/112",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Abha Prasai",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764090684-Dr. Abha.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/70",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Ambuj Karn",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764089139-Dr Ambuj Karn.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/60",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Amit Shrestha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764083303-Dr. Amit.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/94",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Amrit Koirala",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764090312-Dr. Amrit.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/66",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Anish Man Singh",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764088901-anish.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/45",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Atish Darshan Bajracharya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764087890-dr atish.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/31",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Banita Gurung",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764089747-Dr. Banita.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/85",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Basanta Maharjan",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764088147-Dr. Bshanta.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/43",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Bibek Acharya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764089107-Dr. Bibek Acharya.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/58",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Bikash Shah",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764086207-Dr. Bikash Shah.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/56",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Bishwash Sharma",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764083484-dr. Biswash.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/78",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Deepak Adhikari",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764090776-Dr. Deepak.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/72",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Diba Sharma",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1760419419-Screenshot 2025-10-14 105231.png",
+      "profile_url": "https://www.nch.com.np/doctors/105",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Gaurav Raj Dhakal",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1755496116-gaurav.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/47",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Grisuna Singh",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764083263-Dr. Grisuna.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/91",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Hari Prasad Dhakal",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1765531704-dr hari.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/135",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Hemanta K. Batajoo",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764085804-Dr. Hemanta.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/16",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Jyoti Mishra",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764090356-Dr. Jyoti.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/68",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Karna Rajbanshi",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1755501998-Dr karna.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/76",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Khagendra Raj Devkota",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764082677-DR. KHAGENDRA 1.JPG",
+      "profile_url": "https://www.nch.com.np/doctors/12",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Krishna Nagarkoti",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764087572-krishna.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/51",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Krishna Prasad Acharya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764090970-Dr. Krishna Prasad Acharya (ID NO 1031).jpg",
+      "profile_url": "https://www.nch.com.np/doctors/133",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Mahesh Pathak",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764090390-Dr. Mahes.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/67",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Moushami Singh, MD",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764089935-Dr. moushami.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/86",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Namrata Pradhan",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764083713-Dr. Namrata.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/79",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Navin Kaji Bajracharya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764089753-Dr. Navin.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/62",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Nikeshmani Rajbhandari",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764083766-nikesh.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/110",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Pravin Kumar Jaiswal",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1760418600-Screenshot 2025-10-14 105231.png",
+      "profile_url": "https://www.nch.com.np/doctors/37",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Ranjana Karmacharya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764089180-Dr. Ranjana.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/61",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Rishav Koirala",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764083670-IMG_4757.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/80",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Sachin Shakya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764081746-Dr. Sachin.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/9",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Sajin Rajbhandary",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764082220-Dr. Sajin.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/123",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Satyadeep Bhattacharya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1755427941-Dr Satyadeep Bhattacharya.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/19",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Sheelendra Shakya",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764084780-Dr. seelendra.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/73",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Shirish Lall Shrestha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1765863718-1f8a28c6-e6fb-407d-8c61-2dd2f209b6e8.jpeg",
+      "profile_url": "https://www.nch.com.np/doctors/81",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Shristi Tiwari",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764082576-Dr. Srishti.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/11",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Sitaram Shrestha",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1760420646-Screenshot 2025-10-14 105231.png",
+      "profile_url": "https://www.nch.com.np/doctors/119",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr. Surendra Jung Basnet",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764087527-Dr surendra jung basnet.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/50",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr.Deeptara Pathak",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1765863749-f5e6c144-d4af-45a9-9a9b-dfe3600f721d.jpeg",
+      "profile_url": "https://www.nch.com.np/doctors/101",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Dr.Punyaram Kharbhuja",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764086064-IMG_4698.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/18",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Mr. Rajendra Khatri",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1755508642-Dr Rajendra.png",
+      "profile_url": "https://www.nch.com.np/doctors/95",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Mrs. Kabita Maharjan",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1755508795-Kabita Maharjan-2.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/96",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    },
+    {
+      "name": "Prof. Dr. Prakash Nidhi Tiwari",
+      "specialty": null,
+      "department": null,
+      "degree": null,
+      "photo_url": "https://www.nch.com.np/images/doctors/1764082915-Dr. praksh Nithi Tiwari.jpg",
+      "profile_url": "https://www.nch.com.np/doctors/92",
+      "hospital_key": "nepal-cancer-hospital",
+      "scraped_at": "2026-02-04T13:25:13.023Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T13:25:13.030Z",
+  "errors": []
+}

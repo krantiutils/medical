@@ -1,0 +1,248 @@
+{
+  "hospital_key": "tuth",
+  "hospital_name": "TU Teaching Hospital",
+  "doctors": [
+    {
+      "name": "Dr. Nitish Deo Lecturer Dr. Shirish",
+      "specialty": "Dr. Shirish Adhikari",
+      "department": "Orthopedics and Trauma Surgery",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/orthopedics-and-trauma-surgery/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:14:52.479Z"
+    },
+    {
+      "name": "Dr. Kunjan Acharya Associate Professor Dr.",
+      "specialty": "Dr. Heempali Dutta",
+      "department": "ENT-HNS Department",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/Dr.-Kunjan-Acharya.jpg",
+      "profile_url": "https://tuth.org.np/ent-hns-department/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:14:58.039Z"
+    },
+    {
+      "name": "Dr. Bigyan Raj Gyawali Assistant Professor",
+      "specialty": "ssor",
+      "department": "ENT-HNS Department",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/Dr.-Bigyan-Raj-Gyawali.jpg",
+      "profile_url": "https://tuth.org.np/ent-hns-department/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:14:58.039Z"
+    },
+    {
+      "name": "Prof Dr Ishwar Lohani Prof Dr Jayan",
+      "specialty": "Prof Dr Jayan Man Shrestha",
+      "department": "Plastic Surgery and Burns",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/plastic-surgery-and-burns/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:03.554Z"
+    },
+    {
+      "name": "Dr Bikesh Rajbhandari Clinical registrar Dr",
+      "specialty": null,
+      "department": "Plastic Surgery and Burns",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/plastic-surgery-and-burns/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:03.554Z"
+    },
+    {
+      "name": "Dr Ramesh Kumar Maharjan MBBS, MD",
+      "specialty": ", MD GP, DMEmergency Medicine, Associate Professor, Head ofDepartment (Chief)",
+      "department": "Department of Emergency Medicine",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/department-of-emergency-medicine/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:08.956Z"
+    },
+    {
+      "name": "Dr Sunita Bajracharya Lecturer Dr Suvana",
+      "specialty": "Dr Suvana Maskey",
+      "department": "Obstetrics & Gynecology",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/obstetrics-gynecology/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:14.438Z"
+    },
+    {
+      "name": "Dr. Prezma Shrestha Teaching assistant Dr.",
+      "specialty": "Dr. Bishal Khaniya",
+      "department": "Obstetrics & Gynecology",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/obstetrics-gynecology/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:14.438Z"
+    },
+    {
+      "name": "Dr. Sagun Ballav Pant SBP Dr.",
+      "specialty": "Dr. Pratik Younjan Lama",
+      "department": "Psychiatry & Mental Health",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/psychiatry-mental-health/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:19.918Z"
+    },
+    {
+      "name": "Prof. Dr Yogendra Man Shakya",
+      "specialty": null,
+      "department": "General Practice",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://tuth.org.np/general-practice/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:25.511Z"
+    },
+    {
+      "name": "Prof Dr .Yogendra Man shakya",
+      "specialty": null,
+      "department": "General Practice",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://tuth.org.np/general-practice/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:25.511Z"
+    },
+    {
+      "name": "Dr Tirtha Man Shrestha,",
+      "specialty": null,
+      "department": "General Practice",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://tuth.org.np/general-practice/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:25.511Z"
+    },
+    {
+      "name": "Dr Sanjeeb Tiwari",
+      "specialty": null,
+      "department": "General Practice",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://tuth.org.np/general-practice/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:25.511Z"
+    },
+    {
+      "name": "Dr Sanjay Kumar Gupta",
+      "specialty": null,
+      "department": "General Practice",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://tuth.org.np/general-practice/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:25.511Z"
+    },
+    {
+      "name": "Prof. Dr. Mahesh Raj Sigdel MD, DM",
+      "specialty": ", DM (Nephrology, FRCP Edin",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/Mahesh.jpg",
+      "profile_url": "https://tuth.org.np/internal-medicine/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:36.711Z"
+    },
+    {
+      "name": "Dr. Sabin Thapaliya MD (Internal Medicine)",
+      "specialty": "ine)",
+      "department": "Internal Medicine",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/sabin.jpg",
+      "profile_url": "https://tuth.org.np/internal-medicine/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:36.711Z"
+    },
+    {
+      "name": "Dr. Bikram Prasad Gajurel Associate Professor,",
+      "specialty": "sor, Head of Neurology Department",
+      "department": "Neurology",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/bikram.png",
+      "profile_url": "https://tuth.org.np/neurology/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:42.386Z"
+    },
+    {
+      "name": "Dr. Sandeep Bohara Registrar Dr. Prabhat",
+      "specialty": "Dr. Prabhat Jha",
+      "department": "Neurosurgery",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/sandeep.jpg",
+      "profile_url": "https://tuth.org.np/neurosurgery/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:15:53.321Z"
+    },
+    {
+      "name": "Dr. Dibya Singh Shah MBBS, MD,",
+      "specialty": "MD, FISN Professor, Head of Department",
+      "department": "Department of Nephrology",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/dibya.png",
+      "profile_url": "https://tuth.org.np/department-of-nephrology/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:16:09.950Z"
+    },
+    {
+      "name": "Dr Santosh Chhetri MBBS, MD, DMClinical",
+      "specialty": "ical Lecturer",
+      "department": "Department of Nephrology",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/sanntosh.png",
+      "profile_url": "https://tuth.org.np/department-of-nephrology/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:16:09.950Z"
+    },
+    {
+      "name": "Prof. Dr. Subhash Prasad Acharya Dr. Gentle",
+      "specialty": "Dr. Gentle Sunder Shrestha",
+      "department": "Critical care Medicine",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/critical-care-medicine/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:16:15.443Z"
+    },
+    {
+      "name": "Dr. Sunil Pathak Lecturer Dr. Ashmita",
+      "specialty": "Dr. Ashmita Paudel",
+      "department": "Critical care Medicine",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/critical-care-medicine/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:16:15.443Z"
+    },
+    {
+      "name": "Dr. Suson Ghimire DM Year 1",
+      "specialty": "ar 1",
+      "department": "Critical care Medicine",
+      "degree": null,
+      "photo_url": "https://tuth.org.np/wp-content/uploads/2025/03/TU-1.png",
+      "profile_url": "https://tuth.org.np/critical-care-medicine/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:16:15.443Z"
+    },
+    {
+      "name": "Dr. Ram Chandra Adhikari,",
+      "specialty": null,
+      "department": "Pathology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://tuth.org.np/pathology/",
+      "hospital_key": "tuth",
+      "scraped_at": "2026-02-04T10:16:42.844Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T10:17:01.724Z",
+  "errors": []
+}

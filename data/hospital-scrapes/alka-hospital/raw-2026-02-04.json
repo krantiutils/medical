@@ -1,0 +1,788 @@
+{
+  "hospital_key": "alka-hospital",
+  "hospital_name": "Alka Hospital",
+  "doctors": [
+    {
+      "name": "Dr Shivaji Bikram Silwal",
+      "specialty": null,
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/22",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.993Z"
+    },
+    {
+      "name": "Dr. Sanjay Singh KC",
+      "specialty": null,
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.sanjaysingh_2025_05_18_06_56_39.png",
+      "profile_url": "https://www.alkahospital.com/doctors/24",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.994Z"
+    },
+    {
+      "name": "Dr. Ajit Shrestha",
+      "specialty": null,
+      "department": "Chest Physician",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DRAJITSHRESTHA_2024_05_26_07_06_12.png",
+      "profile_url": "https://www.alkahospital.com/doctors/25",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.994Z"
+    },
+    {
+      "name": "Dr. Bidesh Bista",
+      "specialty": null,
+      "department": "Chest Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/26",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.994Z"
+    },
+    {
+      "name": "Dr. Ashesh Dhungana",
+      "specialty": null,
+      "department": "Chest Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/27",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.994Z"
+    },
+    {
+      "name": "Dr. Pushpa Malla",
+      "specialty": null,
+      "department": "Chest Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/28",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.994Z"
+    },
+    {
+      "name": "Dr. Dikshya Joshi",
+      "specialty": null,
+      "department": "Cardio Thorasic Vascular Surgeon (CTVS)",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/29",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.994Z"
+    },
+    {
+      "name": "Dr. Rajat Pradhan",
+      "specialty": null,
+      "department": "Cardio Thorasic Vascular Surgeon (CTVS)",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/30",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.994Z"
+    },
+    {
+      "name": "Dr. Laila Lama",
+      "specialty": null,
+      "department": "Dermatology & Venereology (Skin & STD)",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrLailaLama_2024_05_26_07_07_45.png",
+      "profile_url": "https://www.alkahospital.com/doctors/31",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:19.994Z"
+    },
+    {
+      "name": "Dr Prasanna Raj Shrestha",
+      "specialty": null,
+      "department": "Dermatology & Venereology (Skin & STD)",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/32",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr. Shaswat Katwal",
+      "specialty": null,
+      "department": "ENT, Head and Neck",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.SwashatKatwal_2024_05_26_07_08_43.png",
+      "profile_url": "https://www.alkahospital.com/doctors/36",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr. Dibit Adhikari",
+      "specialty": null,
+      "department": "ENT, Head and Neck",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrDibitAdhikari_2024_05_26_07_10_09.png",
+      "profile_url": "https://www.alkahospital.com/doctors/37",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr. Subarna Dhoj Thapa",
+      "specialty": null,
+      "department": "Endocrinology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/38",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr. Priya Darshani Yonzon",
+      "specialty": null,
+      "department": "Endocrinology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/39",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr. Sunil Pokhrel",
+      "specialty": null,
+      "department": "Endocrinology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/40",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr. Bijendra Dhoj Joshi",
+      "specialty": null,
+      "department": "General Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.BijendraDhojShrestha_2024_05_26_06_42_28.png",
+      "profile_url": "https://www.alkahospital.com/doctors/41",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr.Sumita Pradhan",
+      "specialty": null,
+      "department": "General Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.SUMITAPRADHAN_2024_05_26_07_10_30.png",
+      "profile_url": "https://www.alkahospital.com/doctors/42",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr.  Jainendra Kumar Chaudhary",
+      "specialty": null,
+      "department": "General Surgery",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/43",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:25.579Z"
+    },
+    {
+      "name": "Dr. Sudip Ratna Shakya",
+      "specialty": null,
+      "department": "General Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrSudipRatnaShakya_2024_05_26_07_13_35.png",
+      "profile_url": "https://www.alkahospital.com/doctors/44",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Rajiv Nakarmi",
+      "specialty": null,
+      "department": "General Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrRajivNakarmi_2024_05_26_06_39_49.png",
+      "profile_url": "https://www.alkahospital.com/doctors/45",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Chandra Shova Amatya",
+      "specialty": null,
+      "department": "Gynecology & Obstetrics",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/47",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Subrina Rajbhandari",
+      "specialty": null,
+      "department": "Gynecology & Obstetrics",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/48",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Anuja Joshi",
+      "specialty": null,
+      "department": "Gynecology & Obstetrics",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/49",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Roshani Ulak",
+      "specialty": null,
+      "department": "Gynecology & Obstetrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrRoshniUlak_2024_05_26_10_06_08.png",
+      "profile_url": "https://www.alkahospital.com/doctors/50",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Nishma Bajracharya",
+      "specialty": null,
+      "department": "Gynecology & Obstetrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.NISHMABAJRACHARYA_2024_05_26_10_09_55.png",
+      "profile_url": "https://www.alkahospital.com/doctors/51",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Amar Narayan Shrestha",
+      "specialty": null,
+      "department": "Hematology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/52",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Rinku Joshi",
+      "specialty": null,
+      "department": "Hematology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/53",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:31.426Z"
+    },
+    {
+      "name": "Dr. Thupten Lama",
+      "specialty": null,
+      "department": "Hepatology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/54",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Ananta Shrestha",
+      "specialty": null,
+      "department": "Hepatology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.AnantaShrestha_2024_05_26_10_43_42.png",
+      "profile_url": "https://www.alkahospital.com/doctors/55",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Kanak Bahadur KC",
+      "specialty": null,
+      "department": "Internal Medicine & Physician",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.KANAKKC_2024_05_27_05_24_41.png",
+      "profile_url": "https://www.alkahospital.com/doctors/58",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Rakshya Gautam",
+      "specialty": null,
+      "department": "Internal Medicine & Physician",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.Rakshya_2024_05_27_05_30_45.png",
+      "profile_url": "https://www.alkahospital.com/doctors/60",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Prem Pandey",
+      "specialty": null,
+      "department": "Internal Medicine & Physician",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DRPREMPANDEY_2024_05_27_05_35_02.png",
+      "profile_url": "https://www.alkahospital.com/doctors/61",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Sameer Aryal",
+      "specialty": null,
+      "department": "Neuro Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DRSAMEERaryal_2024_05_27_05_49_38.png",
+      "profile_url": "https://www.alkahospital.com/doctors/62",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Ram Chandra Shrestha",
+      "specialty": null,
+      "department": "Neuro Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.RamChandraShrestha_2024_05_27_05_55_46.png",
+      "profile_url": "https://www.alkahospital.com/doctors/63",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Hridayesh Pratap Malla",
+      "specialty": null,
+      "department": "Neuro Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrHridayashPratapMalla_2024_05_27_06_00_57.png",
+      "profile_url": "https://www.alkahospital.com/doctors/64",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Ashish Shrestha",
+      "specialty": null,
+      "department": "Neuro Physician",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.AshishShrestha_2025_05_23_11_36_09.png",
+      "profile_url": "https://www.alkahospital.com/doctors/65",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:37.487Z"
+    },
+    {
+      "name": "Dr. Avinash Chandra",
+      "specialty": null,
+      "department": "Neuro Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/66",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Nishita Pathak",
+      "specialty": null,
+      "department": "Neuro Psychiatry",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/67",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Devesh Pradhan",
+      "specialty": null,
+      "department": "Neuro Psychiatry",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrDeveshPradhan_2024_05_30_07_31_23.png",
+      "profile_url": "https://www.alkahospital.com/doctors/68",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Nabin Lekhak",
+      "specialty": null,
+      "department": "Neuro Psychiatry",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.NabinLekhak_2024_06_21_06_58_39.png",
+      "profile_url": "https://www.alkahospital.com/doctors/69",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Rabin Nepali",
+      "specialty": null,
+      "department": "Nephrology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.RabinNepali_2025_06_08_08_30_43.png",
+      "profile_url": "https://www.alkahospital.com/doctors/70",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Lushan Singh",
+      "specialty": null,
+      "department": "Nephrology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DRLUSANSingh_2024_05_28_05_52_00.png",
+      "profile_url": "https://www.alkahospital.com/doctors/71",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Ambuj Karna",
+      "specialty": null,
+      "department": "Oncology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.Ambhujkarn_2025_05_25_11_35_23.png",
+      "profile_url": "https://www.alkahospital.com/doctors/72",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Shiva Chandra Amatya",
+      "specialty": null,
+      "department": "Orthopedics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DRShivaChandraAmatyanew_2024_05_28_06_29_52.png",
+      "profile_url": "https://www.alkahospital.com/doctors/73",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Sushil Shrestha",
+      "specialty": null,
+      "department": "Orthopedics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.Sushilshrestha_2025_05_25_11_19_17.png",
+      "profile_url": "https://www.alkahospital.com/doctors/74",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:43.039Z"
+    },
+    {
+      "name": "Dr. Sagun Dangol",
+      "specialty": null,
+      "department": "Orthopedics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DRSAGUNDangol_2024_05_28_06_37_58.png",
+      "profile_url": "https://www.alkahospital.com/doctors/76",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Pranav Shrestha",
+      "specialty": null,
+      "department": "Opthalmolgy",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/def_male_2024_05_20_10_26_03.jpeg",
+      "profile_url": "https://www.alkahospital.com/doctors/79",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Prakash Pokhrel",
+      "specialty": null,
+      "department": "Opthalmolgy",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/def_male_2024_05_20_10_26_03.jpeg",
+      "profile_url": "https://www.alkahospital.com/doctors/80",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Himalaya Niraula",
+      "specialty": null,
+      "department": "Plastic Surgery",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/89",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Arati Thapa",
+      "specialty": null,
+      "department": "Neuro Psychiatry",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrAaratiThapa_2024_07_09_06_08_24.png",
+      "profile_url": "https://www.alkahospital.com/doctors/96",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Bishnu Bhandari",
+      "specialty": null,
+      "department": "General Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrBishnuBahndari_2025_02_18_06_04_15.png",
+      "profile_url": "https://www.alkahospital.com/doctors/98",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Anup Raj Joshi",
+      "specialty": null,
+      "department": "Opthalmolgy",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/def_male_2024_05_20_10_26_03.jpeg",
+      "profile_url": "https://www.alkahospital.com/doctors/101",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Shreya shrestha",
+      "specialty": null,
+      "department": "Rheumatology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.ShregyaShrestha_2026_01_31_13_24_09.png",
+      "profile_url": "https://www.alkahospital.com/doctors/107",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Bishnu Babu Thapa",
+      "specialty": null,
+      "department": "Orthopedics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.BishnuBabuThapa_2024_05_28_06_40_36.png",
+      "profile_url": "https://www.alkahospital.com/doctors/77",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:48.603Z"
+    },
+    {
+      "name": "Dr. Sabina Joshi",
+      "specialty": null,
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/81",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Amrit Ghimire",
+      "specialty": null,
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/def_male_2024_05_20_10_26_03.jpeg",
+      "profile_url": "https://www.alkahospital.com/doctors/102",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Prabhav Pokhrel",
+      "specialty": null,
+      "department": "Orthopedics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/def_male_2024_05_20_10_26_03.jpeg",
+      "profile_url": "https://www.alkahospital.com/doctors/103",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Siba Thakali",
+      "specialty": null,
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/def_male_2024_05_20_10_26_03.jpeg",
+      "profile_url": "https://www.alkahospital.com/doctors/104",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Session Prajapati",
+      "specialty": null,
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/def_male_2024_05_20_10_26_03.jpeg",
+      "profile_url": "https://www.alkahospital.com/doctors/105",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Prakash Thapa",
+      "specialty": null,
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/def_male_2024_05_20_10_26_03.jpeg",
+      "profile_url": "https://www.alkahospital.com/doctors/106",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Harish Chandra Shah",
+      "specialty": null,
+      "department": "Accupuncture",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/HC_Shah_URL-removebg-preview_2024_05_21_09_50_57.png",
+      "profile_url": "https://www.alkahospital.com/doctors/19",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Rishi Bista",
+      "specialty": null,
+      "department": "Orthopedics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.RishiBista_2024_05_28_06_35_02.png",
+      "profile_url": "https://www.alkahospital.com/doctors/75",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Laxmi K.C.",
+      "specialty": null,
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.LaxmiKC_2024_05_30_06_00_39.png",
+      "profile_url": "https://www.alkahospital.com/doctors/83",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:54.231Z"
+    },
+    {
+      "name": "Dr. Abhilasha Shah",
+      "specialty": null,
+      "department": "Rheumatology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DrAbhilashaShah_2024_05_30_06_35_51.png",
+      "profile_url": "https://www.alkahospital.com/doctors/88",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr. Tirtha Raj Bhandari",
+      "specialty": null,
+      "department": "Pain Management",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.TirthaRajBhandari_2025_05_28_06_59_37.png",
+      "profile_url": "https://www.alkahospital.com/doctors/95",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr. Sagun Pradhan",
+      "specialty": null,
+      "department": "Orthopedics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.SagunPradhan_2024_12_01_07_40_03.png",
+      "profile_url": "https://www.alkahospital.com/doctors/97",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr. Ajit Khanal",
+      "specialty": null,
+      "department": "Gastroentrology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.AjitKhanal_2024_05_26_07_01_17.png",
+      "profile_url": "https://www.alkahospital.com/doctors/5",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr.Rikesh Tamrakar",
+      "specialty": null,
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.RikeshTamrakar_2024_05_26_07_01_54.png",
+      "profile_url": "https://www.alkahospital.com/doctors/21",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr. Sagun Thapa",
+      "specialty": null,
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.SagunThapa_2025_05_23_10_42_07.png",
+      "profile_url": "https://www.alkahospital.com/doctors/99",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr. Ranjana Sharma",
+      "specialty": null,
+      "department": "Opthalmolgy",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/78",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr. Anu Maharjan",
+      "specialty": null,
+      "department": "Pediatric Surgery",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/85",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr. Geha Raj Dahal",
+      "specialty": null,
+      "department": "Pediatric Surgery",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/86",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:28:59.860Z"
+    },
+    {
+      "name": "Dr. Rakshya Parajuli",
+      "specialty": null,
+      "department": "IVF & Infertility",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/DR.RAKSHYAPARAJULI_2024_05_30_07_09_53.png",
+      "profile_url": "https://www.alkahospital.com/doctors/93",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:29:05.355Z"
+    },
+    {
+      "name": "Dr.  Shova Shrestha",
+      "specialty": null,
+      "department": "Pediatrics",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.ShovaShrestha_2025_05_25_09_43_26.png",
+      "profile_url": "https://www.alkahospital.com/doctors/84",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:29:05.355Z"
+    },
+    {
+      "name": "Dr. Bikesh Raj Bhandari",
+      "specialty": null,
+      "department": "Plastic Surgery",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/90",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:29:05.355Z"
+    },
+    {
+      "name": "Dr. Pukar Maskey",
+      "specialty": null,
+      "department": "Uro Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.PukarMaskey_2025_05_28_08_47_44.png",
+      "profile_url": "https://www.alkahospital.com/doctors/92",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:29:05.355Z"
+    },
+    {
+      "name": "Dr. Jageshwor Prasad shah",
+      "specialty": null,
+      "department": "Cardiology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://www.alkahospital.com/doctors/23",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:29:05.355Z"
+    },
+    {
+      "name": "Dr. Rajesh Batajoo",
+      "specialty": null,
+      "department": "Uro Surgery",
+      "degree": null,
+      "photo_url": "https://www.alkahospital.com/medias/Dr.RajeshBatajoo_2025_05_23_11_03_13.png",
+      "profile_url": "https://www.alkahospital.com/doctors/91",
+      "hospital_key": "alka-hospital",
+      "scraped_at": "2026-02-04T13:29:05.355Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T13:29:05.362Z",
+  "errors": []
+}

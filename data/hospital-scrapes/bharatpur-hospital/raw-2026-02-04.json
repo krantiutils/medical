@@ -1,0 +1,458 @@
+{
+  "hospital_key": "bharatpur-hospital",
+  "hospital_name": "Bharatpur Hospital",
+  "doctors": [
+    {
+      "name": "Proff.Dr.Krishna prasad Paudel",
+      "specialty": "Chief Medical Superintendent",
+      "department": "Orthopaedic",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Keshav Poudel",
+      "specialty": "Chief Consultant Radiologist",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Prakash khatiwada",
+      "specialty": "Chief Consultant Physician",
+      "department": "General Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Prof.Dr.Sunilmani Pokharel",
+      "specialty": "Chief Consultant Obs & Gyanaecologist",
+      "department": "Gyano / Obs",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Sashi Hirachan",
+      "specialty": "Chief Consultant Dermatologist",
+      "department": "Dermatology & Venereology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Narayan Bdr.Thapa",
+      "specialty": "Chief Consultant Pediatrician",
+      "department": "Padiatric",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Sunil K. Shah",
+      "specialty": "Chief Consultant Psychiatric",
+      "department": "Psychiatric",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Deepak Thapamagar",
+      "specialty": "Chief Consultant Surgeon",
+      "department": "Surgery",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Sailendra B.K. Pokhrel",
+      "specialty": "Chief Consultant ENT Surgeon",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Karishma Malla Vaidhya",
+      "specialty": "Chief Consultant Pathologist",
+      "department": "Laboratory",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Mani Prasad Gautam",
+      "specialty": "Senior Consultant General Physician",
+      "department": "General Physician",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/024_0b0bedb7-d423-4357-a9aa-dcf2d529c2d0.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Kalidas Adhikari",
+      "specialty": "Senior Consultant General Physician",
+      "department": "General Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Surya Prakas Sapkota",
+      "specialty": "Senior Consultant Radiologist",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Khem Raj Poudel",
+      "specialty": "Senior Consultant pediatrician",
+      "department": "Padiatric",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Sushil Thapa",
+      "specialty": "Senior Consultant Orthopadic Surgeon",
+      "department": "Orthopaedic",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Ramesh Bhandari",
+      "specialty": "Senior Consultant E.N.T Surgeon",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/rmsbndri_e544e049-3cd6-43c6-b8bc-c0b27be501f1.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Kalyan Sapkota",
+      "specialty": "Senior Consultant General Physician Senior Consultant General Physician",
+      "department": "General Physician",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/Dr.Kalyan Sapkota _7a7927ae-a0f9-45a2-96e8-99a1d6965af3.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Raju Basnet",
+      "specialty": "Senior Consultant General Physician",
+      "department": "General Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Ram Prasad Sapkota",
+      "specialty": "Senior Consultant Obs & gynaecologist",
+      "department": "Gyano / Obs",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Pramod Paudel",
+      "specialty": "Senior Consultant General Physician",
+      "department": "General Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Yograj Sharma",
+      "specialty": "Senior Consultant pediatrician",
+      "department": "Padiatric",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Pradeep Adhikari",
+      "specialty": "Senior Consultant Anesthesiologist",
+      "department": "Anaesthesiology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Sunil Panta",
+      "specialty": "Senior Consultant Orthopadic Surgeon OPD: Wednesday and Thursday",
+      "department": "Orthopaedic",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/dr.sunil_b265facf-9679-4d08-aeb3-2d3ac50bd99e.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Ajaya Neupane",
+      "specialty": "Senior Consultant Dental Surgeon",
+      "department": "Dental",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Joon Kumar Shrestha",
+      "specialty": "Senior Consultant Radiologist",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/dr.joon kumar shrestha_f7e63aec-5863-4788-8bdd-1ec3ada9174a.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Gobinda Kandel",
+      "specialty": "Senior Consultant Physician",
+      "department": "General Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Kumar Paudel",
+      "specialty": "Senior Consultant Neurosurgeon Neurosurgeon",
+      "department": "Neuro surgery",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/WhatsApp Image 2025-08-18 at 12.23.22_c332e8e2_99f5221b-6344-46ec-8664-51728afe6e91.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Robins Dhakal",
+      "specialty": "Senior Consultant Dental Surgeon",
+      "department": "Dental",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Amar Paudyal",
+      "specialty": "Senior Consultant General Physician",
+      "department": "General Physician",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Shanti Bhurtel",
+      "specialty": "Senior Consultant Anesthesiologist",
+      "department": "Anaesthesiology",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/snti_83b1bd26-a250-4d3e-ad3e-3293c53a629d.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Srijana Bhurtel",
+      "specialty": "Senior Consultant Psychiatric",
+      "department": "Psychiatric",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Sweta Kumari Gupta",
+      "specialty": "Senior Consultant pediatrician",
+      "department": "Padiatric",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/dr.sweta gupta_28c1f85f-91c1-4057-95c1-366d862c89f6.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Ganesh Chaudhary",
+      "specialty": "Senior Consultant Dental Surgeon",
+      "department": "Dental",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/ganesh_55349f07-3955-4f56-8e50-e34bd84eda9c.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Sunil Poudyal",
+      "specialty": "Senior Consultant General Physician",
+      "department": "Medical",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/WhatsApp Image 2026-01-05 at 12.34.02 PM_511f1755-d63b-494f-8da7-752cfa8849a1.jpeg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Shyam Kishor Chaudhary",
+      "specialty": "Consultant Oral & Maxillofacial Surgeon",
+      "department": "Dental",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Padam Nepali Darji",
+      "specialty": "Consultant Prosthodontics Dental",
+      "department": "Dental",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Pinky Singh",
+      "specialty": "Counsultant Orthodontist",
+      "department": "Dental",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/pinky_056cae3a-84d3-4b1a-b0e5-85aca8511c9a.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Bivek Aryal",
+      "specialty": "Consultant E.N.T.Surgeon",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/bbkaryl_d0919918-b2ab-43e6-8c0e-66cc50ad870e.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Rohita Bajracharya",
+      "specialty": "Consultant E.N.T.Surgeon",
+      "department": "ENT",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/rohita_de9c800d-970b-4f95-abe7-f7ad0e962d61.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Sanjib Pariyar",
+      "specialty": "Consultant Pathologist",
+      "department": "Laboratory",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/snjib_c3cbcb67-331a-4eb7-8d98-5f9862f242b5.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Alina Baral",
+      "specialty": "Pathologist",
+      "department": "Laboratory",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Ekta Baral",
+      "specialty": "Consultant Darmatologist",
+      "department": "Dermatology & Venereology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Diwas Sapkota",
+      "specialty": "Consultant Radiologist",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": null,
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.Rachana Thapa",
+      "specialty": "MD Obs & Gyanecologist",
+      "department": "Gyano / Obs",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/WhatsApp Image 2025-07-20 at 11.02.27_1f5bd96d_69a087c4-6506-479e-b47d-a994a730f0b5.jpg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    },
+    {
+      "name": "Dr.pradesh Ghimire",
+      "specialty": "MD Radiologist",
+      "department": "Radiology",
+      "degree": null,
+      "photo_url": "https://www.bharatpurhospital.gov.np/content/userimages/dr.p_8cf79dcb-4798-4abf-821c-7675440da7d0.jpeg",
+      "profile_url": null,
+      "hospital_key": "bharatpur-hospital",
+      "scraped_at": "2026-02-04T13:27:39.211Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T13:27:39.220Z",
+  "errors": []
+}

@@ -13,6 +13,7 @@
     "import:doctors": "pnpm --filter @swasthya/database import:doctors",
     "import:dentists": "pnpm --filter @swasthya/database import:dentists",
     "import:pharmacists": "pnpm --filter @swasthya/database import:pharmacists",
+    "import:hospitals": "pnpm --filter @swasthya/database import:hospitals",
     "test:e2e": "pnpm --filter @swasthya/web test:e2e"
   },
   "devDependencies": {

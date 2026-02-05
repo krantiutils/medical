@@ -1,0 +1,58 @@
+{
+  "hospital_key": "norvic-hospital",
+  "hospital_name": "Norvic International Hospital",
+  "doctors": [
+    {
+      "name": "Prof. Dr. Yadav Kumar Deo Bhatta",
+      "specialty": "Hospital Overview",
+      "department": null,
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://norvichospital.com/doctors/prof-dr-yadav-kumar-deo-bhatta",
+      "hospital_key": "norvic-hospital",
+      "scraped_at": "2026-02-04T10:20:42.076Z"
+    },
+    {
+      "name": "Dr. Pankaj Jalan",
+      "specialty": "Hospital Overview",
+      "department": null,
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://norvichospital.com/doctors/dr-pankaj-jalan",
+      "hospital_key": "norvic-hospital",
+      "scraped_at": "2026-02-04T10:20:46.756Z"
+    },
+    {
+      "name": "Dr. Sandeep Raj Kunwar",
+      "specialty": "Hospital Overview",
+      "department": null,
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://norvichospital.com/doctors/sandeep-raj-kunwar",
+      "hospital_key": "norvic-hospital",
+      "scraped_at": "2026-02-04T10:20:51.698Z"
+    },
+    {
+      "name": "Prof. Dr. Mukund R. Joshi",
+      "specialty": "Hospital Overview",
+      "department": null,
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://norvichospital.com/doctors/prof-dr-mukunda-r-joshi",
+      "hospital_key": "norvic-hospital",
+      "scraped_at": "2026-02-04T10:20:56.294Z"
+    },
+    {
+      "name": "Prof. Dr. Achala Vaidya",
+      "specialty": "Hospital Overview",
+      "department": null,
+      "degree": null,
+      "photo_url": null,
+      "profile_url": "https://norvichospital.com/doctors/prof-dr-achala-vaidya",
+      "hospital_key": "norvic-hospital",
+      "scraped_at": "2026-02-04T10:21:00.831Z"
+    }
+  ],
+  "scraped_at": "2026-02-04T10:21:02.837Z",
+  "errors": []
+}
