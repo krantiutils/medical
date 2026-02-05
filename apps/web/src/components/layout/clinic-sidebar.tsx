@@ -27,6 +27,7 @@ const mainLinks: SidebarLink[] = [
   { label: "Billing", labelNe: "बिलिङ", href: "/billing" },
   { label: "Reports", labelNe: "रिपोर्ट", href: "/reports" },
   { label: "Lab", labelNe: "ल्याब", href: "/lab" },
+  { label: "Packages", labelNe: "प्याकेजहरू", href: "/packages" },
 ];
 
 const groups: SidebarGroup[] = [
