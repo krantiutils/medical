@@ -4,8 +4,10 @@ import { prisma, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { ClaimProfileButton } from "@/components/claim/claim-profile-button";
 import { BookConsultationButton } from "@/components/telemedicine/book-consultation-button";
+import { ProfessionalReviewsDisplay } from "@/components/reviews/ProfessionalReviewsDisplay";
+import { ProfessionalReviewForm } from "@/components/reviews/ProfessionalReviewForm";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface DoctorPageProps {
   params: Promise<{
@@ -50,7 +52,7 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
 
   if (!doctor) {
     return {
-      title: "Doctor Not Found | Swasthya",
+      title: "Doctor Not Found | DoctorSewa",
       description: "The requested doctor could not be found.",
     };
   }
@@ -63,9 +65,9 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
 
   const location = doctor.address || "Nepal";
 
-  const title = `${displayName} - ${specialty} in ${location} | Swasthya`;
+  const title = `${displayName} - ${specialty} in ${location} | DoctorSewa`;
 
-  const description = `${displayName} is a registered doctor${doctor.degree ? ` with ${doctor.degree}` : ""} practicing in ${location}. Registration No: ${doctor.registration_number}. Find verified healthcare professionals on Swasthya.`;
+  const description = `${displayName} is a registered doctor${doctor.degree ? ` with ${doctor.degree}` : ""} practicing in ${location}. Registration No: ${doctor.registration_number}. Find verified healthcare professionals on DoctorSewa.`;
 
   const canonicalUrl = `${SITE_URL}/${lang}/doctors/${slug}`;
   const ogImageUrl = doctor.photo_url || `${SITE_URL}/og-default.png`;
@@ -84,7 +86,7 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
       title,
       description,
       url: canonicalUrl,
-      siteName: "Swasthya",
+      siteName: "DoctorSewa",
       type: "profile",
       images: [
         {
@@ -161,6 +163,18 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}/${lang}` },
+            { "@type": "ListItem", "position": 2, "name": "Doctors", "item": `${SITE_URL}/${lang}/doctors` },
+            { "@type": "ListItem", "position": 3, "name": doctor.full_name },
+          ],
+        }) }}
       />
       <div className="max-w-4xl mx-auto">
         <Card decorator="blue" decoratorPosition="top-right" className="mb-6">
@@ -372,6 +386,23 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
               registrationNumber={doctor.registration_number}
               isClaimed={!!doctor.claimed_by_id}
             />
+          </CardContent>
+        </Card>
+
+        {/* Reviews Section */}
+        <Card decorator="yellow" decoratorPosition="top-left" className="mt-6">
+          <CardContent>
+            <h2 className="text-2xl font-bold mb-4">
+              {lang === "ne" ? "समीक्षाहरू" : "Reviews"}
+            </h2>
+            <div className="border-t-2 border-black/20 mb-6" />
+            <ProfessionalReviewsDisplay doctorId={doctor.id} lang={lang} />
+            <div className="border-t-2 border-black/10 mt-6 pt-6">
+              <h3 className="text-lg font-bold mb-4">
+                {lang === "ne" ? "समीक्षा लेख्नुहोस्" : "Write a Review"}
+              </h3>
+              <ProfessionalReviewForm doctorId={doctor.id} lang={lang} />
+            </div>
           </CardContent>
         </Card>
       </div>

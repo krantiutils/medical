@@ -6,14 +6,19 @@ import Link from "next/link";
 import { PhotoGallery } from "@/components/clinic/PhotoGallery";
 import { BookingSection } from "@/components/clinic/BookingSection";
 import { ReviewsSection } from "@/components/clinic/ReviewsSection";
+import { OPDScheduleSection } from "@/components/clinic/OPDScheduleSection";
+import type { PageBuilderConfig, AnyPageBuilderConfig } from "@/types/page-builder";
+import { CustomClinicPage } from "@/components/page-builder/CustomClinicPage";
+import { ensureV2 } from "@/components/page-builder/lib/migrate";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface ClinicPageProps {
   params: Promise<{
     lang: string;
     slug: string;
   }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Type definition for operating hours
@@ -132,6 +137,13 @@ async function getClinic(slug: string) {
           joined_at: "asc",
         },
       },
+      schedules: {
+        where: { is_active: true },
+        include: {
+          doctor: true,
+        },
+        orderBy: { day_of_week: "asc" },
+      },
     },
   });
   return clinic;
@@ -159,7 +171,7 @@ export async function generateMetadata({ params }: ClinicPageProps): Promise<Met
 
   if (!clinic) {
     return {
-      title: "Clinic Not Found | Swasthya",
+      title: "Clinic Not Found | DoctorSewa",
       description: "The requested clinic could not be found or is not verified.",
     };
   }
@@ -172,9 +184,9 @@ export async function generateMetadata({ params }: ClinicPageProps): Promise<Met
     ? clinic.services.slice(0, 3).map(s => PREDEFINED_SERVICES[s]?.en || s).join(", ")
     : "";
 
-  const title = `${clinic.name} - ${clinicType} in ${location} | Swasthya`;
+  const title = `${clinic.name} - ${clinicType} in ${location} | DoctorSewa`;
 
-  const description = `${clinic.name} is a verified ${clinicType.toLowerCase()} located in ${location}.${servicesText ? ` Services: ${servicesText}.` : ""} Contact: ${clinic.phone || clinic.email || "See details"}. Find healthcare facilities on Swasthya.`;
+  const description = `${clinic.name} is a verified ${clinicType.toLowerCase()} located in ${location}.${servicesText ? ` Services: ${servicesText}.` : ""} Contact: ${clinic.phone || clinic.email || "See details"}. Find healthcare facilities on DoctorSewa.`;
 
   const canonicalUrl = `${SITE_URL}/${lang}/clinic/${slug}`;
   const ogImageUrl = clinic.logo_url || `${SITE_URL}/og-default.png`;
@@ -193,7 +205,7 @@ export async function generateMetadata({ params }: ClinicPageProps): Promise<Met
       title,
       description,
       url: canonicalUrl,
-      siteName: "Swasthya",
+      siteName: "DoctorSewa",
       type: "website",
       images: [
         {
@@ -447,8 +459,10 @@ const translations = {
   },
 };
 
-export default async function ClinicPage({ params }: ClinicPageProps) {
+export default async function ClinicPage({ params, searchParams }: ClinicPageProps) {
   const { lang, slug } = await params;
+  const sp = await searchParams;
+  const isPreview = sp.preview === "true";
   const clinic = await getClinic(slug);
 
   if (!clinic) {
@@ -459,12 +473,174 @@ export default async function ClinicPage({ params }: ClinicPageProps) {
   const timings = clinic.timings as WeeklySchedule | null;
   const jsonLd = generateJsonLd(clinic, lang);
 
+  // Check for page builder custom page (migrate v1 -> v2 on read)
+  const meta = (clinic.meta as Record<string, unknown>) || {};
+  const rawPb = meta.pageBuilder as AnyPageBuilderConfig | undefined;
+  const pageBuilder = rawPb ? ensureV2(rawPb) : null;
+
+  // Render custom page if enabled OR if preview mode (owner previewing)
+  const homePage = pageBuilder?.pages.find((p) => p.isHomePage) || pageBuilder?.pages[0];
+  const shouldRenderCustom = pageBuilder && homePage && (pageBuilder.enabled || isPreview);
+
+  if (shouldRenderCustom) {
+    return (
+      <main className="min-h-screen bg-background">
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}/${lang}` },
+              { "@type": "ListItem", "position": 2, "name": "Clinics", "item": `${SITE_URL}/${lang}/clinics` },
+              { "@type": "ListItem", "position": 3, "name": clinic.name },
+            ],
+          }) }}
+        />
+        <CustomClinicPage
+          config={pageBuilder}
+          page={homePage}
+          clinic={{
+            id: clinic.id,
+            slug: clinic.slug,
+            name: clinic.name,
+            logo_url: clinic.logo_url,
+            phone: clinic.phone,
+            email: clinic.email,
+            address: clinic.address,
+            website: clinic.website,
+            services: clinic.services || [],
+            photos: clinic.photos || [],
+            timings: clinic.timings as Record<string, { isOpen: boolean; openTime: string; closeTime: string }> | null,
+            location_lat: clinic.location_lat ? Number(clinic.location_lat) : null,
+            location_lng: clinic.location_lng ? Number(clinic.location_lng) : null,
+            doctors: (clinic.doctors || []).map((cd) => ({
+              id: cd.doctor.id,
+              full_name: cd.doctor.full_name,
+              type: cd.doctor.type,
+              photo_url: cd.doctor.photo_url,
+              specialties: cd.doctor.specialties || [],
+              degree: cd.doctor.degree,
+              role: cd.role,
+            })),
+          }}
+          lang={lang}
+          bookingSection={
+            clinic.doctors && clinic.doctors.length > 0 ? (
+              <BookingSection
+                clinicId={clinic.id}
+                doctors={clinic.doctors.map((cd) => ({
+                  id: cd.doctor.id,
+                  full_name: cd.doctor.full_name,
+                  type: cd.doctor.type,
+                  degree: cd.doctor.degree,
+                  specialties: cd.doctor.specialties,
+                  role: cd.role,
+                }))}
+                translations={{
+                  bookAppointment: t.bookAppointment,
+                  selectDoctor: t.selectDoctor,
+                  selectDate: t.selectDate,
+                  selectTime: t.selectTime,
+                  availableSlots: t.availableSlots,
+                  noSlotsAvailable: t.noSlotsAvailable,
+                  doctorNoSchedule: t.doctorNoSchedule,
+                  loading: t.loading,
+                  selectDoctorFirst: t.selectDoctorFirst,
+                  selectDateFirst: t.selectDateFirst,
+                  slotSelected: t.slotSelected,
+                  continueBooking: t.continueBooking,
+                  today: t.today,
+                  tomorrow: t.tomorrow,
+                  noDoctorsAvailable: t.noDoctorsAvailable,
+                  slotsRemaining: t.slotsRemaining,
+                  fullyBooked: t.fullyBooked,
+                  onLeave: t.onLeave,
+                  doctor: t.doctor,
+                  dentist: t.dentist,
+                  pharmacist: t.pharmacist,
+                  permanent: t.permanent,
+                  visiting: t.visiting,
+                  consultant: t.consultant,
+                }}
+                lang={lang}
+              />
+            ) : null
+          }
+          opdSection={
+            clinic.schedules && clinic.schedules.length > 0 ? (
+              <OPDScheduleSection
+                schedules={clinic.schedules.map((s) => ({
+                  id: s.id,
+                  day_of_week: s.day_of_week,
+                  start_time: s.start_time,
+                  end_time: s.end_time,
+                  doctor: {
+                    id: s.doctor.id,
+                    slug: s.doctor.slug,
+                    full_name: s.doctor.full_name,
+                    photo_url: s.doctor.photo_url,
+                    specialties: s.doctor.specialties,
+                    degree: s.doctor.degree,
+                    type: s.doctor.type,
+                  },
+                }))}
+                lang={lang}
+              />
+            ) : null
+          }
+          reviewsSection={
+            <ReviewsSection
+              clinicId={clinic.id}
+              clinicSlug={clinic.slug}
+              lang={lang}
+              translations={{
+                reviews: t.reviews,
+                writeReview: t.writeReview,
+                basedOn: t.basedOn,
+                reviewsText: t.reviewsText,
+                noReviews: t.noReviews,
+                noReviewsYet: t.noReviewsYet,
+                beTheFirst: t.beTheFirst,
+                showMore: t.showMore,
+                doctorResponse: t.doctorResponse,
+                verifiedPatient: t.verifiedPatient,
+                categories: {
+                  cleanliness: t.cleanliness,
+                  waitTime: t.waitTime,
+                  staffBehavior: t.staffBehavior,
+                },
+              }}
+            />
+          }
+        />
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}/${lang}` },
+            { "@type": "ListItem", "position": 2, "name": "Clinics", "item": `${SITE_URL}/${lang}/clinics` },
+            { "@type": "ListItem", "position": 3, "name": clinic.name },
+          ],
+        }) }}
       />
       <div className="max-w-4xl mx-auto">
         {/* Header Card with Logo and Basic Info */}
@@ -808,6 +984,36 @@ export default async function ClinicPage({ params }: ClinicPageProps) {
                   previous: t.previous,
                   next: t.next,
                 }}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* OPD Schedule Section */}
+        {clinic.schedules && clinic.schedules.length > 0 && (
+          <Card decorator="blue" decoratorPosition="top-right" className="mb-6">
+            <CardContent>
+              <h2 className="text-2xl font-bold mb-4">
+                {lang === "ne" ? "OPD तालिका" : "OPD Schedule"}
+              </h2>
+              <div className="border-t-2 border-black/20 mb-6" />
+              <OPDScheduleSection
+                schedules={clinic.schedules.map((s) => ({
+                  id: s.id,
+                  day_of_week: s.day_of_week,
+                  start_time: s.start_time,
+                  end_time: s.end_time,
+                  doctor: {
+                    id: s.doctor.id,
+                    slug: s.doctor.slug,
+                    full_name: s.doctor.full_name,
+                    photo_url: s.doctor.photo_url,
+                    specialties: s.doctor.specialties,
+                    degree: s.doctor.degree,
+                    type: s.doctor.type,
+                  },
+                }))}
+                lang={lang}
               />
             </CardContent>
           </Card>

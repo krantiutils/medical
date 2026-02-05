@@ -3,8 +3,10 @@ import { Metadata } from "next";
 import { prisma, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { ClaimProfileButton } from "@/components/claim/claim-profile-button";
+import { ProfessionalReviewsDisplay } from "@/components/reviews/ProfessionalReviewsDisplay";
+import { ProfessionalReviewForm } from "@/components/reviews/ProfessionalReviewForm";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://swasthya.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 interface PharmacistPageProps {
   params: Promise<{
@@ -29,7 +31,7 @@ export async function generateMetadata({ params }: PharmacistPageProps): Promise
 
   if (!pharmacist) {
     return {
-      title: "Pharmacist Not Found | Swasthya",
+      title: "Pharmacist Not Found | DoctorSewa",
       description: "The requested pharmacist could not be found.",
     };
   }
@@ -41,9 +43,9 @@ export async function generateMetadata({ params }: PharmacistPageProps): Promise
   const meta = pharmacist.meta as Record<string, string> | null;
   const category = meta?.category || "Pharmacist";
 
-  const title = `${displayName} - ${category} in ${location} | Swasthya`;
+  const title = `${displayName} - ${category} in ${location} | DoctorSewa`;
 
-  const description = `${displayName} is a registered pharmacist (${category}) in ${location}. NPC Registration No: ${pharmacist.registration_number}. Find verified pharmaceutical professionals on Swasthya.`;
+  const description = `${displayName} is a registered pharmacist (${category}) in ${location}. NPC Registration No: ${pharmacist.registration_number}. Find verified pharmaceutical professionals on DoctorSewa.`;
 
   const canonicalUrl = `${SITE_URL}/${lang}/pharmacists/${slug}`;
   const ogImageUrl = pharmacist.photo_url || `${SITE_URL}/og-default.png`;
@@ -62,7 +64,7 @@ export async function generateMetadata({ params }: PharmacistPageProps): Promise
       title,
       description,
       url: canonicalUrl,
-      siteName: "Swasthya",
+      siteName: "DoctorSewa",
       type: "profile",
       images: [
         {
@@ -89,7 +91,7 @@ function generateJsonLd(pharmacist: NonNullable<Awaited<ReturnType<typeof getPha
 
   const baseJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Person",
+    "@type": ["Person", "MedicalBusiness"],
     "@id": `${SITE_URL}/${lang}/pharmacists/${pharmacist.slug}`,
     name: displayName,
     url: `${SITE_URL}/${lang}/pharmacists/${pharmacist.slug}`,
@@ -144,6 +146,18 @@ export default async function PharmacistPage({ params }: PharmacistPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}/${lang}` },
+            { "@type": "ListItem", "position": 2, "name": "Pharmacists", "item": `${SITE_URL}/${lang}/pharmacists` },
+            { "@type": "ListItem", "position": 3, "name": pharmacist.full_name },
+          ],
+        }) }}
       />
       <div className="max-w-4xl mx-auto">
         <Card decorator="blue" decoratorPosition="top-right" className="mb-6">
@@ -264,6 +278,23 @@ export default async function PharmacistPage({ params }: PharmacistPageProps) {
               registrationNumber={pharmacist.registration_number}
               isClaimed={!!pharmacist.claimed_by_id}
             />
+          </CardContent>
+        </Card>
+
+        {/* Reviews Section */}
+        <Card decorator="yellow" decoratorPosition="top-left" className="mt-6">
+          <CardContent>
+            <h2 className="text-2xl font-bold mb-4">
+              {lang === "ne" ? "समीक्षाहरू" : "Reviews"}
+            </h2>
+            <div className="border-t-2 border-black/20 mb-6" />
+            <ProfessionalReviewsDisplay doctorId={pharmacist.id} lang={lang} />
+            <div className="border-t-2 border-black/10 mt-6 pt-6">
+              <h3 className="text-lg font-bold mb-4">
+                {lang === "ne" ? "समीक्षा लेख्नुहोस्" : "Write a Review"}
+              </h3>
+              <ProfessionalReviewForm doctorId={pharmacist.id} lang={lang} />
+            </div>
           </CardContent>
         </Card>
       </div>
