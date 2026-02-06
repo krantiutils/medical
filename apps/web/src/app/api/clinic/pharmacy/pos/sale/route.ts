@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 interface SaleItem {
   product_id: string;
@@ -20,26 +19,11 @@ interface SaleItem {
 // POST /api/clinic/pharmacy/pos/sale - Complete a sale
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -72,7 +56,7 @@ export async function POST(request: NextRequest) {
         where: { id: item.batch_id },
       });
 
-      if (!batch || batch.clinic_id !== clinic.id) {
+      if (!batch || batch.clinic_id !== access.clinicId) {
         return NextResponse.json(
           { error: `Invalid batch for product: ${item.product_name}` },
           { status: 400 }
@@ -102,7 +86,7 @@ export async function POST(request: NextRequest) {
         where: { id: credit_account_id },
       });
 
-      if (!creditAccount || creditAccount.clinic_id !== clinic.id) {
+      if (!creditAccount || creditAccount.clinic_id !== access.clinicId) {
         return NextResponse.json(
           { error: "Invalid credit account" },
           { status: 400 }
@@ -118,7 +102,7 @@ export async function POST(request: NextRequest) {
 
     const lastSale = await prisma.sale.findFirst({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         sale_number: { startsWith: `SALE-${year}${month}${day}` },
       },
       orderBy: { created_at: "desc" },
@@ -137,7 +121,7 @@ export async function POST(request: NextRequest) {
       const newSale = await tx.sale.create({
         data: {
           sale_number: saleNumber,
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           items: items,
           subtotal,
           discount,
@@ -200,7 +184,7 @@ export async function POST(request: NextRequest) {
               description: `Sale: ${saleNumber}`,
               credit_account_id: credit_account_id,
               sale_id: newSale.id,
-              clinic_id: clinic.id,
+              clinic_id: access.clinicId,
             },
           });
         }
@@ -210,7 +194,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Generate receipt HTML
-    const receipt = generateReceipt(clinic.name, sale, items as SaleItem[]);
+    const receipt = generateReceipt(access.clinic.name, sale, items as SaleItem[]);
 
     return NextResponse.json({
       sale: {

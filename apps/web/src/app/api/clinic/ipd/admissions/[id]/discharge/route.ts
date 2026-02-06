@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import prisma from "@swasthya/database";
-import { AdmissionStatus, BedStatus } from "@swasthya/database";
+import { prisma, AdmissionStatus, BedStatus } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // POST /api/clinic/ipd/admissions/[id]/discharge - Discharge a patient
 export async function POST(
@@ -10,29 +8,14 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        claimed_clinics: {
-          where: { verified: true },
-          take: 1,
-        },
-      },
-    });
-
-    if (!user?.claimed_clinics[0]) {
+    const access = await requireClinicPermission("ipd");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
-    const clinicId = user.claimed_clinics[0].id;
     const { id: admissionId } = await params;
 
     const body = await request.json();
@@ -47,7 +30,7 @@ export async function POST(
     const admission = await prisma.admission.findFirst({
       where: {
         id: admissionId,
-        clinic_id: clinicId,
+        clinic_id: access.clinicId,
         status: "ADMITTED",
       },
       include: {

@@ -1,41 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import prisma from "@swasthya/database";
-import { BedStatus, WardType } from "@swasthya/database";
+import { prisma, BedStatus, WardType } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/ipd/beds?ward_id=X - Get all beds for a ward (or all wards)
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        claimed_clinics: {
-          where: { verified: true },
-          take: 1,
-        },
-      },
-    });
-
-    if (!user?.claimed_clinics[0]) {
+    const access = await requireClinicPermission("ipd");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
-    const clinicId = user.claimed_clinics[0].id;
     const wardId = request.nextUrl.searchParams.get("ward_id");
 
     const beds = await prisma.bed.findMany({
       where: {
         ward: {
-          clinic_id: clinicId,
+          clinic_id: access.clinicId,
           ...(wardId ? { id: wardId } : {}),
         },
       },
@@ -97,29 +80,14 @@ export async function GET(request: NextRequest) {
 // POST /api/clinic/ipd/beds - Create a new bed
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        claimed_clinics: {
-          where: { verified: true },
-          take: 1,
-        },
-      },
-    });
-
-    if (!user?.claimed_clinics[0]) {
+    const access = await requireClinicPermission("ipd");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
-    const clinicId = user.claimed_clinics[0].id;
     const body = await request.json();
 
     const { ward_id, bed_number, type, daily_rate, features, notes } = body;
@@ -136,7 +104,7 @@ export async function POST(request: NextRequest) {
     const ward = await prisma.ward.findFirst({
       where: {
         id: ward_id,
-        clinic_id: clinicId,
+        clinic_id: access.clinicId,
       },
     });
 
@@ -204,29 +172,14 @@ export async function POST(request: NextRequest) {
 // DELETE /api/clinic/ipd/beds?id=X - Delete a bed
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        claimed_clinics: {
-          where: { verified: true },
-          take: 1,
-        },
-      },
-    });
-
-    if (!user?.claimed_clinics[0]) {
+    const access = await requireClinicPermission("ipd");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
-    const clinicId = user.claimed_clinics[0].id;
     const bedId = request.nextUrl.searchParams.get("id");
 
     if (!bedId) {
@@ -241,7 +194,7 @@ export async function DELETE(request: NextRequest) {
       where: {
         id: bedId,
         ward: {
-          clinic_id: clinicId,
+          clinic_id: access.clinicId,
         },
       },
     });
@@ -278,29 +231,14 @@ export async function DELETE(request: NextRequest) {
 // PATCH /api/clinic/ipd/beds - Update a bed
 export async function PATCH(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        claimed_clinics: {
-          where: { verified: true },
-          take: 1,
-        },
-      },
-    });
-
-    if (!user?.claimed_clinics[0]) {
+    const access = await requireClinicPermission("ipd");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
-    const clinicId = user.claimed_clinics[0].id;
     const body = await request.json();
     const { id, bed_number, type, daily_rate, features, notes, status, is_active } = body;
 
@@ -316,7 +254,7 @@ export async function PATCH(request: NextRequest) {
       where: {
         id,
         ward: {
-          clinic_id: clinicId,
+          clinic_id: access.clinicId,
         },
       },
     });

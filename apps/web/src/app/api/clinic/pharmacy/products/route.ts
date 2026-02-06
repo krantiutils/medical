@@ -1,31 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/pharmacy/products - List products for the clinic
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -41,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     const where: Record<string, unknown> = {
-      clinic_id: clinic.id,
+      clinic_id: access.clinicId,
     };
 
     if (search) {
@@ -128,26 +112,11 @@ export async function GET(request: NextRequest) {
 // POST /api/clinic/pharmacy/products - Create a new product
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -182,7 +151,7 @@ export async function POST(request: NextRequest) {
     if (barcode) {
       const existingProduct = await prisma.product.findFirst({
         where: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           barcode,
         },
       });
@@ -213,7 +182,7 @@ export async function POST(request: NextRequest) {
         description: description?.trim() || null,
         storage_info: storage_info?.trim() || null,
         supplier_id: supplier_id || null,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         is_active: true,
       },
       include: {
@@ -239,26 +208,11 @@ export async function POST(request: NextRequest) {
 // PUT /api/clinic/pharmacy/products - Update a product
 export async function PUT(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -276,7 +230,7 @@ export async function PUT(request: NextRequest) {
     const existingProduct = await prisma.product.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
     });
 
@@ -291,7 +245,7 @@ export async function PUT(request: NextRequest) {
     if (updates.barcode && updates.barcode !== existingProduct.barcode) {
       const duplicateBarcode = await prisma.product.findFirst({
         where: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           barcode: updates.barcode,
           id: { not: id },
         },
@@ -351,26 +305,11 @@ export async function PUT(request: NextRequest) {
 // DELETE /api/clinic/pharmacy/products - Delete a product
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -388,7 +327,7 @@ export async function DELETE(request: NextRequest) {
     const product = await prisma.product.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       include: {
         batches: {

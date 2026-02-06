@@ -1,40 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET: Get schedules for a doctor in the clinic
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
-  }
-
   try {
-    const { searchParams } = new URL(request.url);
-    const doctorId = searchParams.get("doctorId");
-
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
+    const access = await requireClinicPermission("schedules");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
+
+    const { searchParams } = new URL(request.url);
+    const doctorId = searchParams.get("doctorId");
 
     // If doctorId provided, get schedules for that doctor
     if (doctorId) {
@@ -42,7 +22,7 @@ export async function GET(request: NextRequest) {
       const clinicDoctor = await prisma.clinicDoctor.findUnique({
         where: {
           clinic_id_doctor_id: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             doctor_id: doctorId,
           },
         },
@@ -57,7 +37,7 @@ export async function GET(request: NextRequest) {
 
       const schedules = await prisma.doctorSchedule.findMany({
         where: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           doctor_id: doctorId,
         },
         orderBy: {
@@ -71,7 +51,7 @@ export async function GET(request: NextRequest) {
     // Otherwise return all schedules for the clinic
     const schedules = await prisma.doctorSchedule.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       include: {
         doctor: {
@@ -98,16 +78,15 @@ export async function GET(request: NextRequest) {
 
 // POST: Create or update schedules for a doctor
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
-  }
-
   try {
+    const access = await requireClinicPermission("schedules");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
     const body = await request.json();
     const { doctorId, schedules } = body;
 
@@ -125,29 +104,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Verify doctor is affiliated with this clinic
     const clinicDoctor = await prisma.clinicDoctor.findUnique({
       where: {
         clinic_id_doctor_id: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           doctor_id: doctorId,
         },
       },
@@ -200,7 +161,7 @@ export async function POST(request: NextRequest) {
     // Delete existing schedules for this doctor at this clinic
     await prisma.doctorSchedule.deleteMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         doctor_id: doctorId,
       },
     });
@@ -215,7 +176,7 @@ export async function POST(request: NextRequest) {
         max_patients_per_slot?: number;
         is_active?: boolean;
       }) => ({
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         doctor_id: doctorId,
         day_of_week: s.day_of_week,
         start_time: s.start_time,
@@ -229,7 +190,7 @@ export async function POST(request: NextRequest) {
     // Fetch the created schedules to return
     const newSchedules = await prisma.doctorSchedule.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         doctor_id: doctorId,
       },
       orderBy: {
@@ -253,16 +214,15 @@ export async function POST(request: NextRequest) {
 
 // DELETE: Delete a specific schedule
 export async function DELETE(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
-  }
-
   try {
+    const access = await requireClinicPermission("schedules");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const scheduleId = searchParams.get("id");
 
@@ -270,24 +230,6 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json(
         { error: "Schedule ID is required" },
         { status: 400 }
-      );
-    }
-
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
       );
     }
 
@@ -305,7 +247,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    if (schedule.clinic_id !== clinic.id) {
+    if (schedule.clinic_id !== access.clinicId) {
       return NextResponse.json(
         { error: "Unauthorized to delete this schedule" },
         { status: 403 }

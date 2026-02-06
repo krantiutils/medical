@@ -1,38 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma, PaymentMode, PaymentStatus } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/reports - Get billing reports for the user's clinic
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireClinicPermission("reports");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const { searchParams } = new URL(request.url);
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
-
-    // Get user's clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
 
     // Build date filter
     const startDate = dateFrom ? new Date(dateFrom) : getDefaultStartDate();
@@ -42,7 +25,7 @@ export async function GET(request: NextRequest) {
     // Get all invoices in the date range
     const invoices = await prisma.invoice.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         created_at: {
           gte: startDate,
           lte: endDate,
@@ -178,8 +161,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       clinic: {
-        id: clinic.id,
-        name: clinic.name,
+        id: access.clinic.id,
+        name: access.clinic.name,
       },
       dateRange: {
         from: startDate.toISOString(),

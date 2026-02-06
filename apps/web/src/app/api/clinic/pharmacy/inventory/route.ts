@@ -1,31 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/pharmacy/inventory - Get inventory data for dashboard
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -57,16 +41,16 @@ export async function GET(request: NextRequest) {
       ] = await Promise.all([
         // Total products count
         prisma.product.count({
-          where: { clinic_id: clinic.id },
+          where: { clinic_id: access.clinicId },
         }),
         // Active products count
         prisma.product.count({
-          where: { clinic_id: clinic.id, is_active: true },
+          where: { clinic_id: access.clinicId, is_active: true },
         }),
         // Total active batches count
         prisma.inventoryBatch.count({
           where: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             is_active: true,
             quantity: { gt: 0 },
           },
@@ -76,7 +60,7 @@ export async function GET(request: NextRequest) {
           SELECT COUNT(DISTINCT p.id) as count
           FROM "Product" p
           LEFT JOIN "InventoryBatch" b ON p.id = b.product_id AND b.is_active = true AND b.quantity > 0
-          WHERE p.clinic_id = ${clinic.id}
+          WHERE p.clinic_id = ${access.clinicId}
             AND p.is_active = true
             AND p.min_stock_level > 0
           GROUP BY p.id
@@ -85,7 +69,7 @@ export async function GET(request: NextRequest) {
         // Expiring in 30 days
         prisma.inventoryBatch.count({
           where: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             is_active: true,
             quantity: { gt: 0 },
             expiry_date: { lte: thirtyDays, gt: now },
@@ -94,7 +78,7 @@ export async function GET(request: NextRequest) {
         // Expiring in 60 days
         prisma.inventoryBatch.count({
           where: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             is_active: true,
             quantity: { gt: 0 },
             expiry_date: { lte: sixtyDays, gt: thirtyDays },
@@ -103,7 +87,7 @@ export async function GET(request: NextRequest) {
         // Expiring in 90 days
         prisma.inventoryBatch.count({
           where: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             is_active: true,
             quantity: { gt: 0 },
             expiry_date: { lte: ninetyDays, gt: sixtyDays },
@@ -112,7 +96,7 @@ export async function GET(request: NextRequest) {
         // Expired batches (still in stock)
         prisma.inventoryBatch.count({
           where: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             is_active: true,
             quantity: { gt: 0 },
             expiry_date: { lte: now },
@@ -121,7 +105,7 @@ export async function GET(request: NextRequest) {
         // Total stock value (MRP * quantity)
         prisma.inventoryBatch.aggregate({
           where: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             is_active: true,
             quantity: { gt: 0 },
           },
@@ -135,7 +119,7 @@ export async function GET(request: NextRequest) {
       const stockValueResult = await prisma.$queryRaw<{ total: number }[]>`
         SELECT COALESCE(SUM(b.mrp * b.quantity), 0)::float as total
         FROM "InventoryBatch" b
-        WHERE b.clinic_id = ${clinic.id}
+        WHERE b.clinic_id = ${access.clinicId}
           AND b.is_active = true
           AND b.quantity > 0
       `;
@@ -162,7 +146,7 @@ export async function GET(request: NextRequest) {
       // Get products with low stock
       const lowStockQuery = await prisma.product.findMany({
         where: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           is_active: true,
           min_stock_level: { gt: 0 },
         },
@@ -224,7 +208,7 @@ export async function GET(request: NextRequest) {
       // Get batches expiring within specified days
       const expiringBatches = await prisma.inventoryBatch.findMany({
         where: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           is_active: true,
           quantity: { gt: 0 },
           expiry_date: { lte: expiryDate },
@@ -250,7 +234,7 @@ export async function GET(request: NextRequest) {
 
       const totalExpiring = await prisma.inventoryBatch.count({
         where: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           is_active: true,
           quantity: { gt: 0 },
           expiry_date: { lte: expiryDate },
@@ -296,26 +280,11 @@ export async function GET(request: NextRequest) {
 // POST /api/clinic/pharmacy/inventory - Stock adjustment
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -342,7 +311,7 @@ export async function POST(request: NextRequest) {
     const batch = await prisma.inventoryBatch.findFirst({
       where: {
         id: batchId,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         is_active: true,
       },
       include: {

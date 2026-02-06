@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 interface PurchaseItem {
   product_id: string;
@@ -16,26 +15,11 @@ interface PurchaseItem {
 // GET /api/clinic/pharmacy/purchases - List purchase/receiving history
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -50,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     const where: Record<string, unknown> = {
-      clinic_id: clinic.id,
+      clinic_id: access.clinicId,
     };
 
     if (supplierId) {
@@ -150,26 +134,11 @@ export async function GET(request: NextRequest) {
 // POST /api/clinic/pharmacy/purchases - Receive stock (create inventory batches)
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -209,7 +178,7 @@ export async function POST(request: NextRequest) {
     const supplier = await prisma.supplier.findFirst({
       where: {
         id: supplier_id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         is_active: true,
       },
     });
@@ -226,7 +195,7 @@ export async function POST(request: NextRequest) {
     const products = await prisma.product.findMany({
       where: {
         id: { in: productIds },
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
     });
 
@@ -288,7 +257,7 @@ export async function POST(request: NextRequest) {
         // Check if batch already exists for this product
         const existingBatch = await tx.inventoryBatch.findFirst({
           where: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             product_id: item.product_id,
             batch_number: item.batch_number.trim(),
           },
@@ -338,7 +307,7 @@ export async function POST(request: NextRequest) {
               is_active: true,
               product_id: item.product_id,
               supplier_id: supplier_id,
-              clinic_id: clinic.id,
+              clinic_id: access.clinicId,
             },
             include: {
               product: {

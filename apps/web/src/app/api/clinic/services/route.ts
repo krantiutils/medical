@@ -1,38 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/services - Get all services for the user's clinic
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Get user's clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
+    const access = await requireClinicPermission("services");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
     // Get all services for the clinic
     const services = await prisma.service.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       orderBy: [{ category: "asc" }, { name: "asc" }],
     });
@@ -50,9 +34,12 @@ export async function GET() {
 // POST /api/clinic/services - Create a new service
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireClinicPermission("services");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const body = await request.json();
@@ -73,28 +60,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get user's clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Create the service
     const service = await prisma.service.create({
       data: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         name: name.trim(),
         description: description?.trim() || null,
         price: Number(price),

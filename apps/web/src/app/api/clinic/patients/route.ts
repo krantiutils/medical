@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 /**
  * Generate next patient number for a clinic
@@ -29,10 +28,12 @@ async function generatePatientNumber(clinicId: string): Promise<string> {
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireClinicPermission("patients");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const searchParams = request.nextUrl.searchParams;
@@ -42,25 +43,9 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get("sort") || "created_at";
     const order = searchParams.get("order") === "asc" ? "asc" : "desc";
 
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: { id: true },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Build where clause
     const where: Record<string, unknown> = {
-      clinic_id: clinic.id,
+      clinic_id: access.clinicId,
     };
 
     if (query.length >= 2) {
@@ -142,10 +127,12 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireClinicPermission("patients");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const body = await request.json();
@@ -169,22 +156,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: { id: true },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Validate and clean phone if provided
     let cleanPhone: string | null = null;
     if (phone) {
@@ -201,7 +172,7 @@ export async function POST(request: NextRequest) {
       // Check for duplicate phone in same clinic
       const existingPatient = await prisma.patient.findFirst({
         where: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           phone: cleanPhone,
         },
         select: { id: true, full_name: true, patient_number: true },
@@ -238,12 +209,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate patient number
-    const patientNumber = await generatePatientNumber(clinic.id);
+    const patientNumber = await generatePatientNumber(access.clinicId);
 
     // Create patient
     const patient = await prisma.patient.create({
       data: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         patient_number: patientNumber,
         full_name: full_name.trim(),
         phone: cleanPhone,

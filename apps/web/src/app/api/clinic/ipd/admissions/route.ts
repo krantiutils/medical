@@ -1,39 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import prisma from "@swasthya/database";
-import { AdmissionStatus, BedStatus } from "@swasthya/database";
+import { prisma, AdmissionStatus, BedStatus } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/ipd/admissions - Get all admissions (with filters)
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        claimed_clinics: {
-          where: { verified: true },
-          take: 1,
-        },
-      },
-    });
-
-    if (!user?.claimed_clinics[0]) {
+    const access = await requireClinicPermission("ipd");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
-    const clinicId = user.claimed_clinics[0].id;
     const status = request.nextUrl.searchParams.get("status");
     const patientId = request.nextUrl.searchParams.get("patient_id");
 
-    const whereClause: Record<string, unknown> = { clinic_id: clinicId };
+    const whereClause: Record<string, unknown> = { clinic_id: access.clinicId };
 
     if (status) {
       if (!Object.values(AdmissionStatus).includes(status as AdmissionStatus)) {
@@ -103,29 +86,14 @@ export async function GET(request: NextRequest) {
 // POST /api/clinic/ipd/admissions - Create a new admission
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        claimed_clinics: {
-          where: { verified: true },
-          take: 1,
-        },
-      },
-    });
-
-    if (!user?.claimed_clinics[0]) {
+    const access = await requireClinicPermission("ipd");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
-    const clinicId = user.claimed_clinics[0].id;
     const body = await request.json();
 
     const {
@@ -150,7 +118,7 @@ export async function POST(request: NextRequest) {
     const patient = await prisma.patient.findFirst({
       where: {
         id: patient_id,
-        clinic_id: clinicId,
+        clinic_id: access.clinicId,
       },
     });
 
@@ -166,7 +134,7 @@ export async function POST(request: NextRequest) {
       where: {
         id: bed_id,
         ward: {
-          clinic_id: clinicId,
+          clinic_id: access.clinicId,
         },
       },
     });
@@ -188,7 +156,7 @@ export async function POST(request: NextRequest) {
     // Verify admitting doctor is affiliated with clinic
     const admittingDoctor = await prisma.clinicDoctor.findFirst({
       where: {
-        clinic_id: clinicId,
+        clinic_id: access.clinicId,
         doctor_id: admitting_doctor_id,
       },
     });
@@ -204,7 +172,7 @@ export async function POST(request: NextRequest) {
     if (attending_doctor_id && attending_doctor_id !== admitting_doctor_id) {
       const attendingDoctor = await prisma.clinicDoctor.findFirst({
         where: {
-          clinic_id: clinicId,
+          clinic_id: access.clinicId,
           doctor_id: attending_doctor_id,
         },
       });
@@ -221,7 +189,7 @@ export async function POST(request: NextRequest) {
     const existingAdmission = await prisma.admission.findFirst({
       where: {
         patient_id,
-        clinic_id: clinicId,
+        clinic_id: access.clinicId,
         status: "ADMITTED",
       },
     });
@@ -240,7 +208,7 @@ export async function POST(request: NextRequest) {
 
     const lastAdmission = await prisma.admission.findFirst({
       where: {
-        clinic_id: clinicId,
+        clinic_id: access.clinicId,
         admission_number: {
           startsWith: `ADM-${year}${month}-`,
         },
@@ -260,7 +228,7 @@ export async function POST(request: NextRequest) {
       const admission = await tx.admission.create({
         data: {
           admission_number: admissionNumber,
-          clinic_id: clinicId,
+          clinic_id: access.clinicId,
           patient_id,
           bed_id,
           admitting_doctor_id,

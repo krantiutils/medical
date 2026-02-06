@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma, PaymentMode } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 interface SaleItem {
   product_id: string;
@@ -21,26 +20,11 @@ interface SaleItem {
 // GET /api/clinic/pharmacy/reports - Get pharmacy sales reports
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -57,7 +41,7 @@ export async function GET(request: NextRequest) {
     // Fetch all sales in the date range
     const sales = await prisma.sale.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         created_at: {
           gte: startDate,
           lte: endDate,
@@ -243,8 +227,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       clinic: {
-        id: clinic.id,
-        name: clinic.name,
+        id: access.clinic.id,
+        name: access.clinic.name,
       },
       dateRange: {
         from: startDate.toISOString(),

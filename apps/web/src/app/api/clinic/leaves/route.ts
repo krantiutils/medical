@@ -1,48 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma, AppointmentStatus } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET: Get leaves for a doctor in the clinic
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
-  }
-
   try {
+    const access = await requireClinicPermission("leaves");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const doctorId = searchParams.get("doctorId");
     const upcoming = searchParams.get("upcoming") === "true";
-
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
 
     const whereClause: {
       clinic_id: string;
       doctor_id?: string;
       leave_date?: { gte: Date };
     } = {
-      clinic_id: clinic.id,
+      clinic_id: access.clinicId,
     };
 
     if (doctorId) {
@@ -50,7 +30,7 @@ export async function GET(request: NextRequest) {
       const clinicDoctor = await prisma.clinicDoctor.findUnique({
         where: {
           clinic_id_doctor_id: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             doctor_id: doctorId,
           },
         },
@@ -102,16 +82,15 @@ export async function GET(request: NextRequest) {
 
 // POST: Create a new leave
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
-  }
-
   try {
+    const access = await requireClinicPermission("leaves");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
     const body = await request.json();
     const { doctorId, leaveDate, startTime, endTime, reason, checkAffected } = body;
 
@@ -159,29 +138,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Verify doctor is affiliated with this clinic
     const clinicDoctor = await prisma.clinicDoctor.findUnique({
       where: {
         clinic_id_doctor_id: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           doctor_id: doctorId,
         },
       },
@@ -201,7 +162,7 @@ export async function POST(request: NextRequest) {
     // Check for affected appointments
     const affectedAppointments = await prisma.appointment.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         doctor_id: doctorId,
         appointment_date: leaveDateObj,
         status: {
@@ -239,7 +200,7 @@ export async function POST(request: NextRequest) {
     const leave = await prisma.doctorLeave.create({
       data: {
         doctor_id: doctorId,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         leave_date: leaveDateObj,
         start_time: startTime || null,
         end_time: endTime || null,
@@ -273,16 +234,15 @@ export async function POST(request: NextRequest) {
 
 // DELETE: Delete a leave
 export async function DELETE(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
-  }
-
   try {
+    const access = await requireClinicPermission("leaves");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const leaveId = searchParams.get("id");
 
@@ -290,24 +250,6 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json(
         { error: "Leave ID is required" },
         { status: 400 }
-      );
-    }
-
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
       );
     }
 
@@ -325,7 +267,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    if (leave.clinic_id !== clinic.id) {
+    if (leave.clinic_id !== access.clinicId) {
       return NextResponse.json(
         { error: "Unauthorized to delete this leave" },
         { status: 403 }

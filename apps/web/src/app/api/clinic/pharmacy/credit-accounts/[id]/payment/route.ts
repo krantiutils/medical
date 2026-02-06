@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // POST /api/clinic/pharmacy/credit-accounts/[id]/payment - Record a payment
 export async function POST(
@@ -10,23 +9,11 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Find user's verified clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-    });
-
-    if (!clinic) {
+    const access = await requireClinicPermission("pharmacy");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -34,7 +21,7 @@ export async function POST(
     const account = await prisma.creditAccount.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
     });
 
@@ -87,7 +74,7 @@ export async function POST(
           description: `Payment received`,
           notes: notes?.trim() || null,
           credit_account_id: id,
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
         },
       });
 

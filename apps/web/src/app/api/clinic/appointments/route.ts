@@ -1,17 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, AppointmentStatus } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/appointments - Get appointments for a patient
 export async function GET(request: NextRequest) {
   try {
+    const access = await requireClinicPermission("appointments");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
-    const clinicId = searchParams.get("clinicId");
     const patientId = searchParams.get("patientId");
     const status = searchParams.get("status") as AppointmentStatus | null;
 
-    if (!clinicId || !patientId) {
+    if (!patientId) {
       return NextResponse.json(
-        { error: "clinicId and patientId are required" },
+        { error: "patientId is required" },
         { status: 400 }
       );
     }
@@ -21,7 +29,7 @@ export async function GET(request: NextRequest) {
       patient_id: string;
       status?: AppointmentStatus;
     } = {
-      clinic_id: clinicId,
+      clinic_id: access.clinicId,
       patient_id: patientId,
     };
 

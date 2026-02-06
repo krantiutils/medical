@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import prisma from "@swasthya/database";
+import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/ipd/admissions/[id] - Get a single admission by ID
 export async function GET(
@@ -9,35 +8,20 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        claimed_clinics: {
-          where: { verified: true },
-          take: 1,
-        },
-      },
-    });
-
-    if (!user?.claimed_clinics[0]) {
+    const access = await requireClinicPermission("ipd");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
-    const clinicId = user.claimed_clinics[0].id;
     const { id } = await params;
 
     const admission = await prisma.admission.findFirst({
       where: {
         id,
-        clinic_id: clinicId,
+        clinic_id: access.clinicId,
       },
       include: {
         patient: {
