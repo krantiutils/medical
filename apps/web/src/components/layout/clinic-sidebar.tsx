@@ -31,6 +31,7 @@ const mainLinks: SidebarLink[] = [
   { label: "Billing", labelNe: "बिलिङ", href: "/billing" },
   { label: "Reports", labelNe: "रिपोर्ट", href: "/reports" },
   { label: "Lab", labelNe: "ल्याब", href: "/lab" },
+  { label: "Lab Walk-in", labelNe: "ल्याब वाक-इन", href: "/lab/walk-in", permission: "lab" },
   { label: "Page Builder", labelNe: "पेज बिल्डर", href: "/page-builder" },
   { label: "Staff", labelNe: "कर्मचारी", href: "/staff", permission: "staff" },
 ];
@@ -68,9 +69,17 @@ interface ClinicSidebarProps {
 // Check if role has permission (simplified version for sidebar)
 function hasPermission(role: ClinicStaffRole | undefined, permission: string): boolean {
   if (!role) return false;
-  // OWNER and ADMIN have "staff" permission
+  // OWNER and ADMIN have all permissions
+  if (role === ClinicStaffRole.OWNER || role === ClinicStaffRole.ADMIN) {
+    return true;
+  }
+  // Staff permission is only for OWNER and ADMIN
   if (permission === "staff") {
-    return role === ClinicStaffRole.OWNER || role === ClinicStaffRole.ADMIN;
+    return false;
+  }
+  // Lab permission is for LAB role
+  if (permission === "lab") {
+    return role === ClinicStaffRole.LAB;
   }
   // For other permissions, assume granted (the page itself will check)
   return true;
