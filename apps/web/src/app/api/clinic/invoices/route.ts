@@ -103,9 +103,13 @@ export async function GET(request: NextRequest) {
 // POST /api/clinic/invoices - Create a new invoice
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // Check billing permission
+    const access = await requireClinicPermission("billing");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const body = await request.json();
@@ -145,30 +149,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Get user's clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Verify patient belongs to the clinic
     const patient = await prisma.patient.findFirst({
       where: {
         id: patient_id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
     });
 
@@ -184,7 +169,7 @@ export async function POST(request: NextRequest) {
       const appointment = await prisma.appointment.findFirst({
         where: {
           id: appointment_id,
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           patient_id: patient_id,
         },
       });
@@ -225,7 +210,7 @@ export async function POST(request: NextRequest) {
     const year = new Date().getFullYear();
     const invoiceCount = await prisma.invoice.count({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         created_at: {
           gte: new Date(`${year}-01-01`),
           lt: new Date(`${year + 1}-01-01`),
@@ -249,10 +234,10 @@ export async function POST(request: NextRequest) {
     // Create the invoice
     const invoice = await prisma.invoice.create({
       data: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         patient_id: patient_id,
         appointment_id: appointment_id || null,
-        created_by_id: session.user.id,
+        created_by_id: access.userId,
         invoice_number: invoiceNumber,
         items: typedItems.map((item: InvoiceItem) => ({
           service_id: item.service_id,
