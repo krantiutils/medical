@@ -6,21 +6,42 @@ import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+type AuthMethod = "phone" | "email";
+
 function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
+  const isNe = lang === "ne";
   const explicitCallback = searchParams.get("callbackUrl");
   const callbackUrl = explicitCallback || "/";
   const error = searchParams.get("error");
 
+  const [authMethod, setAuthMethod] = useState<AuthMethod>("phone");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
+  const t = {
+    signIn: isNe ? "साइन इन" : "Sign In",
+    welcome: isNe ? "स्वागत छ" : "Welcome Back",
+    accessAccount: isNe ? "आफ्नो खातामा पहुँच गर्नुहोस्" : "Access your healthcare account",
+    withPhone: isNe ? "फोनबाट" : "With Phone",
+    withEmail: isNe ? "इमेलबाट" : "With Email",
+    phone: isNe ? "फोन नम्बर" : "Phone Number",
+    email: isNe ? "इमेल" : "Email",
+    password: isNe ? "पासवर्ड" : "Password",
+    forgotPassword: isNe ? "पासवर्ड बिर्सनुभयो?" : "Forgot password?",
+    signingIn: isNe ? "साइन इन हुँदैछ..." : "Signing In...",
+    or: isNe ? "वा" : "or",
+    google: isNe ? "Google बाट" : "Continue with Google",
+    noAccount: isNe ? "खाता छैन?" : "Don't have an account?",
+    createAccount: isNe ? "खाता बनाउनुहोस्" : "Create Account",
+  };
+
   const getRoleRedirect = async (): Promise<string> => {
-    // If user provided an explicit callback, honour it
     if (explicitCallback) return explicitCallback;
 
     try {
@@ -31,13 +52,12 @@ function LoginPageContent() {
 
       if (role === "ADMIN") return `/${lang}/admin/claims`;
 
-      // Check if user owns a clinic
       if (role === "USER" || role === "PROFESSIONAL") {
         try {
           const clinicRes = await fetch("/api/clinic/dashboard");
           if (clinicRes.ok) return `/${lang}/clinic/dashboard`;
         } catch {
-          // No clinic — fall through
+          // No clinic
         }
       }
 
@@ -47,18 +67,21 @@ function LoginPageContent() {
     }
   };
 
-  const handleCredentialsLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setFormError(null);
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-        callbackUrl,
-      });
+      const result = await signIn(
+        authMethod === "phone" ? "phone-credentials" : "credentials",
+        {
+          [authMethod === "phone" ? "phone" : "email"]: authMethod === "phone" ? phone : email,
+          password,
+          redirect: false,
+          callbackUrl,
+        }
+      );
 
       if (result?.error) {
         setFormError(result.error);
@@ -83,7 +106,9 @@ function LoginPageContent() {
     if (!errorCode) return null;
     switch (errorCode) {
       case "CredentialsSignin":
-        return "Invalid email or password";
+        return authMethod === "phone"
+          ? "Invalid phone number or password"
+          : "Invalid email or password";
       case "OAuthAccountNotLinked":
         return "This email is already associated with another account";
       case "EmailSignin":
@@ -103,14 +128,12 @@ function LoginPageContent() {
           {/* Header */}
           <div className="mb-10">
             <span className="inline-block px-4 py-2 mb-6 text-xs font-bold uppercase tracking-widest bg-primary-yellow border-2 border-foreground">
-              Welcome Back
+              {t.welcome}
             </span>
             <h1 className="text-4xl lg:text-5xl font-black uppercase leading-tight tracking-tight mb-4">
-              Sign In
+              {t.signIn}
             </h1>
-            <p className="text-foreground/70">
-              Access your healthcare professional account
-            </p>
+            <p className="text-foreground/70">{t.accessAccount}</p>
           </div>
 
           {/* Error Message */}
@@ -120,33 +143,87 @@ function LoginPageContent() {
             </div>
           )}
 
+          {/* Auth Method Tabs */}
+          <div className="flex gap-2 mb-6">
+            <button
+              type="button"
+              onClick={() => setAuthMethod("phone")}
+              className={`flex-1 py-2 px-4 text-sm font-bold uppercase tracking-wider border-2 transition-colors ${
+                authMethod === "phone"
+                  ? "bg-foreground text-white border-foreground"
+                  : "border-foreground/30 text-foreground/60 hover:border-foreground"
+              }`}
+            >
+              {t.withPhone}
+            </button>
+            <button
+              type="button"
+              onClick={() => setAuthMethod("email")}
+              className={`flex-1 py-2 px-4 text-sm font-bold uppercase tracking-wider border-2 transition-colors ${
+                authMethod === "email"
+                  ? "bg-foreground text-white border-foreground"
+                  : "border-foreground/30 text-foreground/60 hover:border-foreground"
+              }`}
+            >
+              {t.withEmail}
+            </button>
+          </div>
+
           {/* Login Form */}
-          <form onSubmit={handleCredentialsLogin} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-xs font-bold uppercase tracking-widest mb-2"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40 transition-colors"
-              />
-            </div>
+          <form onSubmit={handleLogin} className="space-y-6">
+            {authMethod === "phone" ? (
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block text-xs font-bold uppercase tracking-widest mb-2"
+                >
+                  {t.phone}
+                </label>
+                <input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  placeholder="98XXXXXXXX"
+                  className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40 transition-colors text-lg tracking-wider"
+                />
+              </div>
+            ) : (
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-xs font-bold uppercase tracking-widest mb-2"
+                >
+                  {t.email}
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="you@example.com"
+                  className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40 transition-colors"
+                />
+              </div>
+            )}
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-xs font-bold uppercase tracking-widest mb-2"
-              >
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-xs font-bold uppercase tracking-widest"
+                >
+                  {t.password}
+                </label>
+                <Link
+                  href={`/${lang}/forgot-password`}
+                  className="text-xs font-bold text-primary-blue hover:underline"
+                >
+                  {t.forgotPassword}
+                </Link>
+              </div>
               <input
                 id="password"
                 type="password"
@@ -165,7 +242,7 @@ function LoginPageContent() {
               className="w-full py-4"
               disabled={isLoading}
             >
-              {isLoading ? "Signing In..." : "Sign In"}
+              {isLoading ? t.signingIn : t.signIn}
             </Button>
           </form>
 
@@ -176,7 +253,7 @@ function LoginPageContent() {
             </div>
             <div className="relative flex justify-center text-xs uppercase tracking-widest">
               <span className="bg-background px-4 text-foreground/60 font-bold">
-                Or continue with
+                {t.or}
               </span>
             </div>
           </div>
@@ -207,17 +284,17 @@ function LoginPageContent() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Continue with Google
+            {t.google}
           </Button>
 
           {/* Register Link */}
           <p className="mt-8 text-center text-foreground/70">
-            Don&apos;t have an account?{" "}
+            {t.noAccount}{" "}
             <Link
               href={`/${lang}/register`}
               className="font-bold text-primary-blue hover:underline"
             >
-              Create Account
+              {t.createAccount}
             </Link>
           </p>
         </div>
@@ -225,40 +302,24 @@ function LoginPageContent() {
 
       {/* Right Panel - Decorative */}
       <div className="hidden lg:flex lg:w-[40%] bg-primary-blue relative">
-        {/* Geometric shapes */}
         <div className="absolute inset-0 overflow-hidden">
-          {/* Large circle */}
           <div className="absolute top-1/4 -right-20 w-64 h-64 rounded-full border-8 border-white/20" />
-
-          {/* Small filled circle */}
           <div className="absolute bottom-1/3 left-1/4 w-12 h-12 rounded-full bg-primary-yellow" />
-
-          {/* Square */}
           <div className="absolute top-1/2 left-12 w-20 h-20 bg-primary-red rotate-12" />
-
-          {/* Triangle */}
           <div
             className="absolute bottom-20 right-20 w-24 h-24 bg-white/20"
             style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
           />
-
-          {/* Additional elements */}
-          <div className="absolute top-16 left-16 w-6 h-6 bg-white" />
-          <div className="absolute top-20 left-24 w-3 h-3 bg-primary-yellow" />
-
-          {/* Large outlined square */}
           <div className="absolute bottom-1/4 right-1/3 w-32 h-32 border-8 border-white/30 rotate-45" />
         </div>
-
-        {/* Center content */}
         <div className="relative z-10 flex flex-col items-center justify-center w-full p-12">
           <div className="text-white text-center">
-            <div className="text-5xl font-black mb-4">स्वास्थ्य</div>
+            <div className="text-5xl font-black mb-4">डक्टरसेवा</div>
             <div className="text-lg font-medium uppercase tracking-widest opacity-80">
-              Swasthya
+              DoctorSewa
             </div>
             <p className="mt-6 text-white/70 max-w-xs">
-              Join Nepal&apos;s largest healthcare professional directory
+              Nepal&apos;s largest healthcare professional directory
             </p>
           </div>
         </div>

@@ -9,7 +9,7 @@ interface StaffMember {
   id: string;
   userId: string;
   name: string | null;
-  email: string;
+  email: string | null;
   image: string | null;
   role: ClinicStaffRole;
   roleLabel: string;
@@ -378,12 +378,12 @@ export function StaffManagement({
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              (member.name || member.email).charAt(0).toUpperCase()
+                              (member.name || member.email || "?").charAt(0).toUpperCase()
                             )}
                           </div>
                           <div>
                             <div className="font-bold text-foreground">
-                              {member.name || member.email.split("@")[0]}
+                              {member.name || (member.email ? member.email.split("@")[0] : "—")}
                               {member.userId === currentUserId && (
                                 <span className="ml-2 text-xs font-normal text-primary-blue">
                                   {t.you}
@@ -485,7 +485,7 @@ export function StaffManagement({
                               onClick={() =>
                                 handleRemove(
                                   member.id,
-                                  member.name || member.email
+                                  member.name || member.email || "this member"
                                 )
                               }
                               className="text-primary-red hover:bg-primary-red/10"

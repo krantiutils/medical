@@ -83,9 +83,10 @@ enum PaymentStatus {
 
 model User {
   id            String    @id @default(uuid())
-  email         String    @unique
+  email         String?   @unique
   emailVerified DateTime?
-  phone         String?
+  phone         String?   @unique
+  phoneVerified DateTime?
   password_hash String?
   name          String?
   image         String?
@@ -113,6 +114,27 @@ model User {
 
   // Clinic staff memberships (RBAC)
   clinic_memberships ClinicStaff[]
+}
+
+// OTP for phone verification (registration, password reset)
+enum OtpPurpose {
+  REGISTER       // New account registration
+  LOGIN          // OTP-based login (if enabled)
+  FORGOT_PASSWORD // Password reset
+  VERIFY_PHONE   // Verify phone for existing account
+}
+
+model Otp {
+  id         String     @id @default(cuid())
+  phone      String
+  code       String     // 6-digit OTP code (hashed)
+  purpose    OtpPurpose
+  attempts   Int        @default(0) // Failed verification attempts
+  verified   Boolean    @default(false)
+  expires_at DateTime
+  created_at DateTime   @default(now())
+
+  @@index([phone, purpose])
 }
 
 model Account {

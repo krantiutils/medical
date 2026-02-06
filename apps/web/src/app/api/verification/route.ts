@@ -141,8 +141,8 @@ export async function POST(request: NextRequest) {
       select: { email: true, name: true },
     });
 
-    // Send confirmation email (non-blocking)
-    if (user) {
+    // Send confirmation email (non-blocking) - only if user has email
+    if (user && user.email) {
       sendVerificationSubmittedEmail(
         { email: user.email, name: user.name || undefined },
         professional.full_name,

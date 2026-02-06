@@ -5,6 +5,15 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma, UserRole } from "@swasthya/database";
 
+// Normalize phone number for lookup
+function normalizePhoneForLookup(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("977") && digits.length === 13) {
+    return digits.slice(3);
+  }
+  return digits;
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
@@ -21,6 +30,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
       allowDangerousEmailAccountLinking: true,
     }),
+    // Email + Password login
     CredentialsProvider({
       id: "credentials",
       name: "Email and Password",
@@ -56,7 +66,54 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: user.id,
-          email: user.email,
+          email: user.email ?? "", // NextAuth requires email to be string
+          name: user.name,
+          image: user.image,
+        };
+      },
+    }),
+    // Phone + Password login
+    CredentialsProvider({
+      id: "phone-credentials",
+      name: "Phone and Password",
+      credentials: {
+        phone: { label: "Phone", type: "tel" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.phone || !credentials?.password) {
+          throw new Error("Phone number and password are required");
+        }
+
+        const normalizedPhone = normalizePhoneForLookup(credentials.phone);
+        if (!normalizedPhone || normalizedPhone.length !== 10) {
+          throw new Error("Invalid phone number format");
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { phone: normalizedPhone },
+        });
+
+        if (!user) {
+          throw new Error("No account found with this phone number");
+        }
+
+        if (!user.password_hash) {
+          throw new Error("No password set for this account");
+        }
+
+        const isPasswordValid = await compare(
+          credentials.password,
+          user.password_hash
+        );
+
+        if (!isPasswordValid) {
+          throw new Error("Invalid password");
+        }
+
+        return {
+          id: user.id,
+          email: user.email ?? user.phone ?? "", // Use phone as fallback identifier
           name: user.name,
           image: user.image,
         };

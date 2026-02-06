@@ -118,14 +118,16 @@ export async function POST(
         }),
       ]);
 
-      // Send approval email (non-blocking)
-      sendVerificationApprovedEmail(
-        { email: verificationRequest.user.email, name: verificationRequest.user.name || undefined },
-        verificationRequest.professional.slug,
-        "en"
-      ).catch((err) => {
-        console.error("[Admin] Failed to send approval email:", err);
-      });
+      // Send approval email (non-blocking) - only if user has email
+      if (verificationRequest.user.email) {
+        sendVerificationApprovedEmail(
+          { email: verificationRequest.user.email, name: verificationRequest.user.name || undefined },
+          verificationRequest.professional.slug,
+          "en"
+        ).catch((err) => {
+          console.error("[Admin] Failed to send approval email:", err);
+        });
+      }
 
       // Log audit event (non-blocking)
       logClaimApproved(
@@ -154,14 +156,16 @@ export async function POST(
         },
       });
 
-      // Send rejection email (non-blocking)
-      sendVerificationRejectedEmail(
-        { email: verificationRequest.user.email, name: verificationRequest.user.name || undefined },
-        reason.trim(),
-        "en"
-      ).catch((err) => {
-        console.error("[Admin] Failed to send rejection email:", err);
-      });
+      // Send rejection email (non-blocking) - only if user has email
+      if (verificationRequest.user.email) {
+        sendVerificationRejectedEmail(
+          { email: verificationRequest.user.email, name: verificationRequest.user.name || undefined },
+          reason.trim(),
+          "en"
+        ).catch((err) => {
+          console.error("[Admin] Failed to send rejection email:", err);
+        });
+      }
 
       // Log audit event (non-blocking)
       logClaimRejected(
