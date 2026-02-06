@@ -13,7 +13,7 @@ function getResend(): Resend | null {
   return resendInstance;
 }
 
-const FROM_EMAIL = process.env.EMAIL_FROM || "Swasthya <noreply@swasthya.np>";
+const FROM_EMAIL = process.env.EMAIL_FROM || "DoctorSewa <noreply@doctorsewa.org>";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 type Locale = "en" | "ne";
@@ -41,7 +41,7 @@ function baseTemplate(content: string, lang: Locale): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swasthya</title>
+  <title>DoctorSewa</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
     body {
@@ -67,7 +67,7 @@ function baseTemplate(content: string, lang: Locale): string {
                       <div style="width: 12px; height: 12px; background-color: ${colors.primaryRed}; border-radius: 50%; display: inline-block;"></div>
                       <div style="width: 12px; height: 12px; background-color: ${colors.primaryBlue}; margin-left: 4px; display: inline-block;"></div>
                       <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 12px solid ${colors.primaryYellow}; margin-left: 4px; display: inline-block;"></div>
-                      <span style="font-size: 24px; font-weight: 900; color: ${colors.foreground}; margin-left: 12px; letter-spacing: -1px;">SWASTHYA</span>
+                      <span style="font-size: 24px; font-weight: 900; color: ${colors.foreground}; margin-left: 12px; letter-spacing: -1px;">DOCTORSEWA</span>
                     </div>
                   </td>
                 </tr>
@@ -90,7 +90,7 @@ function baseTemplate(content: string, lang: Locale): string {
           <tr>
             <td style="padding-top: 30px; text-align: center;">
               <p style="color: ${colors.foreground}; opacity: 0.6; font-size: 12px; margin: 0;">
-                ${lang === "ne" ? "यो इमेल Swasthya बाट पठाइएको हो।" : "This email was sent by Swasthya."}
+                ${lang === "ne" ? "यो इमेल DoctorSewa बाट पठाइएको हो।" : "This email was sent by DoctorSewa."}
               </p>
               <p style="color: ${colors.foreground}; opacity: 0.4; font-size: 11px; margin: 8px 0 0;">
                 ${SITE_URL}
@@ -150,7 +150,7 @@ const translations = {
       heading: "Registration Submitted",
       greeting: (clinicName: string) => `Hello,`,
       body1: (clinicName: string) =>
-        `Thank you for registering "${clinicName}" on Swasthya.`,
+        `Thank you for registering "${clinicName}" on DoctorSewa.`,
       body2:
         "Your registration is now pending verification by our team. We will review your submission and get back to you within 2-3 business days.",
       whatNext: "What happens next?",
@@ -171,7 +171,7 @@ const translations = {
       subject: "Your Verification Request Has Been Submitted",
       heading: "Request Submitted",
       greeting: (name: string) => `Hello ${name},`,
-      body1: "Thank you for submitting your profile verification request on Swasthya.",
+      body1: "Thank you for submitting your profile verification request on DoctorSewa.",
       body2: "Our team will review your documents and get back to you within 2-3 business days.",
       body3: "You will receive an email notification once your request has been reviewed.",
       whatNext: "What happens next?",
@@ -186,7 +186,7 @@ const translations = {
       heading: "Verification Approved",
       greeting: (name: string) => `Congratulations ${name}!`,
       body1: "Your profile verification request has been approved.",
-      body2: "You now have a verified professional profile on Swasthya. Patients can find you with confidence.",
+      body2: "You now have a verified professional profile on DoctorSewa. Patients can find you with confidence.",
       whatYouCanDo: "What you can do now:",
       action1: "Edit your professional profile",
       action2: "Add consultation fees and languages",
@@ -215,7 +215,7 @@ const translations = {
       heading: "दर्ता पेश गरियो",
       greeting: (clinicName: string) => `नमस्कार,`,
       body1: (clinicName: string) =>
-        `Swasthya मा "${clinicName}" दर्ता गर्नुभएकोमा धन्यवाद।`,
+        `DoctorSewa मा "${clinicName}" दर्ता गर्नुभएकोमा धन्यवाद।`,
       body2:
         "तपाईंको दर्ता अब हाम्रो टोलीको प्रमाणीकरणको लागि पर्खिरहेको छ। हामी तपाईंको पेशी समीक्षा गर्नेछौं र 2-3 कार्य दिन भित्र जवाफ दिनेछौं।",
       whatNext: "अब के हुन्छ?",
@@ -236,7 +236,7 @@ const translations = {
       subject: "तपाईंको प्रमाणीकरण अनुरोध पेश गरिएको छ",
       heading: "अनुरोध पेश गरियो",
       greeting: (name: string) => `नमस्कार ${name},`,
-      body1: "Swasthya मा तपाईंको प्रोफाइल प्रमाणीकरण अनुरोध पेश गर्नुभएकोमा धन्यवाद।",
+      body1: "DoctorSewa मा तपाईंको प्रोफाइल प्रमाणीकरण अनुरोध पेश गर्नुभएकोमा धन्यवाद।",
       body2: "हाम्रो टोलीले तपाईंका कागजातहरू समीक्षा गर्नेछ र 2-3 कार्य दिन भित्र जवाफ दिनेछ।",
       body3: "तपाईंको अनुरोध समीक्षा भएपछि तपाईंलाई इमेल सूचना प्राप्त हुनेछ।",
       whatNext: "अब के हुन्छ?",
@@ -251,7 +251,7 @@ const translations = {
       heading: "प्रमाणीकरण स्वीकृत",
       greeting: (name: string) => `बधाई छ ${name}!`,
       body1: "तपाईंको प्रोफाइल प्रमाणीकरण अनुरोध स्वीकृत भएको छ।",
-      body2: "अब तपाईंसँग Swasthya मा प्रमाणित पेशेवर प्रोफाइल छ। बिरामीहरूले विश्वासका साथ तपाईंलाई भेट्टाउन सक्छन्।",
+      body2: "अब तपाईंसँग DoctorSewa मा प्रमाणित पेशेवर प्रोफाइल छ। बिरामीहरूले विश्वासका साथ तपाईंलाई भेट्टाउन सक्छन्।",
       whatYouCanDo: "तपाईं अब के गर्न सक्नुहुन्छ:",
       action1: "आफ्नो पेशेवर प्रोफाइल सम्पादन गर्नुहोस्",
       action2: "परामर्श शुल्क र भाषाहरू थप्नुहोस्",
@@ -745,7 +745,7 @@ export function clinicVerificationApprovedEmail(
       heading: "Clinic Approved",
       greeting: `Hello,`,
       body1: (clinicName: string) =>
-        `Great news! Your clinic "${clinicName}" has been verified on Swasthya.`,
+        `Great news! Your clinic "${clinicName}" has been verified on DoctorSewa.`,
       body2:
         "Your clinic is now visible to patients. They can find your clinic, view your services, and book appointments.",
       whatYouCanDo: "What you can do now:",
@@ -761,7 +761,7 @@ export function clinicVerificationApprovedEmail(
       heading: "क्लिनिक स्वीकृत",
       greeting: `नमस्कार,`,
       body1: (clinicName: string) =>
-        `खुशीको खबर! तपाईंको क्लिनिक "${clinicName}" Swasthya मा प्रमाणित भएको छ।`,
+        `खुशीको खबर! तपाईंको क्लिनिक "${clinicName}" DoctorSewa मा प्रमाणित भएको छ।`,
       body2:
         "तपाईंको क्लिनिक अब बिरामीहरूलाई देखिन्छ। तिनीहरूले तपाईंको क्लिनिक भेट्टाउन, तपाईंका सेवाहरू हेर्न र अपोइन्टमेन्ट बुक गर्न सक्छन्।",
       whatYouCanDo: "तपाईं अब के गर्न सक्नुहुन्छ:",
@@ -1036,4 +1036,305 @@ export async function sendClinicVerificationRejectedEmail(
 ): Promise<{ success: boolean; error?: string }> {
   const { subject, html } = clinicVerificationRejectedEmail(clinicEmail, clinicData, rejectionReason, lang);
   return sendEmail(clinicEmail, subject, html);
+}
+
+// ============================================================================
+// STAFF INVITATION EMAILS
+// ============================================================================
+
+// Role labels for staff invitation
+const staffRoleLabels = {
+  en: {
+    OWNER: "Owner",
+    ADMIN: "Administrator",
+    DOCTOR: "Doctor",
+    RECEPTIONIST: "Receptionist",
+    BILLING: "Billing Staff",
+    LAB: "Lab Technician",
+    PHARMACY: "Pharmacy Staff",
+    NURSE: "Nurse",
+  },
+  ne: {
+    OWNER: "मालिक",
+    ADMIN: "प्रशासक",
+    DOCTOR: "डाक्टर",
+    RECEPTIONIST: "रिसेप्सनिस्ट",
+    BILLING: "बिलिङ कर्मचारी",
+    LAB: "ल्याब प्राविधिक",
+    PHARMACY: "फार्मेसी कर्मचारी",
+    NURSE: "नर्स",
+  },
+};
+
+// Email template: Staff Invitation (for existing users)
+export function staffInvitationEmail(
+  recipientEmail: string,
+  data: {
+    clinicName: string;
+    clinicSlug: string;
+    inviterName: string;
+    role: string;
+  },
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const t = {
+    en: {
+      subject: `You've been added to ${data.clinicName} on DoctorSewa`,
+      heading: "Welcome to the Team!",
+      greeting: "Hello,",
+      body1: (inviterName: string, clinicName: string) =>
+        `${inviterName} has added you to "${clinicName}" on DoctorSewa.`,
+      body2: (role: string) =>
+        `You have been assigned the role of <strong>${role}</strong>.`,
+      body3: "You can now access the clinic dashboard and start managing operations based on your role.",
+      whatYouCanDo: "What you can do now:",
+      action1: "Access the clinic dashboard",
+      action2: "View and manage patients (based on your role)",
+      action3: "Collaborate with other staff members",
+      goToDashboard: "Go to Dashboard",
+      footer: "If you believe this was sent in error, please contact the clinic administrator.",
+    },
+    ne: {
+      subject: `तपाईंलाई DoctorSewa मा ${data.clinicName} मा थपिएको छ`,
+      heading: "टोलीमा स्वागत छ!",
+      greeting: "नमस्कार,",
+      body1: (inviterName: string, clinicName: string) =>
+        `${inviterName} ले तपाईंलाई DoctorSewa मा "${clinicName}" मा थप्नुभएको छ।`,
+      body2: (role: string) =>
+        `तपाईंलाई <strong>${role}</strong> को भूमिका दिइएको छ।`,
+      body3: "तपाईं अब क्लिनिक ड्यासबोर्डमा पहुँच गर्न सक्नुहुन्छ र आफ्नो भूमिका अनुसार सञ्चालन व्यवस्थापन गर्न सुरु गर्न सक्नुहुन्छ।",
+      whatYouCanDo: "तपाईं अब के गर्न सक्नुहुन्छ:",
+      action1: "क्लिनिक ड्यासबोर्डमा पहुँच गर्नुहोस्",
+      action2: "बिरामीहरू हेर्नुहोस् र व्यवस्थापन गर्नुहोस् (तपाईंको भूमिका अनुसार)",
+      action3: "अन्य कर्मचारीहरूसँग सहकार्य गर्नुहोस्",
+      goToDashboard: "ड्यासबोर्डमा जानुहोस्",
+      footer: "यदि तपाईंलाई यो गल्तीमा पठाइएको लाग्छ भने, कृपया क्लिनिक प्रशासकलाई सम्पर्क गर्नुहोस्।",
+    },
+  };
+
+  const tr = t[lang];
+  const roleLabel = staffRoleLabels[lang][data.role as keyof typeof staffRoleLabels.en] || data.role;
+  const dashboardUrl = `${SITE_URL}/${lang}/clinic/dashboard`;
+
+  const content = `
+    <!-- Color accent bar -->
+    <div style="height: 8px; background-color: ${colors.primaryBlue}; margin: -40px -40px 30px -40px;"></div>
+
+    <h1 style="font-size: 28px; font-weight: 900; color: ${colors.foreground}; margin: 0 0 20px; text-transform: uppercase;">
+      ${tr.heading}
+    </h1>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.greeting}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.body1(data.inviterName, data.clinicName)}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.body2(roleLabel)}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 30px;">
+      ${tr.body3}
+    </p>
+
+    <!-- What you can do section -->
+    <div style="background-color: ${colors.background}; border: 2px solid ${colors.foreground}; padding: 24px; margin-bottom: 30px;">
+      <h3 style="font-size: 14px; font-weight: 700; color: ${colors.primaryBlue}; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 16px;">
+        ${tr.whatYouCanDo}
+      </h3>
+      <table cellpadding="0" cellspacing="0" style="width: 100%;">
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 8px; height: 8px; background-color: ${colors.primaryRed}; border-radius: 50%;"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.action1}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 8px; height: 8px; background-color: ${colors.primaryBlue};"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.action2}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; vertical-align: top; width: 24px;">
+            <div style="width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 8px solid ${colors.primaryYellow};"></div>
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground};">${tr.action3}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 30px;">
+      ${emailButton(tr.goToDashboard, dashboardUrl, "primary")}
+    </div>
+
+    <p style="font-size: 13px; color: ${colors.foreground}; opacity: 0.6; margin: 0; border-top: 2px solid ${colors.foreground}20; padding-top: 20px;">
+      ${tr.footer}
+    </p>
+  `;
+
+  return {
+    subject: tr.subject,
+    html: baseTemplate(content, lang),
+  };
+}
+
+// Email template: Staff Welcome (for new users created during invitation)
+export function staffWelcomeEmail(
+  recipientEmail: string,
+  data: {
+    clinicName: string;
+    clinicSlug: string;
+    inviterName: string;
+    role: string;
+    tempPassword: string;
+  },
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const t = {
+    en: {
+      subject: `Welcome to DoctorSewa - You've been added to ${data.clinicName}`,
+      heading: "Welcome to DoctorSewa!",
+      greeting: "Hello,",
+      body1: (inviterName: string, clinicName: string) =>
+        `${inviterName} has invited you to join "${clinicName}" on DoctorSewa.`,
+      body2: (role: string) =>
+        `You have been assigned the role of <strong>${role}</strong>.`,
+      body3: "An account has been created for you. Please use the credentials below to log in:",
+      credentials: "Your Login Credentials",
+      emailLabel: "Email",
+      passwordLabel: "Temporary Password",
+      important: "Important:",
+      importantNote: "Please change your password after your first login for security.",
+      login: "Login Now",
+      footer: "If you did not expect this invitation, you can safely ignore this email.",
+    },
+    ne: {
+      subject: `DoctorSewa मा स्वागत छ - तपाईंलाई ${data.clinicName} मा थपिएको छ`,
+      heading: "DoctorSewa मा स्वागत छ!",
+      greeting: "नमस्कार,",
+      body1: (inviterName: string, clinicName: string) =>
+        `${inviterName} ले तपाईंलाई DoctorSewa मा "${clinicName}" मा सामेल हुन आमन्त्रित गर्नुभएको छ।`,
+      body2: (role: string) =>
+        `तपाईंलाई <strong>${role}</strong> को भूमिका दिइएको छ।`,
+      body3: "तपाईंको लागि एउटा खाता सिर्जना गरिएको छ। कृपया लग इन गर्न तलको प्रमाणपत्रहरू प्रयोग गर्नुहोस्:",
+      credentials: "तपाईंको लगइन प्रमाणपत्रहरू",
+      emailLabel: "इमेल",
+      passwordLabel: "अस्थायी पासवर्ड",
+      important: "महत्त्वपूर्ण:",
+      importantNote: "कृपया सुरक्षाको लागि पहिलो लगइन पछि आफ्नो पासवर्ड परिवर्तन गर्नुहोस्।",
+      login: "अहिले लगइन गर्नुहोस्",
+      footer: "यदि तपाईंले यो आमन्त्रणको अपेक्षा गर्नुभएको छैन भने, तपाईं यो इमेललाई सुरक्षित रूपमा बेवास्ता गर्न सक्नुहुन्छ।",
+    },
+  };
+
+  const tr = t[lang];
+  const roleLabel = staffRoleLabels[lang][data.role as keyof typeof staffRoleLabels.en] || data.role;
+  const loginUrl = `${SITE_URL}/${lang}/login?callbackUrl=/${lang}/clinic/dashboard`;
+
+  const content = `
+    <!-- Color accent bar - green for welcome -->
+    <div style="height: 8px; background-color: #22C55E; margin: -40px -40px 30px -40px;"></div>
+
+    <h1 style="font-size: 28px; font-weight: 900; color: ${colors.foreground}; margin: 0 0 20px; text-transform: uppercase;">
+      ${tr.heading}
+    </h1>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.greeting}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.body1(data.inviterName, data.clinicName)}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.body2(roleLabel)}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 24px;">
+      ${tr.body3}
+    </p>
+
+    <!-- Credentials box -->
+    <div style="background-color: ${colors.background}; border: 2px solid ${colors.foreground}; padding: 24px; margin-bottom: 24px;">
+      <h3 style="font-size: 14px; font-weight: 700; color: ${colors.primaryBlue}; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 16px;">
+        ${tr.credentials}
+      </h3>
+      <table cellpadding="0" cellspacing="0" style="width: 100%;">
+        <tr>
+          <td style="padding: 8px 0; font-size: 12px; font-weight: 700; color: ${colors.foreground}80; text-transform: uppercase; width: 100px;">
+            ${tr.emailLabel}:
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground}; font-weight: 700;">
+            ${recipientEmail}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; font-size: 12px; font-weight: 700; color: ${colors.foreground}80; text-transform: uppercase; width: 100px;">
+            ${tr.passwordLabel}:
+          </td>
+          <td style="padding: 8px 0; font-size: 14px; color: ${colors.foreground}; font-family: monospace; background-color: ${colors.primaryYellow}20; padding-left: 8px; border: 1px solid ${colors.primaryYellow};">
+            ${data.tempPassword}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Important note -->
+    <div style="background-color: ${colors.primaryRed}10; border-left: 4px solid ${colors.primaryRed}; padding: 16px; margin-bottom: 30px;">
+      <p style="font-size: 12px; font-weight: 700; color: ${colors.primaryRed}; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 4px;">
+        ${tr.important}
+      </p>
+      <p style="font-size: 14px; color: ${colors.foreground}; margin: 0;">
+        ${tr.importantNote}
+      </p>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 30px;">
+      ${emailButton(tr.login, loginUrl, "primary")}
+    </div>
+
+    <p style="font-size: 13px; color: ${colors.foreground}; opacity: 0.6; margin: 0; border-top: 2px solid ${colors.foreground}20; padding-top: 20px;">
+      ${tr.footer}
+    </p>
+  `;
+
+  return {
+    subject: tr.subject,
+    html: baseTemplate(content, lang),
+  };
+}
+
+// Convenience functions for staff emails
+export async function sendStaffInvitationEmail(
+  recipientEmail: string,
+  data: {
+    clinicName: string;
+    clinicSlug: string;
+    inviterName: string;
+    role: string;
+  },
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = staffInvitationEmail(recipientEmail, data, lang);
+  return sendEmail(recipientEmail, subject, html);
+}
+
+export async function sendStaffWelcomeEmail(
+  recipientEmail: string,
+  data: {
+    clinicName: string;
+    clinicSlug: string;
+    inviterName: string;
+    role: string;
+    tempPassword: string;
+  },
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = staffWelcomeEmail(recipientEmail, data, lang);
+  return sendEmail(recipientEmail, subject, html);
 }

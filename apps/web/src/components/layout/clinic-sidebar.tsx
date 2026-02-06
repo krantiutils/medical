@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
+import { ClinicStaffRole } from "@swasthya/database";
 
 interface SidebarLink {
   label: string;
   labelNe: string;
   href: string;
+  /** Permission required to see this link (uses clinic-permissions.ts hasPermission) */
+  permission?: string;
 }
 
 interface SidebarGroup {
@@ -19,6 +22,7 @@ interface SidebarGroup {
 const mainLinks: SidebarLink[] = [
   { label: "Overview", labelNe: "अवलोकन", href: "" },
   { label: "Doctors", labelNe: "डाक्टरहरू", href: "/doctors" },
+  { label: "Check-in", labelNe: "चेक-इन", href: "/check-in" },
   { label: "Schedules", labelNe: "तालिका", href: "/schedules" },
   { label: "Services", labelNe: "सेवाहरू", href: "/services" },
   { label: "Reception", labelNe: "रिसेप्सन", href: "/reception" },
@@ -27,6 +31,8 @@ const mainLinks: SidebarLink[] = [
   { label: "Billing", labelNe: "बिलिङ", href: "/billing" },
   { label: "Reports", labelNe: "रिपोर्ट", href: "/reports" },
   { label: "Lab", labelNe: "ल्याब", href: "/lab" },
+  { label: "Page Builder", labelNe: "पेज बिल्डर", href: "/page-builder" },
+  { label: "Staff", labelNe: "कर्मचारी", href: "/staff", permission: "staff" },
 ];
 
 const groups: SidebarGroup[] = [
@@ -55,7 +61,22 @@ const groups: SidebarGroup[] = [
   },
 ];
 
-export function ClinicSidebar() {
+interface ClinicSidebarProps {
+  userRole?: ClinicStaffRole;
+}
+
+// Check if role has permission (simplified version for sidebar)
+function hasPermission(role: ClinicStaffRole | undefined, permission: string): boolean {
+  if (!role) return false;
+  // OWNER and ADMIN have "staff" permission
+  if (permission === "staff") {
+    return role === ClinicStaffRole.OWNER || role === ClinicStaffRole.ADMIN;
+  }
+  // For other permissions, assume granted (the page itself will check)
+  return true;
+}
+
+export function ClinicSidebar({ userRole }: ClinicSidebarProps) {
   const pathname = usePathname();
   const { lang } = useParams<{ lang: string }>();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -63,9 +84,34 @@ export function ClinicSidebar() {
     Pharmacy: false,
     IPD: false,
   });
+  const [role, setRole] = useState<ClinicStaffRole | undefined>(userRole);
+
+  // Fetch user's role if not provided
+  useEffect(() => {
+    if (userRole) {
+      setRole(userRole);
+      return;
+    }
+    // Fetch role from API if not provided as prop
+    fetch("/api/clinic/staff")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.currentUserRole) {
+          setRole(data.currentUserRole as ClinicStaffRole);
+        }
+      })
+      .catch(() => {
+        // Ignore errors - links will just not be filtered
+      });
+  }, [userRole]);
 
   const basePath = `/${lang}/clinic/dashboard`;
   const isNe = lang === "ne";
+
+  // Filter links based on user's role
+  const filteredLinks = mainLinks.filter(
+    (link) => !link.permission || hasPermission(role, link.permission)
+  );
 
   const isActive = (href: string) => {
     const fullPath = basePath + href;
@@ -93,9 +139,9 @@ export function ClinicSidebar() {
   const sidebarContent = (
     <nav className="py-4">
       {/* Main links */}
-      {mainLinks.map((link) => (
+      {filteredLinks.map((link) => (
         <Link
-          key={link.href}
+          key={link.href || "overview"}
           href={basePath + link.href}
           className={linkClasses(link.href)}
           onClick={() => setMobileOpen(false)}
