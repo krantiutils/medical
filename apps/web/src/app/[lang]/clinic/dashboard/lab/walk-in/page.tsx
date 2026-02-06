@@ -104,6 +104,10 @@ const translations = {
     errorCreating: "Failed to create order. Please try again.",
     // Turnaround
     turnaround: "Results usually available within 24-48 hours",
+    // Results lookup
+    checkResultsOnline: "Check your results online at:",
+    resultsUrl: "doctorsewa.org/lab-results",
+    usingPhoneAndOrder: "Use your phone number and order number",
   },
   ne: {
     title: "ल्याब वाक-इन",
@@ -167,6 +171,10 @@ const translations = {
     errorCreating: "अर्डर बनाउन असफल भयो। कृपया फेरि प्रयास गर्नुहोस्।",
     // Turnaround
     turnaround: "नतिजाहरू सामान्यतया २४-४८ घण्टामा उपलब्ध हुन्छन्",
+    // Results lookup
+    checkResultsOnline: "अनलाइन आफ्नो नतिजा हेर्नुहोस्:",
+    resultsUrl: "doctorsewa.org/lab-results",
+    usingPhoneAndOrder: "फोन नम्बर र अर्डर नम्बर प्रयोग गर्नुहोस्",
   },
 };
 
@@ -586,7 +594,19 @@ export default function LabWalkInPage() {
 
                 <div className="footer text-center text-xs text-gray-500">
                   <p>{t.turnaround}</p>
-                  <p className="mt-2">Thank you for choosing us!</p>
+                </div>
+
+                <div className="divider border-t-2 border-dashed border-gray-400 my-4"></div>
+
+                {/* Results lookup info */}
+                <div className="text-center p-3 bg-blue-50 border-2 border-primary-blue">
+                  <p className="text-xs font-medium text-gray-700">{t.checkResultsOnline}</p>
+                  <p className="text-sm font-bold text-primary-blue mt-1">{t.resultsUrl}</p>
+                  <p className="text-xs text-gray-500 mt-1">{t.usingPhoneAndOrder}</p>
+                </div>
+
+                <div className="mt-4 text-center text-xs text-gray-500">
+                  <p>Thank you for choosing us!</p>
                 </div>
               </div>
             </CardContent>
