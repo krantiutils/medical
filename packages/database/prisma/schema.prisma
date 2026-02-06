@@ -25,6 +25,17 @@ enum VerificationStatus {
   REJECTED
 }
 
+enum ClinicStaffRole {
+  OWNER        // Full access - set when claiming/registering clinic
+  ADMIN        // Everything except delete clinic
+  DOCTOR       // Consultations, prescriptions, clinical notes
+  RECEPTIONIST // Reception, appointments, patients
+  BILLING      // Invoices, payments, reports
+  LAB          // Lab orders, results
+  PHARMACY     // POS, inventory, suppliers
+  NURSE        // Vitals, basic clinical notes
+}
+
 enum ClinicType {
   CLINIC
   POLYCLINIC
@@ -94,8 +105,14 @@ model User {
   claimed_clinics        Clinic[]              @relation("ClinicClaimedBy")
   invoices_created       Invoice[] // Invoices created by this user
 
+  // Reviews submitted by this user (direct professional reviews)
+  reviews Review[]
+
   // Telemedicine (Phase 5)
   video_consultations VideoConsultation[] @relation("VideoConsultationPatient")
+
+  // Clinic staff memberships (RBAC)
+  clinic_memberships ClinicStaff[]
 }
 
 model Account {
@@ -197,6 +214,9 @@ model Professional {
 
   // Telemedicine (Phase 5)
   video_consultations VideoConsultation[]
+
+  // Check-in tracking
+  check_ins DoctorCheckIn[]
 
   @@unique([type, registration_number])
   @@index([slug])
@@ -313,6 +333,12 @@ model Clinic {
   // IPD models (Phase 4)
   wards      Ward[]
   admissions Admission[]
+
+  // Check-in tracking
+  check_ins DoctorCheckIn[]
+
+  // Staff members with RBAC roles
+  staff ClinicStaff[]
 
   @@index([type])
   @@index([claimed_by_id])
@@ -523,12 +549,14 @@ model Review {
   updated_at      DateTime @updatedAt
 
   // Relations
-  clinic_id      String
-  clinic         Clinic        @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  clinic_id      String? // Nullable - direct professional reviews don't require a clinic
+  clinic         Clinic?       @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
   doctor_id      String? // Nullable - review may be for clinic only, not a specific doctor
   doctor         Professional? @relation(fields: [doctor_id], references: [id], onDelete: SetNull)
-  patient_id     String
-  patient        Patient       @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  patient_id     String? // Nullable - user reviews don't have a patient record
+  patient        Patient?      @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  user_id        String? // Nullable - for logged-in user reviews without patient record
+  user           User?         @relation(fields: [user_id], references: [id], onDelete: Cascade)
   appointment_id String?       @unique // Nullable - review may or may not be linked to an appointment
   appointment    Appointment?  @relation(fields: [appointment_id], references: [id])
 
@@ -536,6 +564,7 @@ model Review {
   @@index([clinic_id])
   @@index([doctor_id])
   @@index([patient_id])
+  @@index([user_id])
   @@index([rating])
 }
 
@@ -1172,4 +1201,42 @@ model VideoConsultation {
   @@index([type])
   @@index([scheduled_at])
   @@index([created_at])
+}
+
+model DoctorCheckIn {
+  id          String    @id @default(cuid())
+  checked_in  DateTime  @default(now())
+  checked_out DateTime?
+  notes       String?
+
+  // Relations
+  doctor_id String
+  doctor    Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+  clinic_id String
+  clinic    Clinic       @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  @@index([clinic_id, checked_in])
+  @@index([doctor_id, checked_in])
+}
+
+// ============================================================================
+// CLINIC STAFF & RBAC (Role-Based Access Control)
+// ============================================================================
+
+model ClinicStaff {
+  id         String          @id @default(cuid())
+  role       ClinicStaffRole
+  invited_by String?         // User ID of who invited this staff member
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+
+  // Relations
+  clinic_id String
+  clinic    Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+  user_id   String
+  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([clinic_id, user_id])
+  @@index([clinic_id])
+  @@index([user_id])
 }

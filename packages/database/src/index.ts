@@ -10,6 +10,7 @@ export {
   UserRole,
   VerificationStatus,
   ClinicType,
+  ClinicStaffRole,
   AppointmentStatus,
   AppointmentType,
   AppointmentSource,

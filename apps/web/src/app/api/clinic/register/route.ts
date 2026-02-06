@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
-import { prisma, ClinicType } from "@swasthya/database";
+import { prisma, ClinicType, ClinicStaffRole } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
 import { sendClinicRegistrationSubmittedEmail } from "@/lib/email";
 
@@ -267,23 +267,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create clinic record
-    const clinic = await prisma.clinic.create({
-      data: {
-        name: name.trim(),
-        slug,
-        type: type as ClinicType,
-        address: address.trim(),
-        phone: phone.trim(),
-        email: email.trim().toLowerCase(),
-        website: website?.trim() || null,
-        logo_url: logoUrl,
-        photos: photoUrls,
-        services,
-        timings: timings || undefined,
-        verified: false,
-        claimed_by_id: session.user.id,
-      },
+    // Create clinic record and ClinicStaff record in a transaction
+    const clinic = await prisma.$transaction(async (tx) => {
+      // Create the clinic
+      const newClinic = await tx.clinic.create({
+        data: {
+          name: name.trim(),
+          slug,
+          type: type as ClinicType,
+          address: address.trim(),
+          phone: phone.trim(),
+          email: email.trim().toLowerCase(),
+          website: website?.trim() || null,
+          logo_url: logoUrl,
+          photos: photoUrls,
+          services,
+          timings: timings || undefined,
+          verified: false,
+          claimed_by_id: session.user.id,
+        },
+      });
+
+      // Create ClinicStaff record with OWNER role
+      await tx.clinicStaff.create({
+        data: {
+          clinic_id: newClinic.id,
+          user_id: session.user.id,
+          role: ClinicStaffRole.OWNER,
+          invited_by: null, // Self-registered, no inviter
+        },
+      });
+
+      return newClinic;
     });
 
     // Send confirmation email to clinic email address
