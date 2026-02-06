@@ -1,10 +1,22 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+interface PendingClaim {
+  id: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  submitted_at: string;
+  professional: {
+    full_name: string;
+    type: string;
+    slug: string;
+  };
+}
 
 const quickLinks = [
   {
@@ -40,20 +52,20 @@ const quickLinks = [
     color: "bg-verified",
   },
   {
+    label: "Appointments",
+    labelNe: "अपोइन्टमेन्टहरू",
+    href: "/appointments",
+    desc: "View your appointments",
+    descNe: "तपाईंका अपोइन्टमेन्टहरू हेर्नुहोस्",
+    color: "bg-primary-blue",
+  },
+  {
     label: "Claims",
     labelNe: "दावीहरू",
     href: "/claims",
     desc: "Track your profile verification",
     descNe: "तपाईंको प्रोफाइल प्रमाणीकरण ट्र्याक गर्नुहोस्",
-    color: "bg-primary-blue",
-  },
-  {
-    label: "Instant Requests",
-    labelNe: "तत्काल अनुरोधहरू",
-    href: "/instant-requests",
-    desc: "Manage instant consultation requests",
-    descNe: "तत्काल परामर्श अनुरोधहरू व्यवस्थापन गर्नुहोस्",
-    color: "bg-primary-red",
+    color: "bg-primary-yellow",
   },
 ];
 
@@ -61,6 +73,34 @@ export default function DashboardPage() {
   const { data: session, status } = useSession();
   const { lang } = useParams<{ lang: string }>();
   const isNe = lang === "ne";
+
+  const [pendingClaims, setPendingClaims] = useState<PendingClaim[]>([]);
+  const [loadingClaims, setLoadingClaims] = useState(true);
+
+  // Fetch pending claims
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetch("/api/dashboard/claims")
+        .then((res) => res.json())
+        .then((data) => {
+          const pending = (data.requests || []).filter(
+            (r: PendingClaim) => r.status === "PENDING"
+          );
+          setPendingClaims(pending);
+        })
+        .catch(() => {})
+        .finally(() => setLoadingClaims(false));
+    }
+  }, [status]);
+
+  const t = {
+    pendingVerification: isNe ? "प्रमाणीकरण विचाराधीन" : "Verification Pending",
+    pendingDesc: isNe
+      ? "तपाईंको प्रोफाइल दाबी समीक्षाको लागि पेश गरिएको छ।"
+      : "Your profile claim has been submitted and is awaiting review.",
+    viewStatus: isNe ? "स्थिति हेर्नुहोस्" : "View Status",
+    submitted: isNe ? "पेश गरिएको" : "Submitted",
+  };
 
   if (status === "loading") {
     return (
@@ -106,6 +146,14 @@ export default function DashboardPage() {
     );
   }
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(isNe ? "ne-NP" : "en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <main className="bg-background py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -121,9 +169,62 @@ export default function DashboardPage() {
           <p className="text-foreground/60">
             {isNe
               ? "तपाईंको स्वास्थ्य ड्यासबोर्ड"
-              : "Your Swasthya dashboard"}
+              : "Your DoctorSewa dashboard"}
           </p>
         </div>
+
+        {/* Pending Verification Banner */}
+        {!loadingClaims && pendingClaims.length > 0 && (
+          <div className="mb-8">
+            {pendingClaims.map((claim) => (
+              <div
+                key={claim.id}
+                className="bg-primary-yellow/10 border-4 border-primary-yellow p-6 mb-4"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-primary-yellow flex items-center justify-center flex-shrink-0">
+                      <svg
+                        className="w-6 h-6 text-foreground"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg text-foreground">
+                        {t.pendingVerification}
+                      </h3>
+                      <p className="text-foreground/70 text-sm">
+                        {t.pendingDesc}
+                      </p>
+                      <p className="text-foreground/70 text-sm mt-1">
+                        <strong>
+                          {claim.professional.type === "PHARMACIST"
+                            ? claim.professional.full_name
+                            : `Dr. ${claim.professional.full_name}`}
+                        </strong>{" "}
+                        &middot; {t.submitted}: {formatDate(claim.submitted_at)}
+                      </p>
+                    </div>
+                  </div>
+                  <Link href={`/${lang}/dashboard/claims`}>
+                    <Button variant="primary" className="whitespace-nowrap">
+                      {t.viewStatus}
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Quick Links */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
