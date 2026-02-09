@@ -10,6 +10,9 @@ import { OPDScheduleSection } from "@/components/clinic/OPDScheduleSection";
 import type { PageBuilderConfig, AnyPageBuilderConfig } from "@/types/page-builder";
 import { CustomClinicPage } from "@/components/page-builder/CustomClinicPage";
 import { ensureV2 } from "@/components/page-builder/lib/migrate";
+import { getClinicCanonicalUrl, getClinicAlternateUrls } from "@/lib/subdomain-url";
+import { getDisplayName } from "@/lib/professional-display";
+import { headers } from "next/headers";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
@@ -188,7 +191,8 @@ export async function generateMetadata({ params }: ClinicPageProps): Promise<Met
 
   const description = `${clinic.name} is a verified ${clinicType.toLowerCase()} in ${location}, Nepal.${servicesText ? ` Services include ${servicesText}.` : ""}${clinic.phone ? ` Contact: ${clinic.phone}.` : ""} Find healthcare facilities on DoctorSewa.`;
 
-  const canonicalUrl = `${SITE_URL}/${lang}/clinic/${slug}`;
+  const canonicalUrl = getClinicCanonicalUrl(slug, lang);
+  const alternateUrls = getClinicAlternateUrls(slug);
   const ogImageUrl = clinic.logo_url || `${SITE_URL}/og-default.png`;
 
   return {
@@ -196,10 +200,7 @@ export async function generateMetadata({ params }: ClinicPageProps): Promise<Met
     description,
     alternates: {
       canonical: canonicalUrl,
-      languages: {
-        en: `${SITE_URL}/en/clinic/${slug}`,
-        ne: `${SITE_URL}/ne/clinic/${slug}`,
-      },
+      languages: alternateUrls,
     },
     openGraph: {
       title,
@@ -463,6 +464,8 @@ export default async function ClinicPage({ params, searchParams }: ClinicPagePro
   const { lang, slug } = await params;
   const sp = await searchParams;
   const isPreview = sp.preview === "true";
+  const headersList = await headers();
+  const subdomain = headersList.get("x-subdomain") || null;
   const clinic = await getClinic(slug);
 
   if (!clinic) {
@@ -530,6 +533,7 @@ export default async function ClinicPage({ params, searchParams }: ClinicPagePro
             })),
           }}
           lang={lang}
+          subdomain={subdomain}
           bookingSection={
             clinic.doctors && clinic.doctors.length > 0 ? (
               <BookingSection
@@ -1029,10 +1033,7 @@ export default async function ClinicPage({ params, searchParams }: ClinicPagePro
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {clinic.doctors.map((clinicDoctor) => {
                   const doctor = clinicDoctor.doctor;
-                  const isDoctor = doctor.type === ProfessionalType.DOCTOR;
-                  const displayName = isDoctor
-                    ? `Dr. ${doctor.full_name}`
-                    : doctor.full_name;
+                  const displayName = getDisplayName(doctor);
 
                   return (
                     <Link

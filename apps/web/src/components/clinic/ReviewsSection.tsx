@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface Review {
   id: string;
@@ -229,7 +230,7 @@ export function ReviewsSection({
               {review.doctor && (
                 <div className="mb-3">
                   <span className="inline-block px-2 py-1 text-xs font-bold bg-primary-blue/10 text-primary-blue border border-primary-blue/30">
-                    Dr. {review.doctor.full_name}
+                    {getDisplayName(review.doctor as { full_name: string; type: "DOCTOR" | "DENTIST" | "PHARMACIST" })}
                   </span>
                 </div>
               )}

@@ -2,6 +2,10 @@ import { hash } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@swasthya/database";
 import { consumeVerifiedToken } from "../otp/verify/route";
+import { RateLimiter, rateLimitedResponse } from "@/lib/rate-limit";
+
+// 5 reset attempts per IP per 15 minutes
+const limiter = new RateLimiter({ windowMs: 15 * 60 * 1000, maxRequests: 5 });
 
 /**
  * POST /api/auth/reset-password
@@ -11,6 +15,14 @@ import { consumeVerifiedToken } from "../otp/verify/route";
  * Body: { phone: string, password: string, verificationToken: string }
  */
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || request.headers.get("x-real-ip")
+    || "unknown";
+  const { allowed, retryAfterMs } = limiter.check(ip);
+  if (!allowed) {
+    return rateLimitedResponse(retryAfterMs);
+  }
+
   try {
     const body = await request.json();
     const { phone, password, verificationToken } = body;

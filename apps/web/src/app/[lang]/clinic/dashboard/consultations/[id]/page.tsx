@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface Patient {
   id: string;
@@ -23,7 +24,7 @@ interface Doctor {
   id: string;
   full_name: string;
   registration_number: string;
-  type: string;
+  type: "DOCTOR" | "DENTIST" | "PHARMACIST";
   degree: string | null;
 }
 
@@ -967,7 +968,7 @@ export default function ConsultationDetailPage() {
       <body>
         <div class="header">
           <div class="clinic-info">
-            <div class="clinic-name">Swasthya</div>
+            <div class="clinic-name">DoctorSewa</div>
             <div>Laboratory Report</div>
           </div>
           <div class="report-info">
@@ -1025,7 +1026,7 @@ export default function ConsultationDetailPage() {
 
         <div class="footer">
           <div>
-            <strong>Ordered by:</strong> Dr. ${clinicalNote?.doctor.full_name || ""}<br>
+            <strong>Ordered by:</strong> ${clinicalNote?.doctor ? getDisplayName(clinicalNote.doctor) : ""}<br>
             Reg. No: ${clinicalNote?.doctor.registration_number || ""}
           </div>
           <div class="signature">
@@ -1035,7 +1036,7 @@ export default function ConsultationDetailPage() {
         </div>
 
         <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
-          Generated via Swasthya Healthcare Platform
+          Generated via DoctorSewa Healthcare Platform
         </div>
 
         <div class="no-print" style="text-align: center; margin-top: 20px;">
@@ -1378,7 +1379,7 @@ export default function ConsultationDetailPage() {
       <body>
         <div class="header">
           <div class="clinic-info">
-            <div class="clinic-name">Swasthya</div>
+            <div class="clinic-name">DoctorSewa</div>
             <div>Healthcare Platform</div>
           </div>
           <div class="rx-info">
@@ -1428,7 +1429,7 @@ export default function ConsultationDetailPage() {
         ` : ""}
 
         <div class="doctor-signature">
-          <div><strong>Dr. ${clinicalNote?.doctor.full_name || ""}</strong></div>
+          <div><strong>${clinicalNote?.doctor ? getDisplayName(clinicalNote.doctor) : ""}</strong></div>
           <div>${clinicalNote?.doctor.degree || ""}</div>
           <div>Reg. No: ${clinicalNote?.doctor.registration_number || ""}</div>
           <div style="margin-top: 40px;">_______________________</div>
@@ -1436,7 +1437,7 @@ export default function ConsultationDetailPage() {
         </div>
 
         <div class="footer">
-          Generated via Swasthya Healthcare Platform
+          Generated via DoctorSewa Healthcare Platform
         </div>
 
         <div class="no-print" style="text-align: center; margin-top: 20px;">

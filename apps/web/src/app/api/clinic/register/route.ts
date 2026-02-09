@@ -5,6 +5,7 @@ import path from "path";
 import { prisma, ClinicType, ClinicStaffRole } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
 import { sendClinicRegistrationSubmittedEmail } from "@/lib/email";
+import { validateSlug } from "@/lib/reserved-slugs";
 
 // Generate a unique filename
 function generateUniqueFilename(originalName: string): string {
@@ -60,11 +61,11 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    console.log("DEBUG clinic register: session.user =", JSON.stringify(session.user));
     const formData = await request.formData();
 
     // Extract form fields
     const name = formData.get("name") as string;
+    const subdomainRaw = formData.get("subdomain") as string | null;
     const type = formData.get("type") as string;
     const address = formData.get("address") as string;
     const phone = formData.get("phone") as string;
@@ -240,31 +241,52 @@ export async function POST(request: NextRequest) {
       photoUrls.push(`/uploads/clinics/${photoFilename}`);
     }
 
-    // Generate unique slug
-    let slug = generateSlug(name);
+    // Validate user-chosen subdomain slug
+    let slug: string;
+    if (subdomainRaw?.trim()) {
+      slug = subdomainRaw.trim().toLowerCase();
+      const slugValidation = validateSlug(slug);
+      if (!slugValidation.valid) {
+        return NextResponse.json(
+          { error: slugValidation.error || "Invalid subdomain" },
+          { status: 400 }
+        );
+      }
 
-    // Ensure slug uniqueness by checking database
-    let slugExists = true;
-    let attempts = 0;
-    while (slugExists && attempts < 10) {
+      // Check uniqueness at write time (race-condition guard)
       const existing = await prisma.clinic.findUnique({
         where: { slug },
         select: { id: true },
       });
-      if (!existing) {
-        slugExists = false;
-      } else {
-        // Regenerate with new random suffix
-        slug = generateSlug(name);
-        attempts++;
+      if (existing) {
+        return NextResponse.json(
+          { error: "This subdomain is already taken" },
+          { status: 409 }
+        );
       }
-    }
-
-    if (slugExists) {
-      return NextResponse.json(
-        { error: "Failed to generate unique clinic identifier" },
-        { status: 500 }
-      );
+    } else {
+      // Fallback: auto-generate slug from name (legacy path)
+      slug = generateSlug(name);
+      let slugExists = true;
+      let attempts = 0;
+      while (slugExists && attempts < 10) {
+        const existing = await prisma.clinic.findUnique({
+          where: { slug },
+          select: { id: true },
+        });
+        if (!existing) {
+          slugExists = false;
+        } else {
+          slug = generateSlug(name);
+          attempts++;
+        }
+      }
+      if (slugExists) {
+        return NextResponse.json(
+          { error: "Failed to generate unique clinic identifier" },
+          { status: 500 }
+        );
+      }
     }
 
     // Create clinic record and ClinicStaff record in a transaction

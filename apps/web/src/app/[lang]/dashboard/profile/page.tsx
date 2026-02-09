@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface Education {
   degree: string;
@@ -39,6 +40,494 @@ interface Professional {
   telemedicine_enabled: boolean;
   telemedicine_fee: string | number | null;
   telemedicine_available_now: boolean;
+}
+
+function AccountSettingsView({ lang }: { lang: string }) {
+  const isNe = lang === "ne";
+
+  // Account info state
+  const [accountName, setAccountName] = useState("");
+  const [accountEmail, setAccountEmail] = useState("");
+  const [originalEmail, setOriginalEmail] = useState("");
+  const [accountPhone, setAccountPhone] = useState("");
+  const [hasPassword, setHasPassword] = useState(false);
+  const [authProviders, setAuthProviders] = useState<string[]>([]);
+  const [emailPassword, setEmailPassword] = useState("");
+  const [accountLoading, setAccountLoading] = useState(true);
+  const [accountSaving, setAccountSaving] = useState(false);
+  const [accountError, setAccountError] = useState<string | null>(null);
+  const [accountSuccess, setAccountSuccess] = useState<string | null>(null);
+
+  // Password change state
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+
+  const emailChanged = accountEmail.trim().toLowerCase() !== originalEmail.toLowerCase();
+
+  const at = {
+    title: isNe ? "खाता सेटिङ्हरू" : "Account Settings",
+    subtitle: isNe ? "तपाईंको खाता जानकारी व्यवस्थापन गर्नुहोस्" : "Manage your account information",
+    name: isNe ? "नाम" : "Name",
+    email: isNe ? "इमेल" : "Email",
+    emailHelp: isNe ? "इमेल परिवर्तन गर्न पासवर्ड आवश्यक छ" : "Password required to change email",
+    emailPasswordLabel: isNe ? "इमेल परिवर्तनको लागि पासवर्ड" : "Password to confirm email change",
+    emailSetPasswordFirst: isNe
+      ? "इमेल परिवर्तन गर्न पहिले पासवर्ड सेट गर्नुहोस्"
+      : "Set a password first to change your email",
+    phone: isNe ? "फोन नम्बर" : "Phone Number",
+    phonePlaceholder: "98XXXXXXXX",
+    save: isNe ? "सुरक्षित गर्नुहोस्" : "Save Changes",
+    saving: isNe ? "सुरक्षित गर्दै..." : "Saving...",
+    successMessage: isNe ? "खाता सफलतापूर्वक अपडेट भयो!" : "Account updated successfully!",
+    errorLoading: isNe ? "खाता डेटा लोड गर्न असफल" : "Failed to load account data",
+    errorSaving: isNe ? "खाता अपडेट गर्न असफल" : "Failed to update account",
+    // Security section
+    security: isNe ? "सुरक्षा" : "Security",
+    securitySubtitle: isNe ? "पासवर्ड व्यवस्थापन गर्नुहोस्" : "Manage your password",
+    changePassword: isNe ? "पासवर्ड परिवर्तन गर्नुहोस्" : "Change Password",
+    setPassword: isNe ? "पासवर्ड सेट गर्नुहोस्" : "Set Password",
+    setPasswordHelp: isNe
+      ? "तपाईंले Google मार्फत साइन इन गर्नुभयो। इमेल/फोनबाट लगइन गर्न पासवर्ड सेट गर्नुहोस्।"
+      : "You signed in via Google. Set a password to also login with email/phone.",
+    currentPassword: isNe ? "हालको पासवर्ड" : "Current Password",
+    newPassword: isNe ? "नयाँ पासवर्ड" : "New Password",
+    confirmNewPassword: isNe ? "नयाँ पासवर्ड पुष्टि गर्नुहोस्" : "Confirm New Password",
+    passwordMinLength: isNe ? "कम्तिमा ८ अक्षर" : "Minimum 8 characters",
+    passwordMismatch: isNe ? "पासवर्डहरू मेल खाँदैनन्" : "Passwords do not match",
+    updatePassword: isNe ? "पासवर्ड अपडेट गर्नुहोस्" : "Update Password",
+    updatingPassword: isNe ? "अपडेट गर्दै..." : "Updating...",
+    passwordChanged: isNe ? "पासवर्ड सफलतापूर्वक परिवर्तन भयो!" : "Password changed successfully!",
+    passwordSet: isNe ? "पासवर्ड सफलतापूर्वक सेट भयो!" : "Password set successfully!",
+    linkedAccounts: isNe ? "लिंक गरिएका खाताहरू" : "Linked Accounts",
+    googleLinked: isNe ? "Google मार्फत जडित" : "Linked via Google",
+    // Claim CTA
+    claimCta: isNe
+      ? "तपाईं डाक्टर, दन्त चिकित्सक, वा फार्मासिस्ट हुनुहुन्छ?"
+      : "Are you a doctor, dentist, or pharmacist?",
+    claimLink: isNe ? "आफ्नो पेशेवर प्रोफाइल दाबी गर्नुहोस्" : "Claim your professional profile",
+  };
+
+  useEffect(() => {
+    const fetchAccount = async () => {
+      try {
+        const res = await fetch("/api/dashboard/account");
+        if (!res.ok) throw new Error("Failed to load");
+        const data = await res.json();
+        setAccountName(data.user.name || "");
+        setAccountEmail(data.user.email || "");
+        setOriginalEmail(data.user.email || "");
+        setAccountPhone(data.user.phone || "");
+        setHasPassword(data.user.has_password || false);
+        setAuthProviders(data.user.auth_providers || []);
+      } catch (err) {
+        console.error("Error fetching account:", err);
+        setAccountError(at.errorLoading);
+      } finally {
+        setAccountLoading(false);
+      }
+    };
+    fetchAccount();
+  }, [at.errorLoading]);
+
+  const handleAccountSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAccountSaving(true);
+    setAccountError(null);
+    setAccountSuccess(null);
+
+    // If email changed but no password provided
+    if (emailChanged && !emailPassword) {
+      setAccountError(at.emailHelp);
+      setAccountSaving(false);
+      return;
+    }
+
+    try {
+      const body: Record<string, unknown> = {
+        name: accountName,
+        phone: accountPhone || null,
+      };
+
+      if (emailChanged) {
+        body.email = accountEmail.trim();
+        body.current_password = emailPassword;
+      }
+
+      const res = await fetch("/api/dashboard/account", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || at.errorSaving);
+      }
+
+      const data = await res.json();
+      setOriginalEmail(data.user.email || "");
+      setAccountEmail(data.user.email || "");
+      setEmailPassword("");
+      setHasPassword(data.user.has_password || false);
+      setAuthProviders(data.user.auth_providers || []);
+      setAccountSuccess(at.successMessage);
+      setTimeout(() => setAccountSuccess(null), 5000);
+    } catch (err) {
+      setAccountError(err instanceof Error ? err.message : at.errorSaving);
+    } finally {
+      setAccountSaving(false);
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+    setPasswordSuccess(null);
+
+    if (newPassword.length < 8) {
+      setPasswordError(at.passwordMinLength);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError(at.passwordMismatch);
+      return;
+    }
+
+    setPasswordSaving(true);
+
+    try {
+      const body: Record<string, string> = { new_password: newPassword };
+      if (hasPassword) {
+        body.current_password = currentPassword;
+      }
+
+      const res = await fetch("/api/dashboard/account/password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to update password");
+      }
+
+      setHasPassword(true);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordSuccess(hasPassword ? at.passwordChanged : at.passwordSet);
+      setTimeout(() => setPasswordSuccess(null), 5000);
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : "Failed to update password");
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
+  if (accountLoading) {
+    return (
+      <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto">
+          <Card decorator="blue" decoratorPosition="top-right">
+            <CardContent className="py-12 text-center">
+              <div className="animate-pulse">
+                <div className="w-12 h-12 bg-primary-blue/20 rounded-full mx-auto mb-4" />
+                <div className="h-4 bg-foreground/10 rounded w-48 mx-auto" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    );
+  }
+
+  const isGoogleOnly = authProviders.includes("google") && !hasPassword;
+
+  return (
+    <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">{at.title}</h1>
+          <p className="text-foreground/70">{at.subtitle}</p>
+        </div>
+
+        {/* Success toasts */}
+        {(accountSuccess || passwordSuccess) && (
+          <div className="fixed top-20 right-4 z-50 bg-verified text-white px-6 py-4 border-4 border-black shadow-[4px_4px_0_0_#121212] flex items-center gap-3">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="font-bold">{accountSuccess || passwordSuccess}</span>
+          </div>
+        )}
+
+        {/* ─── Account Info Card ─── */}
+        <form onSubmit={handleAccountSave}>
+          {accountError && (
+            <div className="bg-primary-red/10 border-2 border-primary-red text-primary-red p-4 mb-6">
+              {accountError}
+            </div>
+          )}
+
+          <Card decorator="blue" decoratorPosition="top-left" className="mb-6">
+            <CardHeader>
+              <h2 className="text-lg font-bold text-foreground">{at.title}</h2>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Name */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                  {at.name}
+                </label>
+                <input
+                  type="text"
+                  value={accountName}
+                  onChange={(e) => setAccountName(e.target.value)}
+                  required
+                  maxLength={100}
+                  className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                  {at.email}
+                </label>
+                <input
+                  type="email"
+                  value={accountEmail}
+                  onChange={(e) => setAccountEmail(e.target.value)}
+                  className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40"
+                />
+                {/* Show password confirmation field when email is being changed */}
+                {emailChanged && hasPassword && (
+                  <div className="mt-3 p-3 bg-primary-blue/5 border-l-4 border-primary-blue">
+                    <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                      {at.emailPasswordLabel}
+                    </label>
+                    <input
+                      type="password"
+                      value={emailPassword}
+                      onChange={(e) => setEmailPassword(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40"
+                    />
+                  </div>
+                )}
+                {emailChanged && !hasPassword && (
+                  <p className="text-xs text-primary-red mt-1">{at.emailSetPasswordFirst}</p>
+                )}
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                  {at.phone}
+                </label>
+                <input
+                  type="tel"
+                  value={accountPhone}
+                  onChange={(e) => setAccountPhone(e.target.value)}
+                  placeholder={at.phonePlaceholder}
+                  className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40"
+                />
+              </div>
+
+              {/* Linked accounts info */}
+              {authProviders.length > 0 && (
+                <div className="pt-3 border-t-2 border-foreground/10">
+                  <span className="text-xs font-bold uppercase tracking-widest text-foreground/60">
+                    {at.linkedAccounts}
+                  </span>
+                  <div className="flex gap-2 mt-2">
+                    {authProviders.includes("google") && (
+                      <span className="inline-flex items-center gap-2 bg-foreground/5 border-2 border-foreground/20 px-3 py-1.5 text-sm">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        {at.googleLinked}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            disabled={accountSaving || (emailChanged && !hasPassword)}
+            className="w-full sm:w-auto"
+          >
+            {accountSaving ? at.saving : at.save}
+          </Button>
+        </form>
+
+        {/* ─── Security Card ─── */}
+        <form onSubmit={handlePasswordSubmit} className="mt-8">
+          {passwordError && (
+            <div className="bg-primary-red/10 border-2 border-primary-red text-primary-red p-4 mb-6">
+              {passwordError}
+            </div>
+          )}
+
+          <Card decorator="red" decoratorPosition="top-right" className="mb-6">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary-red rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-foreground">{at.security}</h2>
+                  <p className="text-sm text-foreground/60">{at.securitySubtitle}</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Google-only hint */}
+              {isGoogleOnly && (
+                <div className="flex items-start gap-3 p-3 bg-primary-blue/5 border-l-4 border-primary-blue">
+                  <svg className="w-5 h-5 text-primary-blue flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-sm text-foreground/70">{at.setPasswordHelp}</p>
+                </div>
+              )}
+
+              {/* Current password (only if user already has one) */}
+              {hasPassword && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                    {at.currentPassword}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showCurrentPassword ? "text" : "password"}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-red placeholder:text-foreground/40 pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-foreground"
+                    >
+                      {showCurrentPassword ? (
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* New password */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                  {at.newPassword}
+                </label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    maxLength={128}
+                    className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-red placeholder:text-foreground/40 pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-foreground"
+                  >
+                    {showNewPassword ? (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+                <p className="text-xs text-foreground/40 mt-1">{at.passwordMinLength}</p>
+              </div>
+
+              {/* Confirm new password */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2">
+                  {at.confirmNewPassword}
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  maxLength={128}
+                  className={`w-full px-4 py-3 bg-white border-4 focus:outline-none placeholder:text-foreground/40 ${
+                    confirmPassword && confirmPassword !== newPassword
+                      ? "border-primary-red focus:border-primary-red"
+                      : "border-foreground focus:border-primary-red"
+                  }`}
+                />
+                {confirmPassword && confirmPassword !== newPassword && (
+                  <p className="text-xs text-primary-red mt-1">{at.passwordMismatch}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            disabled={passwordSaving || (confirmPassword !== "" && confirmPassword !== newPassword)}
+            className="w-full sm:w-auto"
+          >
+            {passwordSaving ? at.updatingPassword : (hasPassword ? at.changePassword : at.setPassword)}
+          </Button>
+        </form>
+
+        {/* Claim profile CTA */}
+        <div className="mt-8 pt-6 border-t-2 border-foreground/10">
+          <p className="text-sm text-foreground/60">
+            {at.claimCta}{" "}
+            <Link href={`/${lang}/claim`} className="text-primary-blue font-bold hover:underline">
+              {at.claimLink}
+            </Link>
+          </p>
+        </div>
+      </div>
+    </main>
+  );
 }
 
 export default function DashboardProfilePage() {
@@ -328,10 +817,6 @@ export default function DashboardProfilePage() {
     return colors[type] || "text-foreground";
   };
 
-  const getDisplayName = (prof: Professional) => {
-    return prof.type === "PHARMACIST" ? prof.full_name : `Dr. ${prof.full_name}`;
-  };
-
   // Loading state
   if (status === "loading" || loading) {
     return (
@@ -371,25 +856,9 @@ export default function DashboardProfilePage() {
     );
   }
 
-  // No claimed profile
+  // No claimed profile - show account settings
   if (!professional && !loading) {
-    return (
-      <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
-          <Card decorator="yellow" decoratorPosition="top-right">
-            <CardHeader>
-              <h1 className="text-3xl font-bold text-foreground">{tr.noProfile}</h1>
-            </CardHeader>
-            <CardContent>
-              <p className="text-foreground/70 mb-6">{tr.noProfileMessage}</p>
-              <Link href={`/${lang}/claim`}>
-                <Button variant="primary">{tr.claimProfile}</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
-    );
+    return <AccountSettingsView lang={lang} />;
   }
 
   return (

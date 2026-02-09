@@ -79,6 +79,19 @@ export default function RegisterPage() {
     googleSignUp: isNe ? "Google बाट" : "Continue with Google",
     terms: isNe ? "सेवाका सर्तहरू" : "Terms of Service",
     privacy: isNe ? "गोपनीयता नीति" : "Privacy Policy",
+    errorNetworkError: isNe ? "नेटवर्क त्रुटि। कृपया पुन: प्रयास गर्नुहोस्।" : "Network error. Please try again.",
+    errorFailedOtp: isNe ? "OTP पठाउन असफल" : "Failed to send OTP",
+    errorInvalidOtp: isNe ? "अमान्य OTP" : "Invalid OTP",
+    errorPasswordMismatch: isNe ? "पासवर्डहरू मेल खाँदैनन्" : "Passwords do not match",
+    errorPasswordLength: isNe ? "पासवर्ड कम्तिमा ८ वर्णको हुनुपर्छ" : "Password must be at least 8 characters",
+    errorRegistrationFailed: isNe ? "दर्ता असफल" : "Registration failed",
+    errorUnexpected: isNe ? "अनपेक्षित त्रुटि भयो" : "An unexpected error occurred",
+    placeholderMinChars: isNe ? "कम्तिमा ८ वर्ण" : "At least 8 characters",
+    placeholderConfirmPassword: isNe ? "पासवर्ड पुष्टि गर्नुहोस्" : "Confirm your password",
+    termsNotice: isNe ? "खाता बनाएर, तपाईं हाम्रो मान्नुहुन्छ" : "By creating an account, you agree to our",
+    andText: isNe ? "र" : "and",
+    decorativeClinic: isNe ? "आफ्नो क्लिनिक दर्ता गर्नुहोस् र हजारौं बिरामीसम्म पुग्नुहोस्" : "Register your clinic and reach thousands of patients",
+    decorativePatient: isNe ? "नेपालका उत्कृष्ट स्वास्थ्य पेशेवरहरू खोज्नुहोस्" : "Find the best healthcare professionals in Nepal",
   };
 
   const handleSendOtp = async () => {
@@ -95,7 +108,7 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Failed to send OTP");
+        setError(data.error || t.errorFailedOtp);
         return;
       }
 
@@ -103,7 +116,7 @@ export default function RegisterPage() {
       setResendTimer(60);
       setStep("otp");
     } catch {
-      setError("Network error. Please try again.");
+      setError(t.errorNetworkError);
     } finally {
       setIsLoading(false);
     }
@@ -123,14 +136,14 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Invalid OTP");
+        setError(data.error || t.errorInvalidOtp);
         return;
       }
 
       setVerificationToken(data.verificationToken);
       setStep("password");
     } catch {
-      setError("Network error. Please try again.");
+      setError(t.errorNetworkError);
     } finally {
       setIsLoading(false);
     }
@@ -140,12 +153,12 @@ export default function RegisterPage() {
     setError(null);
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t.errorPasswordMismatch);
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError(t.errorPasswordLength);
       return;
     }
 
@@ -165,7 +178,7 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Registration failed");
+        setError(data.error || t.errorRegistrationFailed);
         return;
       }
 
@@ -191,7 +204,7 @@ export default function RegisterPage() {
         router.push(`/${lang}/login`);
       }
     } catch {
-      setError("An unexpected error occurred");
+      setError(t.errorUnexpected);
     } finally {
       setIsLoading(false);
     }
@@ -232,8 +245,8 @@ export default function RegisterPage() {
             </div>
             <p className="mt-6 text-white/70 max-w-xs">
               {accountType === "clinic"
-                ? "Register your clinic and reach thousands of patients"
-                : "Find the best healthcare professionals in Nepal"}
+                ? t.decorativeClinic
+                : t.decorativePatient}
             </p>
           </div>
         </div>
@@ -512,7 +525,7 @@ export default function RegisterPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 8 characters"
+                  placeholder={t.placeholderMinChars}
                   className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40 transition-colors"
                   autoFocus
                 />
@@ -525,7 +538,7 @@ export default function RegisterPage() {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm your password"
+                  placeholder={t.placeholderConfirmPassword}
                   className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40 transition-colors"
                 />
               </div>
@@ -552,11 +565,11 @@ export default function RegisterPage() {
 
           {/* Terms notice */}
           <p className="mt-6 text-center text-xs text-foreground/50">
-            By creating an account, you agree to our{" "}
+            {t.termsNotice}{" "}
             <Link href={`/${lang}/terms`} className="underline hover:text-foreground/70">
               {t.terms}
             </Link>{" "}
-            and{" "}
+            {t.andText}{" "}
             <Link href={`/${lang}/privacy`} className="underline hover:text-foreground/70">
               {t.privacy}
             </Link>

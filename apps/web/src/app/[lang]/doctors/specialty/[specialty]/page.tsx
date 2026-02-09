@@ -12,6 +12,7 @@ import {
   getSpecialtyBySlug,
   type SpecialtyInfo,
 } from "@/lib/specialties";
+import { getDisplayName } from "@/lib/professional-display";
 
 const ITEMS_PER_PAGE = 20;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
@@ -302,7 +303,7 @@ export default async function SpecialtyPage({ params, searchParams }: SpecialtyP
                       {specialtyName}
                     </span>
                     <h3 className="text-xl font-bold leading-tight line-clamp-2">
-                      Dr. {professional.full_name}
+                      {getDisplayName(professional)}
                     </h3>
                   </CardHeader>
                   <CardContent className="py-2">

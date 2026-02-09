@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
+import { getDisplayName } from "@/lib/professional-display";
 
 const ITEMS_PER_PAGE = 20;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
@@ -266,7 +267,7 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
                     </span>
                     {/* Name */}
                     <h3 className="text-xl font-bold leading-tight line-clamp-2">
-                      Dr. {professional.full_name}
+                      {getDisplayName(professional)}
                     </h3>
                   </CardHeader>
                   <CardContent className="py-2">

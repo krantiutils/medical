@@ -3,6 +3,7 @@ import { prisma, ProfessionalType } from "@swasthya/database";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SearchFilters } from "@/components/search/search-filters";
+import { getDisplayName } from "@/lib/professional-display";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -298,10 +299,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {professionals.map((professional) => {
-                const isPharmacist = professional.type === "PHARMACIST";
-                const displayName = isPharmacist
-                  ? professional.full_name
-                  : `Dr. ${professional.full_name}`;
+                const displayName = getDisplayName(professional);
 
                 return (
                   <Card
@@ -325,6 +323,28 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
                         <p className="text-sm text-foreground/80 mb-2 line-clamp-1">
                           {professional.degree}
                         </p>
+                      )}
+                      {/* Specialty badges */}
+                      {professional.specialties && professional.specialties.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {professional.specialties.slice(0, 3).map((s, i) => {
+                            const colorClass = professional.type === "DENTIST"
+                              ? "bg-primary-red/10 text-primary-red border-primary-red"
+                              : professional.type === "PHARMACIST"
+                                ? "bg-primary-yellow/10 text-foreground/80 border-primary-yellow"
+                                : "bg-primary-blue/10 text-primary-blue border-primary-blue";
+                            return (
+                              <span key={i} className={`px-2 py-0.5 border text-xs font-bold ${colorClass}`}>
+                                {s}
+                              </span>
+                            );
+                          })}
+                          {professional.specialties.length > 3 && (
+                            <span className="px-2 py-0.5 bg-foreground/5 text-foreground/60 border border-foreground/20 text-xs font-bold">
+                              +{professional.specialties.length - 3}
+                            </span>
+                          )}
+                        </div>
                       )}
                       {/* Address */}
                       {professional.address && (

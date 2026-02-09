@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface BookingPageProps {
   params: Promise<{
@@ -178,12 +179,12 @@ function generateICS(booking: BookingConfirmation): string {
   };
 
   const now = new Date();
-  const uid = `${booking.appointmentId}@swasthya.com`;
+  const uid = `${booking.appointmentId}@doctorsewa.org`;
 
   const icsContent = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Swasthya//Appointment Booking//EN",
+    "PRODID:-//DoctorSewa//Appointment Booking//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
@@ -356,7 +357,7 @@ function BookingPageContent({ params }: BookingPageProps) {
         tokenNumber: data.tokenNumber,
         date,
         timeSlot: slot,
-        doctorName: doctor ? `Dr. ${doctor.full_name}` : data.doctorName,
+        doctorName: doctor ? getDisplayName(doctor) : data.doctorName,
         clinicName: clinic.name,
         clinicAddress: clinic.address || "",
         patientName: fullName.trim(),
@@ -719,9 +720,7 @@ function BookingPageContent({ params }: BookingPageProps) {
                       <dt className="text-sm font-bold uppercase tracking-wider text-foreground/60">{t.doctor}</dt>
                       <dd className="mt-1">
                         <p className="font-bold">
-                          {(doctor.type === "DOCTOR" || doctor.type === "DENTIST")
-                            ? `Dr. ${doctor.full_name}`
-                            : doctor.full_name}
+                          {getDisplayName(doctor)}
                         </p>
                         {doctor.specialties && doctor.specialties.length > 0 && (
                           <p className="text-sm text-foreground/70">{doctor.specialties[0]}</p>

@@ -6,11 +6,12 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface AppointmentDoctor {
   id: string;
   full_name: string;
-  type: string;
+  type: "DOCTOR" | "DENTIST" | "PHARMACIST";
   photo_url: string | null;
   specialties: string[];
 }
@@ -345,7 +346,7 @@ export default function AppointmentsPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="font-bold text-foreground">
-                            Dr. {appointment.doctor.full_name}
+                            {getDisplayName(appointment.doctor)}
                           </h3>
                           <span
                             className={`px-2 py-0.5 text-xs font-bold ${

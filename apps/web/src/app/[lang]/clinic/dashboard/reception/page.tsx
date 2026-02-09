@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface Doctor {
   id: string;
@@ -713,7 +714,7 @@ export default function ReceptionPage() {
                       <option value="">{t.selectDoctor}...</option>
                       {doctors.map((doctor) => (
                         <option key={doctor.id} value={doctor.id}>
-                          Dr. {doctor.full_name}
+                          {getDisplayName(doctor)}
                         </option>
                       ))}
                     </select>
@@ -777,7 +778,7 @@ export default function ReceptionPage() {
                     <option value="">{t.allDoctors}</option>
                     {doctors.map((doctor) => (
                       <option key={doctor.id} value={doctor.id}>
-                        Dr. {doctor.full_name}
+                        {getDisplayName(doctor)}
                       </option>
                     ))}
                   </select>

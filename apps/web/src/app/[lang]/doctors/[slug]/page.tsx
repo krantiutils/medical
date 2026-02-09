@@ -6,6 +6,7 @@ import { ClaimProfileButton } from "@/components/claim/claim-profile-button";
 import { BookConsultationButton } from "@/components/telemedicine/book-consultation-button";
 import { ProfessionalReviewsDisplay } from "@/components/reviews/ProfessionalReviewsDisplay";
 import { ProfessionalReviewForm } from "@/components/reviews/ProfessionalReviewForm";
+import { getDisplayName } from "@/lib/professional-display";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
@@ -25,6 +26,7 @@ async function getDoctor(slug: string) {
     select: {
       id: true,
       slug: true,
+      type: true,
       full_name: true,
       full_name_ne: true,
       photo_url: true,
@@ -74,8 +76,7 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
     };
   }
 
-  // full_name already includes "Dr." prefix from the database
-  const displayName = doctor.full_name;
+  const displayName = getDisplayName(doctor);
 
   const specialty = doctor.specialties && doctor.specialties.length > 0
     ? doctor.specialties[0]
@@ -129,7 +130,7 @@ function generateJsonLd(
   lang: string,
   reviews: Awaited<ReturnType<typeof getPublishedReviews>>,
 ) {
-  const displayName = doctor.full_name;
+  const displayName = getDisplayName(doctor);
 
   const baseJsonLd = {
     "@context": "https://schema.org",
@@ -194,7 +195,7 @@ export default async function DoctorPage({ params }: DoctorPageProps) {
   }
 
   const reviews = await getPublishedReviews(doctor.id);
-  const displayName = doctor.full_name;
+  const displayName = getDisplayName(doctor);
   const jsonLd = generateJsonLd(doctor, lang, reviews);
 
   return (

@@ -14,7 +14,7 @@ function LoginPageContent() {
   const { lang } = useParams<{ lang: string }>();
   const isNe = lang === "ne";
   const explicitCallback = searchParams.get("callbackUrl");
-  const callbackUrl = explicitCallback || "/";
+  const callbackUrl = explicitCallback || `/${lang}/dashboard`;
   const error = searchParams.get("error");
 
   const [authMethod, setAuthMethod] = useState<AuthMethod>("phone");
@@ -39,6 +39,14 @@ function LoginPageContent() {
     google: isNe ? "Google बाट" : "Continue with Google",
     noAccount: isNe ? "खाता छैन?" : "Don't have an account?",
     createAccount: isNe ? "खाता बनाउनुहोस्" : "Create Account",
+    errorInvalidCredentials: isNe ? "अमान्य इमेल वा पासवर्ड" : "Invalid email or password",
+    errorInvalidPhone: isNe ? "अमान्य फोन नम्बर वा पासवर्ड" : "Invalid phone number or password",
+    errorOAuth: isNe ? "यो इमेल पहिले नै अर्को खातासँग जोडिएको छ" : "This email is already associated with another account",
+    errorEmailSignin: isNe ? "प्रमाणीकरण इमेल पठाउन त्रुटि भयो" : "Error sending verification email",
+    errorGeneric: isNe ? "साइन इन गर्दा त्रुटि भयो" : "An error occurred during sign in",
+    errorUnexpected: isNe ? "अनपेक्षित त्रुटि भयो" : "An unexpected error occurred",
+    placeholderPassword: isNe ? "पासवर्ड प्रविष्ट गर्नुहोस्" : "Enter your password",
+    decorativeTagline: isNe ? "नेपालको सबैभन्दा ठूलो स्वास्थ्य पेशेवर निर्देशिका" : "Nepal\u0027s largest healthcare professional directory",
   };
 
   const getRoleRedirect = async (): Promise<string> => {
@@ -91,14 +99,15 @@ function LoginPageContent() {
         router.refresh();
       }
     } catch {
-      setFormError("An unexpected error occurred");
+      setFormError(t.errorUnexpected);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    const destination = explicitCallback || `/${lang}/dashboard`;
+    // Google OAuth users go to onboarding check — it redirects existing users to dashboard
+    const destination = explicitCallback || `/${lang}/onboarding`;
     signIn("google", { callbackUrl: destination });
   };
 
@@ -107,14 +116,14 @@ function LoginPageContent() {
     switch (errorCode) {
       case "CredentialsSignin":
         return authMethod === "phone"
-          ? "Invalid phone number or password"
-          : "Invalid email or password";
+          ? t.errorInvalidPhone
+          : t.errorInvalidCredentials;
       case "OAuthAccountNotLinked":
-        return "This email is already associated with another account";
+        return t.errorOAuth;
       case "EmailSignin":
-        return "Error sending verification email";
+        return t.errorEmailSignin;
       default:
-        return "An error occurred during sign in";
+        return t.errorGeneric;
     }
   };
 
@@ -230,7 +239,7 @@ function LoginPageContent() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="Enter your password"
+                placeholder={t.placeholderPassword}
                 className="w-full px-4 py-3 bg-white border-4 border-foreground focus:outline-none focus:border-primary-blue placeholder:text-foreground/40 transition-colors"
               />
             </div>
@@ -319,7 +328,7 @@ function LoginPageContent() {
               DoctorSewa
             </div>
             <p className="mt-6 text-white/70 max-w-xs">
-              Nepal&apos;s largest healthcare professional directory
+              {t.decorativeTagline}
             </p>
           </div>
         </div>

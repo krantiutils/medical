@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { ClaimProfileButton } from "@/components/claim/claim-profile-button";
 import { ProfessionalReviewsDisplay } from "@/components/reviews/ProfessionalReviewsDisplay";
 import { ProfessionalReviewForm } from "@/components/reviews/ProfessionalReviewForm";
+import { getDisplayName } from "@/lib/professional-display";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
@@ -53,8 +54,7 @@ export async function generateMetadata({ params }: DentistPageProps): Promise<Me
     };
   }
 
-  // full_name already includes "Dr." prefix from the database
-  const displayName = dentist.full_name;
+  const displayName = getDisplayName(dentist);
 
   const specialty = dentist.specialties && dentist.specialties.length > 0
     ? dentist.specialties[0]
@@ -108,7 +108,7 @@ function generateJsonLd(
   lang: string,
   reviews: Awaited<ReturnType<typeof getPublishedReviews>>,
 ) {
-  const displayName = dentist.full_name;
+  const displayName = getDisplayName(dentist);
 
   const baseJsonLd = {
     "@context": "https://schema.org",
@@ -172,7 +172,7 @@ export default async function DentistPage({ params }: DentistPageProps) {
   }
 
   const reviews = await getPublishedReviews(dentist.id);
-  const displayName = dentist.full_name;
+  const displayName = getDisplayName(dentist);
   const jsonLd = generateJsonLd(dentist, lang, reviews);
 
   return (

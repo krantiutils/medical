@@ -6,14 +6,15 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
-interface PendingClaim {
+interface ClaimRequest {
   id: string;
   status: "PENDING" | "APPROVED" | "REJECTED";
   submitted_at: string;
   professional: {
     full_name: string;
-    type: string;
+    type: "DOCTOR" | "DENTIST" | "PHARMACIST";
     slug: string;
   };
 }
@@ -74,17 +75,20 @@ export default function DashboardPage() {
   const { lang } = useParams<{ lang: string }>();
   const isNe = lang === "ne";
 
-  const [pendingClaims, setPendingClaims] = useState<PendingClaim[]>([]);
+  const [pendingClaims, setPendingClaims] = useState<ClaimRequest[]>([]);
+  const [allClaims, setAllClaims] = useState<ClaimRequest[]>([]);
   const [loadingClaims, setLoadingClaims] = useState(true);
 
-  // Fetch pending claims
+  // Fetch claims
   useEffect(() => {
     if (status === "authenticated") {
       fetch("/api/dashboard/claims")
         .then((res) => res.json())
         .then((data) => {
-          const pending = (data.requests || []).filter(
-            (r: PendingClaim) => r.status === "PENDING"
+          const requests = data.requests || [];
+          setAllClaims(requests);
+          const pending = requests.filter(
+            (r: ClaimRequest) => r.status === "PENDING"
           );
           setPendingClaims(pending);
         })
@@ -93,6 +97,9 @@ export default function DashboardPage() {
     }
   }, [status]);
 
+  const isProfessional = session?.user?.role === "PROFESSIONAL";
+  const hasNoClaims = !loadingClaims && allClaims.length === 0;
+
   const t = {
     pendingVerification: isNe ? "प्रमाणीकरण विचाराधीन" : "Verification Pending",
     pendingDesc: isNe
@@ -100,6 +107,11 @@ export default function DashboardPage() {
       : "Your profile claim has been submitted and is awaiting review.",
     viewStatus: isNe ? "स्थिति हेर्नुहोस्" : "View Status",
     submitted: isNe ? "पेश गरिएको" : "Submitted",
+    claimProfile: isNe ? "आफ्नो प्रोफाइल दाबी गर्नुहोस्" : "Claim Your Professional Profile",
+    claimProfileDesc: isNe
+      ? "आफ्नो दर्ता नम्बरबाट खोजेर आफ्नो प्रोफाइल प्रमाणित गर्नुहोस्।"
+      : "Verify your identity by searching with your NMC/NDA/NPC registration number.",
+    claimNow: isNe ? "अहिले दाबी गर्नुहोस्" : "Claim Now",
   };
 
   if (status === "loading") {
@@ -173,6 +185,46 @@ export default function DashboardPage() {
           </p>
         </div>
 
+        {/* Claim Profile CTA for professionals who haven't started claiming */}
+        {isProfessional && hasNoClaims && (
+          <div className="mb-8">
+            <div className="bg-primary-blue/10 border-4 border-primary-blue p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-primary-blue flex items-center justify-center flex-shrink-0 border-2 border-foreground">
+                    <svg
+                      className="w-6 h-6 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-foreground">
+                      {t.claimProfile}
+                    </h3>
+                    <p className="text-foreground/70 text-sm">
+                      {t.claimProfileDesc}
+                    </p>
+                  </div>
+                </div>
+                <Link href={`/${lang}/claim`}>
+                  <Button variant="primary" className="whitespace-nowrap">
+                    {t.claimNow}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Pending Verification Banner */}
         {!loadingClaims && pendingClaims.length > 0 && (
           <div className="mb-8">
@@ -207,9 +259,7 @@ export default function DashboardPage() {
                       </p>
                       <p className="text-foreground/70 text-sm mt-1">
                         <strong>
-                          {claim.professional.type === "PHARMACIST"
-                            ? claim.professional.full_name
-                            : `Dr. ${claim.professional.full_name}`}
+                          {getDisplayName(claim.professional)}
                         </strong>{" "}
                         &middot; {t.submitted}: {formatDate(claim.submitted_at)}
                       </p>

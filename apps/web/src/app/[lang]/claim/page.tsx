@@ -6,6 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface Professional {
   id: string;
@@ -121,10 +122,6 @@ function ClaimPageContent() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleSearch();
-  };
-
-  const getDisplayName = (prof: Professional) => {
-    return prof.type === "PHARMACIST" ? prof.full_name : `Dr. ${prof.full_name}`;
   };
 
   const getTypeLabel = (type: string) => {

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface ReviewPageProps {
   params: Promise<{
@@ -429,7 +430,7 @@ function ReviewPageContent({ params }: ReviewPageProps) {
                         className="w-full text-left p-4 border-4 border-foreground hover:border-primary-blue transition-colors"
                       >
                         <div className="font-bold">
-                          Dr. {apt.doctor.full_name}
+                          {getDisplayName(apt.doctor as { full_name: string; type: "DOCTOR" | "DENTIST" | "PHARMACIST" })}
                         </div>
                         <div className="text-sm text-foreground/70">
                           {t.appointmentOn}{" "}
@@ -477,7 +478,7 @@ function ReviewPageContent({ params }: ReviewPageProps) {
                       {selectedDoctor.full_name.charAt(0)}
                     </div>
                     <div>
-                      <div className="font-bold">Dr. {selectedDoctor.full_name}</div>
+                      <div className="font-bold">{getDisplayName(selectedDoctor as { full_name: string; type: "DOCTOR" | "DENTIST" | "PHARMACIST" })}</div>
                       <div className="text-sm text-foreground/70">
                         {t[selectedDoctor.type.toLowerCase() as keyof typeof t] ||
                           selectedDoctor.type}

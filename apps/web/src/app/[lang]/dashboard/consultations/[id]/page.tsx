@@ -6,13 +6,14 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface Doctor {
   id: string;
   full_name: string;
   photo_url: string | null;
   slug: string;
-  type: string;
+  type: "DOCTOR" | "DENTIST" | "PHARMACIST";
   specialties: string[];
   degree: string | null;
   registration_number: string;
@@ -462,7 +463,7 @@ export default function ConsultationDetailPage() {
                   href={`/${lang}/doctors/${consultation.doctor.slug}`}
                   className="text-xl font-bold text-foreground hover:text-primary-blue"
                 >
-                  Dr. {consultation.doctor.full_name}
+                  {getDisplayName(consultation.doctor)}
                 </Link>
                 {consultation.doctor.specialties.length > 0 && (
                   <p className="text-sm text-foreground/60">

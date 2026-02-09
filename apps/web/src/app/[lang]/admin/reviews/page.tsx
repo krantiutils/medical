@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface Review {
   id: string;
@@ -20,7 +21,7 @@ interface Review {
   doctor: {
     id: string;
     full_name: string;
-    type: string;
+    type: "DOCTOR" | "DENTIST" | "PHARMACIST";
   } | null;
   clinic: {
     id: string;
@@ -399,7 +400,7 @@ export default function AdminReviewsPage() {
                               {translations.doctor}:
                             </span>
                             <span className="font-medium">
-                              Dr. {review.doctor.full_name}
+                              {getDisplayName(review.doctor)}
                             </span>
                           </div>
                         )}
@@ -494,7 +495,7 @@ export default function AdminReviewsPage() {
                     <p>
                       <span className="font-bold">{translations.doctor}:</span>{" "}
                       {selectedReview.doctor
-                        ? `Dr. ${selectedReview.doctor.full_name}`
+                        ? getDisplayName(selectedReview.doctor)
                         : translations.generalReview}
                     </p>
                     <p>
