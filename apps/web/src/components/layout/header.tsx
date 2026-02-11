@@ -198,13 +198,22 @@ export function Header({ lang }: HeaderProps) {
                       {t("profile")}
                     </Link>
                     {!session.user.hasClinicAccess && (
-                      <Link
-                        href={getLinkHref("/dashboard/appointments")}
-                        className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        {t("appointments")}
-                      </Link>
+                      <>
+                        <Link
+                          href={getLinkHref("/dashboard/appointments")}
+                          className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          {t("appointments")}
+                        </Link>
+                        <Link
+                          href={getLinkHref("/dashboard/family")}
+                          className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          {t("familyMembers")}
+                        </Link>
+                      </>
                     )}
                     {session.user.hasClinicAccess && (
                       <Link
