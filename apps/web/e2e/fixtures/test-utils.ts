@@ -406,14 +406,25 @@ export async function assertJsonLd(
   page: Page,
   expectedType: string
 ): Promise<Record<string, unknown>> {
-  const jsonLdScript = page.locator('script[type="application/ld+json"]');
-  const content = await jsonLdScript.textContent();
-  expect(content).not.toBeNull();
+  const jsonLdScripts = page.locator('script[type="application/ld+json"]');
+  const count = await jsonLdScripts.count();
+  expect(count).toBeGreaterThan(0);
 
-  const data = JSON.parse(content as string) as Record<string, unknown>;
-  expect(data["@type"]).toBe(expectedType);
+  // Find the JSON-LD script matching the expected type
+  for (let i = 0; i < count; i++) {
+    const content = await jsonLdScripts.nth(i).textContent();
+    if (!content) continue;
+    const data = JSON.parse(content) as Record<string, unknown>;
+    if (data["@type"] === expectedType) {
+      return data;
+    }
+  }
 
-  return data;
+  // If not found, fail with useful message
+  const firstContent = await jsonLdScripts.first().textContent();
+  throw new Error(
+    `No JSON-LD script with @type="${expectedType}" found. First script: ${firstContent?.slice(0, 200)}`
+  );
 }
 
 /**

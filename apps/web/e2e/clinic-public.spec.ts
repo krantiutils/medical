@@ -105,7 +105,7 @@ test.describe("Clinic Public Page - Operating Hours", () => {
 
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     for (const day of days) {
-      await expect(page.getByText(day, { exact: true })).toBeVisible();
+      await expect(page.getByText(day, { exact: true }).first()).toBeVisible();
     }
   });
 
@@ -125,7 +125,7 @@ test.describe("Clinic Public Page - Operating Hours", () => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}`);
 
     // Monday should show 09:00 - 17:00 based on seed data
-    const mondayRow = page.locator("div").filter({ hasText: /^Monday/ });
+    const mondayRow = page.locator("div").filter({ hasText: /^Monday/ }).first();
     await expect(mondayRow).toContainText("09:00");
     await expect(mondayRow).toContainText("17:00");
   });
@@ -162,8 +162,8 @@ test.describe("Clinic Public Page - Doctors List", () => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}`);
 
     // Dashboard Test Clinic should have Dr. Ram Sharma and Dr. Sita Thapa affiliated
-    await expect(page.getByText(/Dr\. Ram Sharma/i)).toBeVisible();
-    await expect(page.getByText(/Dr\. Sita Thapa/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Dr\. Ram Sharma/i }).first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Dr\. Sita Thapa/i }).first()).toBeVisible();
   });
 
   test("should display doctor type badges", async ({ page }) => {
@@ -177,6 +177,9 @@ test.describe("Clinic Public Page - Doctors List", () => {
   test("should display View Profile links", async ({ page }) => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}`);
 
+    // Wait for clinic content to render (not a 404 page)
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(TEST_CLINIC.name, { timeout: 15000 });
+
     // View Profile links should be visible
     const viewProfileLinks = page.getByText("View Profile", { exact: true });
     await expect(viewProfileLinks.first()).toBeVisible();
@@ -185,12 +188,15 @@ test.describe("Clinic Public Page - Doctors List", () => {
   test("should navigate to doctor profile when clicking doctor card", async ({ page }) => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}`);
 
-    // Click on Dr. Ram Sharma's card
-    const doctorCard = page.locator("a").filter({ hasText: /Dr\. Ram Sharma/i }).first();
-    await doctorCard.click();
+    // Wait for clinic content to render (not a 404 page)
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(TEST_CLINIC.name, { timeout: 15000 });
 
-    // Should navigate to doctor detail page
-    await expect(page).toHaveURL(/\/en\/doctors\/dr-ram-sharma-12345/);
+    // Click on the "View Profile" link for Dr. Ram Sharma
+    const viewProfileLink = page.getByRole("link", { name: /View Profile/i }).first();
+    await viewProfileLink.click();
+
+    // Should navigate to doctor detail page (allow extra time for compilation)
+    await expect(page).toHaveURL(/\/en\/doctors\/dr-ram-sharma-12345/, { timeout: 15000 });
   });
 });
 
@@ -266,7 +272,7 @@ test.describe("Clinic Public Page - JSON-LD Structured Data", () => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}`);
 
     // Script elements are hidden, so check textContent instead of visibility
-    const jsonLdScript = page.locator('script[type="application/ld+json"]');
+    const jsonLdScript = page.locator('script[type="application/ld+json"]').first();
     const content = await jsonLdScript.textContent();
     expect(content).not.toBeNull();
     expect(content).toContain("@context");
@@ -351,8 +357,8 @@ test.describe("Clinic Public Page - Language Support", () => {
     await page.goto(`/ne/clinic/${TEST_CLINIC.slug}`);
 
     // Should show Nepali day names
-    await expect(page.getByText("आइतबार", { exact: true })).toBeVisible(); // Sunday
-    await expect(page.getByText("सोमबार", { exact: true })).toBeVisible(); // Monday
+    await expect(page.getByText("आइतबार", { exact: true }).first()).toBeVisible(); // Sunday
+    await expect(page.getByText("सोमबार", { exact: true }).first()).toBeVisible(); // Monday
   });
 
   test("should display Nepali section headings", async ({ page }) => {
