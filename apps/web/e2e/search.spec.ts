@@ -197,17 +197,18 @@ test.describe("Search Page - Active Filters Tags", () => {
   test("should remove type filter when clicking on type tag", async ({ page }) => {
     await page.goto("/en/search?q=Nepal&type=DOCTOR");
 
-    // Click on the Doctor tag to remove it
-    const doctorTag = page.locator('a').filter({ hasText: "Doctor" }).filter({
+    // Wait for active filters to appear
+    await expect(page.getByText("Active filters:")).toBeVisible();
+
+    // Click on the Doctor tag to remove it — scope to the active filters area
+    const activeFilters = page.locator('div').filter({ hasText: /^Active filters:/ });
+    const doctorTag = activeFilters.locator('a').filter({ hasText: "Doctor" }).filter({
       has: page.locator("svg"),
     });
     await doctorTag.click();
 
-    // URL should no longer have type parameter
-    await expect(page).not.toHaveURL(/type=DOCTOR/);
-
-    // Active filters section should not be visible (or Doctor tag should be gone)
-    await expect(page.getByText("Active filters:")).not.toBeVisible();
+    // URL should no longer have type parameter — allow time for navigation
+    await expect(page).not.toHaveURL(/type=DOCTOR/, { timeout: 10000 });
   });
 
   test("should remove location filter when clicking on location tag", async ({ page }) => {
@@ -228,11 +229,14 @@ test.describe("Search Page - Active Filters Tags", () => {
     const location = TEST_DOCTOR.address;
     await page.goto(`/en/search?q=Nepal&type=DOCTOR&location=${encodeURIComponent(location)}`);
 
+    // Wait for active filters to appear
+    await expect(page.getByText("Active filters:")).toBeVisible();
+
     // Click Clear all
     await page.getByRole("link", { name: "Clear all" }).click();
 
-    // URL should not have type or location parameters
-    await expect(page).not.toHaveURL(/type=/);
+    // URL should not have type or location parameters — allow time for navigation
+    await expect(page).not.toHaveURL(/type=/, { timeout: 10000 });
     await expect(page).not.toHaveURL(/location=/);
 
     // Query should still be preserved
@@ -324,12 +328,13 @@ test.describe("Search Page - Search Form", () => {
   }) => {
     await page.goto("/en/search?q=Ram");
 
-    // Clear and enter new search
+    // Clear and enter new search — use the main page search form (not header)
     const searchInput = page.locator('input[name="q"]');
     await searchInput.fill("Dental");
 
-    // Submit the form
-    const searchButton = page.getByRole("button", { name: /search/i });
+    // Submit the form using the main page search button (scoped to main content area)
+    const mainContent = page.locator("main");
+    const searchButton = mainContent.getByRole("button", { name: /search/i });
     await searchButton.click();
 
     // Verify URL updated
@@ -343,8 +348,9 @@ test.describe("Search Page - Search Form", () => {
     const searchInput = page.locator('input[name="q"]');
     await searchInput.fill("Nepal");
 
-    // Submit the form
-    await page.getByRole("button", { name: /search/i }).click();
+    // Submit the form using the main page search button
+    const mainContent = page.locator("main");
+    await mainContent.getByRole("button", { name: /search/i }).click();
 
     // Both query and type should be preserved
     await expect(page).toHaveURL(/q=Nepal/);

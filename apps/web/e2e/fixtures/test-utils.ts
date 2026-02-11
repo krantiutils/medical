@@ -406,24 +406,37 @@ export async function assertJsonLd(
   page: Page,
   expectedType: string
 ): Promise<Record<string, unknown>> {
-  const jsonLdScripts = page.locator('script[type="application/ld+json"]');
-  const count = await jsonLdScripts.count();
+  // Pages may have multiple ld+json scripts (e.g. main + breadcrumb).
+  // Find the one whose @type matches the expected type.
+  const scripts = page.locator('script[type="application/ld+json"]');
+  const count = await scripts.count();
   expect(count).toBeGreaterThan(0);
 
-  // Find the JSON-LD script matching the expected type
   for (let i = 0; i < count; i++) {
-    const content = await jsonLdScripts.nth(i).textContent();
+    const content = await scripts.nth(i).textContent();
     if (!content) continue;
     const data = JSON.parse(content) as Record<string, unknown>;
-    if (data["@type"] === expectedType) {
+    const schemaType = data["@type"];
+    // Handle both string and array @type values
+    if (
+      schemaType === expectedType ||
+      (Array.isArray(schemaType) && schemaType.includes(expectedType))
+    ) {
       return data;
     }
   }
 
-  // If not found, fail with useful message
-  const firstContent = await jsonLdScripts.first().textContent();
+  // If no match found, fail with a descriptive message
+  const allTypes: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const content = await scripts.nth(i).textContent();
+    if (content) {
+      const data = JSON.parse(content) as Record<string, unknown>;
+      allTypes.push(String(data["@type"]));
+    }
+  }
   throw new Error(
-    `No JSON-LD script with @type="${expectedType}" found. First script: ${firstContent?.slice(0, 200)}`
+    `No JSON-LD script with @type "${expectedType}" found. Found types: ${allTypes.join(", ")}`
   );
 }
 

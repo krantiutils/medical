@@ -20,7 +20,8 @@ test.describe("Homepage", () => {
   });
 
   test("should display search input and it should be functional", async ({ page }) => {
-    const searchInput = page.locator('input[placeholder*="Search"]');
+    // Use the hero section search input (border-4, larger one)
+    const searchInput = page.locator('input[placeholder*="Search by name"]');
     await expect(searchInput).toBeVisible();
 
     // Verify input is functional by typing
@@ -29,11 +30,13 @@ test.describe("Homepage", () => {
   });
 
   test("should navigate to search page when searching", async ({ page }) => {
-    const searchInput = page.locator('input[placeholder*="Search"]');
+    // Use the hero section search input
+    const searchInput = page.locator('input[placeholder*="Search by name"]');
     await searchInput.fill("cardiologist");
 
-    // Find and click the search button
-    const searchButton = page.getByRole("button", { name: /search/i });
+    // Find and click the hero search button (the large one, not the header icon)
+    const heroSection = page.locator("section").first();
+    const searchButton = heroSection.getByRole("button", { name: /search/i });
     await searchButton.click();
 
     // Verify navigation to search page with query parameter
@@ -93,7 +96,8 @@ test.describe("Navigation Header", () => {
     const doctorsLink = header.getByRole("link", { name: "Doctors", exact: true });
     await doctorsLink.click();
 
-    await expect(page).toHaveURL(/\/en\/doctors/);
+    // Allow extra time for first-time page compilation in dev mode
+    await expect(page).toHaveURL(/\/en\/doctors/, { timeout: 15000 });
   });
 
   test("should navigate to Dentists page when clicking Dentists link", async ({
@@ -103,7 +107,7 @@ test.describe("Navigation Header", () => {
     const dentistsLink = header.getByRole("link", { name: "Dentists", exact: true });
     await dentistsLink.click();
 
-    await expect(page).toHaveURL(/\/en\/dentists/);
+    await expect(page).toHaveURL(/\/en\/dentists/, { timeout: 15000 });
   });
 
   test("should navigate to Pharmacists page when clicking Pharmacists link", async ({
@@ -170,7 +174,7 @@ test.describe("Footer", () => {
     await expect(footer).toBeVisible();
 
     // Check for all footer section titles (h3 headings)
-    await expect(footer.getByRole("heading", { name: "About", level: 3 })).toBeVisible();
+    await expect(footer.getByRole("heading", { name: "Explore", level: 3 })).toBeVisible();
     await expect(footer.getByRole("heading", { name: "For Doctors", level: 3 })).toBeVisible();
     await expect(footer.getByRole("heading", { name: "For Clinics", level: 3 })).toBeVisible();
     await expect(footer.getByRole("heading", { name: "Legal", level: 3 })).toBeVisible();

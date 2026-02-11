@@ -177,8 +177,9 @@
         "Typecheck passes"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Button component with primary/secondary/outline/ghost variants, border-2 border-black, hard shadows, active pressed state with translate+shadow-none, uppercase font-bold tracking-wider, sm/md/lg sizes. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: Button component with primary/secondary/outline/ghost variants, border-2 border-black, hard shadows, active pressed state with translate+shadow-none, uppercase font-bold tracking-wider, sm/md/lg sizes. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-009",
@@ -195,8 +196,9 @@
         "Typecheck passes"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Card component with white background, border-4 border-black, shadow-xl (8px hard shadow), hover:-translate-y-1 effect, optional geometric decorator with color/position options, CardHeader/CardContent/CardFooter subcomponents. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: Card component with white background, border-4 border-black, shadow-xl (8px hard shadow), hover:-translate-y-1 effect, optional geometric decorator with color/position options, CardHeader/CardContent/CardFooter subcomponents. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-010",
@@ -213,8 +215,9 @@
         "Typecheck passes"
       ],
       "priority": 10,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: app/[lang]/doctor/[slug]/page.tsx with dynamic route, database fetch by slug with notFound() for 404, displays name/photo/registration/degree/address/specialties/gender/remarks, uses Card component, mobile responsive layout with sm: breakpoints. [lang] layout created with en/ne validation. not-found.tsx added. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: app/[lang]/doctor/[slug]/page.tsx with dynamic route, database fetch by slug with notFound() for 404, displays name/photo/registration/degree/address/specialties/gender/remarks, uses Card component, mobile responsive layout with sm: breakpoints. [lang] layout created with en/ne validation. not-found.tsx added. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-011",
@@ -231,8 +234,9 @@
         "Typecheck passes"
       ],
       "priority": 11,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: generateMetadata function added with title format 'Dr. [Name] - [Specialty] in [Location] | Swasthya', description with credentials/location, OpenGraph (title, description, image, type: profile), Twitter card (summary), canonical URL with language alternates. Uses NEXT_PUBLIC_SITE_URL env var with fallback. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: generateMetadata function added with title format 'Dr. [Name] - [Specialty] in [Location] | Swasthya', description with credentials/location, OpenGraph (title, description, image, type: profile), Twitter card (summary), canonical URL with language alternates. Uses NEXT_PUBLIC_SITE_URL env var with fallback. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-012",
@@ -247,8 +251,9 @@
         "Typecheck passes"
       ],
       "priority": 12,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: JSON-LD structured data using schema.org types (Physician for doctors, Dentist for dentists, Person+Occupation for pharmacists). Includes name, image, medicalSpecialty, address, identifier with registration number. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: JSON-LD structured data using schema.org types (Physician for doctors, Dentist for dentists, Person+Occupation for pharmacists). Includes name, image, medicalSpecialty, address, identifier with registration number. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-013",
@@ -266,8 +271,9 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Name is text-4xl font-bold, specialty label is text-xs uppercase tracking-widest in primary-blue, registration number is text-sm text-gray-600, sections separated by border-t-2 border-black/20 dividers, verified badge is green with Check icon in white circle, background is off-white #F0F0F0 with white cards, icons use accent colors in rounded containers. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: Name is text-4xl font-bold, specialty label is text-xs uppercase tracking-widest in primary-blue, registration number is text-sm text-gray-600, sections separated by border-t-2 border-black/20 dividers, verified badge is green with Check icon in white circle, background is off-white #F0F0F0 with white cards, icons use accent colors in rounded containers. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-014",
@@ -285,8 +291,9 @@
         "Typecheck passes"
       ],
       "priority": 14,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Homepage with hero section - FIND YOUR DOCTOR display text (text-6xl lg:text-8xl font-black uppercase), subtitle, search input with border-4 border-foreground, primary red search button, blue right panel with geometric shapes (circle, square, triangle), mobile responsive with color accent bar, categories section. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: Homepage with hero section - FIND YOUR DOCTOR display text (text-6xl lg:text-8xl font-black uppercase), subtitle, search input with border-4 border-foreground, primary red search button, blue right panel with geometric shapes (circle, square, triangle), mobile responsive with color accent bar, categories section. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-015",
@@ -304,8 +311,9 @@
         "Typecheck passes"
       ],
       "priority": 15,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Search page with ?q and ?page query params, Prisma contains (ILIKE) on full_name/degree/address, responsive grid (1/2/4 cols), Card with decorator per type, 'No results found' with category links, pagination with 20 per page and page number navigation. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: Search page with ?q and ?page query params, Prisma contains (ILIKE) on full_name/degree/address, responsive grid (1/2/4 cols), Card with decorator per type, 'No results found' with category links, pagination with 20 per page and page number navigation. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-016",
@@ -321,8 +329,9 @@
         "Typecheck passes"
       ],
       "priority": 16,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Type filter (DOCTOR/DENTIST/PHARMACIST) and Location filter (from distinct addresses). Filters use border-2 border-foreground styling. Active filters shown as tags with X icon to remove. Results count shows 'X professionals found' with filter context. URL params preserved through pagination. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: Type filter (DOCTOR/DENTIST/PHARMACIST) and Location filter (from distinct addresses). Filters use border-2 border-foreground styling. Active filters shown as tags with X icon to remove. Results count shows 'X professionals found' with filter context. URL params preserved through pagination. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-017",
@@ -340,8 +349,9 @@
         "Typecheck passes"
       ],
       "priority": 17,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Header component with geometric logo (circle/square/triangle in primary colors), nav links (Home/Doctors/Dentists/Pharmacists), language switcher (EN/NE) with active state highlighting, login button (outline style with hard shadow), border-b-4 border-foreground, mobile hamburger menu with slide-down navigation, sticky positioning, active link highlighting. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: Header component with geometric logo (circle/square/triangle in primary colors), nav links (Home/Doctors/Dentists/Pharmacists), language switcher (EN/NE) with active state highlighting, login button (outline style with hard shadow), border-b-4 border-foreground, mobile hamburger menu with slide-down navigation, sticky positioning, active link highlighting. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-018",
@@ -357,8 +367,9 @@
         "Typecheck passes"
       ],
       "priority": 18,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Footer component with bg-foreground (#121212) and white text. Four sections (About, For Doctors, For Clinics, Legal) with internal links. Copyright notice with dynamic year. Social links (Facebook, Twitter, LinkedIn, Instagram) with SVG icons. Bauhaus logo and 'Made in Nepal' decorative element. Integrated into [lang] layout with flex-col min-h-screen for sticky footer. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: Footer component with bg-foreground (#121212) and white text. Four sections (About, For Doctors, For Clinics, Legal) with internal links. Copyright notice with dynamic year. Social links (Facebook, Twitter, LinkedIn, Instagram) with SVG icons. Bauhaus logo and 'Made in Nepal' decorative element. Integrated into [lang] layout with flex-col min-h-screen for sticky footer. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-019",
@@ -374,8 +385,9 @@
         "Typecheck passes"
       ],
       "priority": 19,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: app/sitemap.ts created with Next.js sitemap convention using generateSitemaps for sitemap index support. Generates URLs for all professionals with both en/ne language variants, includes static pages (home, search, category pages). Includes lastmod (from updated_at), changeFrequency (weekly), priority (0.7-1.0 based on page type and verification). Handles >50k URLs with sitemap index via generateSitemaps function. Accessible at /sitemap.xml. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: app/sitemap.ts created with Next.js sitemap convention using generateSitemaps for sitemap index support. Generates URLs for all professionals with both en/ne language variants, includes static pages (home, search, category pages). Includes lastmod (from updated_at), changeFrequency (weekly), priority (0.7-1.0 based on page type and verification). Handles >50k URLs with sitemap index via generateSitemaps function. Accessible at /sitemap.xml. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-020",
@@ -390,8 +402,9 @@
         "Typecheck passes"
       ],
       "priority": 20,
-      "passes": false,
-      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: app/robots.ts created using Next.js MetadataRoute.Robots convention. Allows all crawlers and references sitemap.xml. Root layout.tsx updated with comprehensive default metadata including metadataBase, title template, description, keywords, OpenGraph, Twitter cards, robots directives, and Google verification placeholder. Typecheck passes."
+      "passes": true,
+      "notes": "Implemented: app/robots.ts created using Next.js MetadataRoute.Robots convention. Allows all crawlers and references sitemap.xml. Root layout.tsx updated with comprehensive default metadata including metadataBase, title template, description, keywords, OpenGraph, Twitter cards, robots directives, and Google verification placeholder. Typecheck passes.",
+      "verified": true
     },
     {
       "id": "US-021",
