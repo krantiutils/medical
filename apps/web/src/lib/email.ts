@@ -1011,7 +1011,118 @@ export function clinicVerificationRejectedEmail(
   };
 }
 
+// Email template: Clinic Changes Requested
+export function clinicChangesRequestedEmail(
+  clinicEmail: string,
+  clinicData: {
+    name: string;
+    type: string;
+  },
+  notes: string,
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const t = {
+    en: {
+      subject: "Action Required: Changes Requested for Your Clinic",
+      heading: "Changes Requested",
+      greeting: `Hello,`,
+      body1: (clinicName: string) =>
+        `We have reviewed the registration for "${clinicName}" and are requesting some changes before we can approve it.`,
+      notesLabel: "Admin Notes:",
+      body2:
+        "Please update your clinic registration to address the issues mentioned above. Once updated, your registration will be re-reviewed.",
+      editRegistration: "Edit Registration",
+      footer:
+        "If you have any questions, please contact our support team.",
+    },
+    ne: {
+      subject: "कार्य आवश्यक: तपाईंको क्लिनिकमा परिवर्तनहरू अनुरोध गरिएको छ",
+      heading: "परिवर्तनहरू अनुरोध गरिएको",
+      greeting: `नमस्कार,`,
+      body1: (clinicName: string) =>
+        `हामीले "${clinicName}" को दर्ता समीक्षा गरेका छौं र स्वीकृत गर्नुअघि केही परिवर्तनहरू अनुरोध गर्दैछौं।`,
+      notesLabel: "प्रशासक नोटहरू:",
+      body2:
+        "कृपया माथि उल्लेखित समस्याहरू समाधान गर्न आफ्नो क्लिनिक दर्ता अपडेट गर्नुहोस्। अपडेट पछि, तपाईंको दर्ता पुन: समीक्षा गरिनेछ।",
+      editRegistration: "दर्ता सम्पादन गर्नुहोस्",
+      footer:
+        "यदि तपाईंको कुनै प्रश्न छ भने, कृपया हाम्रो सहायता टोलीलाई सम्पर्क गर्नुहोस्।",
+    },
+  };
+
+  const tr = t[lang];
+  const typeLabel =
+    clinicTypeLabels[lang][clinicData.type as keyof typeof clinicTypeLabels.en] ||
+    clinicData.type;
+  const settingsUrl = `${SITE_URL}/${lang}/clinic/dashboard/settings`;
+
+  const content = `
+    <!-- Color accent bar - yellow for attention -->
+    <div style="height: 8px; background-color: ${colors.primaryYellow}; margin: -40px -40px 30px -40px;"></div>
+
+    <h1 style="font-size: 28px; font-weight: 900; color: ${colors.foreground}; margin: 0 0 20px; text-transform: uppercase;">
+      ${tr.heading}
+    </h1>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 16px;">
+      ${tr.greeting}
+    </p>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 24px;">
+      ${tr.body1(clinicData.name)}
+    </p>
+
+    <!-- Clinic info box -->
+    <div style="background-color: ${colors.background}; border: 2px solid ${colors.foreground}; padding: 16px; margin-bottom: 20px;">
+      <span style="font-weight: 700; color: ${colors.foreground};">${clinicData.name}</span>
+      <span style="display: inline-block; margin-left: 12px; padding: 4px 12px; background-color: ${colors.primaryBlue}20; border: 1px solid ${colors.primaryBlue}; color: ${colors.primaryBlue}; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+        ${typeLabel}
+      </span>
+    </div>
+
+    <!-- Admin notes box -->
+    <div style="background-color: ${colors.primaryYellow}10; border-left: 4px solid ${colors.primaryYellow}; padding: 20px; margin-bottom: 24px;">
+      <p style="font-size: 12px; font-weight: 700; color: ${colors.foreground}; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px;">
+        ${tr.notesLabel}
+      </p>
+      <p style="font-size: 16px; color: ${colors.foreground}; margin: 0; white-space: pre-wrap;">
+        ${notes}
+      </p>
+    </div>
+
+    <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 30px;">
+      ${tr.body2}
+    </p>
+
+    <div style="text-align: center; margin-bottom: 30px;">
+      ${emailButton(tr.editRegistration, settingsUrl, "primary")}
+    </div>
+
+    <p style="font-size: 13px; color: ${colors.foreground}; opacity: 0.6; margin: 0; border-top: 2px solid ${colors.foreground}20; padding-top: 20px;">
+      ${tr.footer}
+    </p>
+  `;
+
+  return {
+    subject: tr.subject,
+    html: baseTemplate(content, lang),
+  };
+}
+
 // Convenience functions for clinic verification emails
+export async function sendClinicChangesRequestedEmail(
+  clinicEmail: string,
+  clinicData: {
+    name: string;
+    type: string;
+  },
+  notes: string,
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = clinicChangesRequestedEmail(clinicEmail, clinicData, notes, lang);
+  return sendEmail(clinicEmail, subject, html);
+}
+
 export async function sendClinicVerificationApprovedEmail(
   clinicEmail: string,
   clinicData: {
@@ -1337,4 +1448,81 @@ export async function sendStaffWelcomeEmail(
 ): Promise<{ success: boolean; error?: string }> {
   const { subject, html } = staffWelcomeEmail(recipientEmail, data, lang);
   return sendEmail(recipientEmail, subject, html);
+}
+
+// ============================================================================
+// Password Reset Email
+// ============================================================================
+
+export function passwordResetEmail(
+  userInfo: { name: string },
+  token: string,
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const isNe = lang === "ne";
+
+  const subject = isNe
+    ? "पासवर्ड रिसेट अनुरोध - DoctorSewa"
+    : "Password Reset Request - DoctorSewa";
+
+  const heading = isNe ? "पासवर्ड रिसेट" : "Password Reset";
+  const greeting = isNe
+    ? `नमस्कार ${userInfo.name},`
+    : `Hello ${userInfo.name},`;
+  const bodyText = isNe
+    ? "हामीले तपाईंको खाताको लागि पासवर्ड रिसेट अनुरोध प्राप्त गर्यौं। तलको बटनमा क्लिक गरेर नयाँ पासवर्ड सेट गर्नुहोस्।"
+    : "We received a password reset request for your account. Click the button below to set a new password.";
+  const expiryText = isNe
+    ? "यो लिंक १ घण्टामा समाप्त हुनेछ।"
+    : "This link will expire in 1 hour.";
+  const ignoreText = isNe
+    ? "यदि तपाईंले यो अनुरोध गर्नुभएको छैन भने, यो इमेल बेवास्ता गर्नुहोस्।"
+    : "If you did not request this, please ignore this email.";
+  const buttonText = isNe ? "पासवर्ड रिसेट गर्नुहोस्" : "Reset Password";
+
+  const resetUrl = `${SITE_URL}/en/reset-password?token=${token}`;
+
+  const content = `
+    <!-- Accent bar -->
+    <tr>
+      <td style="background-color: ${colors.primaryRed}; height: 6px;"></td>
+    </tr>
+    <!-- Content -->
+    <tr>
+      <td style="background-color: ${colors.white}; padding: 40px 30px;">
+        <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 20px; color: ${colors.foreground};">
+          ${heading}
+        </h2>
+        <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">
+          ${greeting}
+        </p>
+        <p style="font-size: 15px; color: ${colors.foreground}; margin: 0 0 25px; line-height: 1.6;">
+          ${bodyText}
+        </p>
+
+        <div style="text-align: center; margin: 30px 0;">
+          ${emailButton(buttonText, resetUrl)}
+        </div>
+
+        <p style="font-size: 13px; color: #666; margin: 20px 0 5px; line-height: 1.5;">
+          ${expiryText}
+        </p>
+        <p style="font-size: 13px; color: #999; margin: 0; line-height: 1.5;">
+          ${ignoreText}
+        </p>
+      </td>
+    </tr>
+  `;
+
+  return { subject, html: baseTemplate(content, lang) };
+}
+
+export async function sendPasswordResetEmail(
+  email: string,
+  userInfo: { name: string },
+  token: string,
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = passwordResetEmail(userInfo, token, lang);
+  return sendEmail(email, subject, html);
 }
