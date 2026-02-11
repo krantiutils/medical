@@ -33,6 +33,11 @@ export function BookConsultationButton({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Family member state
+  const [familyMembers, setFamilyMembers] = useState<{ id: string; name: string; relation: string }[]>([]);
+  const [selectedFamilyMemberId, setSelectedFamilyMemberId] = useState("");
+  const [familyMembersLoaded, setFamilyMembersLoaded] = useState(false);
+
   const t = {
     en: {
       bookVideoConsultation: "Book Video Consultation",
@@ -53,6 +58,10 @@ export function BookConsultationButton({
       bookingWith: "Video consultation with",
       errorBooking: "Failed to book consultation. Please try again.",
       invalidTime: "Please select a valid date and time (at least 30 minutes from now)",
+      bookingFor: "Booking For",
+      myself: "Myself",
+      familyMember: "Family Member",
+      selectFamilyMember: "Select family member",
     },
     ne: {
       bookVideoConsultation: "भिडियो परामर्श बुक गर्नुहोस्",
@@ -73,10 +82,34 @@ export function BookConsultationButton({
       bookingWith: "भिडियो परामर्श",
       errorBooking: "परामर्श बुक गर्न असफल। कृपया पुन: प्रयास गर्नुहोस्।",
       invalidTime: "कृपया मान्य मिति र समय छान्नुहोस् (अहिलेबाट कम्तिमा ३० मिनेट)",
+      bookingFor: "कसको लागि बुकिङ",
+      myself: "आफ्नो लागि",
+      familyMember: "परिवारको सदस्य",
+      selectFamilyMember: "परिवारको सदस्य छान्नुहोस्",
     },
   };
 
   const tr = t[lang as keyof typeof t] || t.en;
+
+  // Fetch family members when modal opens
+  const handleOpenModal = () => {
+    setShowModal(true);
+    if (!familyMembersLoaded) {
+      fetch("/api/patient/family-members")
+        .then((res) => res.json())
+        .then((data) => {
+          setFamilyMembers(
+            (data.family_members || []).map((m: { id: string; name: string; relation: string }) => ({
+              id: m.id,
+              name: m.name,
+              relation: m.relation,
+            }))
+          );
+          setFamilyMembersLoaded(true);
+        })
+        .catch((err) => console.error("Error fetching family members:", err));
+    }
+  };
 
   if (!telemedicineEnabled) {
     return null;
@@ -119,6 +152,7 @@ export function BookConsultationButton({
           type: bookingType === "instant" ? "INSTANT" : "SCHEDULED",
           scheduled_at,
           chief_complaint: chiefComplaint || null,
+          family_member_id: selectedFamilyMemberId || undefined,
         }),
       });
 
@@ -173,7 +207,7 @@ export function BookConsultationButton({
       <div className="space-y-3">
         <Button
           variant="primary"
-          onClick={() => setShowModal(true)}
+          onClick={handleOpenModal}
           className="w-full"
         >
           <svg
@@ -331,6 +365,27 @@ export function BookConsultationButton({
                       className="w-full px-3 py-2 bg-white border-2 border-foreground focus:outline-none focus:border-primary-blue"
                     />
                   </div>
+                </div>
+              )}
+
+              {/* Family Member Selector */}
+              {familyMembers.length > 0 && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+                    {tr.bookingFor}
+                  </label>
+                  <select
+                    value={selectedFamilyMemberId}
+                    onChange={(e) => setSelectedFamilyMemberId(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border-2 border-foreground focus:outline-none focus:border-primary-blue"
+                  >
+                    <option value="">{tr.myself}</option>
+                    {familyMembers.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name} ({m.relation.toLowerCase()})
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
 

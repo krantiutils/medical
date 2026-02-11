@@ -23,6 +23,12 @@ interface AppointmentClinic {
   phone: string | null;
 }
 
+interface AppointmentFamilyMember {
+  id: string;
+  name: string;
+  relation: string;
+}
+
 interface Appointment {
   id: string;
   appointment_date: string;
@@ -36,6 +42,7 @@ interface Appointment {
   created_at: string;
   doctor: AppointmentDoctor;
   clinic: AppointmentClinic;
+  family_member: AppointmentFamilyMember | null;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -100,6 +107,7 @@ export default function AppointmentsPage() {
       online: "Online",
       walkIn: "Walk-in",
       phone: "Phone",
+      bookingFor: "For",
     },
     ne: {
       title: "मेरा अपोइन्टमेन्टहरू",
@@ -124,6 +132,7 @@ export default function AppointmentsPage() {
       online: "अनलाइन",
       walkIn: "वाक-इन",
       phone: "फोन",
+      bookingFor: "को लागि",
     },
   };
 
@@ -370,6 +379,13 @@ export default function AppointmentsPage() {
                           {tr.clinic}: {appointment.clinic.name}
                           {appointment.clinic.address && ` \u2014 ${appointment.clinic.address}`}
                         </p>
+                        {appointment.family_member && (
+                          <p className="text-sm text-primary-blue mt-1">
+                            {tr.bookingFor}: <span className="font-bold">{appointment.family_member.name}</span>
+                            {" "}
+                            <span className="text-foreground/50">({appointment.family_member.relation.toLowerCase()})</span>
+                          </p>
+                        )}
                         {appointment.chief_complaint && (
                           <p className="text-sm text-foreground/50 mt-1 truncate">
                             {appointment.chief_complaint}
