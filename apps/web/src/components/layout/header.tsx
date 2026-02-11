@@ -94,7 +94,7 @@ export function Header({ lang }: HeaderProps) {
               />
             </div>
             <span className="text-lg lg:text-xl font-black uppercase tracking-tight">
-              Swasthya
+              DoctorSewa
             </span>
           </Link>
 
@@ -195,20 +195,24 @@ export function Header({ lang }: HeaderProps) {
                     >
                       {t("profile")}
                     </Link>
-                    <Link
-                      href={getLinkHref("/dashboard/appointments")}
-                      className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      {t("appointments")}
-                    </Link>
-                    <Link
-                      href={getLinkHref("/clinic/dashboard")}
-                      className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      {t("clinicDashboard")}
-                    </Link>
+                    {!session.user.hasClinicAccess && (
+                      <Link
+                        href={getLinkHref("/dashboard/appointments")}
+                        className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        {t("appointments")}
+                      </Link>
+                    )}
+                    {session.user.hasClinicAccess && (
+                      <Link
+                        href={getLinkHref("/clinic/dashboard")}
+                        className="block px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-muted transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        {t("clinicDashboard")}
+                      </Link>
+                    )}
                     {(session.user as { role?: string }).role === "ADMIN" && (
                       <>
                         <div className="border-t-2 border-foreground/10 mt-1 mb-1" />
@@ -238,7 +242,7 @@ export function Header({ lang }: HeaderProps) {
                     )}
                     <button
                       type="button"
-                      onClick={() => { setUserMenuOpen(false); signOut({ callbackUrl: `/${lang}` }); }}
+                      onClick={() => { setUserMenuOpen(false); signOut({ redirect: false }).then(() => { window.location.href = `/${lang}`; }); }}
                       className="w-full text-left px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-primary-red hover:bg-primary-red/10 transition-colors border-t-2 border-foreground/10"
                     >
                       {t("signOut")}
@@ -372,7 +376,7 @@ export function Header({ lang }: HeaderProps) {
             {session?.user ? (
               <div className="flex items-center gap-2">
                 <Link
-                  href={getLinkHref("/clinic/dashboard")}
+                  href={getLinkHref(session.user.hasClinicAccess ? "/clinic/dashboard" : "/dashboard/appointments")}
                   className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-bold uppercase tracking-wider bg-white text-foreground border-2 border-foreground shadow-[4px_4px_0_0_#121212] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -383,7 +387,7 @@ export function Header({ lang }: HeaderProps) {
                 </Link>
                 <button
                   type="button"
-                  onClick={() => { setMobileMenuOpen(false); signOut({ callbackUrl: `/${lang}` }); }}
+                  onClick={() => { setMobileMenuOpen(false); signOut({ redirect: false }).then(() => { window.location.href = `/${lang}`; }); }}
                   className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-bold uppercase tracking-wider text-primary-red border-2 border-primary-red active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100"
                 >
                   {t("signOut")}

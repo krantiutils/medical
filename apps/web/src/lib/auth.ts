@@ -14,11 +14,41 @@ function normalizePhoneForLookup(phone: string): string {
   return digits;
 }
 
+// Cookie domain for cross-subdomain auth sharing in production
+const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN;
+const isProduction = process.env.NODE_ENV === "production";
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  cookies: {
+    sessionToken: {
+      name: isProduction
+        ? "__Secure-next-auth.session-token"
+        : "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: isProduction,
+        domain: baseDomain ? `.${baseDomain}` : undefined,
+      },
+    },
+    callbackUrl: {
+      name: isProduction
+        ? "__Secure-next-auth.callback-url"
+        : "next-auth.callback-url",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: isProduction,
+        domain: baseDomain ? `.${baseDomain}` : undefined,
+      },
+    },
   },
   pages: {
     signIn: "/en/login",
@@ -121,7 +151,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, trigger, isNewUser }) {
       // On sign-in, user object is available - store user data in token
       if (user) {
         token.id = user.id;
@@ -133,6 +163,33 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.role = dbUser.role;
         }
+        // Check if user has any clinic staff membership
+        const clinicStaff = await prisma.clinicStaff.findFirst({
+          where: { user_id: user.id },
+          select: { id: true },
+        });
+        token.hasClinicAccess = !!clinicStaff;
+        // Mark new Google OAuth users for onboarding
+        if (isNewUser && account?.provider === "google") {
+          token.needsOnboarding = true;
+        }
+      }
+      // Handle session refresh (called via useSession().update())
+      if (trigger === "update") {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { role: true },
+        });
+        if (dbUser) {
+          token.role = dbUser.role;
+          token.needsOnboarding = false;
+        }
+        // Re-check clinic access (e.g. after registering a clinic)
+        const clinicStaff = await prisma.clinicStaff.findFirst({
+          where: { user_id: token.id as string },
+          select: { id: true },
+        });
+        token.hasClinicAccess = !!clinicStaff;
       }
       return token;
     },
@@ -141,6 +198,8 @@ export const authOptions: NextAuthOptions = {
       if (session.user && token) {
         session.user.id = token.id as string;
         session.user.role = token.role as UserRole | undefined;
+        session.user.needsOnboarding = (token.needsOnboarding as boolean) || false;
+        session.user.hasClinicAccess = (token.hasClinicAccess as boolean) || false;
       }
       return session;
     },

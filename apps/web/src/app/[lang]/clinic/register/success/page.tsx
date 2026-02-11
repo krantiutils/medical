@@ -53,7 +53,13 @@ function ClinicRegisterSuccessPageContent() {
     emailConfirmation: isNepali
       ? "पुष्टि इमेल पठाइएको छ।"
       : "A confirmation email has been sent.",
-    goHome: isNepali ? "गृहपृष्ठमा जानुहोस्" : "Go to Homepage",
+    subdomainInfo: isNepali
+      ? "तपाईंको क्लिनिक यहाँ उपलब्ध हुनेछ"
+      : "Your clinic will be available at",
+    afterVerification: isNepali
+      ? "प्रमाणित भएपछि"
+      : "once verified",
+    goHome: isNepali ? "क्लिनिक ड्यासबोर्डमा जानुहोस्" : "Go to Clinic Dashboard",
     registerAnother: isNepali ? "अर्को क्लिनिक दर्ता गर्नुहोस्" : "Register Another Clinic",
   };
 
@@ -99,9 +105,9 @@ function ClinicRegisterSuccessPageContent() {
                 />
               </svg>
             </div>
-            <div className="text-5xl font-black mb-4">स्वास्थ्य</div>
+            <div className="text-5xl font-black mb-4">डक्टरसेवा</div>
             <div className="text-lg font-medium uppercase tracking-widest opacity-80">
-              Swasthya
+              DoctorSewa
             </div>
           </div>
         </div>
@@ -142,6 +148,30 @@ function ClinicRegisterSuccessPageContent() {
               </div>
             </div>
           </div>
+
+          {/* Subdomain URL Info */}
+          {clinicSlug && (
+            <div className="flex items-center gap-3 mb-6 p-4 bg-primary-blue/5 border-4 border-primary-blue/30">
+              <svg
+                className="w-5 h-5 text-primary-blue flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                />
+              </svg>
+              <div className="text-sm">
+                <span className="text-foreground/70">{t.subdomainInfo} </span>
+                <span className="font-bold text-primary-blue">{clinicSlug}.doctorsewa.org</span>
+                <span className="text-foreground/70"> {t.afterVerification}</span>
+              </div>
+            </div>
+          )}
 
           {/* Pending Verification Info */}
           <div className="bg-primary-yellow/10 border-4 border-primary-yellow p-6 mb-8">
@@ -199,7 +229,7 @@ function ClinicRegisterSuccessPageContent() {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href={`/${lang}`} className="flex-1">
+            <Link href={`/${lang}/clinic/dashboard`} className="flex-1">
               <Button variant="primary" size="lg" className="w-full">
                 {t.goHome}
               </Button>

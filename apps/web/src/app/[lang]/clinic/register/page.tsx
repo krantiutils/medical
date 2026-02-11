@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -46,6 +46,7 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 
 interface FormErrors {
   name?: string;
+  subdomain?: string;
   type?: string;
   address?: string;
   phone?: string;
@@ -53,6 +54,17 @@ interface FormErrors {
   website?: string;
   logo?: string;
   photos?: string;
+}
+
+type SubdomainStatus = "idle" | "checking" | "available" | "taken" | "invalid";
+
+function slugifyName(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 const CLINIC_TYPES: { value: ClinicType; labelEn: string; labelNe: string }[] = [
@@ -99,9 +111,57 @@ export default function ClinicRegisterPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [customServiceInput, setCustomServiceInput] = useState("");
 
+  const [subdomain, setSubdomain] = useState("");
+  const [subdomainStatus, setSubdomainStatus] = useState<SubdomainStatus>("idle");
+  const [subdomainError, setSubdomainError] = useState<string | null>(null);
+  const [subdomainManuallyEdited, setSubdomainManuallyEdited] = useState(false);
+  const subdomainCheckTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Debounced subdomain availability check
+  const checkSubdomainAvailability = useCallback((slug: string) => {
+    if (subdomainCheckTimer.current) {
+      clearTimeout(subdomainCheckTimer.current);
+    }
+
+    if (!slug || slug.length < 3) {
+      setSubdomainStatus("idle");
+      setSubdomainError(null);
+      return;
+    }
+
+    setSubdomainStatus("checking");
+    setSubdomainError(null);
+
+    subdomainCheckTimer.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/clinic/check-slug?slug=${encodeURIComponent(slug)}`);
+        const data = await res.json();
+        if (data.available) {
+          setSubdomainStatus("available");
+          setSubdomainError(null);
+        } else {
+          setSubdomainStatus(data.error?.includes("reserved") || data.error?.includes("taken") ? "taken" : "invalid");
+          setSubdomainError(data.error || "Not available");
+        }
+      } catch {
+        setSubdomainStatus("idle");
+        setSubdomainError("Failed to check availability");
+      }
+    }, 300);
+  }, []);
+
+  // Auto-suggest subdomain from clinic name (unless user manually edited)
+  useEffect(() => {
+    if (!subdomainManuallyEdited && formData.name) {
+      const suggested = slugifyName(formData.name);
+      setSubdomain(suggested);
+      checkSubdomainAvailability(suggested);
+    }
+  }, [formData.name, subdomainManuallyEdited, checkSubdomainAvailability]);
 
   // Translations
   const t = {
@@ -113,6 +173,14 @@ export default function ClinicRegisterPage() {
     nameLabel: isNepali ? "क्लिनिकको नाम" : "Clinic Name",
     namePlaceholder: isNepali ? "तपाईंको क्लिनिकको नाम" : "Your clinic name",
     nameRequired: isNepali ? "क्लिनिकको नाम आवश्यक छ" : "Clinic name is required",
+    subdomainLabel: isNepali ? "सबडोमेन (URL)" : "Subdomain (URL)",
+    subdomainHint: isNepali
+      ? "तपाईंको क्लिनिकको वेब ठेगाना छान्नुहोस्"
+      : "Choose your clinic's web address",
+    subdomainRequired: isNepali ? "सबडोमेन आवश्यक छ" : "Subdomain is required",
+    subdomainChecking: isNepali ? "जाँच गर्दै..." : "Checking...",
+    subdomainAvailable: isNepali ? "उपलब्ध छ!" : "Available!",
+    subdomainTaken: isNepali ? "उपलब्ध छैन" : "Not available",
     typeLabel: isNepali ? "क्लिनिकको प्रकार" : "Clinic Type",
     typePlaceholder: isNepali ? "प्रकार छान्नुहोस्" : "Select type",
     typeRequired: isNepali ? "क्लिनिकको प्रकार आवश्यक छ" : "Clinic type is required",
@@ -378,6 +446,13 @@ export default function ClinicRegisterPage() {
       newErrors.name = t.nameRequired;
     }
 
+    // Subdomain validation
+    if (!subdomain.trim()) {
+      newErrors.subdomain = t.subdomainRequired;
+    } else if (subdomainStatus !== "available") {
+      newErrors.subdomain = subdomainError || t.subdomainTaken;
+    }
+
     // Type validation
     if (!formData.type) {
       newErrors.type = t.typeRequired;
@@ -436,6 +511,7 @@ export default function ClinicRegisterPage() {
       // Build FormData for API submission
       const apiFormData = new FormData();
       apiFormData.append("name", formData.name.trim());
+      apiFormData.append("subdomain", subdomain.trim());
       apiFormData.append("type", formData.type);
       apiFormData.append("address", formData.address.trim());
       apiFormData.append("phone", formData.phone.trim());
@@ -525,9 +601,9 @@ export default function ClinicRegisterPage() {
           </div>
           <div className="relative z-10 flex flex-col items-center justify-center w-full p-12">
             <div className="text-white text-center">
-              <div className="text-5xl font-black mb-4">स्वास्थ्य</div>
+              <div className="text-5xl font-black mb-4">डक्टरसेवा</div>
               <div className="text-lg font-medium uppercase tracking-widest opacity-80">
-                Swasthya
+                DoctorSewa
               </div>
               <p className="mt-6 text-white/70 max-w-xs">
                 {t.subtitle}
@@ -596,9 +672,9 @@ export default function ClinicRegisterPage() {
         {/* Center content */}
         <div className="relative z-10 flex flex-col items-center justify-center w-full p-12">
           <div className="text-white text-center">
-            <div className="text-5xl font-black mb-4">स्वास्थ्य</div>
+            <div className="text-5xl font-black mb-4">डक्टरसेवा</div>
             <div className="text-lg font-medium uppercase tracking-widest opacity-80">
-              Swasthya
+              DoctorSewa
             </div>
             <p className="mt-6 text-white/70 max-w-xs">
               {t.subtitle}
@@ -643,6 +719,68 @@ export default function ClinicRegisterPage() {
               />
               {errors.name && (
                 <p className="mt-1 text-sm text-primary-red">{errors.name}</p>
+              )}
+            </div>
+
+            {/* Subdomain Picker */}
+            <div>
+              <label
+                htmlFor="subdomain"
+                className="block text-xs font-bold uppercase tracking-widest mb-2"
+              >
+                {t.subdomainLabel} <span className="text-primary-red">*</span>
+              </label>
+              <p className="text-xs text-foreground/60 mb-2">{t.subdomainHint}</p>
+              <div className="flex items-stretch">
+                <input
+                  id="subdomain"
+                  type="text"
+                  value={subdomain}
+                  onChange={(e) => {
+                    const val = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+                    setSubdomain(val);
+                    setSubdomainManuallyEdited(true);
+                    checkSubdomainAvailability(val);
+                    if (errors.subdomain) {
+                      setErrors((prev) => ({ ...prev, subdomain: undefined }));
+                    }
+                  }}
+                  placeholder="your-clinic"
+                  className={`flex-1 px-4 py-3 bg-white border-4 border-r-0 ${
+                    errors.subdomain ? "border-primary-red" : subdomainStatus === "available" ? "border-verified" : "border-foreground"
+                  } focus:outline-none focus:border-primary-blue placeholder:text-foreground/40 transition-colors font-mono text-sm`}
+                />
+                <span className="inline-flex items-center px-3 py-3 bg-foreground/5 border-4 border-l-0 border-foreground text-sm text-foreground/60 font-medium whitespace-nowrap">
+                  .doctorsewa.org
+                </span>
+              </div>
+              {/* Status indicator */}
+              <div className="mt-1.5 flex items-center gap-1.5 min-h-[20px]">
+                {subdomainStatus === "checking" && (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-primary-blue border-t-transparent rounded-full animate-spin" />
+                    <span className="text-xs text-primary-blue font-medium">{t.subdomainChecking}</span>
+                  </>
+                )}
+                {subdomainStatus === "available" && (
+                  <>
+                    <svg className="w-4 h-4 text-verified" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-xs text-verified font-bold">{t.subdomainAvailable}</span>
+                  </>
+                )}
+                {(subdomainStatus === "taken" || subdomainStatus === "invalid") && subdomainError && (
+                  <>
+                    <svg className="w-4 h-4 text-primary-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span className="text-xs text-primary-red font-bold">{subdomainError}</span>
+                  </>
+                )}
+              </div>
+              {errors.subdomain && subdomainStatus !== "taken" && subdomainStatus !== "invalid" && (
+                <p className="mt-1 text-sm text-primary-red">{errors.subdomain}</p>
               )}
             </div>
 
