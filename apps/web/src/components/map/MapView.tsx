@@ -3,6 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap } from "leaflet";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function sanitizeHref(href: string): string {
+  // Only allow relative paths starting with /
+  if (href.startsWith("/")) return href;
+  return "#";
+}
+
 export interface MapMarker {
   id: string;
   lat: number;
@@ -37,6 +52,8 @@ export function MapView({
 }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<LeafletMap | null>(null);
+  const onMarkerClickRef = useRef(onMarkerClick);
+  onMarkerClickRef.current = onMarkerClick;
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -124,13 +141,18 @@ export function MapView({
           ? `<br><strong>${marker.distance < 1 ? Math.round(marker.distance * 1000) + "m" : marker.distance.toFixed(1) + "km"}</strong> away`
           : "";
 
+        const safeType = escapeHtml(marker.type || "");
+        const safeTitle = escapeHtml(marker.title);
+        const safeSubtitle = marker.subtitle ? escapeHtml(marker.subtitle) : "";
+        const safeHref = marker.href ? sanitizeHref(marker.href) : "";
+
         const popupContent = `
           <div style="min-width:180px;font-family:system-ui,sans-serif;">
-            <div style="font-size:11px;text-transform:uppercase;font-weight:700;letter-spacing:0.05em;color:#6b7280;margin-bottom:2px;">${marker.type || ""}</div>
-            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">${marker.title}</div>
-            ${marker.subtitle ? `<div style="font-size:12px;color:#6b7280;">${marker.subtitle}</div>` : ""}
+            <div style="font-size:11px;text-transform:uppercase;font-weight:700;letter-spacing:0.05em;color:#6b7280;margin-bottom:2px;">${safeType}</div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">${safeTitle}</div>
+            ${safeSubtitle ? `<div style="font-size:12px;color:#6b7280;">${safeSubtitle}</div>` : ""}
             ${distText}
-            ${marker.href ? `<a href="${marker.href}" style="display:inline-block;margin-top:8px;padding:4px 12px;background:#121212;color:white;text-decoration:none;font-size:12px;font-weight:700;text-transform:uppercase;">View</a>` : ""}
+            ${safeHref ? `<a href="${safeHref}" style="display:inline-block;margin-top:8px;padding:4px 12px;background:#121212;color:white;text-decoration:none;font-size:12px;font-weight:700;text-transform:uppercase;">View</a>` : ""}
           </div>
         `;
 
@@ -138,8 +160,9 @@ export function MapView({
           .addTo(map)
           .bindPopup(popupContent);
 
-        if (onMarkerClick) {
-          m.on("click", () => onMarkerClick(marker));
+        if (onMarkerClickRef.current) {
+          const cb = onMarkerClickRef.current;
+          m.on("click", () => cb(marker));
         }
 
         bounds.extend([marker.lat, marker.lng]);
@@ -158,7 +181,7 @@ export function MapView({
     }
 
     updateMarkers();
-  }, [markers, userLocation, ready, onMarkerClick]);
+  }, [markers, userLocation, ready]);
 
   // Update center/zoom when they change
   useEffect(() => {
