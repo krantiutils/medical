@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // Common lab tests database (for clinics that haven't set up their own)
 const COMMON_LAB_TESTS = [
@@ -104,26 +103,21 @@ const COMMON_LAB_TESTS = [
 
 // GET /api/clinic/lab-tests - Get lab tests
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Find user's verified clinic
-  const clinic = await prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: session.user.id,
-      verified: true,
-    },
-  });
-
-  if (!clinic) {
+  const access = await requireClinicPermission("lab:view");
+  if (!access.hasAccess) {
+    if (access.reason === "no_clinic") {
+      return NextResponse.json(
+        { error: access.message, code: "NO_CLINIC" },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
-      { error: "No verified clinic found", code: "NO_CLINIC" },
-      { status: 404 }
+      { error: access.message },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
     );
   }
+
+  const clinicId = access.clinicId;
 
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q") || "";
@@ -133,7 +127,7 @@ export async function GET(request: NextRequest) {
     // First try to get clinic's own lab tests
     const clinicTests = await prisma.labTest.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: clinicId,
         is_active: true,
         ...(query && {
           OR: [
@@ -150,7 +144,7 @@ export async function GET(request: NextRequest) {
     // Get categories from clinic's tests
     const clinicCategories = await prisma.labTest.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: clinicId,
         is_active: true,
       },
       select: {
@@ -196,7 +190,7 @@ export async function GET(request: NextRequest) {
         turnaround_hrs: null,
         is_active: true,
         meta: null,
-        clinic_id: clinic.id,
+        clinic_id: clinicId,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })),
@@ -214,24 +208,17 @@ export async function GET(request: NextRequest) {
 
 // POST /api/clinic/lab-tests - Create a clinic-specific lab test
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Find user's verified clinic
-  const clinic = await prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: session.user.id,
-      verified: true,
-    },
-  });
-
-  if (!clinic) {
+  const access = await requireClinicPermission("lab");
+  if (!access.hasAccess) {
+    if (access.reason === "no_clinic") {
+      return NextResponse.json(
+        { error: access.message, code: "NO_CLINIC" },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
-      { error: "No verified clinic found", code: "NO_CLINIC" },
-      { status: 404 }
+      { error: access.message },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
     );
   }
 
@@ -271,7 +258,7 @@ export async function POST(request: NextRequest) {
         unit: unit || null,
         price: price || 0,
         turnaround_hrs: turnaround_hrs || null,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
     });
 

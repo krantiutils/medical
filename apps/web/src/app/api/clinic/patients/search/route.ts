@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireAnyClinicPermission } from "@/lib/require-clinic-access";
 
 /**
  * GET /api/clinic/patients/search
@@ -13,10 +12,18 @@ import { prisma } from "@swasthya/database";
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireAnyClinicPermission(["patients", "patients:view"]);
+    if (!access.hasAccess) {
+      if (access.reason === "no_clinic") {
+        return NextResponse.json(
+          { error: access.message, code: "NO_CLINIC" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json(
+        { error: access.message },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const searchParams = request.nextUrl.searchParams;
@@ -26,26 +33,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ patients: [] });
     }
 
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: { id: true },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Search patients by phone or name
     const patients = await prisma.patient.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         OR: [
           {
             phone: {

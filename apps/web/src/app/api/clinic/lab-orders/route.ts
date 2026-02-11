@@ -1,28 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma, LabOrderStatus, LabOrderPriority } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/lab-orders - List lab orders for a clinic
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Find user's verified clinic
-  const clinic = await prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: session.user.id,
-      verified: true,
-    },
-  });
-
-  if (!clinic) {
+  const access = await requireClinicPermission("lab:view");
+  if (!access.hasAccess) {
+    if (access.reason === "no_clinic") {
+      return NextResponse.json(
+        { error: access.message, code: "NO_CLINIC" },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
-      { error: "No verified clinic found", code: "NO_CLINIC" },
-      { status: 404 }
+      { error: access.message },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
     );
   }
 
@@ -35,7 +27,7 @@ export async function GET(request: NextRequest) {
 
   // Build filters
   const where: Record<string, unknown> = {
-    clinic_id: clinic.id,
+    clinic_id: access.clinicId,
   };
 
   if (status) {
@@ -105,24 +97,17 @@ export async function GET(request: NextRequest) {
 
 // POST /api/clinic/lab-orders - Create a new lab order
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Find user's verified clinic
-  const clinic = await prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: session.user.id,
-      verified: true,
-    },
-  });
-
-  if (!clinic) {
+  const access = await requireClinicPermission("lab");
+  if (!access.hasAccess) {
+    if (access.reason === "no_clinic") {
+      return NextResponse.json(
+        { error: access.message, code: "NO_CLINIC" },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
-      { error: "No verified clinic found", code: "NO_CLINIC" },
-      { status: 404 }
+      { error: access.message },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
     );
   }
 
@@ -157,7 +142,7 @@ export async function POST(request: NextRequest) {
     const todayEnd = new Date(today.setHours(23, 59, 59, 999));
     const orderCount = await prisma.labOrder.count({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         created_at: {
           gte: todayStart,
           lte: todayEnd,
@@ -173,7 +158,7 @@ export async function POST(request: NextRequest) {
         order_number: orderNumber,
         priority: priority as LabOrderPriority,
         clinical_notes: clinical_notes || null,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
         patient_id,
         ordered_by_id,
         clinical_note_id: clinical_note_id || null,
