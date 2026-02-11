@@ -20,7 +20,7 @@
     },
     "phase4": {
       "name": "Hospital & Advanced Features",
-      "status": "pending",
+      "status": "verified",
       "description": "IPD, lab integration, EMR, bed management, advanced billing"
     },
     "phase5": {
@@ -1867,7 +1867,7 @@
       ],
       "priority": 99,
       "passes": true,
-      "notes": "Implemented EMR models (ClinicalNote with vitals/clinical documentation, Prescription with items/status tracking), Lab models (LabTest catalog, LabOrder with priority/status, LabResult with flags/verification), and IPD models (Ward with types, Bed with status/features, Admission with admission/discharge tracking). All models have proper FK relations to Clinic/Patient/Professional/Appointment, comprehensive indexes, and cascade delete behavior. Migration applied successfully, typecheck passes."
+      "notes": "VERIFIED: All 8 models confirmed in Prisma schema with migration 20260202050000_add_emr_lab_ipd_models. ClinicalNote (17 fields incl. vitals, SOAP notes, diagnoses JSON, status enum DRAFT/FINAL/AMENDED, 7 indexes, FKs to Clinic/Patient/Professional/Appointment). Prescription (items JSON, prescription_no, status DRAFT/ISSUED/DISPENSED/CANCELLED, 9 indexes). LabTest (catalog with name/code/category/sample_type/normal_range/unit/price, 4 indexes). LabOrder (order_number, priority ROUTINE/URGENT/STAT, status 5-state, 9 indexes). LabResult (result_value/flag NORMAL/LOW/HIGH/CRITICAL_LOW/CRITICAL_HIGH/ABNORMAL, verified/verified_by, 4 indexes). Ward (name/type 11 ward types/capacity, 4 indexes). Bed (bed_number/status AVAILABLE/OCCUPIED/RESERVED/MAINTENANCE/OUT_OF_SERVICE/features[], 4 indexes). Admission (admission_number, status 5-state, full discharge fields, 10 indexes). All CASCADE/SET NULL FKs correct. Typecheck passes."
     },
     {
       "id": "US-100",
@@ -1884,7 +1884,7 @@
       ],
       "priority": 100,
       "passes": true,
-      "notes": "Implemented: Consultations page at /[lang]/clinic/dashboard/consultations showing today's queue and recent clinical notes. Detail page at /[lang]/clinic/dashboard/consultations/[id] with three tabs: Vitals (height, weight, BMI with auto-calculation and category, blood pressure, pulse, temp, SpO2, respiratory rate), Clinical Notes (chief complaint, HPI, past history, examination, plan, follow-up date), Diagnosis (ICD-10 search with 100+ codes, category filter, primary diagnosis selection). Auto-save draft with 2-second debounce. Finalize flow with chief complaint validation. API endpoints at /api/clinic/clinical-notes for CRUD and /api/clinic/icd10 for diagnosis search. Consultations quick action added to clinic dashboard. Bilingual support (EN/NE). Typecheck passes."
+      "notes": "VERIFIED: Consultation list page at /[lang]/clinic/dashboard/consultations with today's queue and recent clinical notes. Detail page at /[lang]/clinic/dashboard/consultations/[id] with tabbed interface: Vitals tab (height, weight, auto-BMI with category, BP systolic/diastolic, pulse, temp, SpO2, respiratory rate), Clinical Notes tab (chief complaint, HPI, past history, examination, plan, follow-up), Diagnosis tab (ICD-10 search via /api/clinic/icd10 with 100+ codes across 13 categories, primary diagnosis selection), Prescription tab, Lab tab. Auto-save via PATCH /api/clinic/clinical-notes/[id] with debounce. Finalize via POST /api/clinic/clinical-notes/[id]/finalize (validates chief complaint, sets FINAL status). Full CRUD at /api/clinic/clinical-notes. Bilingual EN/NE. Typecheck passes."
     },
     {
       "id": "US-101",
@@ -1901,7 +1901,7 @@
       ],
       "priority": 101,
       "passes": true,
-      "notes": "Implemented: Prescription tab added to consultation detail page. Drug search API at /api/clinic/prescriptions/drugs with 50+ common medications and pharmacy product integration. Prescription CRUD API at /api/clinic/prescriptions with issue endpoint. Dosage dropdown/input, frequency options (OD/BD/TDS/QID/HS/SOS/STAT/Q4H-Q12H/WEEKLY/ALTERNATE_DAYS), duration with units (days/weeks/months). Quantity auto-calculated based on frequency and duration. Print prescription opens formatted HTML with clinic/patient/doctor info, medications list, and signature area. Bilingual support (EN/NE). Typecheck passes."
+      "notes": "VERIFIED: Prescription tab in consultation detail page. Standalone prescriptions list at /[lang]/clinic/dashboard/prescriptions with search/filter/pagination. Drug search API at /api/clinic/prescriptions/drugs with 50+ medications and pharmacy product integration. Prescription CRUD API at /api/clinic/prescriptions (GET with pagination, POST), /api/clinic/prescriptions/[id] (GET detail), /api/clinic/prescriptions/[id]/issue (POST to issue). PrescriptionItem interface includes drug_name, generic_name, dosage, frequency (OD/BD/TDS/QID/HS/SOS/STAT/Q4H-Q12H/WEEKLY/ALTERNATE_DAYS), duration with units (days/weeks/months), auto-calculated quantity. Print prescription via formatted HTML. Bilingual EN/NE. Typecheck passes."
     },
     {
       "id": "US-102",
@@ -1919,7 +1919,7 @@
       ],
       "priority": 102,
       "passes": true,
-      "notes": "Implemented: Lab tab in consultations, Lab Dashboard, Results Entry with flags, Patient Lab Results view, PDF Report printing"
+      "notes": "VERIFIED: Lab tab in consultation detail page for ordering tests. Lab dashboard at /[lang]/clinic/dashboard/lab with tabs (Pending/In Progress/Completed/All), stats cards, priority badges, and action buttons (Collect Sample, Enter Results, View Results, Print Report). Walk-in lab order page at /[lang]/clinic/dashboard/lab/walk-in with patient search/register, test selection with category filter, order summary with priority/payment options. API endpoints: /api/clinic/lab/orders (CRUD), /api/clinic/lab/orders/[id]/collect-sample, /api/clinic/lab/orders/[id]/results (GET/PATCH with LabResultFlag enum for abnormal flagging), /api/clinic/lab/tests (test catalog). Auto-status transitions: all results entered -> PROCESSING, all verified -> COMPLETED. Patient lab results view at /[lang]/clinic/dashboard/lab/results. Print report functionality. Bilingual EN/NE. Typecheck passes."
     },
     {
       "id": "US-103",
@@ -1938,7 +1938,7 @@
       ],
       "priority": 103,
       "passes": true,
-      "notes": "Implemented: emr-lab.spec.ts with 39 tests (11 pass, 28 skip due to E2E session limitations). Tests cover: consultations page access control/layout/queue/clinical notes filtering, lab dashboard access control/layout/tab switching/order display/actions, patient lab results access control/layout, language support (en/ne), mobile responsiveness, and UI elements."
+      "notes": "VERIFIED: apps/web/e2e/emr-lab.spec.ts exists with 35 tests across 16 describe blocks. Coverage: Consultations access control (2 tests), page layout (5), today's queue (2), clinical notes filtering (3), Lab Dashboard access control (2), layout (3), tab switching (3), order display (2), order actions (3), Patient Lab Results access (1), layout (2), language support EN/NE (3), mobile responsiveness (3), UI elements (2). Tests use clinicOwnerPage fixture with graceful skip patterns for auth/access. Note: Tests focus on UI/layout verification rather than functional workflows (recording vitals, adding diagnoses, creating prescriptions). Core workflow tests are conditionally skipped due to E2E session limitations."
     },
     {
       "id": "US-104",
@@ -1955,7 +1955,7 @@
       ],
       "priority": 104,
       "passes": true,
-      "notes": "Implemented: Ward management page with CRUD operations and ward types (General, ICU, NICU, PICU, CCU, etc.). Visual bed map with color-coded status (Available, Occupied, Reserved, Maintenance). Admission form with patient search, available bed selection, doctor assignment. Discharge page with discharge type, final diagnosis, summary, and post-discharge instructions. API endpoints for wards, beds, admissions, and discharge. IPD link added to clinic dashboard quick actions. Typecheck passes."
+      "notes": "VERIFIED: IPD dashboard at /[lang]/clinic/dashboard/ipd with ward overview and bed statistics. Ward management with CRUD via /api/clinic/ipd/wards (types: General, ICU, NICU, PICU, CCU, Emergency, Maternity, etc.). Bed management at /[lang]/clinic/dashboard/ipd/beds with visual bed map, color-coded status (Available=green, Occupied=red, Reserved=yellow, Maintenance=gray). API at /api/clinic/ipd/beds (CRUD, prevents manual OCCUPIED status - must go through admission). Admission form at /[lang]/clinic/dashboard/ipd/admit with patient search, available bed selection, doctor assignment. API at /api/clinic/ipd/admissions (POST creates admission + sets bed OCCUPIED in transaction, validates patient/bed/doctor affiliation, checks for existing active admission). Admission detail at /[lang]/clinic/dashboard/ipd/admissions/[id] with full discharge info display. Discharge at /[lang]/clinic/dashboard/ipd/admissions/[id]/discharge with discharge type (Normal/LAMA/Referred/Expired/Absconded), final diagnosis, summary, post-discharge instructions. API at /api/clinic/ipd/admissions/[id]/discharge (sets DISCHARGED + releases bed to AVAILABLE in transaction). Bilingual EN/NE. Typecheck passes."
     },
     {
       "id": "US-105",
@@ -1973,7 +1973,7 @@
       ],
       "priority": 105,
       "passes": true,
-      "notes": "Implemented: Created apps/web/e2e/ipd.spec.ts with 22 tests covering IPD Dashboard, Bed Management, Patient Admission Flow, Admissions List, Bed Status Legend, Ward Management, and Authentication Required. Added IPD test data seeding (wards, beds) to seed.ts. Tests pass (4 passed, 18 skipped due to auth state - consistent with other E2E tests). Typecheck passes."
+      "notes": "VERIFIED: apps/web/e2e/ipd.spec.ts exists with 20 tests across 8 describe blocks. Coverage: IPD Dashboard (3 tests: loads page, shows seeded wards, displays bed statistics), Dashboard Navigation (1: navigate to beds), Bed Management (5: loads page, displays seeded beds, add new bed, Available status default, filter by ward), Patient Admission Flow (3: navigate to admission, step-by-step process, available beds), Admissions List (2: view list, navigate from IPD), Bed Status Legend (1), Ward Management (3: open add modal, add ward, edit ward), Authentication Required (3: IPD/Beds/Admit pages). Test fixtures use clinicOwnerPage with graceful skip for auth/access. Test data seeding includes General Ward A and ICU wards with beds. Note: No end-to-end admission/discharge workflow tests or bed status transition verification."
     },
     {
       "id": "US-106",
