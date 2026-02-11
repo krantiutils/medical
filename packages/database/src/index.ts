@@ -30,6 +30,7 @@ export {
   VideoConsultationStatus,
   VideoConsultationType,
   OtpPurpose,
+  MedicalRecordType,
 } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as {

@@ -61,6 +61,14 @@ const quickLinks = [
     color: "bg-primary-blue",
   },
   {
+    label: "Medical Records",
+    labelNe: "मेडिकल रेकर्ड",
+    href: "/medical-records",
+    desc: "View your uploaded medical documents",
+    descNe: "तपाईंका अपलोड गरिएका मेडिकल कागजातहरू हेर्नुहोस्",
+    color: "bg-primary-red",
+  },
+  {
     label: "Claims",
     labelNe: "दावीहरू",
     href: "/claims",
