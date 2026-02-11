@@ -39,11 +39,20 @@ export async function generateMetadata({
       url: canonicalUrl,
       type: "website",
       siteName: lang === "ne" ? "डक्टरसेवा" : "DoctorSewa",
+      images: [
+        {
+          url: "/og-default.png",
+          width: 1200,
+          height: 630,
+          alt: lang === "ne" ? "डक्टरसेवा - स्वास्थ्य सेवा निर्देशिका" : "DoctorSewa - Healthcare Directory",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: ["/og-default.png"],
     },
     alternates: {
       canonical: canonicalUrl,

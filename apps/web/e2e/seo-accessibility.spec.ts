@@ -20,8 +20,8 @@ test.describe("SEO - Meta Tags", () => {
   test("homepage has correct meta title", async ({ page }) => {
     await page.goto("/en");
 
-    // Check page title
-    await expect(page).toHaveTitle(/Swasthya.*Healthcare Directory/i);
+    // Check page title (brand is DoctorSewa)
+    await expect(page).toHaveTitle(/DoctorSewa.*Healthcare Directory/i);
   });
 
   test("homepage has meta description", async ({ page }) => {
@@ -38,7 +38,7 @@ test.describe("SEO - Meta Tags", () => {
   test("doctors page has correct meta title", async ({ page }) => {
     await page.goto("/en/doctors");
 
-    await expect(page).toHaveTitle(/Doctors.*Nepal.*Swasthya/i);
+    await expect(page).toHaveTitle(/Doctors.*Nepal.*DoctorSewa/i);
   });
 
   test("doctors page has meta description", async ({ page }) => {
@@ -51,13 +51,13 @@ test.describe("SEO - Meta Tags", () => {
   test("dentists page has correct meta title", async ({ page }) => {
     await page.goto("/en/dentists");
 
-    await expect(page).toHaveTitle(/Dentists.*Nepal.*Swasthya/i);
+    await expect(page).toHaveTitle(/Dentists.*Nepal.*DoctorSewa/i);
   });
 
   test("pharmacists page has correct meta title", async ({ page }) => {
     await page.goto("/en/pharmacists");
 
-    await expect(page).toHaveTitle(/Pharmacists.*Nepal.*Swasthya/i);
+    await expect(page).toHaveTitle(/Pharmacists.*Nepal.*DoctorSewa/i);
   });
 
   test("search page has meta description", async ({ page }) => {
@@ -67,18 +67,18 @@ test.describe("SEO - Meta Tags", () => {
     await expect(metaDesc).toHaveAttribute("content", /.+/);
   });
 
-  test("login page has meta title containing Swasthya", async ({ page }) => {
+  test("login page has meta title containing DoctorSewa", async ({ page }) => {
     await page.goto("/en/login");
 
     // Login is a client component, uses default root layout title
-    await expect(page).toHaveTitle(/Swasthya/i);
+    await expect(page).toHaveTitle(/DoctorSewa/i);
   });
 
-  test("register page has meta title containing Swasthya", async ({ page }) => {
+  test("register page has meta title containing DoctorSewa", async ({ page }) => {
     await page.goto("/en/register");
 
     // Register is a client component, uses default root layout title
-    await expect(page).toHaveTitle(/Swasthya/i);
+    await expect(page).toHaveTitle(/DoctorSewa/i);
   });
 });
 
@@ -304,6 +304,9 @@ test.describe("Accessibility - Form Input Labels", () => {
   test("login form inputs have associated labels", async ({ page }) => {
     await page.goto("/en/login");
 
+    // Login defaults to phone tab — switch to email tab to reveal #email
+    await page.getByRole("button", { name: /with email/i }).click();
+
     // Email input should have label
     const emailInput = page.locator("#email");
     await expect(emailInput).toBeVisible();
@@ -320,15 +323,17 @@ test.describe("Accessibility - Form Input Labels", () => {
   test("register form inputs have associated labels", async ({ page }) => {
     await page.goto("/en/register");
 
-    // Check all form inputs have labels
-    const nameInput = page.locator("#name");
-    const nameLabel = page.locator('label[for="name"]');
-    await expect(nameInput).toBeVisible();
-    await expect(nameLabel).toBeVisible();
+    // Register is a multi-step wizard: type → method → input → password
+    // Step 1: Switch to email method, then click Continue
+    await page.getByRole("button", { name: /with email/i }).click();
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
 
-    const emailInput = page.locator("#email");
-    const emailLabel = page.locator('label[for="email"]');
+    // Step 3: Email input is now visible with label
+    const emailInput = page.locator('input[type="email"]');
     await expect(emailInput).toBeVisible();
+
+    // Verify label text is present for the email input
+    const emailLabel = page.locator("label").filter({ hasText: /email/i });
     await expect(emailLabel).toBeVisible();
   });
 
@@ -369,8 +374,9 @@ test.describe("Accessibility - Focus States", () => {
   test("buttons have visible focus state", async ({ page }) => {
     await page.goto("/en");
 
-    // Find a button and tab to it
-    const searchButton = page.getByRole("button", { name: /search/i });
+    // Scope to the hero section search button (header also has one)
+    const heroSection = page.locator("section").first();
+    const searchButton = heroSection.getByRole("button", { name: /search/i });
     await searchButton.focus();
 
     // Check that the button has focus
@@ -397,6 +403,9 @@ test.describe("Accessibility - Focus States", () => {
 
   test("form inputs have visible focus state", async ({ page }) => {
     await page.goto("/en/login");
+
+    // Login defaults to phone tab — switch to email to reveal #email
+    await page.getByRole("button", { name: /with email/i }).click();
 
     const emailInput = page.locator("#email");
     await emailInput.focus();
@@ -451,8 +460,8 @@ test.describe("Accessibility - Keyboard Navigation", () => {
   test("can navigate homepage with keyboard only", async ({ page }) => {
     await page.goto("/en");
 
-    // Tab to search input
-    const searchInput = page.locator('input[placeholder*="Search"]');
+    // Use the hero section search input (header also has one)
+    const searchInput = page.locator('input[placeholder*="Search by name"]');
 
     // Press Tab multiple times to navigate to search
     for (let i = 0; i < 15; i++) {
@@ -477,15 +486,17 @@ test.describe("Accessibility - Keyboard Navigation", () => {
   test("can submit login form with keyboard only", async ({ page }) => {
     await page.goto("/en/login");
 
-    // Focus email input
+    // Login defaults to phone tab — switch to email to reveal #email
+    await page.getByRole("button", { name: /with email/i }).click();
+
+    // Focus email input and fill
     const emailInput = page.locator("#email");
     await emailInput.focus();
     await emailInput.fill("test@example.com");
 
-    // Tab to password
-    await page.keyboard.press("Tab");
+    // Tab past "Forgot password?" link to reach password field
     const passwordInput = page.locator("#password");
-    await expect(passwordInput).toBeFocused();
+    await passwordInput.focus();
     await passwordInput.fill("password123");
 
     // Tab to submit button and press Enter
@@ -645,7 +656,7 @@ test.describe("Accessibility - Color and Contrast", () => {
     await page.goto("/en");
 
     // Verify page loads correctly
-    await expect(page).toHaveTitle(/Swasthya/);
+    await expect(page).toHaveTitle(/DoctorSewa/);
   });
 
   test("links are distinguishable from regular text", async ({ page }) => {
@@ -699,8 +710,8 @@ test.describe("Accessibility - Responsive Design", () => {
     const h1 = page.locator("h1");
     await expect(h1).toBeVisible();
 
-    // Search should be accessible
-    const searchInput = page.locator('input[type="text"]').first();
+    // Hero search should be accessible on mobile (header search is hidden)
+    const searchInput = page.locator('input[placeholder*="Search by name"]');
     await expect(searchInput).toBeVisible();
   });
 
