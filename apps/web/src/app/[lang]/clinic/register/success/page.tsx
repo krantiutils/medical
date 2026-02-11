@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,13 @@ import { Button } from "@/components/ui/button";
 function ClinicRegisterSuccessPageContent() {
   const searchParams = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
+  const { update } = useSession();
   const isNepali = lang === "ne";
+
+  // Refresh JWT so hasClinicAccess reflects the newly created ClinicStaff record
+  useEffect(() => {
+    update();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const clinicName = searchParams.get("name") || "";
   const clinicSlug = searchParams.get("slug") || "";

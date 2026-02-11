@@ -106,10 +106,10 @@ export async function getClinicAccess(
   }
 
   // Fallback: Check legacy ownership (claimed_by_id)
+  // Don't filter by verified — owners should access dashboard even before admin verification
   const ownedClinic = await prisma.clinic.findFirst({
     where: {
       claimed_by_id: userId,
-      verified: true,
     },
     select: {
       id: true,

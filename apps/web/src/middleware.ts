@@ -70,15 +70,31 @@ function parseSubdomainPath(pathname: string): { locale: string; pageSlug: strin
  * a domain attribute. The new auth config sets domain=.doctorsewa.org which
  * is a different cookie scope. Without this, users can't log out because
  * NextAuth clears the new-domain cookie while the old one persists.
+ *
+ * Uses a flag cookie to ensure migration runs only once per browser,
+ * not on every request (which would continuously issue delete headers).
  */
 function migrateSessionCookie(request: NextRequest, response: NextResponse): NextResponse {
   if (!BASE_DOMAIN) return response;
 
-  const cookieName = "__Secure-next-auth.session-token";
-  const hasOldCookie = request.cookies.has(cookieName);
+  const migrationFlag = "__ds_cookie_migrated";
 
-  if (hasOldCookie) {
-    // Delete the old cookie (no domain = exact host match)
+  // If we already migrated this browser, skip
+  if (request.cookies.has(migrationFlag)) return response;
+
+  // Set the flag so we don't run again (expires in 1 year)
+  response.cookies.set(migrationFlag, "1", {
+    path: "/",
+    secure: true,
+    httpOnly: true,
+    sameSite: "lax",
+    maxAge: 365 * 24 * 60 * 60,
+    domain: `.${BASE_DOMAIN}`,
+  });
+
+  // Delete old host-only cookies (no domain = exact host match)
+  const cookieName = "__Secure-next-auth.session-token";
+  if (request.cookies.has(cookieName)) {
     response.cookies.set(cookieName, "", {
       path: "/",
       secure: true,
@@ -86,7 +102,6 @@ function migrateSessionCookie(request: NextRequest, response: NextResponse): Nex
       sameSite: "lax",
       maxAge: 0,
     });
-    // Also delete old callback-url cookie
     response.cookies.set("__Secure-next-auth.callback-url", "", {
       path: "/",
       secure: true,
