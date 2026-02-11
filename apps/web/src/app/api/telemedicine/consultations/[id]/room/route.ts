@@ -6,13 +6,13 @@ import {
   PaymentStatus,
 } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
+import { createRoom, generateAuthToken } from "@/lib/hms";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-// Create or get video room for a consultation
-// In production, this would integrate with Daily.co API
+// POST: Create or get video room for a consultation
 export async function POST(request: NextRequest, { params }: RouteParams) {
   const session = await getServerSession(authOptions);
 
@@ -79,13 +79,12 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     );
   }
 
-  // For scheduled consultations, check if it's within the allowed time window
-  // Allow joining 5 minutes before scheduled time
+  // For scheduled consultations, check time window
   if (consultation.scheduled_at) {
     const now = new Date();
     const scheduledTime = new Date(consultation.scheduled_at);
     const earliestJoin = new Date(scheduledTime.getTime() - 5 * 60 * 1000);
-    const latestJoin = new Date(scheduledTime.getTime() + 60 * 60 * 1000); // 1 hour after
+    const latestJoin = new Date(scheduledTime.getTime() + 60 * 60 * 1000);
 
     if (now < earliestJoin) {
       return NextResponse.json(
@@ -106,61 +105,64 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
   }
 
-  // If room already exists, return it
-  if (consultation.room_id && consultation.room_url) {
+  const role = isDoctor ? "doctor" : "patient";
+
+  // If room already exists, generate a fresh auth token and return
+  if (consultation.room_id) {
+    const authToken = generateAuthToken(
+      consultation.room_id,
+      session.user.id,
+      role
+    );
+
     return NextResponse.json({
       room: {
         id: consultation.room_id,
         url: consultation.room_url,
       },
-      role: isDoctor ? "doctor" : "patient",
+      authToken,
+      role,
     });
   }
 
-  // Create a new room
-  // In production, this would call Daily.co API:
-  // const dailyResponse = await fetch('https://api.daily.co/v1/rooms', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Authorization': `Bearer ${process.env.DAILY_API_KEY}`,
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({
-  //     name: `swasthya-${id}`,
-  //     privacy: 'private',
-  //     properties: {
-  //       enable_chat: true,
-  //       enable_screenshare: true,
-  //       exp: Math.floor((Date.now() + 2 * 60 * 60 * 1000) / 1000), // 2 hours
-  //     },
-  //   }),
-  // });
+  // Create a new 100ms room
+  try {
+    const hmsRoom = await createRoom(id);
 
-  // For demo purposes, we create a simulated room
-  const room_id = `swasthya-${id}`;
-  const room_url = `https://swasthya.daily.co/${room_id}`;
+    const authToken = generateAuthToken(
+      hmsRoom.id,
+      session.user.id,
+      role
+    );
 
-  // Update consultation with room info
-  await prisma.videoConsultation.update({
-    where: { id },
-    data: {
-      room_id,
-      room_url,
-      // Also update status to WAITING if patient joins
-      ...(isPatient && consultation.status === VideoConsultationStatus.CONFIRMED
-        ? { status: VideoConsultationStatus.WAITING }
-        : {}),
-    },
-  });
+    // Update consultation with room info
+    await prisma.videoConsultation.update({
+      where: { id },
+      data: {
+        room_id: hmsRoom.id,
+        room_url: hmsRoom.name,
+        ...(isPatient && consultation.status === VideoConsultationStatus.CONFIRMED
+          ? { status: VideoConsultationStatus.WAITING }
+          : {}),
+      },
+    });
 
-  return NextResponse.json({
-    room: {
-      id: room_id,
-      url: room_url,
-    },
-    role: isDoctor ? "doctor" : "patient",
-    message: "Room created successfully",
-  });
+    return NextResponse.json({
+      room: {
+        id: hmsRoom.id,
+        url: hmsRoom.name,
+      },
+      authToken,
+      role,
+      message: "Room created successfully",
+    });
+  } catch (err) {
+    console.error("100ms room creation error:", err);
+    return NextResponse.json(
+      { error: "Failed to create video room. Please try again." },
+      { status: 500 }
+    );
+  }
 }
 
 // GET: Get room info for a consultation
@@ -173,7 +175,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
   const { id } = await params;
 
-  // Check if user is a doctor
   const professional = await prisma.professional.findFirst({
     where: { claimed_by_id: session.user.id },
     select: { id: true },
@@ -208,19 +209,27 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     );
   }
 
-  if (!consultation.room_id || !consultation.room_url) {
+  if (!consultation.room_id) {
     return NextResponse.json(
       { error: "Room has not been created yet" },
       { status: 404 }
     );
   }
 
+  const role = isDoctor ? "doctor" : "patient";
+  const authToken = generateAuthToken(
+    consultation.room_id,
+    session.user.id,
+    role
+  );
+
   return NextResponse.json({
     room: {
       id: consultation.room_id,
       url: consultation.room_url,
     },
+    authToken,
     status: consultation.status,
-    role: isDoctor ? "doctor" : "patient",
+    role,
   });
 }
