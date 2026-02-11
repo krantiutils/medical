@@ -25,10 +25,38 @@ interface Professional {
   photo_url?: string;
 }
 
+interface DoctorFormData {
+  full_name: string;
+  full_name_ne: string;
+  type: string;
+  registration_number: string;
+  degree: string;
+  specialties: string;
+  address: string;
+  role: string;
+}
+
+const EMPTY_FORM: DoctorFormData = {
+  full_name: "",
+  full_name_ne: "",
+  type: "DOCTOR",
+  registration_number: "",
+  degree: "",
+  specialties: "",
+  address: "",
+  role: "permanent",
+};
+
 const ROLE_OPTIONS = [
   { value: "permanent", labelEn: "Permanent", labelNe: "स्थायी" },
   { value: "visiting", labelEn: "Visiting", labelNe: "भ्रमण" },
   { value: "consultant", labelEn: "Consultant", labelNe: "परामर्शदाता" },
+];
+
+const TYPE_OPTIONS = [
+  { value: "DOCTOR", labelEn: "Doctor", labelNe: "डाक्टर" },
+  { value: "DENTIST", labelEn: "Dentist", labelNe: "दन्त चिकित्सक" },
+  { value: "PHARMACIST", labelEn: "Pharmacist", labelNe: "औषधिविद्" },
 ];
 
 export default function ClinicDoctorsPage() {
@@ -48,6 +76,13 @@ export default function ClinicDoctorsPage() {
   const [error, setError] = useState<string | null>(null);
   const [noClinic, setNoClinic] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [createForm, setCreateForm] = useState<DoctorFormData>(EMPTY_FORM);
+  const [creating, setCreating] = useState(false);
+  const [editingDoctor, setEditingDoctor] = useState<Professional | null>(null);
+  const [editForm, setEditForm] = useState<DoctorFormData>(EMPTY_FORM);
+  const [saving, setSaving] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   // Translations
   const t = {
@@ -60,9 +95,9 @@ export default function ClinicDoctorsPage() {
       addDoctor: "Add Doctor",
       currentDoctors: "Current Doctors",
       noDoctors: "No doctors affiliated yet",
-      noDoctorsMessage: "Search for verified professionals and add them to your clinic.",
+      noDoctorsMessage: "Search for professionals or create new ones to add to your clinic.",
       noResults: "No matching professionals found",
-      noResultsMessage: "Try a different search term or check if the professional is verified.",
+      noResultsMessage: "Not in the system? Create a new doctor record below.",
       role: "Role",
       permanent: "Permanent",
       visiting: "Visiting",
@@ -74,8 +109,8 @@ export default function ClinicDoctorsPage() {
       confirm: "Confirm",
       adding: "Adding...",
       removing: "Removing...",
-      selectDoctor: "Select a Doctor",
-      selectDoctorMessage: "Search and select a professional to add to your clinic",
+      selectDoctor: "Add a Doctor",
+      selectDoctorMessage: "Search for an existing professional or create a new one",
       addToClinic: "Add to Clinic",
       loginRequired: "Please log in to manage clinic doctors",
       login: "Login",
@@ -89,8 +124,26 @@ export default function ClinicDoctorsPage() {
       dentist: "Dentist",
       pharmacist: "Pharmacist",
       verified: "Verified",
+      clinicCreated: "Clinic-created",
       viewProfile: "View Profile",
       schedules: "Schedules",
+      edit: "Edit",
+      createNewDoctor: "Create New Doctor",
+      createDoctor: "Create & Add to Clinic",
+      creating: "Creating...",
+      fullName: "Full Name (EN)",
+      fullNameNe: "Full Name (NE)",
+      type: "Type",
+      regNumber: "Registration No.",
+      regNumberHint: "Leave blank to auto-generate",
+      degree: "Degree / Qualification",
+      specialties: "Specialties",
+      specialtiesHint: "Comma-separated (e.g. Cardiology, Internal Medicine)",
+      address: "Address",
+      editDoctor: "Edit Doctor",
+      save: "Save Changes",
+      saving: "Saving...",
+      orCreateNew: "Or create a new doctor record",
     },
     ne: {
       title: "डाक्टरहरू व्यवस्थापन",
@@ -101,9 +154,9 @@ export default function ClinicDoctorsPage() {
       addDoctor: "डाक्टर थप्नुहोस्",
       currentDoctors: "हालका डाक्टरहरू",
       noDoctors: "अझै कुनै डाक्टर सम्बद्ध छैनन्",
-      noDoctorsMessage: "प्रमाणित पेशेवरहरू खोज्नुहोस् र तिनीहरूलाई तपाईंको क्लिनिकमा थप्नुहोस्।",
+      noDoctorsMessage: "पेशेवरहरू खोज्नुहोस् वा नयाँ सिर्जना गर्नुहोस् र तिनीहरूलाई तपाईंको क्लिनिकमा थप्नुहोस्।",
       noResults: "कुनै मिल्दो पेशेवर फेला परेन",
-      noResultsMessage: "फरक खोज शब्द प्रयोग गर्नुहोस् वा पेशेवर प्रमाणित छ कि छैन जाँच गर्नुहोस्।",
+      noResultsMessage: "प्रणालीमा छैन? तल नयाँ डाक्टर रेकर्ड सिर्जना गर्नुहोस्।",
       role: "भूमिका",
       permanent: "स्थायी",
       visiting: "भ्रमण",
@@ -115,8 +168,8 @@ export default function ClinicDoctorsPage() {
       confirm: "पुष्टि गर्नुहोस्",
       adding: "थप्दै...",
       removing: "हटाउँदै...",
-      selectDoctor: "डाक्टर छान्नुहोस्",
-      selectDoctorMessage: "तपाईंको क्लिनिकमा थप्न पेशेवर खोज्नुहोस् र छान्नुहोस्",
+      selectDoctor: "डाक्टर थप्नुहोस्",
+      selectDoctorMessage: "अवस्थित पेशेवर खोज्नुहोस् वा नयाँ सिर्जना गर्नुहोस्",
       addToClinic: "क्लिनिकमा थप्नुहोस्",
       loginRequired: "क्लिनिक डाक्टरहरू व्यवस्थापन गर्न कृपया लगइन गर्नुहोस्",
       login: "लगइन गर्नुहोस्",
@@ -130,8 +183,26 @@ export default function ClinicDoctorsPage() {
       dentist: "दन्त चिकित्सक",
       pharmacist: "औषधिविद्",
       verified: "प्रमाणित",
+      clinicCreated: "क्लिनिक-सिर्जित",
       viewProfile: "प्रोफाइल हेर्नुहोस्",
       schedules: "तालिकाहरू",
+      edit: "सम्पादन",
+      createNewDoctor: "नयाँ डाक्टर सिर्जना गर्नुहोस्",
+      createDoctor: "सिर्जना गरी क्लिनिकमा थप्नुहोस्",
+      creating: "सिर्जना हुँदैछ...",
+      fullName: "पूरा नाम (EN)",
+      fullNameNe: "पूरा नाम (NE)",
+      type: "प्रकार",
+      regNumber: "दर्ता नं.",
+      regNumberHint: "स्वचालित उत्पन्न गर्न खाली छोड्नुहोस्",
+      degree: "डिग्री / योग्यता",
+      specialties: "विशेषताहरू",
+      specialtiesHint: "अल्पविरामले छुट्याउनुहोस् (जस्तै Cardiology, Internal Medicine)",
+      address: "ठेगाना",
+      editDoctor: "डाक्टर सम्पादन",
+      save: "परिवर्तन सुरक्षित गर्नुहोस्",
+      saving: "सुरक्षित गर्दैछ...",
+      orCreateNew: "वा नयाँ डाक्टर रेकर्ड सिर्जना गर्नुहोस्",
     },
   };
 
@@ -196,6 +267,7 @@ export default function ClinicDoctorsPage() {
 
     setSearching(true);
     setSearchResults([]);
+    setHasSearched(true);
 
     try {
       const response = await fetch(
@@ -223,9 +295,7 @@ export default function ClinicDoctorsPage() {
     try {
       const response = await fetch("/api/clinic/doctors", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           doctorId: selectedDoctor.id,
           role: selectedRole,
@@ -239,15 +309,101 @@ export default function ClinicDoctorsPage() {
 
       const newDoctor = await response.json();
       setDoctors((prev) => [newDoctor, ...prev]);
-      setShowAddModal(false);
-      setSelectedDoctor(null);
-      setSearchQuery("");
-      setSearchResults([]);
+      closeAddModal();
     } catch (err) {
       console.error("Error adding doctor:", err);
       alert(err instanceof Error ? err.message : "Failed to add doctor");
     } finally {
       setAdding(false);
+    }
+  };
+
+  const createDoctor = async () => {
+    if (!createForm.full_name.trim()) {
+      alert(lang === "ne" ? "पूरा नाम आवश्यक छ" : "Full name is required");
+      return;
+    }
+
+    setCreating(true);
+
+    try {
+      const specialtiesArray = createForm.specialties
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const response = await fetch("/api/clinic/doctors/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: createForm.full_name.trim(),
+          full_name_ne: createForm.full_name_ne.trim() || null,
+          type: createForm.type,
+          registration_number: createForm.registration_number.trim() || null,
+          degree: createForm.degree.trim() || null,
+          specialties: specialtiesArray,
+          address: createForm.address.trim() || null,
+          role: createForm.role,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to create doctor");
+      }
+
+      const newDoctor = await response.json();
+      setDoctors((prev) => [newDoctor, ...prev]);
+      closeAddModal();
+    } catch (err) {
+      console.error("Error creating doctor:", err);
+      alert(err instanceof Error ? err.message : "Failed to create doctor");
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const updateDoctor = async () => {
+    if (!editingDoctor || !editForm.full_name.trim()) return;
+
+    setSaving(true);
+
+    try {
+      const specialtiesArray = editForm.specialties
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const response = await fetch(`/api/clinic/doctors/${editingDoctor.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: editForm.full_name.trim(),
+          full_name_ne: editForm.full_name_ne.trim() || null,
+          type: editForm.type,
+          registration_number: editForm.registration_number.trim() || null,
+          degree: editForm.degree.trim() || null,
+          specialties: specialtiesArray,
+          address: editForm.address.trim() || null,
+          role: editForm.role,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to update doctor");
+      }
+
+      const updated = await response.json();
+      setDoctors((prev) =>
+        prev.map((d) => (d.id === updated.id ? updated : d))
+      );
+      setEditingDoctor(null);
+    } catch (err) {
+      console.error("Error updating doctor:", err);
+      alert(err instanceof Error ? err.message : "Failed to update doctor");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -272,6 +428,30 @@ export default function ClinicDoctorsPage() {
     } finally {
       setRemoving(null);
     }
+  };
+
+  const closeAddModal = () => {
+    setShowAddModal(false);
+    setSelectedDoctor(null);
+    setSearchQuery("");
+    setSearchResults([]);
+    setShowCreateForm(false);
+    setCreateForm(EMPTY_FORM);
+    setHasSearched(false);
+  };
+
+  const openEditModal = (doctor: Professional) => {
+    setEditingDoctor(doctor);
+    setEditForm({
+      full_name: doctor.full_name,
+      full_name_ne: doctor.full_name_ne || "",
+      type: doctor.type,
+      registration_number: doctor.registration_number,
+      degree: doctor.degree || "",
+      specialties: doctor.specialties.join(", "),
+      address: doctor.address || "",
+      role: doctor.role || "permanent",
+    });
   };
 
   useEffect(() => {
@@ -373,7 +553,7 @@ export default function ClinicDoctorsPage() {
               href={`/${lang}/clinic/dashboard`}
               className="text-primary-blue hover:underline text-sm mb-2 inline-block"
             >
-              ← {tr.backToDashboard}
+              &larr; {tr.backToDashboard}
             </Link>
             <h1 className="text-3xl lg:text-4xl font-bold text-foreground">{tr.title}</h1>
             <p className="text-foreground/60 mt-1">{tr.subtitle}</p>
@@ -461,7 +641,7 @@ export default function ClinicDoctorsPage() {
 
                       {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className={`px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-white rounded ${getTypeColor(doctor.type)}`}>
                             {getTypeLabel(doctor.type)}
                           </span>
@@ -470,12 +650,23 @@ export default function ClinicDoctorsPage() {
                               {getRoleLabel(doctor.role)}
                             </span>
                           )}
+                          {doctor.verified ? (
+                            <span className="px-2 py-0.5 text-xs font-medium text-verified bg-verified/10 rounded">
+                              {tr.verified}
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 text-xs font-medium text-primary-yellow bg-primary-yellow/10 rounded">
+                              {tr.clinicCreated}
+                            </span>
+                          )}
                         </div>
                         <h3 className="font-bold text-foreground truncate">
                           {(doctor.type === "DOCTOR" || doctor.type === "DENTIST") && !doctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
                           {doctor.full_name}
                         </h3>
-                        <p className="text-sm text-foreground/60">{doctor.registration_number}</p>
+                        {!doctor.registration_number.startsWith("CLINIC-") && (
+                          <p className="text-sm text-foreground/60">{doctor.registration_number}</p>
+                        )}
                         {doctor.degree && (
                           <p className="text-sm text-foreground/50 truncate">{doctor.degree}</p>
                         )}
@@ -488,16 +679,27 @@ export default function ClinicDoctorsPage() {
 
                       {/* Actions */}
                       <div className="flex flex-col gap-2">
-                        <Link href={`/${lang}/doctor/${doctor.slug}`} target="_blank">
-                          <Button variant="outline" size="sm">
-                            {tr.viewProfile}
-                          </Button>
-                        </Link>
+                        {doctor.verified && (
+                          <Link href={`/${lang}/doctor/${doctor.slug}`} target="_blank">
+                            <Button variant="outline" size="sm">
+                              {tr.viewProfile}
+                            </Button>
+                          </Link>
+                        )}
                         <Link href={`/${lang}/clinic/dashboard/schedules?doctor=${doctor.id}`}>
                           <Button variant="outline" size="sm">
                             {tr.schedules}
                           </Button>
                         </Link>
+                        {!doctor.verified && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditModal(doctor)}
+                          >
+                            {tr.edit}
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"
@@ -524,12 +726,7 @@ export default function ClinicDoctorsPage() {
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-foreground">{tr.selectDoctor}</h2>
                   <button
-                    onClick={() => {
-                      setShowAddModal(false);
-                      setSelectedDoctor(null);
-                      setSearchQuery("");
-                      setSearchResults([]);
-                    }}
+                    onClick={closeAddModal}
                     className="w-8 h-8 flex items-center justify-center rounded hover:bg-foreground/10"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -539,186 +736,285 @@ export default function ClinicDoctorsPage() {
                 </div>
               </CardHeader>
               <CardContent className="py-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-                {/* Search Input */}
-                <div className="flex gap-2 mb-4">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && searchProfessionals()}
-                    placeholder={tr.searchPlaceholder}
-                    className="flex-1 px-4 py-3 border-4 border-foreground bg-white text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-primary-blue"
-                  />
-                  <Button
-                    variant="primary"
-                    onClick={searchProfessionals}
-                    disabled={searching || searchQuery.trim().length < 2}
-                  >
-                    {searching ? "..." : tr.search}
-                  </Button>
-                </div>
-
-                {/* Selected Doctor */}
-                {selectedDoctor && (
-                  <div className="mb-4 p-4 border-4 border-verified bg-verified/10">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-foreground flex-shrink-0">
-                        {selectedDoctor.photo_url ? (
-                          <Image
-                            src={selectedDoctor.photo_url}
-                            alt={selectedDoctor.full_name}
-                            width={48}
-                            height={48}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className={`w-full h-full ${getTypeColor(selectedDoctor.type)} flex items-center justify-center`}>
-                            <span className="text-white font-bold">
-                              {selectedDoctor.full_name.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <span className={`px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-white rounded ${getTypeColor(selectedDoctor.type)}`}>
-                          {getTypeLabel(selectedDoctor.type)}
-                        </span>
-                        <h4 className="font-bold text-foreground">
-                          {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                          {selectedDoctor.full_name}
-                        </h4>
-                        <p className="text-sm text-foreground/60">{selectedDoctor.registration_number}</p>
-                      </div>
-                      <button
-                        onClick={() => setSelectedDoctor(null)}
-                        className="text-foreground/50 hover:text-foreground"
+                {!showCreateForm ? (
+                  <>
+                    {/* Search Input */}
+                    <div className="flex gap-2 mb-4">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && searchProfessionals()}
+                        placeholder={tr.searchPlaceholder}
+                        className="flex-1 px-4 py-3 border-4 border-foreground bg-white text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-primary-blue"
+                      />
+                      <Button
+                        variant="primary"
+                        onClick={searchProfessionals}
+                        disabled={searching || searchQuery.trim().length < 2}
                       >
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
+                        {searching ? "..." : tr.search}
+                      </Button>
                     </div>
 
-                    {/* Role Selection */}
-                    <div className="mt-4">
-                      <label className="block text-sm font-bold text-foreground mb-2">{tr.role}</label>
-                      <div className="flex flex-wrap gap-2">
-                        {ROLE_OPTIONS.map((option) => (
-                          <button
-                            key={option.value}
-                            onClick={() => setSelectedRole(option.value)}
-                            className={`px-4 py-2 border-2 font-medium transition-colors ${
-                              selectedRole === option.value
-                                ? "border-primary-blue bg-primary-blue text-white"
-                                : "border-foreground bg-white text-foreground hover:bg-foreground/5"
-                            }`}
-                          >
-                            {lang === "ne" ? option.labelNe : option.labelEn}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Search Results */}
-                {!selectedDoctor && searchResults.length > 0 && (
-                  <div className="space-y-2">
-                    {searchResults.map((professional) => (
-                      <button
-                        key={professional.id}
-                        onClick={() => setSelectedDoctor(professional)}
-                        className="w-full p-4 border-2 border-foreground bg-white hover:bg-foreground/5 text-left transition-colors"
-                      >
+                    {/* Selected Doctor */}
+                    {selectedDoctor && (
+                      <div className="mb-4 p-4 border-4 border-verified bg-verified/10">
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-foreground flex-shrink-0">
-                            {professional.photo_url ? (
+                            {selectedDoctor.photo_url ? (
                               <Image
-                                src={professional.photo_url}
-                                alt={professional.full_name}
+                                src={selectedDoctor.photo_url}
+                                alt={selectedDoctor.full_name}
                                 width={48}
                                 height={48}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className={`w-full h-full ${getTypeColor(professional.type)} flex items-center justify-center`}>
+                              <div className={`w-full h-full ${getTypeColor(selectedDoctor.type)} flex items-center justify-center`}>
                                 <span className="text-white font-bold">
-                                  {professional.full_name.charAt(0).toUpperCase()}
+                                  {selectedDoctor.full_name.charAt(0).toUpperCase()}
                                 </span>
                               </div>
                             )}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className={`px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-white rounded ${getTypeColor(professional.type)}`}>
-                                {getTypeLabel(professional.type)}
-                              </span>
-                              {professional.verified && (
-                                <span className="px-2 py-0.5 text-xs font-medium text-verified bg-verified/10 rounded">
-                                  {tr.verified}
-                                </span>
-                              )}
-                            </div>
-                            <h4 className="font-bold text-foreground truncate">
-                              {(professional.type === "DOCTOR" || professional.type === "DENTIST") && !professional.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                              {professional.full_name}
+                          <div className="flex-1">
+                            <span className={`px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-white rounded ${getTypeColor(selectedDoctor.type)}`}>
+                              {getTypeLabel(selectedDoctor.type)}
+                            </span>
+                            <h4 className="font-bold text-foreground">
+                              {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
+                              {selectedDoctor.full_name}
                             </h4>
-                            <p className="text-sm text-foreground/60">{professional.registration_number}</p>
-                            {professional.degree && (
-                              <p className="text-sm text-foreground/50 truncate">{professional.degree}</p>
-                            )}
+                            <p className="text-sm text-foreground/60">{selectedDoctor.registration_number}</p>
+                          </div>
+                          <button
+                            onClick={() => setSelectedDoctor(null)}
+                            className="text-foreground/50 hover:text-foreground"
+                          >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+
+                        {/* Role Selection */}
+                        <div className="mt-4">
+                          <label className="block text-sm font-bold text-foreground mb-2">{tr.role}</label>
+                          <div className="flex flex-wrap gap-2">
+                            {ROLE_OPTIONS.map((option) => (
+                              <button
+                                key={option.value}
+                                onClick={() => setSelectedRole(option.value)}
+                                className={`px-4 py-2 border-2 font-medium transition-colors ${
+                                  selectedRole === option.value
+                                    ? "border-primary-blue bg-primary-blue text-white"
+                                    : "border-foreground bg-white text-foreground hover:bg-foreground/5"
+                                }`}
+                              >
+                                {lang === "ne" ? option.labelNe : option.labelEn}
+                              </button>
+                            ))}
                           </div>
                         </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                      </div>
+                    )}
 
-                {/* No Results */}
-                {!selectedDoctor && searchQuery.length >= 2 && !searching && searchResults.length === 0 && (
-                  <div className="text-center py-8">
-                    <div className="w-12 h-12 bg-foreground/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-6 h-6 text-foreground/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-foreground/60">{tr.noResults}</p>
-                    <p className="text-sm text-foreground/40 mt-1">{tr.noResultsMessage}</p>
-                  </div>
-                )}
+                    {/* Search Results */}
+                    {!selectedDoctor && searchResults.length > 0 && (
+                      <div className="space-y-2">
+                        {searchResults.map((professional) => (
+                          <button
+                            key={professional.id}
+                            onClick={() => setSelectedDoctor(professional)}
+                            className="w-full p-4 border-2 border-foreground bg-white hover:bg-foreground/5 text-left transition-colors"
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-foreground flex-shrink-0">
+                                {professional.photo_url ? (
+                                  <Image
+                                    src={professional.photo_url}
+                                    alt={professional.full_name}
+                                    width={48}
+                                    height={48}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className={`w-full h-full ${getTypeColor(professional.type)} flex items-center justify-center`}>
+                                    <span className="text-white font-bold">
+                                      {professional.full_name.charAt(0).toUpperCase()}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className={`px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-white rounded ${getTypeColor(professional.type)}`}>
+                                    {getTypeLabel(professional.type)}
+                                  </span>
+                                  {professional.verified && (
+                                    <span className="px-2 py-0.5 text-xs font-medium text-verified bg-verified/10 rounded">
+                                      {tr.verified}
+                                    </span>
+                                  )}
+                                </div>
+                                <h4 className="font-bold text-foreground truncate">
+                                  {(professional.type === "DOCTOR" || professional.type === "DENTIST") && !professional.full_name.startsWith("Dr.") ? "Dr. " : ""}
+                                  {professional.full_name}
+                                </h4>
+                                <p className="text-sm text-foreground/60">{professional.registration_number}</p>
+                                {professional.degree && (
+                                  <p className="text-sm text-foreground/50 truncate">{professional.degree}</p>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
 
-                {/* Initial State */}
-                {!selectedDoctor && searchQuery.length < 2 && searchResults.length === 0 && (
-                  <div className="text-center py-8">
-                    <div className="w-12 h-12 bg-primary-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-6 h-6 text-primary-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-foreground/60">{tr.selectDoctorMessage}</p>
-                  </div>
+                        {/* Create new option after results */}
+                        <div className="pt-2 border-t-2 border-foreground/10 mt-4">
+                          <button
+                            onClick={() => {
+                              setShowCreateForm(true);
+                              setCreateForm({ ...EMPTY_FORM, full_name: searchQuery.trim() });
+                            }}
+                            className="w-full p-4 border-2 border-dashed border-primary-blue/40 bg-primary-blue/5 hover:bg-primary-blue/10 text-left transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-primary-blue/20 flex items-center justify-center flex-shrink-0">
+                                <svg className="w-5 h-5 text-primary-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                              </div>
+                              <div>
+                                <p className="font-bold text-primary-blue">{tr.createNewDoctor}</p>
+                                <p className="text-xs text-foreground/50">{tr.orCreateNew}</p>
+                              </div>
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* No Results — show create option prominently */}
+                    {!selectedDoctor && hasSearched && !searching && searchResults.length === 0 && (
+                      <div className="text-center py-6">
+                        <div className="w-12 h-12 bg-foreground/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-6 h-6 text-foreground/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                        </div>
+                        <p className="text-foreground/60 font-bold">{tr.noResults}</p>
+                        <p className="text-sm text-foreground/40 mt-1 mb-4">{tr.noResultsMessage}</p>
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            setShowCreateForm(true);
+                            setCreateForm({ ...EMPTY_FORM, full_name: searchQuery.trim() });
+                          }}
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                          {tr.createNewDoctor}
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* Initial State */}
+                    {!selectedDoctor && !hasSearched && searchResults.length === 0 && (
+                      <div className="text-center py-6">
+                        <div className="w-12 h-12 bg-primary-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-6 h-6 text-primary-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                        </div>
+                        <p className="text-foreground/60">{tr.selectDoctorMessage}</p>
+                        <div className="mt-4">
+                          <button
+                            onClick={() => setShowCreateForm(true)}
+                            className="text-primary-blue hover:underline text-sm font-bold"
+                          >
+                            {tr.orCreateNew}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  /* Create New Doctor Form */
+                  <DoctorForm
+                    form={createForm}
+                    onChange={setCreateForm}
+                    lang={lang}
+                    tr={tr}
+                    onBack={() => setShowCreateForm(false)}
+                  />
                 )}
               </CardContent>
 
               {/* Modal Footer */}
               <div className="border-t-4 border-foreground p-4 flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setShowAddModal(false);
-                    setSelectedDoctor(null);
-                    setSearchQuery("");
-                    setSearchResults([]);
-                  }}
-                >
+                <Button variant="outline" onClick={closeAddModal}>
+                  {tr.cancel}
+                </Button>
+                {showCreateForm ? (
+                  <Button
+                    variant="primary"
+                    onClick={createDoctor}
+                    disabled={!createForm.full_name.trim() || creating}
+                  >
+                    {creating ? tr.creating : tr.createDoctor}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    onClick={addDoctor}
+                    disabled={!selectedDoctor || adding}
+                  >
+                    {adding ? tr.adding : tr.addToClinic}
+                  </Button>
+                )}
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* Edit Doctor Modal */}
+        {editingDoctor && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <Card className="w-full max-w-2xl max-h-[90vh] overflow-hidden">
+              <CardHeader className="border-b-4 border-foreground">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-foreground">{tr.editDoctor}</h2>
+                  <button
+                    onClick={() => setEditingDoctor(null)}
+                    className="w-8 h-8 flex items-center justify-center rounded hover:bg-foreground/10"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </CardHeader>
+              <CardContent className="py-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+                <DoctorForm
+                  form={editForm}
+                  onChange={setEditForm}
+                  lang={lang}
+                  tr={tr}
+                />
+              </CardContent>
+              <div className="border-t-4 border-foreground p-4 flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setEditingDoctor(null)}>
                   {tr.cancel}
                 </Button>
                 <Button
                   variant="primary"
-                  onClick={addDoctor}
-                  disabled={!selectedDoctor || adding}
+                  onClick={updateDoctor}
+                  disabled={!editForm.full_name.trim() || saving}
                 >
-                  {adding ? tr.adding : tr.addToClinic}
+                  {saving ? tr.saving : tr.save}
                 </Button>
               </div>
             </Card>
@@ -726,5 +1022,168 @@ export default function ClinicDoctorsPage() {
         )}
       </div>
     </main>
+  );
+}
+
+/* Shared form component for create / edit */
+function DoctorForm({
+  form,
+  onChange,
+  lang,
+  tr,
+  onBack,
+}: {
+  form: DoctorFormData;
+  onChange: (form: DoctorFormData) => void;
+  lang: string;
+  tr: Record<string, string>;
+  onBack?: () => void;
+}) {
+  return (
+    <div className="space-y-4">
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="text-primary-blue hover:underline text-sm font-bold flex items-center gap-1"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          {tr.search}
+        </button>
+      )}
+
+      {/* Full Name EN */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+          {tr.fullName} *
+        </label>
+        <input
+          type="text"
+          value={form.full_name}
+          onChange={(e) => onChange({ ...form, full_name: e.target.value })}
+          className="w-full px-3 py-2 border-4 border-foreground bg-white text-foreground focus:outline-none focus:border-primary-blue"
+          placeholder="Dr. Ram Sharma"
+        />
+      </div>
+
+      {/* Full Name NE */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+          {tr.fullNameNe}
+        </label>
+        <input
+          type="text"
+          value={form.full_name_ne}
+          onChange={(e) => onChange({ ...form, full_name_ne: e.target.value })}
+          className="w-full px-3 py-2 border-4 border-foreground bg-white text-foreground focus:outline-none focus:border-primary-blue"
+          placeholder="डा. राम शर्मा"
+        />
+      </div>
+
+      {/* Type */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+          {tr.type} *
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {TYPE_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onChange({ ...form, type: option.value })}
+              className={`px-4 py-2 border-2 font-medium transition-colors ${
+                form.type === option.value
+                  ? "border-primary-blue bg-primary-blue text-white"
+                  : "border-foreground bg-white text-foreground hover:bg-foreground/5"
+              }`}
+            >
+              {lang === "ne" ? option.labelNe : option.labelEn}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Registration Number */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+          {tr.regNumber}
+        </label>
+        <input
+          type="text"
+          value={form.registration_number}
+          onChange={(e) => onChange({ ...form, registration_number: e.target.value })}
+          className="w-full px-3 py-2 border-4 border-foreground bg-white text-foreground focus:outline-none focus:border-primary-blue"
+          placeholder="NMC-12345"
+        />
+        <p className="text-xs text-foreground/40 mt-1">{tr.regNumberHint}</p>
+      </div>
+
+      {/* Degree */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+          {tr.degree}
+        </label>
+        <input
+          type="text"
+          value={form.degree}
+          onChange={(e) => onChange({ ...form, degree: e.target.value })}
+          className="w-full px-3 py-2 border-4 border-foreground bg-white text-foreground focus:outline-none focus:border-primary-blue"
+          placeholder="MBBS, MD"
+        />
+      </div>
+
+      {/* Specialties */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+          {tr.specialties}
+        </label>
+        <input
+          type="text"
+          value={form.specialties}
+          onChange={(e) => onChange({ ...form, specialties: e.target.value })}
+          className="w-full px-3 py-2 border-4 border-foreground bg-white text-foreground focus:outline-none focus:border-primary-blue"
+          placeholder="Cardiology, Internal Medicine"
+        />
+        <p className="text-xs text-foreground/40 mt-1">{tr.specialtiesHint}</p>
+      </div>
+
+      {/* Address */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+          {tr.address}
+        </label>
+        <input
+          type="text"
+          value={form.address}
+          onChange={(e) => onChange({ ...form, address: e.target.value })}
+          className="w-full px-3 py-2 border-4 border-foreground bg-white text-foreground focus:outline-none focus:border-primary-blue"
+          placeholder="Kathmandu, Nepal"
+        />
+      </div>
+
+      {/* Role */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
+          {tr.role}
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {ROLE_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onChange({ ...form, role: option.value })}
+              className={`px-4 py-2 border-2 font-medium transition-colors ${
+                form.role === option.value
+                  ? "border-primary-blue bg-primary-blue text-white"
+                  : "border-foreground bg-white text-foreground hover:bg-foreground/5"
+              }`}
+            >
+              {lang === "ne" ? option.labelNe : option.labelEn}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
