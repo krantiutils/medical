@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect, Suspense } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ function LoginPageContent() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const { status } = useSession();
 
   const t = {
     signIn: isNe ? "साइन इन" : "Sign In",
@@ -74,6 +75,16 @@ function LoginPageContent() {
       return `/${lang}/dashboard`;
     }
   };
+
+  // Redirect authenticated users away from login page
+  useEffect(() => {
+    if (status !== "authenticated") return;
+
+    (async () => {
+      const destination = await getRoleRedirect();
+      router.replace(destination);
+    })();
+  }, [status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,6 +139,11 @@ function LoginPageContent() {
   };
 
   const displayError = formError || getErrorMessage(error);
+
+  // Show loading state while checking session or redirecting
+  if (status === "loading" || status === "authenticated") {
+    return <LoginPageFallback />;
+  }
 
   return (
     <main className="min-h-screen bg-background flex flex-col lg:flex-row">
