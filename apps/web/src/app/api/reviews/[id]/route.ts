@@ -21,6 +21,12 @@ export async function GET(request: NextRequest, context: RouteContext) {
             photo_url: true,
           },
         },
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
         doctor: {
           select: {
             id: true,

@@ -49,6 +49,12 @@ export async function GET(request: NextRequest) {
             full_name: true,
           },
         },
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
         clinic: {
           select: {
             id: true,
