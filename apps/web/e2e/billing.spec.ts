@@ -172,7 +172,7 @@ test.describe("Billing Page - Patient Selection", () => {
     await clinicOwnerPage.waitForTimeout(500);
 
     // Click on patient result
-    await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).click();
+    await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first().click();
 
     // Patient info should be displayed
     await expect(clinicOwnerPage.getByText(/patient information/i)).toBeVisible();
@@ -184,7 +184,7 @@ test.describe("Billing Page - Patient Selection", () => {
     await searchInput.fill(TEST_DATA.PATIENTS.PATIENT_ONE.phone);
 
     await clinicOwnerPage.waitForTimeout(500);
-    await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).click();
+    await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first().click();
 
     await expect(clinicOwnerPage.getByRole("button", { name: /change patient/i })).toBeVisible();
   });
@@ -199,7 +199,7 @@ test.describe("Billing Page - Invoice Creation", () => {
     const searchInput = clinicOwnerPage.getByPlaceholder(/search patient/i);
     await searchInput.fill(TEST_DATA.PATIENTS.PATIENT_ONE.phone);
     await clinicOwnerPage.waitForTimeout(500);
-    await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).click();
+    await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first().click();
     await expect(clinicOwnerPage.getByText(/patient information/i)).toBeVisible();
   });
 

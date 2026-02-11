@@ -339,6 +339,9 @@ test.describe("Doctor Response to Review", () => {
     await page.goto("/en/login");
     await page.waitForLoadState("networkidle");
 
+    // Login page defaults to phone tab — switch to email tab first
+    await page.getByRole("button", { name: /with email/i }).click();
+
     // Fill in credentials
     await page.getByLabel(/email/i).fill(TEST_DATA.PROFESSIONAL.email);
     await page.getByLabel(/password/i).fill(TEST_DATA.PROFESSIONAL.password);
@@ -348,7 +351,10 @@ test.describe("Doctor Response to Review", () => {
 
     // Wait for redirect - if still on login page with error, skip the test
     try {
-      await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/, { timeout: 10000 });
+      await page.waitForURL(
+        (url) => !url.pathname.includes("/login"),
+        { timeout: 10000 }
+      );
     } catch {
       // Check if we're still on login page with error
       const loginError = page.locator('text=error').or(page.getByText(/invalid|incorrect/i));
@@ -382,6 +388,9 @@ test.describe("Doctor Response to Review", () => {
     await page.goto("/en/login");
     await page.waitForLoadState("networkidle");
 
+    // Login page defaults to phone tab — switch to email tab first
+    await page.getByRole("button", { name: /with email/i }).click();
+
     // Fill in credentials
     await page.getByLabel(/email/i).fill(TEST_DATA.PROFESSIONAL.email);
     await page.getByLabel(/password/i).fill(TEST_DATA.PROFESSIONAL.password);
@@ -391,7 +400,10 @@ test.describe("Doctor Response to Review", () => {
 
     // Wait for redirect - if still on login page with error, skip the test
     try {
-      await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/, { timeout: 10000 });
+      await page.waitForURL(
+        (url) => !url.pathname.includes("/login"),
+        { timeout: 10000 }
+      );
     } catch {
       test.skip(true, "Professional login timed out");
       return;
@@ -427,6 +439,9 @@ test.describe("Doctor Response to Review", () => {
     await page.goto("/en/login");
     await page.waitForLoadState("networkidle");
 
+    // Login page defaults to phone tab — switch to email tab first
+    await page.getByRole("button", { name: /with email/i }).click();
+
     // Fill in credentials
     await page.getByLabel(/email/i).fill(TEST_DATA.PROFESSIONAL.email);
     await page.getByLabel(/password/i).fill(TEST_DATA.PROFESSIONAL.password);
@@ -436,7 +451,10 @@ test.describe("Doctor Response to Review", () => {
 
     // Wait for redirect - if still on login page with error, skip the test
     try {
-      await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/, { timeout: 10000 });
+      await page.waitForURL(
+        (url) => !url.pathname.includes("/login"),
+        { timeout: 10000 }
+      );
     } catch {
       test.skip(true, "Professional login timed out");
       return;
@@ -477,6 +495,9 @@ test.describe("Doctor Response to Review", () => {
     await page.goto("/en/login");
     await page.waitForLoadState("networkidle");
 
+    // Login page defaults to phone tab — switch to email tab first
+    await page.getByRole("button", { name: /with email/i }).click();
+
     // Fill in credentials
     await page.getByLabel(/email/i).fill(TEST_DATA.PROFESSIONAL.email);
     await page.getByLabel(/password/i).fill(TEST_DATA.PROFESSIONAL.password);
@@ -486,7 +507,10 @@ test.describe("Doctor Response to Review", () => {
 
     // Wait for redirect - if still on login page with error, skip the test
     try {
-      await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/, { timeout: 10000 });
+      await page.waitForURL(
+        (url) => !url.pathname.includes("/login"),
+        { timeout: 10000 }
+      );
     } catch {
       test.skip(true, "Professional login timed out");
       return;

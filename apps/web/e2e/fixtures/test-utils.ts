@@ -224,9 +224,15 @@ export async function login(
   // Submit form
   await page.getByRole("button", { name: /sign in|log in/i }).click();
 
-  // Wait for redirect to homepage or dashboard
-  // Matches /en, /en/, /en/dashboard, /ne, /ne/, /ne/dashboard
-  await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/, { timeout: 30000 });
+  // Wait for redirect away from login page to any dashboard or homepage
+  // Matches /en, /en/, /en/dashboard, /en/clinic/dashboard, /en/admin/*, /ne variants
+  await page.waitForURL(
+    (url) => {
+      const path = url.pathname;
+      return /^\/(en|ne)(\/|$)/.test(path) && !path.includes("/login");
+    },
+    { timeout: 30000 }
+  );
 }
 
 /**
