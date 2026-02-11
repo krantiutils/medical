@@ -14,75 +14,99 @@ export async function GET() {
   }
 
   try {
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
+    // Find clinic owned by user via ClinicStaff (primary) or claimed_by_id (fallback)
+    // Do NOT filter by verified - we need to show unverified clinics too
+    const staffMembership = await prisma.clinicStaff.findFirst({
+      where: { user_id: session.user.id },
+      include: {
+        clinic: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            type: true,
+            logo_url: true,
+            verified: true,
+            address: true,
+            phone: true,
+            email: true,
+            website: true,
+            services: true,
+            timings: true,
+            photos: true,
+            admin_review_notes: true,
+            admin_reviewed_at: true,
+          },
+        },
       },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        type: true,
-        logo_url: true,
-        verified: true,
-      },
+      orderBy: { created_at: "asc" },
     });
+
+    let clinic = staffMembership?.clinic ?? null;
+
+    // Fallback: legacy ownership
+    if (!clinic) {
+      clinic = await prisma.clinic.findFirst({
+        where: { claimed_by_id: session.user.id },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          type: true,
+          logo_url: true,
+          verified: true,
+          address: true,
+          phone: true,
+          email: true,
+          website: true,
+          services: true,
+          timings: true,
+          photos: true,
+          admin_review_notes: true,
+          admin_reviewed_at: true,
+        },
+      });
+    }
 
     if (!clinic) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
+        { error: "No clinic found", code: "NO_CLINIC" },
         { status: 404 }
       );
     }
 
-    // Get today's date range (start of day to end of day in local timezone)
+    // If clinic is not verified, return clinic info with status but skip stats
+    if (!clinic.verified) {
+      const status = clinic.admin_review_notes ? "changes_requested" : "pending_review";
+      return NextResponse.json({
+        clinic,
+        status,
+      });
+    }
+
+    // Verified clinic: compute stats
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
 
-    // Count today's appointments (all statuses except CANCELLED)
-    const todayAppointmentsCount = await prisma.appointment.count({
-      where: {
-        clinic_id: clinic.id,
-        appointment_date: {
-          gte: startOfDay,
-          lt: endOfDay,
+    const [todayAppointmentsCount, queueCount, totalPatientsCount, doctorsCount] = await Promise.all([
+      prisma.appointment.count({
+        where: {
+          clinic_id: clinic.id,
+          appointment_date: { gte: startOfDay, lt: endOfDay },
+          status: { not: AppointmentStatus.CANCELLED },
         },
-        status: {
-          not: AppointmentStatus.CANCELLED,
+      }),
+      prisma.appointment.count({
+        where: {
+          clinic_id: clinic.id,
+          appointment_date: { gte: startOfDay, lt: endOfDay },
+          status: { in: [AppointmentStatus.SCHEDULED, AppointmentStatus.CHECKED_IN] },
         },
-      },
-    });
-
-    // Count patients in queue (SCHEDULED or CHECKED_IN for today)
-    const queueCount = await prisma.appointment.count({
-      where: {
-        clinic_id: clinic.id,
-        appointment_date: {
-          gte: startOfDay,
-          lt: endOfDay,
-        },
-        status: {
-          in: [AppointmentStatus.SCHEDULED, AppointmentStatus.CHECKED_IN],
-        },
-      },
-    });
-
-    // Count total registered patients
-    const totalPatientsCount = await prisma.patient.count({
-      where: {
-        clinic_id: clinic.id,
-      },
-    });
-
-    // Get count of affiliated doctors
-    const doctorsCount = await prisma.clinicDoctor.count({
-      where: {
-        clinic_id: clinic.id,
-      },
-    });
+      }),
+      prisma.patient.count({ where: { clinic_id: clinic.id } }),
+      prisma.clinicDoctor.count({ where: { clinic_id: clinic.id } }),
+    ]);
 
     return NextResponse.json({
       clinic,

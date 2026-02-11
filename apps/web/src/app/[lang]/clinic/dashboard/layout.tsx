@@ -30,7 +30,7 @@ export default async function ClinicDashboardLayout({
 
   return (
     <div className="flex min-h-[calc(100vh-5rem)]">
-      <ClinicSidebar userRole={access.role} />
+      <ClinicSidebar userRole={access.role} isVerified={access.clinic.verified} />
       <div className="flex-1 min-w-0">{children}</div>
     </div>
   );

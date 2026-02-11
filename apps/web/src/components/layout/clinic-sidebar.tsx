@@ -34,6 +34,7 @@ const mainLinks: SidebarLink[] = [
   { label: "Lab Walk-in", labelNe: "ल्याब वाक-इन", href: "/lab/walk-in", permission: "lab" },
   { label: "Page Builder", labelNe: "पेज बिल्डर", href: "/page-builder" },
   { label: "Staff", labelNe: "कर्मचारी", href: "/staff", permission: "staff" },
+  { label: "Settings", labelNe: "सेटिङ्हरू", href: "/settings", permission: "settings" },
 ];
 
 const groups: SidebarGroup[] = [
@@ -64,6 +65,7 @@ const groups: SidebarGroup[] = [
 
 interface ClinicSidebarProps {
   userRole?: ClinicStaffRole;
+  isVerified?: boolean;
 }
 
 // Check if role has permission (simplified version for sidebar)
@@ -85,7 +87,7 @@ function hasPermission(role: ClinicStaffRole | undefined, permission: string): b
   return true;
 }
 
-export function ClinicSidebar({ userRole }: ClinicSidebarProps) {
+export function ClinicSidebar({ userRole, isVerified = true }: ClinicSidebarProps) {
   const pathname = usePathname();
   const { lang } = useParams<{ lang: string }>();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -117,10 +119,15 @@ export function ClinicSidebar({ userRole }: ClinicSidebarProps) {
   const basePath = `/${lang}/clinic/dashboard`;
   const isNe = lang === "ne";
 
-  // Filter links based on user's role
-  const filteredLinks = mainLinks.filter(
-    (link) => !link.permission || hasPermission(role, link.permission)
-  );
+  // Filter links based on user's role and verification status
+  const filteredLinks = isVerified
+    ? mainLinks.filter(
+        (link) => !link.permission || hasPermission(role, link.permission)
+      )
+    : mainLinks.filter((link) => link.href === "" || link.href === "/settings");
+
+  // Hide grouped sections (Pharmacy, IPD) when not verified
+  const filteredGroups = isVerified ? groups : [];
 
   const isActive = (href: string) => {
     const fullPath = basePath + href;
@@ -160,7 +167,7 @@ export function ClinicSidebar({ userRole }: ClinicSidebarProps) {
       ))}
 
       {/* Grouped sections */}
-      {groups.map((group) => {
+      {filteredGroups.map((group) => {
         const isOpen = expandedGroups[group.title] || isGroupActive(group);
         return (
           <div key={group.title} className="mt-2">
@@ -247,6 +254,11 @@ export function ClinicSidebar({ userRole }: ClinicSidebarProps) {
           <h2 className="text-xs font-bold uppercase tracking-widest text-foreground/60">
             {isNe ? "क्लिनिक ड्यासबोर्ड" : "Clinic Dashboard"}
           </h2>
+          {!isVerified && (
+            <span className="mt-2 inline-block text-[10px] font-bold uppercase tracking-widest text-primary-yellow bg-primary-yellow/10 border border-primary-yellow px-2 py-0.5">
+              {isNe ? "प्रमाणीकरण पर्खिरहेको" : "Pending Verification"}
+            </span>
+          )}
         </div>
         {sidebarContent}
       </aside>

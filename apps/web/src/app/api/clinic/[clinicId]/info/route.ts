@@ -25,6 +25,23 @@ export async function GET(request: NextRequest, context: RouteContext) {
         name: true,
         type: true,
         logo_url: true,
+        phone: true,
+        email: true,
+        address: true,
+        website: true,
+        services: true,
+        photos: true,
+        timings: true,
+        location_lat: true,
+        location_lng: true,
+        doctors: {
+          include: {
+            doctor: true,
+          },
+          orderBy: {
+            joined_at: "asc",
+          },
+        },
       },
     });
 

@@ -55,10 +55,9 @@ export async function GET(request: NextRequest) {
 
     const excludeIds = existingDoctorIds.map((cd) => cd.doctor_id);
 
-    // Search for verified professionals not already in the clinic
+    // Search for professionals not already in the clinic
     const professionals = await prisma.professional.findMany({
       where: {
-        verified: true,
         id: {
           notIn: excludeIds.length > 0 ? excludeIds : undefined,
         },
