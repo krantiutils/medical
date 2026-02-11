@@ -177,8 +177,8 @@
         "Typecheck passes"
       ],
       "priority": 8,
-      "passes": true,
-      "notes": "Implemented: Button component with primary/secondary/outline/ghost variants, border-2 border-black, hard shadows, active pressed state with translate+shadow-none, uppercase font-bold tracking-wider, sm/md/lg sizes. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Button component with primary/secondary/outline/ghost variants, border-2 border-black, hard shadows, active pressed state with translate+shadow-none, uppercase font-bold tracking-wider, sm/md/lg sizes. Typecheck passes."
     },
     {
       "id": "US-009",
@@ -195,8 +195,8 @@
         "Typecheck passes"
       ],
       "priority": 9,
-      "passes": true,
-      "notes": "Implemented: Card component with white background, border-4 border-black, shadow-xl (8px hard shadow), hover:-translate-y-1 effect, optional geometric decorator with color/position options, CardHeader/CardContent/CardFooter subcomponents. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Card component with white background, border-4 border-black, shadow-xl (8px hard shadow), hover:-translate-y-1 effect, optional geometric decorator with color/position options, CardHeader/CardContent/CardFooter subcomponents. Typecheck passes."
     },
     {
       "id": "US-010",
@@ -213,8 +213,8 @@
         "Typecheck passes"
       ],
       "priority": 10,
-      "passes": true,
-      "notes": "Implemented: app/[lang]/doctor/[slug]/page.tsx with dynamic route, database fetch by slug with notFound() for 404, displays name/photo/registration/degree/address/specialties/gender/remarks, uses Card component, mobile responsive layout with sm: breakpoints. [lang] layout created with en/ne validation. not-found.tsx added. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: app/[lang]/doctor/[slug]/page.tsx with dynamic route, database fetch by slug with notFound() for 404, displays name/photo/registration/degree/address/specialties/gender/remarks, uses Card component, mobile responsive layout with sm: breakpoints. [lang] layout created with en/ne validation. not-found.tsx added. Typecheck passes."
     },
     {
       "id": "US-011",
@@ -231,8 +231,8 @@
         "Typecheck passes"
       ],
       "priority": 11,
-      "passes": true,
-      "notes": "Implemented: generateMetadata function added with title format 'Dr. [Name] - [Specialty] in [Location] | Swasthya', description with credentials/location, OpenGraph (title, description, image, type: profile), Twitter card (summary), canonical URL with language alternates. Uses NEXT_PUBLIC_SITE_URL env var with fallback. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: generateMetadata function added with title format 'Dr. [Name] - [Specialty] in [Location] | Swasthya', description with credentials/location, OpenGraph (title, description, image, type: profile), Twitter card (summary), canonical URL with language alternates. Uses NEXT_PUBLIC_SITE_URL env var with fallback. Typecheck passes."
     },
     {
       "id": "US-012",
@@ -247,8 +247,8 @@
         "Typecheck passes"
       ],
       "priority": 12,
-      "passes": true,
-      "notes": "Implemented: JSON-LD structured data using schema.org types (Physician for doctors, Dentist for dentists, Person+Occupation for pharmacists). Includes name, image, medicalSpecialty, address, identifier with registration number. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: JSON-LD structured data using schema.org types (Physician for doctors, Dentist for dentists, Person+Occupation for pharmacists). Includes name, image, medicalSpecialty, address, identifier with registration number. Typecheck passes."
     },
     {
       "id": "US-013",
@@ -266,8 +266,8 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": true,
-      "notes": "Implemented: Name is text-4xl font-bold, specialty label is text-xs uppercase tracking-widest in primary-blue, registration number is text-sm text-gray-600, sections separated by border-t-2 border-black/20 dividers, verified badge is green with Check icon in white circle, background is off-white #F0F0F0 with white cards, icons use accent colors in rounded containers. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Name is text-4xl font-bold, specialty label is text-xs uppercase tracking-widest in primary-blue, registration number is text-sm text-gray-600, sections separated by border-t-2 border-black/20 dividers, verified badge is green with Check icon in white circle, background is off-white #F0F0F0 with white cards, icons use accent colors in rounded containers. Typecheck passes."
     },
     {
       "id": "US-014",
@@ -285,8 +285,8 @@
         "Typecheck passes"
       ],
       "priority": 14,
-      "passes": true,
-      "notes": "Implemented: Homepage with hero section - FIND YOUR DOCTOR display text (text-6xl lg:text-8xl font-black uppercase), subtitle, search input with border-4 border-foreground, primary red search button, blue right panel with geometric shapes (circle, square, triangle), mobile responsive with color accent bar, categories section. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Homepage with hero section - FIND YOUR DOCTOR display text (text-6xl lg:text-8xl font-black uppercase), subtitle, search input with border-4 border-foreground, primary red search button, blue right panel with geometric shapes (circle, square, triangle), mobile responsive with color accent bar, categories section. Typecheck passes."
     },
     {
       "id": "US-015",
@@ -304,8 +304,8 @@
         "Typecheck passes"
       ],
       "priority": 15,
-      "passes": true,
-      "notes": "Implemented: Search page with ?q and ?page query params, Prisma contains (ILIKE) on full_name/degree/address, responsive grid (1/2/4 cols), Card with decorator per type, 'No results found' with category links, pagination with 20 per page and page number navigation. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Search page with ?q and ?page query params, Prisma contains (ILIKE) on full_name/degree/address, responsive grid (1/2/4 cols), Card with decorator per type, 'No results found' with category links, pagination with 20 per page and page number navigation. Typecheck passes."
     },
     {
       "id": "US-016",
@@ -321,8 +321,8 @@
         "Typecheck passes"
       ],
       "priority": 16,
-      "passes": true,
-      "notes": "Implemented: Type filter (DOCTOR/DENTIST/PHARMACIST) and Location filter (from distinct addresses). Filters use border-2 border-foreground styling. Active filters shown as tags with X icon to remove. Results count shows 'X professionals found' with filter context. URL params preserved through pagination. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Type filter (DOCTOR/DENTIST/PHARMACIST) and Location filter (from distinct addresses). Filters use border-2 border-foreground styling. Active filters shown as tags with X icon to remove. Results count shows 'X professionals found' with filter context. URL params preserved through pagination. Typecheck passes."
     },
     {
       "id": "US-017",
@@ -340,8 +340,8 @@
         "Typecheck passes"
       ],
       "priority": 17,
-      "passes": true,
-      "notes": "Implemented: Header component with geometric logo (circle/square/triangle in primary colors), nav links (Home/Doctors/Dentists/Pharmacists), language switcher (EN/NE) with active state highlighting, login button (outline style with hard shadow), border-b-4 border-foreground, mobile hamburger menu with slide-down navigation, sticky positioning, active link highlighting. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Header component with geometric logo (circle/square/triangle in primary colors), nav links (Home/Doctors/Dentists/Pharmacists), language switcher (EN/NE) with active state highlighting, login button (outline style with hard shadow), border-b-4 border-foreground, mobile hamburger menu with slide-down navigation, sticky positioning, active link highlighting. Typecheck passes."
     },
     {
       "id": "US-018",
@@ -357,8 +357,8 @@
         "Typecheck passes"
       ],
       "priority": 18,
-      "passes": true,
-      "notes": "Implemented: Footer component with bg-foreground (#121212) and white text. Four sections (About, For Doctors, For Clinics, Legal) with internal links. Copyright notice with dynamic year. Social links (Facebook, Twitter, LinkedIn, Instagram) with SVG icons. Bauhaus logo and 'Made in Nepal' decorative element. Integrated into [lang] layout with flex-col min-h-screen for sticky footer. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: Footer component with bg-foreground (#121212) and white text. Four sections (About, For Doctors, For Clinics, Legal) with internal links. Copyright notice with dynamic year. Social links (Facebook, Twitter, LinkedIn, Instagram) with SVG icons. Bauhaus logo and 'Made in Nepal' decorative element. Integrated into [lang] layout with flex-col min-h-screen for sticky footer. Typecheck passes."
     },
     {
       "id": "US-019",
@@ -374,8 +374,8 @@
         "Typecheck passes"
       ],
       "priority": 19,
-      "passes": true,
-      "notes": "Implemented: app/sitemap.ts created with Next.js sitemap convention using generateSitemaps for sitemap index support. Generates URLs for all professionals with both en/ne language variants, includes static pages (home, search, category pages). Includes lastmod (from updated_at), changeFrequency (weekly), priority (0.7-1.0 based on page type and verification). Handles >50k URLs with sitemap index via generateSitemaps function. Accessible at /sitemap.xml. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: app/sitemap.ts created with Next.js sitemap convention using generateSitemaps for sitemap index support. Generates URLs for all professionals with both en/ne language variants, includes static pages (home, search, category pages). Includes lastmod (from updated_at), changeFrequency (weekly), priority (0.7-1.0 based on page type and verification). Handles >50k URLs with sitemap index via generateSitemaps function. Accessible at /sitemap.xml. Typecheck passes."
     },
     {
       "id": "US-020",
@@ -390,8 +390,8 @@
         "Typecheck passes"
       ],
       "priority": 20,
-      "passes": true,
-      "notes": "Implemented: app/robots.ts created using Next.js MetadataRoute.Robots convention. Allows all crawlers and references sitemap.xml. Root layout.tsx updated with comprehensive default metadata including metadataBase, title template, description, keywords, OpenGraph, Twitter cards, robots directives, and Google verification placeholder. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-d0f (Phase 1 UI/pages) still in progress. Original self-assessment: Implemented: app/robots.ts created using Next.js MetadataRoute.Robots convention. Allows all crawlers and references sitemap.xml. Root layout.tsx updated with comprehensive default metadata including metadataBase, title template, description, keywords, OpenGraph, Twitter cards, robots directives, and Google verification placeholder. Typecheck passes."
     },
     {
       "id": "US-021",
@@ -410,7 +410,7 @@
       "priority": 21,
       "passes": true,
       "verified": true,
-      "notes": "VERIFIED (me-4sj): E2E 5/6 pass. Files: messages/en.json, messages/ne.json, middleware.ts, i18n/config.ts all present. next-intl configured with 'always' prefix strategy. URL structure /en/... and /ne/... working. Default locale 'en'. Minor: language switcher NE→EN switch-back has timing issue in E2E (stays on /ne). All acceptance criteria met."
+      "notes": "VERIFIED (me-4sj): E2E 5/6 pass. Files: messages/en.json, messages/ne.json, middleware.ts, i18n/config.ts all present. next-intl configured with 'always' prefix strategy. URL structure /en/... and /ne/... working. Default locale 'en'. Minor: language switcher NE\u2192EN switch-back has timing issue in E2E (stays on /ne). All acceptance criteria met."
     },
     {
       "id": "US-022",
@@ -483,7 +483,7 @@
       "priority": 25,
       "passes": true,
       "verified": true,
-      "notes": "VERIFIED (me-4sj): E2E 4/5 pass. Files: src/lib/auth.ts, api/auth/[...nextauth]/route.ts, api/auth/register/route.ts all present. NextAuth.js v4 with Prisma adapter, credentials + Google OAuth providers, session in DB. 1 E2E fail is Nepali locale selector mismatch (test uses /sign in/i but button text is 'साइन इन'), not a feature defect."
+      "notes": "VERIFIED (me-4sj): E2E 4/5 pass. Files: src/lib/auth.ts, api/auth/[...nextauth]/route.ts, api/auth/register/route.ts all present. NextAuth.js v4 with Prisma adapter, credentials + Google OAuth providers, session in DB. 1 E2E fail is Nepali locale selector mismatch (test uses /sign in/i but button text is '\u0938\u093e\u0907\u0928 \u0907\u0928'), not a feature defect."
     },
     {
       "id": "US-026",
@@ -502,7 +502,7 @@
       "priority": 26,
       "passes": true,
       "verified": true,
-      "notes": "VERIFIED (me-4sj): E2E 2/3 pass (login 4/5 + register 1/2 combined). Files: app/[lang]/login/page.tsx, app/[lang]/register/page.tsx both present with Bauhaus styling, error handling, Google OAuth button. E2E failures are test selector mismatches: login label is 'Email' not 'Email Address', Nepali button text 'साइन इन' not matched by /sign in/i. Not feature defects."
+      "notes": "VERIFIED (me-4sj): E2E 2/3 pass (login 4/5 + register 1/2 combined). Files: app/[lang]/login/page.tsx, app/[lang]/register/page.tsx both present with Bauhaus styling, error handling, Google OAuth button. E2E failures are test selector mismatches: login label is 'Email' not 'Email Address', Nepali button text '\u0938\u093e\u0907\u0928 \u0907\u0928' not matched by /sign in/i. Not feature defects."
     },
     {
       "id": "US-027",
@@ -672,8 +672,8 @@
         "Typecheck passes"
       ],
       "priority": 35,
-      "passes": true,
-      "notes": "Implemented: @playwright/test installed, playwright.config.ts created with webServer config for pnpm dev, e2e/ directory with fixtures/test-utils.ts containing login/registerUser/searchFromHomepage/switchLanguage helpers, test:e2e script in package.json, .env.test with test database URL, GitHub Actions CI e2e job configured with PostgreSQL service and artifact uploads. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: Implemented: @playwright/test installed, playwright.config.ts created with webServer config for pnpm dev, e2e/ directory with fixtures/test-utils.ts containing login/registerUser/searchFromHomepage/switchLanguage helpers, test:e2e script in package.json, .env.test with test database URL, GitHub Actions CI e2e job configured with PostgreSQL service and artifact uploads. Typecheck passes."
     },
     {
       "id": "US-036",
@@ -690,8 +690,8 @@
         "Typecheck passes"
       ],
       "priority": 36,
-      "passes": true,
-      "notes": "Implemented: seed.ts with test professionals (5 doctors, 3 dentists, 2 pharmacists), test users (regular, professional, admin), and pending verification request. Created global-setup.ts and global-teardown.ts for Playwright hooks. Exported TEST_DOCTOR_SLUG, TEST_USER_EMAIL, etc. Updated playwright.config.ts. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: Implemented: seed.ts with test professionals (5 doctors, 3 dentists, 2 pharmacists), test users (regular, professional, admin), and pending verification request. Created global-setup.ts and global-teardown.ts for Playwright hooks. Exported TEST_DOCTOR_SLUG, TEST_USER_EMAIL, etc. Updated playwright.config.ts. Typecheck passes."
     },
     {
       "id": "US-037",
@@ -711,8 +711,8 @@
         "All tests pass: pnpm test:e2e homepage.spec.ts"
       ],
       "priority": 37,
-      "passes": true,
-      "notes": "Implemented: homepage.spec.ts with 23 tests covering homepage hero/search/categories, navigation header links/logo/language switcher, footer sections/social links, mobile menu toggle, and cross-page navigation. Fixed database credentials in test config. All tests pass."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: Implemented: homepage.spec.ts with 23 tests covering homepage hero/search/categories, navigation header links/logo/language switcher, footer sections/social links, mobile menu toggle, and cross-page navigation. Fixed database credentials in test config. All tests pass."
     },
     {
       "id": "US-038",
@@ -734,8 +734,8 @@
         "All tests pass: pnpm test:e2e search.spec.ts"
       ],
       "priority": 38,
-      "passes": true,
-      "notes": "Implemented: search.spec.ts with 30 tests covering search page load, result cards, no results message, type/location filters, active filter tags, pagination, search form, and navigation to detail pages for all professional types."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: Implemented: search.spec.ts with 30 tests covering search page load, result cards, no results message, type/location filters, active filter tags, pagination, search form, and navigation to detail pages for all professional types."
     },
     {
       "id": "US-039",
@@ -756,8 +756,8 @@
         "All tests pass: pnpm test:e2e professional-detail.spec.ts"
       ],
       "priority": 39,
-      "passes": true,
-      "notes": "Implemented: professional-detail.spec.ts with 37 tests covering doctor/dentist/pharmacist detail pages, verified badge display, claim button UI, 404 handling, SEO meta tags, JSON-LD structured data, language support, and legacy route redirects."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: Implemented: professional-detail.spec.ts with 37 tests covering doctor/dentist/pharmacist detail pages, verified badge display, claim button UI, 404 handling, SEO meta tags, JSON-LD structured data, language support, and legacy route redirects."
     },
     {
       "id": "US-040",
@@ -778,8 +778,8 @@
         "All tests pass: pnpm test:e2e category-pages.spec.ts"
       ],
       "priority": 40,
-      "passes": true,
-      "notes": "Implemented: category-pages.spec.ts with 31 tests covering doctors/dentists/pharmacists listing pages, type-specific badges (NMC/NDA/NPC), category badges for pharmacists, SEO titles, pagination with page numbers, card navigation to detail pages, and Nepali language support."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: Implemented: category-pages.spec.ts with 31 tests covering doctors/dentists/pharmacists listing pages, type-specific badges (NMC/NDA/NPC), category badges for pharmacists, SEO titles, pagination with page numbers, card navigation to detail pages, and Nepali language support."
     },
     {
       "id": "US-041",
@@ -799,8 +799,8 @@
         "All tests pass: pnpm test:e2e auth-register.spec.ts"
       ],
       "priority": 41,
-      "passes": true,
-      "notes": ""
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: "
     },
     {
       "id": "US-042",
@@ -820,8 +820,8 @@
         "All tests pass: pnpm test:e2e auth-login.spec.ts"
       ],
       "priority": 42,
-      "passes": true,
-      "notes": "Header user indicator not implemented yet - tested login redirect instead. Also fixed a bug in dashboard/profile page where unauthenticated users would see infinite loading spinner."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: Header user indicator not implemented yet - tested login redirect instead. Also fixed a bug in dashboard/profile page where unauthenticated users would see infinite loading spinner."
     },
     {
       "id": "US-043",
@@ -843,8 +843,8 @@
         "All tests pass: pnpm test:e2e claim-profile.spec.ts"
       ],
       "priority": 43,
-      "passes": true,
-      "notes": "17 tests total: 7 pass, 10 skip (client-side session not maintained in E2E - known limitation). Unauthenticated flow fully tested. Authenticated tests gracefully skip when session not detected."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: 17 tests total: 7 pass, 10 skip (client-side session not maintained in E2E - known limitation). Unauthenticated flow fully tested. Authenticated tests gracefully skip when session not detected."
     },
     {
       "id": "US-044",
@@ -865,8 +865,8 @@
         "All tests pass: pnpm test:e2e admin-claims.spec.ts"
       ],
       "priority": 44,
-      "passes": true,
-      "notes": "30 tests total: 5 pass, 25 skip (client-side session not maintained in E2E - known limitation). Access control and language tests fully tested. Authenticated admin tests gracefully skip when session not detected."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: 30 tests total: 5 pass, 25 skip (client-side session not maintained in E2E - known limitation). Access control and language tests fully tested. Authenticated admin tests gracefully skip when session not detected."
     },
     {
       "id": "US-045",
@@ -888,8 +888,8 @@
         "All tests pass: pnpm test:e2e profile-edit.spec.ts"
       ],
       "priority": 45,
-      "passes": true,
-      "notes": "25 tests total: 4 pass, 21 skip (client-side session not maintained in E2E - known limitation). Unauthenticated and language tests fully work. Authenticated tests gracefully skip when session not detected."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: 25 tests total: 4 pass, 21 skip (client-side session not maintained in E2E - known limitation). Unauthenticated and language tests fully work. Authenticated tests gracefully skip when session not detected."
     },
     {
       "id": "US-046",
@@ -909,8 +909,8 @@
         "All tests pass: pnpm test:e2e user-claims.spec.ts"
       ],
       "priority": 46,
-      "passes": true,
-      "notes": ""
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: "
     },
     {
       "id": "US-047",
@@ -931,8 +931,8 @@
         "All tests pass: pnpm test:e2e i18n.spec.ts"
       ],
       "priority": 47,
-      "passes": true,
-      "notes": "36 tests covering URL-based language switching. Note: Current implementation has hardcoded English content in homepage/header/footer - tests verify URL switching behavior."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: 36 tests covering URL-based language switching. Note: Current implementation has hardcoded English content in homepage/header/footer - tests verify URL switching behavior."
     },
     {
       "id": "US-048",
@@ -954,8 +954,8 @@
         "All tests pass: pnpm test:e2e seo-accessibility.spec.ts"
       ],
       "priority": 48,
-      "passes": true,
-      "notes": "56 tests total: 54 pass, 2 skip (sitemap generation timeouts expected with large dataset). Tests cover meta tags, OpenGraph, Twitter cards, robots.txt, sitemap.xml, image alt text, form labels, focus states, keyboard navigation, ARIA attributes, heading hierarchy, and responsive design."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: 56 tests total: 54 pass, 2 skip (sitemap generation timeouts expected with large dataset). Tests cover meta tags, OpenGraph, Twitter cards, robots.txt, sitemap.xml, image alt text, form labels, focus states, keyboard navigation, ARIA attributes, heading hierarchy, and responsive design."
     },
     {
       "id": "US-049",
@@ -974,8 +974,8 @@
         "Typecheck passes"
       ],
       "priority": 49,
-      "passes": true,
-      "notes": "CI e2e job configured with: PostgreSQL 16 service, Playwright chromium browser, pnpm db:push for migrations, global-setup.ts for test seeding, artifact upload on failure. Branch ralph/swasthya-platform added to CI triggers. PR mergeability requires branch protection settings (not CI config)."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-92d (Phase 1 E2E meta) still in progress. Original self-assessment: CI e2e job configured with: PostgreSQL 16 service, Playwright chromium browser, pnpm db:push for migrations, global-setup.ts for test seeding, artifact upload on failure. Branch ralph/swasthya-platform added to CI triggers. PR mergeability requires branch protection settings (not CI config)."
     },
     {
       "id": "US-050",
@@ -1282,8 +1282,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 66,
-      "passes": true,
-      "notes": "Implemented: app/[lang]/clinic/dashboard/page.tsx with protected route (requires login and verified clinic). Shows today's appointments count, patients in queue (SCHEDULED/CHECKED_IN), total patients, and total doctors. API endpoint at /api/clinic/dashboard. Bauhaus styled stat cards with decorators and hover effects. Bilingual support (EN/NE). Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: Implemented: app/[lang]/clinic/dashboard/page.tsx with protected route (requires login and verified clinic). Shows today's appointments count, patients in queue (SCHEDULED/CHECKED_IN), total patients, and total doctors. API endpoint at /api/clinic/dashboard. Bauhaus styled stat cards with decorators and hover effects. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-067",
@@ -1298,8 +1298,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 67,
-      "passes": true,
-      "notes": "Implemented: Added Quick Actions section to clinic dashboard with three buttons (Add Patient, View Queue, Manage Schedules). Each button has Bauhaus styling with colored icon containers (blue, red, yellow), hard shadows, hover effects with translate+shadow reduction. Buttons link to respective pages (/clinic/dashboard/patients/new, /clinic/dashboard/queue, /clinic/dashboard/schedules). Bilingual support (EN/NE) for all labels and descriptions. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: Implemented: Added Quick Actions section to clinic dashboard with three buttons (Add Patient, View Queue, Manage Schedules). Each button has Bauhaus styling with colored icon containers (blue, red, yellow), hard shadows, hover effects with translate+shadow reduction. Buttons link to respective pages (/clinic/dashboard/patients/new, /clinic/dashboard/queue, /clinic/dashboard/schedules). Bilingual support (EN/NE) for all labels and descriptions. Typecheck passes."
     },
     {
       "id": "US-068",
@@ -1316,8 +1316,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 68,
-      "passes": true,
-      "notes": "Implemented: app/[lang]/clinic/dashboard/doctors/page.tsx created with protected route. Search API at /api/clinic/doctors/search finds verified professionals by name or registration number (excludes already affiliated). CRUD API at /api/clinic/doctors for listing (GET), adding (POST), and removing (DELETE) doctors. Page shows current doctors list with role badges, registration numbers, degrees, joined dates. Add Doctor modal with search, doctor selection, and role selection (permanent/visiting/consultant). Remove functionality with confirmation. Quick action button added to dashboard. Bilingual support (EN/NE). Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: Implemented: app/[lang]/clinic/dashboard/doctors/page.tsx created with protected route. Search API at /api/clinic/doctors/search finds verified professionals by name or registration number (excludes already affiliated). CRUD API at /api/clinic/doctors for listing (GET), adding (POST), and removing (DELETE) doctors. Page shows current doctors list with role badges, registration numbers, degrees, joined dates. Add Doctor modal with search, doctor selection, and role selection (permanent/visiting/consultant). Remove functionality with confirmation. Quick action button added to dashboard. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-069",
@@ -1334,8 +1334,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 69,
-      "passes": true,
-      "notes": "Implemented: app/[lang]/clinic/dashboard/schedules/page.tsx created with protected route. Doctor selection from clinic's affiliated doctors. Weekly schedule grid with toggle for each day (Sunday-Saturday), start/end time inputs, slot duration dropdown (10-60 min), max patients dropdown (1-5). API endpoint at /api/clinic/schedules handles GET (fetch schedules), POST (create/update schedules), DELETE (remove specific schedule). Save replaces all existing schedules for the doctor. Bilingual support (EN/NE). Bauhaus styling with toggles, success/error messages, and loading states. URL query param support for ?doctor=id. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: Implemented: app/[lang]/clinic/dashboard/schedules/page.tsx created with protected route. Doctor selection from clinic's affiliated doctors. Weekly schedule grid with toggle for each day (Sunday-Saturday), start/end time inputs, slot duration dropdown (10-60 min), max patients dropdown (1-5). API endpoint at /api/clinic/schedules handles GET (fetch schedules), POST (create/update schedules), DELETE (remove specific schedule). Save replaces all existing schedules for the doctor. Bilingual support (EN/NE). Bauhaus styling with toggles, success/error messages, and loading states. URL query param support for ?doctor=id. Typecheck passes."
     },
     {
       "id": "US-070",
@@ -1352,8 +1352,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 70,
-      "passes": true,
-      "notes": "Implemented: Leave management section added to schedules page with form (date, full day toggle, time range for partial leave, reason). API endpoint at /api/clinic/leaves handles GET (fetch leaves with optional doctorId and upcoming filters), POST (create leave with affected appointments check), DELETE (remove leave). Upcoming leaves list with delete option. Affected appointments modal shown before saving with patient names and time slots. Bilingual support (EN/NE). Bauhaus styling consistent with schedule section. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: Implemented: Leave management section added to schedules page with form (date, full day toggle, time range for partial leave, reason). API endpoint at /api/clinic/leaves handles GET (fetch leaves with optional doctorId and upcoming filters), POST (create leave with affected appointments check), DELETE (remove leave). Upcoming leaves list with delete option. Affected appointments modal shown before saving with patient names and time slots. Bilingual support (EN/NE). Bauhaus styling consistent with schedule section. Typecheck passes."
     },
     {
       "id": "US-071",
@@ -1370,8 +1370,8 @@
         "All tests pass: pnpm test:e2e clinic-dashboard.spec.ts"
       ],
       "priority": 71,
-      "passes": true,
-      "notes": "36 tests total: 10 pass, 26 skip (client-side session not maintained in E2E - known limitation). Tests cover: access control (login required, callbackUrl, no clinic prompt), authenticated dashboard (statistics cards, quick actions, clinic info), manage doctors (list, add modal, role badges), doctor schedules (selection, weekly grid, time inputs, save button), leave management (form fields, upcoming leaves), language support (Nepali content), loading states, error handling, and navigation between pages."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: 36 tests total: 10 pass, 26 skip (client-side session not maintained in E2E - known limitation). Tests cover: access control (login required, callbackUrl, no clinic prompt), authenticated dashboard (statistics cards, quick actions, clinic info), manage doctors (list, add modal, role badges), doctor schedules (selection, weekly grid, time inputs, save button), leave management (form fields, upcoming leaves), language support (Nepali content), loading states, error handling, and navigation between pages."
     },
     {
       "id": "US-072",
@@ -1388,8 +1388,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 72,
-      "passes": true,
-      "notes": "Implemented: Clinic public page at /[lang]/clinic/[slug] with name, logo, type badge, contact info (address, phone, email, website), operating hours from timings JSON with open/closed states, services offered with color-coded tags. Returns 404 for not found or unverified clinics. Bilingual support (EN/NE). Bauhaus styling with Card components. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: Implemented: Clinic public page at /[lang]/clinic/[slug] with name, logo, type badge, contact info (address, phone, email, website), operating hours from timings JSON with open/closed states, services offered with color-coded tags. Returns 404 for not found or unverified clinics. Bilingual support (EN/NE). Bauhaus styling with Card components. Typecheck passes."
     },
     {
       "id": "US-073",
@@ -1405,8 +1405,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 73,
-      "passes": true,
-      "notes": "Implemented: PhotoGallery client component with modal functionality (prev/next navigation, keyboard support, Bauhaus styling). Doctors list section showing affiliated doctors from ClinicDoctor table with photo, name, type badge, specialty/degree, and role badge. Links to doctor profile page. Empty state for clinics without doctors. Bilingual support (EN/NE). Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: Implemented: PhotoGallery client component with modal functionality (prev/next navigation, keyboard support, Bauhaus styling). Doctors list section showing affiliated doctors from ClinicDoctor table with photo, name, type badge, specialty/degree, and role badge. Links to doctor profile page. Empty state for clinics without doctors. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-074",
@@ -1420,8 +1420,8 @@
         "Typecheck passes"
       ],
       "priority": 74,
-      "passes": true,
-      "notes": "Implemented: generateMetadata function for clinic pages with title, description, OpenGraph, Twitter cards, and language alternates. JSON-LD structured data with MedicalClinic/Hospital/Pharmacy schema types based on clinic type. Includes name, address, phone, email, website, openingHours (from timings JSON), geo coordinates, and available services. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: Implemented: generateMetadata function for clinic pages with title, description, OpenGraph, Twitter cards, and language alternates. JSON-LD structured data with MedicalClinic/Hospital/Pharmacy schema types based on clinic type. Includes name, address, phone, email, website, openingHours (from timings JSON), geo coordinates, and available services. Typecheck passes."
     },
     {
       "id": "US-075",
@@ -1438,8 +1438,8 @@
         "All tests pass: pnpm test:e2e clinic-public.spec.ts"
       ],
       "priority": 75,
-      "passes": true,
-      "notes": "44 tests pass, 1 skipped (no verified hospital in seed data). Tests cover: basic functionality (name, type badge, address, verified badge, contact info), operating hours display, services section, doctors list with navigation, 404 handling for invalid and unverified clinics, SEO meta tags, JSON-LD structured data, different clinic types, language support (EN/NE), and responsive design."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-gak (Phase 2 dashboard) still in progress. Original self-assessment: 44 tests pass, 1 skipped (no verified hospital in seed data). Tests cover: basic functionality (name, type badge, address, verified badge, contact info), operating hours display, services section, doctors list with navigation, 404 handling for invalid and unverified clinics, SEO meta tags, JSON-LD structured data, different clinic types, language support (EN/NE), and responsive design."
     },
     {
       "id": "US-076",
@@ -1723,8 +1723,8 @@
         "Typecheck passes"
       ],
       "priority": 90,
-      "passes": true,
-      "notes": "Implemented: Created DrugSchedule, ProductCategory, CreditTransactionType enums. Created Supplier model with contact info, GSTIN, PAN, payment terms. Created Product model with name, generic_name, category, schedule, barcode, gst_rate, manufacturer, hsn_code, pack_size, min/max stock levels. Created InventoryBatch model with batch_number, expiry_date, quantity, original_qty, purchase_price, mrp, selling_price, received_date. Created Sale model with items (Json), subtotal, discount, tax_amount, total, amount_paid, amount_due, payment_mode, is_credit. Created CreditAccount model for khata tracking with credit_limit, current_balance. Created CreditTransaction model for transaction history. All models linked to Clinic. Prisma db push successful, typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: Implemented: Created DrugSchedule, ProductCategory, CreditTransactionType enums. Created Supplier model with contact info, GSTIN, PAN, payment terms. Created Product model with name, generic_name, category, schedule, barcode, gst_rate, manufacturer, hsn_code, pack_size, min/max stock levels. Created InventoryBatch model with batch_number, expiry_date, quantity, original_qty, purchase_price, mrp, selling_price, received_date. Created Sale model with items (Json), subtotal, discount, tax_amount, total, amount_paid, amount_due, payment_mode, is_credit. Created CreditAccount model for khata tracking with credit_limit, current_balance. Created CreditTransaction model for transaction history. All models linked to Clinic. Prisma db push successful, typecheck passes."
     },
     {
       "id": "US-091",
@@ -1740,8 +1740,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 91,
-      "passes": true,
-      "notes": "Implemented: Product catalog CRUD page at /clinic/dashboard/pharmacy/products with search (name, generic name, barcode, manufacturer), filter (category, supplier, active status), pagination, barcode generation (EAN-13), stock levels and nearest expiry display, low stock and expiring soon indicators, deactivate/reactivate. Supplier management page at /clinic/dashboard/pharmacy/suppliers with CRUD, search, filter, products/batches count. API endpoints: GET/POST/PUT/DELETE /api/clinic/pharmacy/products and /api/clinic/pharmacy/suppliers. Bilingual support (EN/NE). Bauhaus design system. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: Implemented: Product catalog CRUD page at /clinic/dashboard/pharmacy/products with search (name, generic name, barcode, manufacturer), filter (category, supplier, active status), pagination, barcode generation (EAN-13), stock levels and nearest expiry display, low stock and expiring soon indicators, deactivate/reactivate. Supplier management page at /clinic/dashboard/pharmacy/suppliers with CRUD, search, filter, products/batches count. API endpoints: GET/POST/PUT/DELETE /api/clinic/pharmacy/products and /api/clinic/pharmacy/suppliers. Bilingual support (EN/NE). Bauhaus design system. Typecheck passes."
     },
     {
       "id": "US-092",
@@ -1759,8 +1759,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 92,
-      "passes": true,
-      "notes": "Implemented: POS page at /clinic/dashboard/pharmacy/pos with cart and product search layout. Barcode scanner input with Enter key submission, product search by name/generic/barcode. FEFO (First Expired First Out) batch auto-selection - sorts available batches by expiry and picks earliest. Cart management with quantity +/- controls, max quantity validation. Item-level and bill-level discount (percent or amount). Multiple payment modes (Cash, Card, UPI, Bank Transfer, Credit/Khata). Credit account management with customer creation. Receipt printing via new window with print dialog. API endpoints: GET /api/clinic/pharmacy/pos/search, POST /api/clinic/pharmacy/pos/sale, GET/POST /api/clinic/pharmacy/credit-accounts. Sale processing deducts inventory from batches, creates CreditTransaction for credit sales. Bilingual support (EN/NE). Bauhaus design system. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: Implemented: POS page at /clinic/dashboard/pharmacy/pos with cart and product search layout. Barcode scanner input with Enter key submission, product search by name/generic/barcode. FEFO (First Expired First Out) batch auto-selection - sorts available batches by expiry and picks earliest. Cart management with quantity +/- controls, max quantity validation. Item-level and bill-level discount (percent or amount). Multiple payment modes (Cash, Card, UPI, Bank Transfer, Credit/Khata). Credit account management with customer creation. Receipt printing via new window with print dialog. API endpoints: GET /api/clinic/pharmacy/pos/search, POST /api/clinic/pharmacy/pos/sale, GET/POST /api/clinic/pharmacy/credit-accounts. Sale processing deducts inventory from batches, creates CreditTransaction for credit sales. Bilingual support (EN/NE). Bauhaus design system. Typecheck passes."
     },
     {
       "id": "US-093",
@@ -1777,8 +1777,8 @@
         "All tests pass: pnpm test:e2e pharmacy-pos.spec.ts"
       ],
       "priority": 93,
-      "passes": true,
-      "notes": "Implemented: pharmacy-pos.spec.ts with comprehensive tests covering access control, product search, cart operations, payment modes, credit accounts, UI elements, language support, error handling, mobile responsiveness. Added pharmacy test data seeding (products, batches, credit accounts) to seed.ts. Tests use graceful skip pattern for authenticated tests when POS access not available. 6 tests pass, 38 skip appropriately, 0 failures. Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: Implemented: pharmacy-pos.spec.ts with comprehensive tests covering access control, product search, cart operations, payment modes, credit accounts, UI elements, language support, error handling, mobile responsiveness. Added pharmacy test data seeding (products, batches, credit accounts) to seed.ts. Tests use graceful skip pattern for authenticated tests when POS access not available. 6 tests pass, 38 skip appropriately, 0 failures. Typecheck passes."
     },
     {
       "id": "US-094",
@@ -1794,8 +1794,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 94,
-      "passes": true,
-      "notes": "Implemented: Inventory dashboard page at /clinic/dashboard/pharmacy/inventory with overview stats (total products, batches, stock value), low stock alerts with deficit tracking, expiring items list with 30/60/90 day filters, stock adjustment modal for damage/loss/theft/expired/found/correction. API route at /api/clinic/pharmacy/inventory handles overview, low-stock, and expiring views with pagination. Bilingual support (EN/NE). Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: Implemented: Inventory dashboard page at /clinic/dashboard/pharmacy/inventory with overview stats (total products, batches, stock value), low stock alerts with deficit tracking, expiring items list with 30/60/90 day filters, stock adjustment modal for damage/loss/theft/expired/found/correction. API route at /api/clinic/pharmacy/inventory handles overview, low-stock, and expiring views with pagination. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-095",
@@ -1811,8 +1811,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 95,
-      "passes": true,
-      "notes": "Implemented: API endpoint at /api/clinic/pharmacy/purchases (GET/POST) for purchase history and stock receiving. Created Purchase Receiving page at /[lang]/clinic/dashboard/pharmacy/purchases with Receive Stock form and Purchase History tabs. Supports multi-item entry with batch/expiry/prices, creates InventoryBatch records, supplier invoice tracking, bilingual (EN/NE). Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: Implemented: API endpoint at /api/clinic/pharmacy/purchases (GET/POST) for purchase history and stock receiving. Created Purchase Receiving page at /[lang]/clinic/dashboard/pharmacy/purchases with Receive Stock form and Purchase History tabs. Supports multi-item entry with batch/expiry/prices, creates InventoryBatch records, supplier invoice tracking, bilingual (EN/NE). Typecheck passes."
     },
     {
       "id": "US-096",
@@ -1828,8 +1828,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 96,
-      "passes": true,
-      "notes": "Implemented: Credit accounts management page at /[lang]/clinic/dashboard/pharmacy/khata with customer CRUD, payment recording, and statistics. Customer ledger view at /[lang]/clinic/dashboard/pharmacy/khata/[id] with transaction history, print ledger, CSV export. API endpoints: GET/PUT/DELETE /api/clinic/pharmacy/credit-accounts/[id] for account management, POST /api/clinic/pharmacy/credit-accounts/[id]/payment for payment recording. Credit sale in POS already implemented (US-093). Bilingual support (EN/NE). Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: Implemented: Credit accounts management page at /[lang]/clinic/dashboard/pharmacy/khata with customer CRUD, payment recording, and statistics. Customer ledger view at /[lang]/clinic/dashboard/pharmacy/khata/[id] with transaction history, print ledger, CSV export. API endpoints: GET/PUT/DELETE /api/clinic/pharmacy/credit-accounts/[id] for account management, POST /api/clinic/pharmacy/credit-accounts/[id]/payment for payment recording. Credit sale in POS already implemented (US-093). Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-097",
@@ -1845,8 +1845,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 97,
-      "passes": true,
-      "notes": "Implemented: API endpoint at /api/clinic/pharmacy/reports (GET) with date range filtering, summary statistics (total sales, revenue, discount, tax, cost, profit, profit margin), payment mode breakdown, daily sales breakdown, product-wise sales (top 50 by revenue). Reports page at /[lang]/clinic/dashboard/pharmacy/reports with Overview (summary cards, cash vs credit, payment breakdown), Daily Sales (date/count/revenue/cost/profit table with margins), Product Sales (product/qty/revenue/cost/profit table), Sales History (recent 100 sales). CSV export includes all data sections. Bilingual support (EN/NE). Typecheck passes."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: Implemented: API endpoint at /api/clinic/pharmacy/reports (GET) with date range filtering, summary statistics (total sales, revenue, discount, tax, cost, profit, profit margin), payment mode breakdown, daily sales breakdown, product-wise sales (top 50 by revenue). Reports page at /[lang]/clinic/dashboard/pharmacy/reports with Overview (summary cards, cash vs credit, payment breakdown), Daily Sales (date/count/revenue/cost/profit table with margins), Product Sales (product/qty/revenue/cost/profit table), Sales History (recent 100 sales). CSV export includes all data sections. Bilingual support (EN/NE). Typecheck passes."
     },
     {
       "id": "US-098",
@@ -1863,8 +1863,8 @@
         "All tests pass: pnpm test:e2e pharmacy-inventory.spec.ts"
       ],
       "priority": 98,
-      "passes": true,
-      "notes": "E2E tests created with 50 tests covering inventory, khata, and reports pages. Tests use graceful skip pattern for session limitations. Tests verify: access control, dashboard loading, overview cards, tab navigation, low stock alerts, expiry tracking with period filters, credit accounts management, reports with date filters, language support, cross navigation, and mobile responsiveness."
+      "passes": false,
+      "notes": "NOT VERIFIED \u2014 verification bead me-3cx (Phase 3 pharmacy) still in progress. Original self-assessment: E2E tests created with 50 tests covering inventory, khata, and reports pages. Tests use graceful skip pattern for session limitations. Tests verify: access control, dashboard loading, overview cards, tab navigation, low stock alerts, expiry tracking with period filters, credit accounts management, reports with date filters, language support, cross navigation, and mobile responsiveness."
     },
     {
       "id": "US-099",
