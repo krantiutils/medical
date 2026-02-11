@@ -364,6 +364,9 @@ model Clinic {
   // Staff members with RBAC roles
   staff ClinicStaff[]
 
+  // Medical records (patient document uploads)
+  medical_records MedicalRecord[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -424,6 +427,9 @@ model Patient {
 
   // IPD models (Phase 4)
   admissions Admission[]
+
+  // Medical records (document uploads)
+  medical_records MedicalRecord[]
 
   @@unique([clinic_id, patient_number])
   @@unique([clinic_id, phone])
@@ -1225,6 +1231,39 @@ model VideoConsultation {
   @@index([type])
   @@index([scheduled_at])
   @@index([created_at])
+}
+
+// ============================================================================
+// MEDICAL RECORDS (Patient Document Management)
+// ============================================================================
+
+enum MedicalRecordType {
+  LAB_REPORT
+  PRESCRIPTION
+  IMAGING
+  DISCHARGE_SUMMARY
+  OTHER
+}
+
+model MedicalRecord {
+  id          String            @id @default(uuid())
+  title       String
+  record_type MedicalRecordType
+  file_url    String
+  file_size   Int // File size in bytes
+  notes       String?           @db.Text
+  record_date DateTime? // Date of the medical event
+  uploaded_at DateTime          @default(now())
+
+  // Relations
+  patient_id String
+  patient    Patient @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  clinic_id  String
+  clinic     Clinic  @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  @@index([patient_id, uploaded_at])
+  @@index([patient_id, record_type])
+  @@index([clinic_id])
 }
 
 model DoctorCheckIn {
