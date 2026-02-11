@@ -16,6 +16,8 @@ import { TEST_DATA } from "./fixtures/test-utils";
  */
 async function loginAsClinicOwner(page: Page): Promise<boolean> {
   await page.goto("/en/login");
+  // Login page defaults to phone tab — switch to email tab first
+  await page.getByRole("button", { name: /with email/i }).click();
   await page.getByLabel(/email/i).fill(TEST_DATA.CLINIC_OWNER.email);
   await page.getByLabel(/password/i).fill(TEST_DATA.CLINIC_OWNER.password);
   await page.getByRole("button", { name: /sign in|log in/i }).click();
@@ -69,62 +71,46 @@ async function isReceptionAccessible(page: Page): Promise<boolean> {
 }
 
 test.describe("Reception Queue - Access Control", () => {
-  test("should show login prompt for non-authenticated users", async ({
+  test("should redirect non-authenticated users to login", async ({
     page,
   }) => {
     await page.goto("/en/clinic/dashboard/reception");
 
-    // Wait for content to load
-    await page.waitForSelector("main", { timeout: 15000 });
+    // Middleware redirects unauthenticated users to login page
+    await page.waitForURL(/\/login/, { timeout: 15000 });
+    expect(page.url()).toContain("/login");
+  });
 
-    // Should show login required message
+  test("should display login form for non-authenticated users", async ({
+    page,
+  }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+
+    // Should be redirected to login page with login form
+    await page.waitForURL(/\/login/, { timeout: 15000 });
     await expect(
-      page.getByText(/please log in to access the reception queue/i)
+      page.getByRole("button", { name: /sign in|log in/i })
     ).toBeVisible({ timeout: 15000 });
   });
 
-  test("should display Login button for non-authenticated users", async ({
-    page,
-  }) => {
+  test("should include callbackUrl in login redirect", async ({ page }) => {
     await page.goto("/en/clinic/dashboard/reception");
 
-    await page.waitForSelector("main", { timeout: 15000 });
-
-    const loginButton = page
-      .locator("main")
-      .getByRole("link", { name: /^login$/i });
-    await expect(loginButton).toBeVisible({ timeout: 15000 });
-  });
-
-  test("should include callbackUrl in login link", async ({ page }) => {
-    await page.goto("/en/clinic/dashboard/reception");
-
-    await page.waitForSelector("main", { timeout: 15000 });
-
-    const loginLink = page
-      .locator("main")
-      .getByRole("link", { name: /^login$/i });
-    await expect(loginLink).toBeVisible({ timeout: 15000 });
-
-    const href = await loginLink.getAttribute("href");
-    expect(href).toContain("callbackUrl");
-    expect(href).toContain("/clinic/dashboard/reception");
+    // Middleware redirects with callbackUrl parameter
+    await page.waitForURL(/\/login/, { timeout: 15000 });
+    const currentUrl = page.url();
+    expect(currentUrl).toContain("callbackUrl");
+    // URL may be encoded (%2F instead of /)
+    expect(decodeURIComponent(currentUrl)).toContain("clinic/dashboard/reception");
   });
 
   test("should work with Nepali language", async ({ page }) => {
     await page.goto("/ne/clinic/dashboard/reception");
 
-    await page.waitForSelector("main", { timeout: 15000 });
-
-    // Check that URL is /ne/ path
+    // Should redirect to Nepali login page
+    await page.waitForURL(/\/login/, { timeout: 15000 });
     const currentUrl = page.url();
     expect(currentUrl).toContain("/ne/");
-
-    // Check for login/reception-related content (either Nepali or English)
-    const loginMessage = page.getByText(
-      /रिसेप्शन लाइन पहुँच गर्न कृपया लगइन गर्नुहोस्|please log in to access the reception queue|reception queue|login/i
-    );
-    await expect(loginMessage.first()).toBeVisible({ timeout: 10000 });
   });
 });
 
