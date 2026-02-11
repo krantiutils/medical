@@ -12,7 +12,7 @@ interface RouteParams {
 }
 
 // POST: Process payment for a consultation
-// In production, this would integrate with eSewa, Khalti, or similar payment gateways
+// TODO(me-ektq): This entire handler is demo-only. No real payment gateway integrated.
 export async function POST(request: NextRequest, { params }: RouteParams) {
   const session = await getServerSession(authOptions);
 
@@ -70,12 +70,14 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     );
   }
 
-  // In production, here we would:
-  // 1. Create a payment intent with the payment gateway
-  // 2. Verify the payment was successful
-  // 3. Update our records
+  // TODO(me-ektq): Replace demo payment with real eSewa/Khalti gateway integration.
+  // Production implementation should:
+  // 1. Create a payment intent with the gateway (eSewa or Khalti)
+  // 2. Redirect user to gateway checkout or use their SDK
+  // 3. Handle webhook/callback to verify payment success
+  // 4. Store real transaction ID from gateway response
   //
-  // For demo purposes, we simulate a successful payment
+  // Currently: simulates instant success with a fake payment ID.
   const payment_id = `demo_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
   const updatedConsultation = await prisma.videoConsultation.update({

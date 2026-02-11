@@ -217,6 +217,8 @@ export default function ConsultationDetailPage() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          // TODO(me-ektq): Replace "demo" with real payment method (esewa/khalti)
+          // and redirect to gateway checkout flow instead of instant success.
           body: JSON.stringify({ payment_method: "demo" }),
         }
       );
