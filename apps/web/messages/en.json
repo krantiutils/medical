@@ -30,7 +30,10 @@
     "browsePharmacists": "Browse Pharmacists",
     "doctorsDescription": "Find registered medical practitioners across Nepal",
     "dentistsDescription": "Connect with dental professionals near you",
-    "pharmacistsDescription": "Locate licensed pharmacists for medication advice"
+    "pharmacistsDescription": "Locate licensed pharmacists for medication advice",
+    "symptomCheckerTitle": "Not sure which specialist?",
+    "symptomCheckerDescription": "Use our symptom checker to find the right medical specialty based on your symptoms.",
+    "symptomCheckerCta": "Check Symptoms"
   },
   "nav": {
     "home": "Home",
@@ -49,7 +52,8 @@
     "admin": "Admin",
     "doctorClaims": "Doctor Claims",
     "clinicVerification": "Clinic Verification",
-    "reviewModeration": "Review Moderation"
+    "reviewModeration": "Review Moderation",
+    "symptomChecker": "Symptom Checker"
   },
   "footer": {
     "about": "About",
@@ -387,5 +391,20 @@
       "rejectionReason": "Reason for rejection (optional)",
       "rejectionPlaceholder": "e.g., Currently in another consultation"
     }
+  },
+  "symptomChecker": {
+    "badge": "Symptom Checker",
+    "title": "Symptom Checker",
+    "subtitle": "Select your symptoms to find the right medical specialist. Choose from the body areas below to get started.",
+    "disclaimer": "This tool provides general guidance only and is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for medical concerns.",
+    "selectSymptoms": "Select Your Symptoms",
+    "clearAll": "Clear All",
+    "matchedSpecialties": "Matched Specialties",
+    "emptyState": "Select one or more symptoms from the left to see matching specialties.",
+    "noMatches": "No matching specialties found for the selected symptoms.",
+    "matchSingular": "match",
+    "matchPlural": "matches",
+    "findDoctors": "Find Doctors",
+    "advice": "If you are experiencing a medical emergency, please call emergency services or visit the nearest hospital immediately."
   }
 }

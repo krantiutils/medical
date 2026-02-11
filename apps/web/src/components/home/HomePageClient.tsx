@@ -236,6 +236,32 @@ export function HomePageClient({ lang }: HomePageClientProps) {
         </div>
       </section>
 
+      {/* Symptom Checker CTA */}
+      <section className="py-12 px-6 lg:px-16 border-t-4 border-foreground bg-primary-red/5">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 flex-shrink-0 bg-primary-red flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold uppercase tracking-tight mb-1">
+                {t("symptomCheckerTitle")}
+              </h2>
+              <p className="text-foreground/60 max-w-lg">
+                {t("symptomCheckerDescription")}
+              </p>
+            </div>
+          </div>
+          <Link href={`/${lang}/symptom-checker`}>
+            <Button variant="primary" size="lg">
+              {t("symptomCheckerCta")}
+            </Button>
+          </Link>
+        </div>
+      </section>
+
       {/* How It Works - Process Section */}
       <section className="py-16 px-6 lg:px-16 bg-foreground text-white border-t-4 border-foreground">
         <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight mb-4">
