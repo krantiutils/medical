@@ -225,8 +225,8 @@ export async function login(
   await page.getByRole("button", { name: /sign in|log in/i }).click();
 
   // Wait for redirect to homepage or dashboard
-  // Matches /en, /en/, /en/dashboard, /ne, /ne/, /ne/dashboard
-  await page.waitForURL(/\/(en|ne)(\/dashboard|\/)?$/, { timeout: 30000 });
+  // Matches /en, /en/, /en/dashboard, /en/clinic/dashboard, /ne, /ne/, /ne/dashboard, /ne/clinic/dashboard
+  await page.waitForURL(/\/(en|ne)(\/(?:clinic\/)?dashboard|\/)?$/, { timeout: 30000 });
 }
 
 /**
