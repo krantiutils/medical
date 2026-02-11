@@ -75,6 +75,13 @@ export async function GET(request: NextRequest) {
             email: true,
           },
         },
+        family_member: {
+          select: {
+            id: true,
+            name: true,
+            relation: true,
+          },
+        },
       },
       orderBy: [
         { scheduled_at: "asc" },
@@ -106,7 +113,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { doctor_id, scheduled_at, chief_complaint, type = "SCHEDULED" } = body;
+  const { doctor_id, scheduled_at, chief_complaint, type = "SCHEDULED", family_member_id } = body;
 
   // Validate required fields
   if (!doctor_id) {
@@ -197,6 +204,20 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Validate family member if provided
+  if (family_member_id) {
+    const familyMember = await prisma.familyMember.findFirst({
+      where: { id: family_member_id, user_id: session.user.id },
+    });
+
+    if (!familyMember) {
+      return NextResponse.json(
+        { error: "Family member not found" },
+        { status: 404 }
+      );
+    }
+  }
+
   // Get the fee (use telemedicine_fee or default to 0)
   const fee = doctor.telemedicine_fee ? Number(doctor.telemedicine_fee) : 0;
 
@@ -214,6 +235,7 @@ export async function POST(request: NextRequest) {
       chief_complaint: chief_complaint || null,
       doctor_id,
       patient_id: session.user.id,
+      family_member_id: family_member_id || null,
     },
     include: {
       doctor: {
@@ -231,6 +253,13 @@ export async function POST(request: NextRequest) {
           id: true,
           name: true,
           email: true,
+        },
+      },
+      family_member: {
+        select: {
+          id: true,
+          name: true,
+          relation: true,
         },
       },
     },
