@@ -20,6 +20,8 @@ async function loginUser(
   password: string
 ): Promise<void> {
   await page.goto("/en/login");
+  // Login page defaults to phone tab — switch to email tab first
+  await page.getByRole("button", { name: /with email/i }).click();
   await page.getByLabel(/email/i).fill(email);
   await page.getByLabel(/password/i).fill(password);
   await page.getByRole("button", { name: /sign in|log in/i }).click();
