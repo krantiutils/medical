@@ -99,7 +99,11 @@ export function SearchMapSection({ lang }: SearchMapSectionProps) {
 
   const handleNearMe = useCallback(() => {
     if (!navigator.geolocation) {
-      setGeoError("Your browser does not support geolocation");
+      setGeoError(
+        lang === "ne"
+          ? "तपाईंको ब्राउजरले स्थान समर्थन गर्दैन"
+          : "Your browser does not support geolocation"
+      );
       return;
     }
 
@@ -120,19 +124,29 @@ export function SearchMapSection({ lang }: SearchMapSectionProps) {
         switch (error.code) {
           case error.PERMISSION_DENIED:
             setGeoError(
-              "Location permission denied. Please enable it in your browser settings."
+              lang === "ne"
+                ? "स्थान अनुमति अस्वीकृत। कृपया ब्राउजर सेटिङमा अनुमति दिनुहोस्।"
+                : "Location permission denied. Please enable it in your browser settings."
             );
             break;
           case error.POSITION_UNAVAILABLE:
-            setGeoError("Location information unavailable");
+            setGeoError(
+              lang === "ne"
+                ? "स्थान जानकारी उपलब्ध छैन"
+                : "Location information unavailable"
+            );
             break;
           default:
-            setGeoError("Failed to get location");
+            setGeoError(
+              lang === "ne"
+                ? "स्थान प्राप्त गर्न असफल"
+                : "Failed to get location"
+            );
         }
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
-  }, [radius, fetchNearby]);
+  }, [lang, radius, fetchNearby]);
 
   const handleRadiusChange = useCallback(
     (newRadius: number) => {
@@ -187,13 +201,15 @@ export function SearchMapSection({ lang }: SearchMapSectionProps) {
               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          {loading ? "Searching..." : "Near Me"}
+          {loading
+            ? (lang === "ne" ? "खोजिदैछ..." : "Searching...")
+            : (lang === "ne" ? "मेरो नजिक" : "Near Me")}
         </Button>
 
         {/* Radius filter */}
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold uppercase tracking-wide">
-            Radius:
+            {lang === "ne" ? "दायरा:" : "Radius:"}
           </span>
           <div className="flex gap-1">
             {RADIUS_OPTIONS.map((r) => (
@@ -232,14 +248,16 @@ export function SearchMapSection({ lang }: SearchMapSectionProps) {
       {fetched && !loading && (
         <p className="text-sm font-medium">
           <span className="text-primary-blue">{professionals.length}</span>{" "}
-          professional{professionals.length !== 1 ? "s" : ""} found
-          {userLocation && ` within ${formatDistance(radius)}`}
+          {lang === "ne" ? "पेशेवर भेटिए" : `professional${professionals.length !== 1 ? "s" : ""} found`}
+          {userLocation && ` (${formatDistance(radius)} ${lang === "ne" ? "दायरा" : "radius"})`}
         </p>
       )}
 
       {!fetched && !loading && (
         <p className="text-sm text-foreground/60">
-          Click &apos;Near Me&apos; to find healthcare professionals near you
+          {lang === "ne"
+            ? "'मेरो नजिक' थिच्नुहोस् नजिकका स्वास्थ्य पेशेवरहरू हेर्न"
+            : "Click 'Near Me' to find healthcare professionals near you"}
         </p>
       )}
 
@@ -282,7 +300,9 @@ export function SearchMapSection({ lang }: SearchMapSectionProps) {
 
       {fetched && professionals.length === 0 && !loading && (
         <p className="text-center text-foreground/60 py-8">
-          No professionals found within this radius
+          {lang === "ne"
+            ? "यो दायरामा कुनै पेशेवर भेटिएन"
+            : "No professionals found within this radius"}
         </p>
       )}
     </div>
