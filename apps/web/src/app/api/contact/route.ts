@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
 
-const SUPPORT_EMAIL = process.env.CONTACT_EMAIL || "support@swasthya.com.np";
+const SUPPORT_EMAIL = process.env.CONTACT_EMAIL || "support@doctorsewa.org";
 
 const VALID_SUBJECTS = [
   "general",
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
       subjectLabels[subject]?.en ||
       subject;
 
-    const emailSubject = `[Swasthya Contact] ${subjectLabel} - from ${name.trim()}`;
+    const emailSubject = `[DoctorSewa Contact] ${subjectLabel} - from ${name.trim()}`;
 
     const html = `
       <div style="font-family: 'Outfit', Arial, sans-serif; max-width: 600px; margin: 0 auto;">

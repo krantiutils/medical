@@ -713,7 +713,7 @@ function BillingPageContent() {
             {/* Footer */}
             <div className="mt-6 pt-4 border-t-2 border-dashed border-foreground text-center text-sm">
               <p className="font-bold">{t.thankYou}</p>
-              <p className="text-xs text-foreground/60 mt-2">{t.generatedBy} Swasthya</p>
+              <p className="text-xs text-foreground/60 mt-2">{t.generatedBy} DoctorSewa</p>
             </div>
           </div>
         </div>

@@ -8,13 +8,13 @@ interface AboutPageProps {
 
 const translations = {
   en: {
-    title: "About Swasthya",
+    title: "About DoctorSewa",
     metaDescription:
-      "Swasthya is Nepal's comprehensive healthcare directory connecting patients with verified doctors, dentists, and pharmacists across the country.",
+      "DoctorSewa is Nepal's comprehensive healthcare directory connecting patients with verified doctors, dentists, and pharmacists across the country.",
     tagline: "Nepal's Healthcare Directory",
     headline: "Connecting Nepal to Better Healthcare",
     intro:
-      "Swasthya is a comprehensive healthcare directory built to bridge the gap between patients and healthcare professionals across Nepal. We provide verified, up-to-date information on doctors, dentists, pharmacists, and clinics so you can make informed decisions about your health.",
+      "DoctorSewa is a comprehensive healthcare directory built to bridge the gap between patients and healthcare professionals across Nepal. We provide verified, up-to-date information on doctors, dentists, pharmacists, and clinics so you can make informed decisions about your health.",
     missionTitle: "Our Mission",
     missionText:
       "To make healthcare accessible and transparent for every Nepali by providing a reliable, free-to-use directory of verified healthcare professionals and facilities.",
@@ -31,7 +31,7 @@ const translations = {
     clinicsTitle: "Clinic Management",
     clinicsDesc:
       "Healthcare facilities can register, manage appointments, handle billing, and run their practice digitally.",
-    whyTitle: "Why Swasthya",
+    whyTitle: "Why DoctorSewa",
     verifiedTitle: "Verified Professionals",
     verifiedDesc:
       "All healthcare professionals are sourced from official registries including NMC, NDA, and NPC.",
@@ -44,7 +44,7 @@ const translations = {
     digitalTitle: "Digital Health Tools",
     digitalDesc:
       "Online appointments, telemedicine consultations, digital prescriptions, and lab result tracking.",
-    ctaTitle: "Join Swasthya",
+    ctaTitle: "Join DoctorSewa",
     ctaDoctorText:
       "Are you a healthcare professional? Claim your profile and connect with patients across Nepal.",
     ctaClinicText:
@@ -53,13 +53,13 @@ const translations = {
     registerClinic: "Register Clinic",
   },
   ne: {
-    title: "स्वास्थ्यको बारेमा",
+    title: "डक्टरसेवाको बारेमा",
     metaDescription:
-      "स्वास्थ्य नेपालको व्यापक स्वास्थ्य सेवा निर्देशिका हो जसले बिरामीहरूलाई प्रमाणित चिकित्सक, दन्त चिकित्सक, र औषधिविद्हरूसँग जोड्दछ।",
+      "डक्टरसेवा नेपालको व्यापक स्वास्थ्य सेवा निर्देशिका हो जसले बिरामीहरूलाई प्रमाणित चिकित्सक, दन्त चिकित्सक, र औषधिविद्हरूसँग जोड्दछ।",
     tagline: "नेपालको स्वास्थ्य सेवा निर्देशिका",
     headline: "नेपाललाई उत्तम स्वास्थ्य सेवासँग जोड्दै",
     intro:
-      "स्वास्थ्य एक व्यापक स्वास्थ्य सेवा निर्देशिका हो जुन नेपालभरका बिरामी र स्वास्थ्य पेशेवरहरूबीचको खाडललाई पुल गर्न बनाइएको हो। हामी चिकित्सक, दन्त चिकित्सक, औषधिविद्, र क्लिनिकहरूको प्रमाणित, अद्यावधिक जानकारी प्रदान गर्छौं।",
+      "डक्टरसेवा एक व्यापक स्वास्थ्य सेवा निर्देशिका हो जुन नेपालभरका बिरामी र स्वास्थ्य पेशेवरहरूबीचको खाडललाई पुल गर्न बनाइएको हो। हामी चिकित्सक, दन्त चिकित्सक, औषधिविद्, र क्लिनिकहरूको प्रमाणित, अद्यावधिक जानकारी प्रदान गर्छौं।",
     missionTitle: "हाम्रो लक्ष्य",
     missionText:
       "प्रमाणित स्वास्थ्य पेशेवरहरू र सुविधाहरूको भरपर्दो, निःशुल्क निर्देशिका प्रदान गरेर प्रत्येक नेपालीका लागि स्वास्थ्य सेवा पहुँचयोग्य र पारदर्शी बनाउनु।",
@@ -76,7 +76,7 @@ const translations = {
     clinicsTitle: "क्लिनिक व्यवस्थापन",
     clinicsDesc:
       "स्वास्थ्य सुविधाहरूले दर्ता गर्न, भेटघाट व्यवस्थापन गर्न, बिलिङ ह्यान्डल गर्न र आफ्नो अभ्यास डिजिटल रूपमा सञ्चालन गर्न सक्छन्।",
-    whyTitle: "किन स्वास्थ्य",
+    whyTitle: "किन डक्टरसेवा",
     verifiedTitle: "प्रमाणित पेशेवरहरू",
     verifiedDesc:
       "सबै स्वास्थ्य पेशेवरहरू NMC, NDA, र NPC सहित आधिकारिक रजिस्ट्रीहरूबाट प्राप्त गरिएका छन्।",
@@ -89,7 +89,7 @@ const translations = {
     digitalTitle: "डिजिटल स्वास्थ्य उपकरण",
     digitalDesc:
       "अनलाइन भेटघाट, टेलिमेडिसिन परामर्श, डिजिटल प्रेस्क्रिप्सन, र ल्याब परिणाम ट्र्याकिङ।",
-    ctaTitle: "स्वास्थ्यमा सामेल हुनुहोस्",
+    ctaTitle: "डक्टरसेवामा सामेल हुनुहोस्",
     ctaDoctorText:
       "तपाईं स्वास्थ्य पेशेवर हुनुहुन्छ? आफ्नो प्रोफाइल दाबी गर्नुहोस् र नेपालभरका बिरामीहरूसँग जोडिनुहोस्।",
     ctaClinicText:
@@ -120,7 +120,7 @@ export async function generateMetadata({
       title: t.title,
       description: t.metaDescription,
       url: `/${lang}/about`,
-      siteName: "Swasthya",
+      siteName: "DoctorSewa",
       locale: lang === "ne" ? "ne_NP" : "en_US",
       type: "website",
     },
@@ -261,7 +261,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
         </div>
       </section>
 
-      {/* Why Swasthya Section */}
+      {/* Why DoctorSewa Section */}
       <section className="py-16 px-6 lg:px-16 border-t-4 border-foreground">
         <h2 className="text-3xl lg:text-4xl font-bold uppercase tracking-tight mb-12">
           {t.whyTitle}

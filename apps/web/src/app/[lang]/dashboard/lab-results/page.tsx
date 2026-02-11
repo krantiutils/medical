@@ -322,7 +322,7 @@ export default function PatientLabResultsPage() {
         </table>
 
         <div class="footer">
-          Generated via Swasthya Healthcare Platform
+          Generated via DoctorSewa Healthcare Platform
         </div>
 
         <div class="no-print" style="text-align: center; margin-top: 20px;">

@@ -482,7 +482,7 @@ export default function LabOrderDetailPage() {
       <body>
         <div class="header">
           <div class="clinic-info">
-            <div class="clinic-name">Swasthya</div>
+            <div class="clinic-name">DoctorSewa</div>
             <div>Laboratory Report</div>
           </div>
           <div class="report-info">
@@ -551,7 +551,7 @@ export default function LabOrderDetailPage() {
         </div>
 
         <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
-          Generated via Swasthya Healthcare Platform
+          Generated via DoctorSewa Healthcare Platform
         </div>
 
         <div class="no-print" style="text-align: center; margin-top: 20px;">
