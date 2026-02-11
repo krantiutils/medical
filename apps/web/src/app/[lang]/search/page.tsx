@@ -4,6 +4,8 @@ import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { SearchFilters } from "@/components/search/search-filters";
 import { getDisplayName } from "@/lib/professional-display";
+import { PageViewToggle } from "@/components/map/PageViewToggle";
+import { SearchMapSection } from "@/components/map/SearchMapSection";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -260,199 +262,208 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
           </div>
         )}
 
-        {/* Results Grid */}
-        {professionals.length === 0 ? (
-          <Card className="p-12 text-center">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
-              <svg
-                className="w-10 h-10 text-foreground/40"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold mb-2">No results found</h2>
-            <p className="text-foreground/60 mb-6">
-              We couldn&apos;t find any professionals matching your search.
-              Try different keywords or browse by category.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link href={`/${lang}/doctors`}>
-                <Button variant="secondary">Browse Doctors</Button>
-              </Link>
-              <Link href={`/${lang}/dentists`}>
-                <Button variant="outline">Browse Dentists</Button>
-              </Link>
-              <Link href={`/${lang}/pharmacists`}>
-                <Button variant="outline">Browse Pharmacists</Button>
-              </Link>
-            </div>
-          </Card>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {professionals.map((professional) => {
-                const displayName = getDisplayName(professional);
-
-                return (
-                  <Card
-                    key={professional.id}
-                    decorator={getDecoratorColor(professional.type)}
-                    decoratorPosition="top-right"
-                  >
-                    <CardHeader className="pb-2">
-                      {/* Type badge */}
-                      <span className="text-xs font-bold uppercase tracking-widest text-primary-blue mb-1 inline-block">
-                        {getTypeLabel(professional.type)}
-                      </span>
-                      {/* Name */}
-                      <h3 className="text-xl font-bold leading-tight line-clamp-2">
-                        {displayName}
-                      </h3>
-                    </CardHeader>
-                    <CardContent className="py-2">
-                      {/* Degree */}
-                      {professional.degree && (
-                        <p className="text-sm text-foreground/80 mb-2 line-clamp-1">
-                          {professional.degree}
-                        </p>
-                      )}
-                      {/* Specialty badges */}
-                      {professional.specialties && professional.specialties.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {professional.specialties.slice(0, 3).map((s, i) => {
-                            const colorClass = professional.type === "DENTIST"
-                              ? "bg-primary-red/10 text-primary-red border-primary-red"
-                              : professional.type === "PHARMACIST"
-                                ? "bg-primary-yellow/10 text-foreground/80 border-primary-yellow"
-                                : "bg-primary-blue/10 text-primary-blue border-primary-blue";
-                            return (
-                              <span key={i} className={`px-2 py-0.5 border text-xs font-bold ${colorClass}`}>
-                                {s}
-                              </span>
-                            );
-                          })}
-                          {professional.specialties.length > 3 && (
-                            <span className="px-2 py-0.5 bg-foreground/5 text-foreground/60 border border-foreground/20 text-xs font-bold">
-                              +{professional.specialties.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      {/* Address */}
-                      {professional.address && (
-                        <div className="flex items-start gap-2 text-sm text-foreground/60">
-                          <svg
-                            className="w-4 h-4 flex-shrink-0 mt-0.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          <span className="line-clamp-2">{professional.address}</span>
-                        </div>
-                      )}
-                    </CardContent>
-                    <CardFooter>
-                      <Link
-                        href={getProfileUrl(professional, lang)}
-                        className="w-full"
-                      >
-                        <Button variant="outline" size="sm" className="w-full">
-                          View Profile
-                        </Button>
-                      </Link>
-                    </CardFooter>
-                  </Card>
-                );
-              })}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <nav className="mt-12 flex justify-center">
-                <div className="flex items-center gap-2">
-                  {/* Previous button */}
-                  {currentPage > 1 ? (
-                    <Link
-                      href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: currentPage - 1 })}
+        {/* View Toggle + Results */}
+        <PageViewToggle
+          lang={lang}
+          listContent={
+            <>
+              {/* Results Grid */}
+              {professionals.length === 0 ? (
+                <Card className="p-12 text-center">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                    <svg
+                      className="w-10 h-10 text-foreground/40"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <Button variant="outline" size="sm">
-                        ← Previous
-                      </Button>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-bold mb-2">No results found</h2>
+                  <p className="text-foreground/60 mb-6">
+                    We couldn&apos;t find any professionals matching your search.
+                    Try different keywords or browse by category.
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-4">
+                    <Link href={`/${lang}/doctors`}>
+                      <Button variant="secondary">Browse Doctors</Button>
                     </Link>
-                  ) : (
-                    <Button variant="ghost" size="sm" disabled>
-                      ← Previous
-                    </Button>
-                  )}
+                    <Link href={`/${lang}/dentists`}>
+                      <Button variant="outline">Browse Dentists</Button>
+                    </Link>
+                    <Link href={`/${lang}/pharmacists`}>
+                      <Button variant="outline">Browse Pharmacists</Button>
+                    </Link>
+                  </div>
+                </Card>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {professionals.map((professional) => {
+                      const displayName = getDisplayName(professional);
 
-                  {/* Page numbers */}
-                  <div className="flex items-center gap-1">
-                    {generatePageNumbers(currentPage, totalPages).map((pageNum, index) => {
-                      if (pageNum === "...") {
-                        return (
-                          <span key={`ellipsis-${index}`} className="px-3 py-2 text-foreground/60">
-                            ...
-                          </span>
-                        );
-                      }
-                      const isCurrentPage = pageNum === currentPage;
                       return (
-                        <Link
-                          key={pageNum}
-                          href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: pageNum })}
+                        <Card
+                          key={professional.id}
+                          decorator={getDecoratorColor(professional.type)}
+                          decoratorPosition="top-right"
                         >
-                          <Button
-                            variant={isCurrentPage ? "primary" : "outline"}
-                            size="sm"
-                            className="min-w-[40px]"
-                          >
-                            {pageNum}
-                          </Button>
-                        </Link>
+                          <CardHeader className="pb-2">
+                            {/* Type badge */}
+                            <span className="text-xs font-bold uppercase tracking-widest text-primary-blue mb-1 inline-block">
+                              {getTypeLabel(professional.type)}
+                            </span>
+                            {/* Name */}
+                            <h3 className="text-xl font-bold leading-tight line-clamp-2">
+                              {displayName}
+                            </h3>
+                          </CardHeader>
+                          <CardContent className="py-2">
+                            {/* Degree */}
+                            {professional.degree && (
+                              <p className="text-sm text-foreground/80 mb-2 line-clamp-1">
+                                {professional.degree}
+                              </p>
+                            )}
+                            {/* Specialty badges */}
+                            {professional.specialties && professional.specialties.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mb-2">
+                                {professional.specialties.slice(0, 3).map((s, i) => {
+                                  const colorClass = professional.type === "DENTIST"
+                                    ? "bg-primary-red/10 text-primary-red border-primary-red"
+                                    : professional.type === "PHARMACIST"
+                                      ? "bg-primary-yellow/10 text-foreground/80 border-primary-yellow"
+                                      : "bg-primary-blue/10 text-primary-blue border-primary-blue";
+                                  return (
+                                    <span key={i} className={`px-2 py-0.5 border text-xs font-bold ${colorClass}`}>
+                                      {s}
+                                    </span>
+                                  );
+                                })}
+                                {professional.specialties.length > 3 && (
+                                  <span className="px-2 py-0.5 bg-foreground/5 text-foreground/60 border border-foreground/20 text-xs font-bold">
+                                    +{professional.specialties.length - 3}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                            {/* Address */}
+                            {professional.address && (
+                              <div className="flex items-start gap-2 text-sm text-foreground/60">
+                                <svg
+                                  className="w-4 h-4 flex-shrink-0 mt-0.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                  />
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                  />
+                                </svg>
+                                <span className="line-clamp-2">{professional.address}</span>
+                              </div>
+                            )}
+                          </CardContent>
+                          <CardFooter>
+                            <Link
+                              href={getProfileUrl(professional, lang)}
+                              className="w-full"
+                            >
+                              <Button variant="outline" size="sm" className="w-full">
+                                View Profile
+                              </Button>
+                            </Link>
+                          </CardFooter>
+                        </Card>
                       );
                     })}
                   </div>
 
-                  {/* Next button */}
-                  {currentPage < totalPages ? (
-                    <Link
-                      href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: currentPage + 1 })}
-                    >
-                      <Button variant="outline" size="sm">
-                        Next →
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Button variant="ghost" size="sm" disabled>
-                      Next →
-                    </Button>
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <nav className="mt-12 flex justify-center">
+                      <div className="flex items-center gap-2">
+                        {/* Previous button */}
+                        {currentPage > 1 ? (
+                          <Link
+                            href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: currentPage - 1 })}
+                          >
+                            <Button variant="outline" size="sm">
+                              ← Previous
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button variant="ghost" size="sm" disabled>
+                            ← Previous
+                          </Button>
+                        )}
+
+                        {/* Page numbers */}
+                        <div className="flex items-center gap-1">
+                          {generatePageNumbers(currentPage, totalPages).map((pageNum, index) => {
+                            if (pageNum === "...") {
+                              return (
+                                <span key={`ellipsis-${index}`} className="px-3 py-2 text-foreground/60">
+                                  ...
+                                </span>
+                              );
+                            }
+                            const isCurrentPage = pageNum === currentPage;
+                            return (
+                              <Link
+                                key={pageNum}
+                                href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: pageNum })}
+                              >
+                                <Button
+                                  variant={isCurrentPage ? "primary" : "outline"}
+                                  size="sm"
+                                  className="min-w-[40px]"
+                                >
+                                  {pageNum}
+                                </Button>
+                              </Link>
+                            );
+                          })}
+                        </div>
+
+                        {/* Next button */}
+                        {currentPage < totalPages ? (
+                          <Link
+                            href={buildSearchUrl(lang, { q: query, type: typeFilter, location, page: currentPage + 1 })}
+                          >
+                            <Button variant="outline" size="sm">
+                              Next →
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button variant="ghost" size="sm" disabled>
+                            Next →
+                          </Button>
+                        )}
+                      </div>
+                    </nav>
                   )}
-                </div>
-              </nav>
-            )}
-          </>
-        )}
+                </>
+              )}
+            </>
+          }
+          mapContent={<SearchMapSection lang={lang} />}
+        />
       </div>
     </main>
   );
