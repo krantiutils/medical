@@ -98,6 +98,13 @@ export async function GET(request: NextRequest) {
               phone: true,
             },
           },
+          family_member: {
+            select: {
+              id: true,
+              name: true,
+              relation: true,
+            },
+          },
         },
         orderBy: { appointment_date: filter === "past" ? "desc" : "asc" },
         skip: (page - 1) * limit,
@@ -120,6 +127,7 @@ export async function GET(request: NextRequest) {
         created_at: apt.created_at,
         doctor: apt.doctor,
         clinic: apt.clinic,
+        family_member: apt.family_member,
       })),
       pagination: {
         total,
