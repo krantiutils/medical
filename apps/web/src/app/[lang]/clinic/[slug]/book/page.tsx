@@ -2,9 +2,16 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { getDisplayName } from "@/lib/professional-display";
+
+interface FamilyMemberOption {
+  id: string;
+  name: string;
+  relation: string;
+}
 
 interface BookingPageProps {
   params: Promise<{
@@ -89,6 +96,13 @@ const translations = {
     thursday: "Thursday",
     friday: "Friday",
     saturday: "Saturday",
+    bookingFor: "Booking For",
+    myself: "Myself",
+    familyMember: "Family Member",
+    selectFamilyMember: "Select family member",
+    noFamilyMembers: "No family members added yet",
+    manageFamilyMembers: "Manage Family Members",
+    bookingForLabel: "For",
   },
   ne: {
     bookAppointment: "अपोइन्टमेन्ट बुक गर्नुहोस्",
@@ -137,6 +151,13 @@ const translations = {
     thursday: "बिहिबार",
     friday: "शुक्रबार",
     saturday: "शनिबार",
+    bookingFor: "कसको लागि बुकिङ",
+    myself: "आफ्नो लागि",
+    familyMember: "परिवारको सदस्य",
+    selectFamilyMember: "परिवारको सदस्य छान्नुहोस्",
+    noFamilyMembers: "अझै कुनै परिवारको सदस्य थपिएको छैन",
+    manageFamilyMembers: "परिवारका सदस्यहरू व्यवस्थापन गर्नुहोस्",
+    bookingForLabel: "को लागि",
   },
 };
 
@@ -221,6 +242,7 @@ function downloadICS(booking: BookingConfirmation): void {
 
 function BookingPageContent({ params }: BookingPageProps) {
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
   const [resolvedParams, setResolvedParams] = useState<{ lang: string; slug: string } | null>(null);
   const [t, setT] = useState(translations.en);
 
@@ -230,6 +252,12 @@ function BookingPageContent({ params }: BookingPageProps) {
   const [email, setEmail] = useState("");
   const [reason, setReason] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Family member state
+  const [bookingFor, setBookingFor] = useState<"myself" | "family">("myself");
+  const [familyMembers, setFamilyMembers] = useState<FamilyMemberOption[]>([]);
+  const [selectedFamilyMemberId, setSelectedFamilyMemberId] = useState("");
+  const [familyMembersLoaded, setFamilyMembersLoaded] = useState(false);
 
   // UI state
   const [isLoading, setIsLoading] = useState(true);
@@ -276,6 +304,37 @@ function BookingPageContent({ params }: BookingPageProps) {
 
     init();
   }, [params, doctorId, date, slot]);
+
+  // Fetch family members when user is logged in
+  useEffect(() => {
+    if (session?.user?.id && !familyMembersLoaded) {
+      fetch("/api/patient/family-members")
+        .then((res) => res.json())
+        .then((data) => {
+          setFamilyMembers(
+            (data.family_members || []).map((m: { id: string; name: string; relation: string }) => ({
+              id: m.id,
+              name: m.name,
+              relation: m.relation,
+            }))
+          );
+          setFamilyMembersLoaded(true);
+        })
+        .catch((err) => console.error("Error fetching family members:", err));
+    }
+  }, [session?.user?.id, familyMembersLoaded]);
+
+  // When selecting a family member, auto-fill name
+  useEffect(() => {
+    if (bookingFor === "family" && selectedFamilyMemberId) {
+      const member = familyMembers.find((m) => m.id === selectedFamilyMemberId);
+      if (member) {
+        setFullName(member.name);
+      }
+    } else if (bookingFor === "myself") {
+      setSelectedFamilyMemberId("");
+    }
+  }, [bookingFor, selectedFamilyMemberId, familyMembers]);
 
   // Validate form
   function validateForm(): boolean {
@@ -337,6 +396,7 @@ function BookingPageContent({ params }: BookingPageProps) {
           patientPhone: phone.replace(/\s/g, ""),
           patientEmail: email.trim() || undefined,
           chiefComplaint: reason.trim() || undefined,
+          familyMemberId: bookingFor === "family" && selectedFamilyMemberId ? selectedFamilyMemberId : undefined,
         }),
       });
 
@@ -585,6 +645,53 @@ function BookingPageContent({ params }: BookingPageProps) {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Booking For - only show when logged in and have family members */}
+                  {session?.user && familyMembers.length > 0 && (
+                    <div>
+                      <label className="block text-sm font-bold uppercase tracking-wider text-foreground/60 mb-2">
+                        {t.bookingFor}
+                      </label>
+                      <div className="flex gap-3 mb-3">
+                        <button
+                          type="button"
+                          onClick={() => setBookingFor("myself")}
+                          className={`flex-1 p-3 border-2 text-center font-bold text-sm transition-all ${
+                            bookingFor === "myself"
+                              ? "border-primary-blue bg-primary-blue/10 text-primary-blue"
+                              : "border-foreground/30 hover:border-foreground/50"
+                          }`}
+                        >
+                          {t.myself}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBookingFor("family")}
+                          className={`flex-1 p-3 border-2 text-center font-bold text-sm transition-all ${
+                            bookingFor === "family"
+                              ? "border-primary-blue bg-primary-blue/10 text-primary-blue"
+                              : "border-foreground/30 hover:border-foreground/50"
+                          }`}
+                        >
+                          {t.familyMember}
+                        </button>
+                      </div>
+                      {bookingFor === "family" && (
+                        <select
+                          value={selectedFamilyMemberId}
+                          onChange={(e) => setSelectedFamilyMemberId(e.target.value)}
+                          className="w-full p-3 border-4 border-foreground bg-white text-foreground font-medium focus:outline-none focus:border-primary-blue"
+                        >
+                          <option value="">{t.selectFamilyMember}</option>
+                          {familyMembers.map((m) => (
+                            <option key={m.id} value={m.id}>
+                              {m.name} ({m.relation.toLowerCase()})
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  )}
+
                   {/* Full Name */}
                   <div>
                     <label
