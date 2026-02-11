@@ -154,6 +154,13 @@ export async function GET(request: NextRequest) {
             phone: true,
           },
         },
+        family_member: {
+          select: {
+            id: true,
+            name: true,
+            relation: true,
+          },
+        },
       },
       orderBy: { appointment_date: "desc" },
       take: limit,
@@ -199,6 +206,7 @@ export async function POST(request: NextRequest) {
       patientPhone,
       patientEmail,
       chiefComplaint,
+      familyMemberId,
     } = body;
 
     // Validate required fields
@@ -443,6 +451,29 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate family member if provided
+    let familyMember = null;
+    if (familyMemberId) {
+      const session = await getServerSession(authOptions);
+      if (!session?.user?.id) {
+        return NextResponse.json(
+          { error: "Authentication required to book for a family member" },
+          { status: 401 }
+        );
+      }
+
+      familyMember = await prisma.familyMember.findFirst({
+        where: { id: familyMemberId, user_id: session.user.id },
+      });
+
+      if (!familyMember) {
+        return NextResponse.json(
+          { error: "Family member not found" },
+          { status: 404 }
+        );
+      }
+    }
+
     // Find or create patient
     let patient = await prisma.patient.findFirst({
       where: {
@@ -491,6 +522,7 @@ export async function POST(request: NextRequest) {
         source: AppointmentSource.ONLINE,
         token_number: tokenNumber,
         chief_complaint: chiefComplaint?.trim() || null,
+        family_member_id: familyMember?.id || null,
       },
       include: {
         doctor: {
@@ -518,6 +550,7 @@ export async function POST(request: NextRequest) {
       clinicPhone: appointment.clinic.phone,
       patientName: appointment.patient.full_name,
       patientPhone: appointment.patient.phone,
+      familyMemberName: familyMember?.name || null,
     });
   } catch (error) {
     console.error("Error creating appointment:", error);
