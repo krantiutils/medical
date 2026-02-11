@@ -114,6 +114,9 @@ model User {
 
   // Clinic staff memberships (RBAC)
   clinic_memberships ClinicStaff[]
+
+  // Family members (Phase 6)
+  family_members FamilyMember[]
 }
 
 // OTP for phone verification (registration, password reset)
@@ -493,6 +496,10 @@ model Appointment {
   doctor_id  String
   doctor     Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
 
+  // Family member booking (Phase 6) - set when booking on behalf of a family member
+  family_member_id String?
+  family_member    FamilyMember? @relation(fields: [family_member_id], references: [id], onDelete: SetNull)
+
   // Invoice linked to this appointment (optional)
   invoice Invoice?
 
@@ -510,6 +517,7 @@ model Appointment {
   @@index([clinic_id])
   @@index([patient_id])
   @@index([doctor_id])
+  @@index([family_member_id])
   @@index([status])
 }
 
@@ -1154,6 +1162,41 @@ model Admission {
 }
 
 // ============================================================================
+// FAMILY MEMBER MODELS (Phase 6)
+// ============================================================================
+
+enum FamilyRelation {
+  SELF
+  SPOUSE
+  CHILD
+  PARENT
+  SIBLING
+  OTHER
+}
+
+model FamilyMember {
+  id            String         @id @default(uuid())
+  name          String
+  relation      FamilyRelation
+  date_of_birth DateTime?
+  gender        String? // "male", "female", "other"
+  blood_group   String? // "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"
+  phone         String? // Contact phone for the family member
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+
+  // Relations
+  user_id String
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  // Appointments booked for this family member
+  appointments       Appointment[]
+  video_consultations VideoConsultation[]
+
+  @@index([user_id])
+}
+
+// ============================================================================
 // TELEMEDICINE MODELS (Phase 5)
 // ============================================================================
 
@@ -1215,6 +1258,10 @@ model VideoConsultation {
   doctor     Professional @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
   patient_id String
   patient    User         @relation("VideoConsultationPatient", fields: [patient_id], references: [id], onDelete: Cascade)
+
+  // Family member booking (Phase 6) - set when booking on behalf of a family member
+  family_member_id String?
+  family_member    FamilyMember? @relation(fields: [family_member_id], references: [id], onDelete: SetNull)
 
   @@index([doctor_id, status])
   @@index([doctor_id, scheduled_at])

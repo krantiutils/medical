@@ -30,6 +30,7 @@ export {
   VideoConsultationStatus,
   VideoConsultationType,
   OtpPurpose,
+  FamilyRelation,
 } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
