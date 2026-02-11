@@ -4,6 +4,8 @@ import { prisma, ClinicType } from "@swasthya/database";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ClinicFilters } from "@/components/clinic/ClinicFilters";
+import { PageViewToggle } from "@/components/map/PageViewToggle";
+import { ClinicMapSection } from "@/components/map/ClinicMapSection";
 import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 
@@ -353,215 +355,224 @@ export default async function ClinicsPage({ params, searchParams }: ClinicsPageP
           </div>
         )}
 
-        {/* Results Grid */}
-        {clinics.length === 0 ? (
-          <Card className="p-12 text-center">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
-              <svg
-                className="w-10 h-10 text-foreground/40"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold mb-2">{t.noResults}</h2>
-            <p className="text-foreground/60 mb-6">{t.noResultsDesc}</p>
-          </Card>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {clinics.map((clinic) => (
-                <Card
-                  key={clinic.id}
-                  decorator={getDecoratorColor(clinic.type)}
-                  decoratorPosition="top-right"
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start gap-3">
-                      {/* Logo */}
-                      {clinic.logo_url ? (
-                        <img
-                          src={clinic.logo_url}
-                          alt={clinic.name}
-                          className="w-12 h-12 object-cover border-2 border-foreground flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 bg-muted border-2 border-foreground flex items-center justify-center flex-shrink-0">
-                          <svg
-                            className="w-6 h-6 text-foreground/40"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        {/* Type badge */}
-                        <span className={`text-xs font-bold uppercase tracking-widest mb-1 inline-block ${getTypeBadgeColor(clinic.type)}`}>
-                          {getClinicTypeLabel(clinic.type, lang)}
-                        </span>
-                        {/* Name */}
-                        <h3 className="text-lg font-bold leading-tight line-clamp-2">
-                          {clinic.name}
-                        </h3>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="py-2">
-                    {/* Address */}
-                    {clinic.address && (
-                      <div className="flex items-start gap-2 text-sm text-foreground/60 mb-2">
-                        <svg
-                          className="w-4 h-4 flex-shrink-0 mt-0.5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        <span className="line-clamp-2">{clinic.address}</span>
-                      </div>
-                    )}
-                    {/* Phone */}
-                    {clinic.phone && (
-                      <div className="flex items-center gap-2 text-sm text-foreground/60 mb-2">
-                        <svg
-                          className="w-4 h-4 flex-shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                          />
-                        </svg>
-                        <span>{clinic.phone}</span>
-                      </div>
-                    )}
-                    {/* Services preview */}
-                    {clinic.services && clinic.services.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {clinic.services.slice(0, 3).map((service, index) => (
-                          <span
-                            key={index}
-                            className="px-2 py-0.5 text-xs font-medium bg-foreground/5 border border-foreground/20 text-foreground/70"
-                          >
-                            {getServiceLabel(service, lang)}
-                          </span>
-                        ))}
-                        {clinic.services.length > 3 && (
-                          <span className="px-2 py-0.5 text-xs font-medium text-foreground/50">
-                            +{clinic.services.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                  <CardFooter>
-                    <Link
-                      href={`/${lang}/clinic/${clinic.slug}`}
-                      className="w-full"
+        {/* View Toggle + Results */}
+        <PageViewToggle
+          lang={lang}
+          listContent={
+            <>
+              {/* Results Grid */}
+              {clinics.length === 0 ? (
+                <Card className="p-12 text-center">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                    <svg
+                      className="w-10 h-10 text-foreground/40"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <Button variant="outline" size="sm" className="w-full">
-                        {t.viewDetails}
-                      </Button>
-                    </Link>
-                  </CardFooter>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-bold mb-2">{t.noResults}</h2>
+                  <p className="text-foreground/60 mb-6">{t.noResultsDesc}</p>
                 </Card>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <nav className="mt-12 flex justify-center">
-                <div className="flex items-center gap-2">
-                  {currentPage > 1 ? (
-                    <Link
-                      href={buildClinicsUrl(lang, { q: query || undefined, type: typeFilter, page: currentPage - 1 })}
-                    >
-                      <Button variant="outline" size="sm">
-                        ← {t.previous}
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Button variant="ghost" size="sm" disabled>
-                      ← {t.previous}
-                    </Button>
-                  )}
-
-                  <div className="flex items-center gap-1">
-                    {generatePageNumbers(currentPage, totalPages).map((pageNum, index) => {
-                      if (pageNum === "...") {
-                        return (
-                          <span key={`ellipsis-${index}`} className="px-3 py-2 text-foreground/60">
-                            ...
-                          </span>
-                        );
-                      }
-                      const isCurrentPage = pageNum === currentPage;
-                      return (
-                        <Link
-                          key={pageNum}
-                          href={buildClinicsUrl(lang, { q: query || undefined, type: typeFilter, page: pageNum })}
-                        >
-                          <Button
-                            variant={isCurrentPage ? "primary" : "outline"}
-                            size="sm"
-                            className="min-w-[40px]"
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {clinics.map((clinic) => (
+                      <Card
+                        key={clinic.id}
+                        decorator={getDecoratorColor(clinic.type)}
+                        decoratorPosition="top-right"
+                      >
+                        <CardHeader className="pb-2">
+                          <div className="flex items-start gap-3">
+                            {/* Logo */}
+                            {clinic.logo_url ? (
+                              <img
+                                src={clinic.logo_url}
+                                alt={clinic.name}
+                                className="w-12 h-12 object-cover border-2 border-foreground flex-shrink-0"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 bg-muted border-2 border-foreground flex items-center justify-center flex-shrink-0">
+                                <svg
+                                  className="w-6 h-6 text-foreground/40"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                                  />
+                                </svg>
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              {/* Type badge */}
+                              <span className={`text-xs font-bold uppercase tracking-widest mb-1 inline-block ${getTypeBadgeColor(clinic.type)}`}>
+                                {getClinicTypeLabel(clinic.type, lang)}
+                              </span>
+                              {/* Name */}
+                              <h3 className="text-lg font-bold leading-tight line-clamp-2">
+                                {clinic.name}
+                              </h3>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="py-2">
+                          {/* Address */}
+                          {clinic.address && (
+                            <div className="flex items-start gap-2 text-sm text-foreground/60 mb-2">
+                              <svg
+                                className="w-4 h-4 flex-shrink-0 mt-0.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                              </svg>
+                              <span className="line-clamp-2">{clinic.address}</span>
+                            </div>
+                          )}
+                          {/* Phone */}
+                          {clinic.phone && (
+                            <div className="flex items-center gap-2 text-sm text-foreground/60 mb-2">
+                              <svg
+                                className="w-4 h-4 flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                />
+                              </svg>
+                              <span>{clinic.phone}</span>
+                            </div>
+                          )}
+                          {/* Services preview */}
+                          {clinic.services && clinic.services.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {clinic.services.slice(0, 3).map((service, index) => (
+                                <span
+                                  key={index}
+                                  className="px-2 py-0.5 text-xs font-medium bg-foreground/5 border border-foreground/20 text-foreground/70"
+                                >
+                                  {getServiceLabel(service, lang)}
+                                </span>
+                              ))}
+                              {clinic.services.length > 3 && (
+                                <span className="px-2 py-0.5 text-xs font-medium text-foreground/50">
+                                  +{clinic.services.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </CardContent>
+                        <CardFooter>
+                          <Link
+                            href={`/${lang}/clinic/${clinic.slug}`}
+                            className="w-full"
                           >
-                            {pageNum}
-                          </Button>
-                        </Link>
-                      );
-                    })}
+                            <Button variant="outline" size="sm" className="w-full">
+                              {t.viewDetails}
+                            </Button>
+                          </Link>
+                        </CardFooter>
+                      </Card>
+                    ))}
                   </div>
 
-                  {currentPage < totalPages ? (
-                    <Link
-                      href={buildClinicsUrl(lang, { q: query || undefined, type: typeFilter, page: currentPage + 1 })}
-                    >
-                      <Button variant="outline" size="sm">
-                        {t.next} →
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Button variant="ghost" size="sm" disabled>
-                      {t.next} →
-                    </Button>
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <nav className="mt-12 flex justify-center">
+                      <div className="flex items-center gap-2">
+                        {currentPage > 1 ? (
+                          <Link
+                            href={buildClinicsUrl(lang, { q: query || undefined, type: typeFilter, page: currentPage - 1 })}
+                          >
+                            <Button variant="outline" size="sm">
+                              ← {t.previous}
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button variant="ghost" size="sm" disabled>
+                            ← {t.previous}
+                          </Button>
+                        )}
+
+                        <div className="flex items-center gap-1">
+                          {generatePageNumbers(currentPage, totalPages).map((pageNum, index) => {
+                            if (pageNum === "...") {
+                              return (
+                                <span key={`ellipsis-${index}`} className="px-3 py-2 text-foreground/60">
+                                  ...
+                                </span>
+                              );
+                            }
+                            const isCurrentPage = pageNum === currentPage;
+                            return (
+                              <Link
+                                key={pageNum}
+                                href={buildClinicsUrl(lang, { q: query || undefined, type: typeFilter, page: pageNum })}
+                              >
+                                <Button
+                                  variant={isCurrentPage ? "primary" : "outline"}
+                                  size="sm"
+                                  className="min-w-[40px]"
+                                >
+                                  {pageNum}
+                                </Button>
+                              </Link>
+                            );
+                          })}
+                        </div>
+
+                        {currentPage < totalPages ? (
+                          <Link
+                            href={buildClinicsUrl(lang, { q: query || undefined, type: typeFilter, page: currentPage + 1 })}
+                          >
+                            <Button variant="outline" size="sm">
+                              {t.next} →
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button variant="ghost" size="sm" disabled>
+                            {t.next} →
+                          </Button>
+                        )}
+                      </div>
+                    </nav>
                   )}
-                </div>
-              </nav>
-            )}
-          </>
-        )}
+                </>
+              )}
+            </>
+          }
+          mapContent={<ClinicMapSection lang={lang} />}
+        />
         </div>
       </main>
     </>
