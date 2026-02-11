@@ -6,7 +6,8 @@ export type AuditAction =
   | "CLAIM_APPROVED"
   | "CLAIM_REJECTED"
   | "CLINIC_APPROVED"
-  | "CLINIC_REJECTED";
+  | "CLINIC_REJECTED"
+  | "CLINIC_CHANGES_REQUESTED";
 
 export interface AuditLogParams {
   action: AuditAction;
@@ -168,6 +169,29 @@ export async function logClinicRejected(
       owner_id: ownerId,
       clinic_name: clinicName,
       rejection_reason: rejectionReason,
+    },
+  });
+}
+
+/**
+ * Log a clinic changes requested event
+ */
+export async function logClinicChangesRequested(
+  clinicId: string,
+  adminId: string,
+  ownerId: string | null,
+  clinicName: string,
+  notes: string
+): Promise<void> {
+  return logAudit({
+    action: "CLINIC_CHANGES_REQUESTED",
+    targetType: "Clinic",
+    targetId: clinicId,
+    actorId: adminId,
+    metadata: {
+      owner_id: ownerId,
+      clinic_name: clinicName,
+      notes,
     },
   });
 }

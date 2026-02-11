@@ -301,7 +301,9 @@ model Clinic {
   photos          String[]
   services        String[]
   timings         Json?
-  verified        Boolean    @default(false)
+  verified            Boolean    @default(false)
+  admin_review_notes  String?    @db.Text
+  admin_reviewed_at   DateTime?
   google_place_id String?
   osm_id          String?
   meta            Json?

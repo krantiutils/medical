@@ -29,7 +29,7 @@ interface Clinic {
   } | null;
 }
 
-type ModalType = "details" | "approve" | "reject" | null;
+type ModalType = "details" | "approve" | "reject" | "request_changes" | null;
 
 export default function AdminClinicsPage() {
   const { data: session, status } = useSession();
@@ -43,6 +43,7 @@ export default function AdminClinicsPage() {
   const [modalType, setModalType] = useState<ModalType>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [changesNotes, setChangesNotes] = useState("");
   const [actionError, setActionError] = useState<string | null>(null);
 
   // Translations
@@ -94,6 +95,14 @@ export default function AdminClinicsPage() {
       confirmReject: "Confirm Rejection",
       rejecting: "Rejecting...",
       cancel: "Cancel",
+      requestChanges: "Request Changes",
+      requestChangesClinic: "Request Changes",
+      requestChangesConfirmation: "Enter notes for the clinic owner about what needs to be changed.",
+      requestChangesDescription: "The clinic will remain in pending state and the owner will be notified.",
+      changesNotes: "Notes for Clinic Owner",
+      changesNotesPlaceholder: "Describe what needs to be changed...",
+      confirmRequestChanges: "Send Request",
+      requestingChanges: "Sending...",
       actionSuccess: "Action completed successfully",
       actionError: "Failed to process action",
     },
@@ -144,6 +153,14 @@ export default function AdminClinicsPage() {
       confirmReject: "अस्वीकृति पुष्टि गर्नुहोस्",
       rejecting: "अस्वीकार गर्दै...",
       cancel: "रद्द गर्नुहोस्",
+      requestChanges: "परिवर्तन अनुरोध",
+      requestChangesClinic: "परिवर्तन अनुरोध गर्नुहोस्",
+      requestChangesConfirmation: "क्लिनिक मालिकलाई के परिवर्तन गर्नुपर्छ भन्ने नोट लेख्नुहोस्।",
+      requestChangesDescription: "क्लिनिक विचाराधीन अवस्थामा रहनेछ र मालिकलाई सूचित गरिनेछ।",
+      changesNotes: "क्लिनिक मालिकका लागि नोटहरू",
+      changesNotesPlaceholder: "के परिवर्तन गर्नुपर्छ वर्णन गर्नुहोस्...",
+      confirmRequestChanges: "अनुरोध पठाउनुहोस्",
+      requestingChanges: "पठाउँदै...",
       actionSuccess: "कार्य सफलतापूर्वक सम्पन्न भयो",
       actionError: "कार्य प्रशोधन गर्न असफल भयो",
     },
@@ -230,6 +247,13 @@ export default function AdminClinicsPage() {
     setActionError(null);
   };
 
+  const openRequestChangesModal = (clinic: Clinic) => {
+    setSelectedClinic(clinic);
+    setModalType("request_changes");
+    setChangesNotes("");
+    setActionError(null);
+  };
+
   const openDetailsModal = (clinic: Clinic) => {
     setSelectedClinic(clinic);
     setModalType("details");
@@ -240,6 +264,7 @@ export default function AdminClinicsPage() {
     setSelectedClinic(null);
     setModalType(null);
     setRejectionReason("");
+    setChangesNotes("");
     setActionError(null);
   };
 
@@ -297,6 +322,39 @@ export default function AdminClinicsPage() {
       }
 
       // Remove clinic from list
+      setClinics((prev) => prev.filter((c) => c.id !== selectedClinic.id));
+      closeModal();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : tr.actionError);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRequestChanges = async () => {
+    if (!selectedClinic || !changesNotes.trim()) return;
+
+    setActionLoading(true);
+    setActionError(null);
+
+    try {
+      const response = await fetch(`/api/admin/clinics/${selectedClinic.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "request_changes",
+          notes: changesNotes.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to request changes");
+      }
+
+      // Remove from pending list (it now has changes_requested status)
       setClinics((prev) => prev.filter((c) => c.id !== selectedClinic.id));
       closeModal();
     } catch (err) {
@@ -497,6 +555,14 @@ export default function AdminClinicsPage() {
                             className="bg-verified hover:bg-verified/90"
                           >
                             {tr.approve}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openRequestChangesModal(clinic)}
+                            className="border-primary-yellow text-primary-yellow hover:bg-primary-yellow/10"
+                          >
+                            {tr.requestChanges}
                           </Button>
                           <Button
                             variant="primary"
@@ -716,6 +782,16 @@ export default function AdminClinicsPage() {
                     {tr.reject}
                   </Button>
                   <Button
+                    variant="outline"
+                    onClick={() => {
+                      setModalType("request_changes");
+                      setChangesNotes("");
+                    }}
+                    className="border-primary-yellow text-primary-yellow hover:bg-primary-yellow/10"
+                  >
+                    {tr.requestChanges}
+                  </Button>
+                  <Button
                     variant="primary"
                     onClick={() => setModalType("approve")}
                     className="bg-verified hover:bg-verified/90"
@@ -862,6 +938,84 @@ export default function AdminClinicsPage() {
                     disabled={actionLoading || !rejectionReason.trim()}
                   >
                     {actionLoading ? tr.rejecting : tr.confirmReject}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Request Changes modal */}
+        {selectedClinic && modalType === "request_changes" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-background border-4 border-foreground shadow-[8px_8px_0_0_#121212] max-w-lg w-full mx-4">
+              <div className="h-2 bg-primary-yellow" />
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-foreground mb-4">
+                  {tr.requestChangesClinic}
+                </h3>
+
+                {/* Clinic info */}
+                <div className="bg-foreground/5 border-2 border-foreground/20 p-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`text-xs font-bold uppercase tracking-widest text-white px-2 py-0.5 ${getTypeColor(
+                        selectedClinic.type
+                      )}`}
+                    >
+                      {getTypeLabel(selectedClinic.type)}
+                    </span>
+                    <span className="font-bold text-foreground">
+                      {selectedClinic.name}
+                    </span>
+                  </div>
+                  {selectedClinic.address && (
+                    <p className="text-sm text-foreground/60 mt-2">
+                      {selectedClinic.address}
+                    </p>
+                  )}
+                </div>
+
+                <p className="text-foreground mb-2">{tr.requestChangesConfirmation}</p>
+                <p className="text-sm text-foreground/60 mb-4">
+                  {tr.requestChangesDescription}
+                </p>
+
+                {/* Notes textarea */}
+                <div className="mb-6">
+                  <label className="block text-sm font-bold text-foreground mb-2">
+                    {tr.changesNotes} *
+                  </label>
+                  <textarea
+                    value={changesNotes}
+                    onChange={(e) => setChangesNotes(e.target.value)}
+                    placeholder={tr.changesNotesPlaceholder}
+                    className="w-full border-4 border-foreground px-4 py-3 bg-white focus:border-primary-yellow focus:outline-none min-h-[100px] resize-none"
+                    disabled={actionLoading}
+                  />
+                </div>
+
+                {actionError && (
+                  <div className="bg-primary-red/10 border-2 border-primary-red text-primary-red p-3 mb-4 text-sm">
+                    {actionError}
+                  </div>
+                )}
+
+                <div className="flex gap-4 justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={closeModal}
+                    disabled={actionLoading}
+                  >
+                    {tr.cancel}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={handleRequestChanges}
+                    disabled={actionLoading || !changesNotes.trim()}
+                    className="bg-primary-yellow text-foreground hover:bg-primary-yellow/90"
+                  >
+                    {actionLoading ? tr.requestingChanges : tr.confirmRequestChanges}
                   </Button>
                 </div>
               </div>

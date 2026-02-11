@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
-import { sendClinicVerificationApprovedEmail, sendClinicVerificationRejectedEmail } from "@/lib/email";
-import { logClinicApproved, logClinicRejected } from "@/lib/audit";
+import { sendClinicVerificationApprovedEmail, sendClinicVerificationRejectedEmail, sendClinicChangesRequestedEmail } from "@/lib/email";
+import { logClinicApproved, logClinicRejected, logClinicChangesRequested } from "@/lib/audit";
 
 export async function POST(
   request: NextRequest,
@@ -28,11 +28,11 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { action, reason } = body;
+    const { action, reason, notes } = body;
 
-    if (!action || !["approve", "reject"].includes(action)) {
+    if (!action || !["approve", "reject", "request_changes"].includes(action)) {
       return NextResponse.json(
-        { error: "Invalid action. Must be 'approve' or 'reject'" },
+        { error: "Invalid action. Must be 'approve', 'reject', or 'request_changes'" },
         { status: 400 }
       );
     }
@@ -41,6 +41,14 @@ export async function POST(
     if (action === "reject" && (!reason || typeof reason !== "string" || reason.trim().length === 0)) {
       return NextResponse.json(
         { error: "Rejection reason is required" },
+        { status: 400 }
+      );
+    }
+
+    // Require notes for request_changes
+    if (action === "request_changes" && (!notes || typeof notes !== "string" || notes.trim().length === 0)) {
+      return NextResponse.json(
+        { error: "Notes are required when requesting changes" },
         { status: 400 }
       );
     }
@@ -66,7 +74,7 @@ export async function POST(
       );
     }
 
-    if (clinic.verified) {
+    if (clinic.verified && action !== "request_changes") {
       return NextResponse.json(
         { error: "This clinic has already been verified" },
         { status: 400 }
@@ -74,11 +82,13 @@ export async function POST(
     }
 
     if (action === "approve") {
-      // Update clinic to verified
+      // Update clinic to verified and clear admin review notes
       await prisma.clinic.update({
         where: { id },
         data: {
           verified: true,
+          admin_review_notes: null,
+          admin_reviewed_at: null,
         },
       });
 
@@ -111,11 +121,7 @@ export async function POST(
         success: true,
         message: "Clinic approved successfully",
       });
-    } else {
-      // Reject the clinic - we don't delete it, just log the rejection
-      // In a real scenario, you might want to add a rejection_reason field to Clinic
-      // For now, we just send an email and log the rejection
-
+    } else if (action === "reject") {
       // Send rejection email (non-blocking)
       if (clinic.email) {
         sendClinicVerificationRejectedEmail(
@@ -150,6 +156,46 @@ export async function POST(
       return NextResponse.json({
         success: true,
         message: "Clinic rejected successfully",
+      });
+    } else {
+      // request_changes
+      await prisma.clinic.update({
+        where: { id },
+        data: {
+          admin_review_notes: notes.trim(),
+          admin_reviewed_at: new Date(),
+        },
+      });
+
+      // Send changes requested email (non-blocking)
+      if (clinic.email) {
+        sendClinicChangesRequestedEmail(
+          clinic.email,
+          {
+            name: clinic.name,
+            type: clinic.type,
+          },
+          notes.trim(),
+          "en"
+        ).catch((err) => {
+          console.error("[Admin] Failed to send clinic changes requested email:", err);
+        });
+      }
+
+      // Log audit event (non-blocking)
+      logClinicChangesRequested(
+        id,
+        session.user.id,
+        clinic.claimed_by?.id || null,
+        clinic.name,
+        notes.trim()
+      ).catch((err) => {
+        console.error("[Admin] Failed to log audit:", err);
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "Changes requested successfully",
       });
     }
   } catch (error) {
