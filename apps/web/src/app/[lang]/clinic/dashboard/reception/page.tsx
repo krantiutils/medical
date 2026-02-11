@@ -543,7 +543,7 @@ export default function ReceptionPage() {
           <div className="text-6xl font-black my-8">{printingToken.token_number}</div>
           <div className="text-left space-y-2">
             <p><strong>{t.patient}:</strong> {printingToken.patient.full_name}</p>
-            <p><strong>{t.doctor}:</strong> Dr. {printingToken.doctor.full_name}</p>
+            <p><strong>{t.doctor}:</strong> {printingToken.doctor.full_name.startsWith("Dr.") ? "" : "Dr. "}{printingToken.doctor.full_name}</p>
             <p><strong>{t.appointmentTime}:</strong> {printingToken.time_slot_start} - {printingToken.time_slot_end}</p>
             <p><strong>{t.status}:</strong> {getStatusLabel(printingToken.status)}</p>
           </div>
@@ -807,7 +807,7 @@ export default function ReceptionPage() {
                               {appointment.patient.patient_number} • {appointment.patient.phone}
                             </p>
                             <p className="text-sm text-foreground/70 mt-1">
-                              <strong>Dr. {appointment.doctor.full_name}</strong> • {appointment.time_slot_start} - {appointment.time_slot_end}
+                              <strong>{appointment.doctor.full_name.startsWith("Dr.") ? "" : "Dr. "}{appointment.doctor.full_name}</strong> • {appointment.time_slot_start} - {appointment.time_slot_end}
                             </p>
                             {appointment.chief_complaint && (
                               <p className="text-sm text-foreground/60 mt-1 truncate">

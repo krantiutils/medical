@@ -494,7 +494,7 @@ export default function LabDashboardPage() {
                         </div>
                         <div>
                           <span className="text-gray-500">{t.orderedBy}:</span>
-                          <div className="font-medium">Dr. {order.ordered_by.full_name}</div>
+                          <div className="font-medium">{order.ordered_by.full_name.startsWith("Dr.") ? "" : "Dr. "}{order.ordered_by.full_name}</div>
                         </div>
                         <div>
                           <span className="text-gray-500">{t.orderedAt}:</span>

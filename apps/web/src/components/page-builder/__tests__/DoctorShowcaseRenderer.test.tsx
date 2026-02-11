@@ -52,10 +52,23 @@ describe("DoctorShowcaseRenderer", () => {
     expect(screen.getByText("Dr. Ram Sharma")).toBeInTheDocument();
   });
 
-  it("does NOT prepend Dr. to non-DOCTOR types", () => {
+  it("prepends Dr. to DENTIST type names", () => {
     render(<DoctorShowcaseRenderer section={defaultSection} lang="en" doctors={mockDoctors} />);
-    expect(screen.getByText("Sita Thapa")).toBeInTheDocument();
+    expect(screen.getByText("Dr. Sita Thapa")).toBeInTheDocument();
+  });
+
+  it("does NOT prepend Dr. to PHARMACIST type", () => {
+    render(<DoctorShowcaseRenderer section={defaultSection} lang="en" doctors={mockDoctors} />);
     expect(screen.getByText("Hari Pharmacist")).toBeInTheDocument();
+  });
+
+  it("does not double Dr. prefix when name already starts with Dr.", () => {
+    const doctorsWithPrefix = [
+      { id: "doc-4", full_name: "Dr. Amit Joshi", type: "DOCTOR", photo_url: null, specialties: [], degree: null, role: null },
+    ];
+    render(<DoctorShowcaseRenderer section={defaultSection} lang="en" doctors={doctorsWithPrefix} />);
+    expect(screen.getByText("Dr. Amit Joshi")).toBeInTheDocument();
+    expect(screen.queryByText("Dr. Dr. Amit Joshi")).not.toBeInTheDocument();
   });
 
   it("shows specialty when showSpecialty=true", () => {

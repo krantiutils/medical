@@ -649,7 +649,7 @@ function BillingPageContent() {
               {printInvoice.appointment?.doctor && (
                 <div className="flex justify-between">
                   <span>{t.doctor}:</span>
-                  <span>Dr. {printInvoice.appointment.doctor.full_name}</span>
+                  <span>{printInvoice.appointment.doctor.full_name.startsWith("Dr.") ? "" : "Dr. "}{printInvoice.appointment.doctor.full_name}</span>
                 </div>
               )}
             </div>
@@ -857,7 +857,7 @@ function BillingPageContent() {
                           <option value="">{t.noAppointment}</option>
                           {patientAppointments.map((apt) => (
                             <option key={apt.id} value={apt.id}>
-                              {new Date(apt.appointment_date).toLocaleDateString()} - {apt.time_slot_start} - Dr. {apt.doctor.full_name} (Token #{apt.token_number})
+                              {new Date(apt.appointment_date).toLocaleDateString()} - {apt.time_slot_start} - {apt.doctor.full_name.startsWith("Dr.") ? "" : "Dr. "}{apt.doctor.full_name} (Token #{apt.token_number})
                             </option>
                           ))}
                         </select>

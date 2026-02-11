@@ -303,7 +303,7 @@ function VideoCallInner({
   if (callState === "waiting") {
     const waitingText =
       role === "patient"
-        ? tr.waitingForDoctor.replace("{{name}}", consultation.doctor.full_name)
+        ? tr.waitingForDoctor.replace("{{name}}", consultation.doctor.full_name.replace(/^Dr\.\s*/, ""))
         : tr.waitingForPatient;
 
     return (
@@ -403,7 +403,7 @@ function VideoCallInner({
                 {role === "patient" ? consultation.doctor.full_name : consultation.patient.name || "Patient"}
               </p>
               <p className="text-white/60 mt-2">
-                {role === "patient" ? tr.waitingForDoctor.replace("{{name}}", consultation.doctor.full_name) : tr.waitingForPatient}
+                {role === "patient" ? tr.waitingForDoctor.replace("{{name}}", consultation.doctor.full_name.replace(/^Dr\.\s*/, "")) : tr.waitingForPatient}
               </p>
             </div>
           </div>

@@ -223,7 +223,7 @@ export default function QueueDisplayPage() {
                 {/* Doctor Header */}
                 <div className={`${colorScheme.bg} ${colorScheme.text} p-6`}>
                   <h2 className="text-3xl lg:text-4xl font-black truncate">
-                    {t.doctor} {queue.doctor.name}
+                    {t.doctor} {queue.doctor.name.replace(/^Dr\.\s*/, "")}
                   </h2>
                 </div>
 

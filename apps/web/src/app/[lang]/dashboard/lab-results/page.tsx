@@ -286,7 +286,7 @@ export default function PatientLabResultsPage() {
         </div>
 
         <div style="margin-bottom: 20px; padding: 10px; background: #f5f5f5; border: 2px solid #121212;">
-          <strong>Ordered By:</strong> Dr. ${order.ordered_by.full_name}
+          <strong>Ordered By:</strong> ${order.ordered_by.full_name.startsWith("Dr.") ? "" : "Dr. "}${order.ordered_by.full_name}
           (${order.ordered_by.registration_number})
         </div>
 
@@ -442,7 +442,7 @@ export default function PatientLabResultsPage() {
                   {expandedOrder === order.id && (
                     <div className="mt-4 pt-4 border-t-2">
                       <div className="text-sm text-gray-500 mb-4">
-                        {t.orderedBy}: Dr. {order.ordered_by.full_name} ({order.ordered_by.degree || order.ordered_by.registration_number})
+                        {t.orderedBy}: {order.ordered_by.full_name.startsWith("Dr.") ? "" : "Dr. "}{order.ordered_by.full_name} ({order.ordered_by.degree || order.ordered_by.registration_number})
                       </div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
