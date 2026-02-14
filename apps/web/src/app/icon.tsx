@@ -11,20 +11,43 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 20,
-          background: "#2563EB",
           width: "100%",
           height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          background: "#2563EB",
           borderRadius: 6,
-          color: "white",
-          fontWeight: 900,
-          fontFamily: "sans-serif",
         }}
       >
-        D
+        {/* Medical cross */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              width: 8,
+              height: 20,
+              background: "white",
+              borderRadius: 2,
+              position: "absolute",
+            }}
+          />
+          <div
+            style={{
+              width: 20,
+              height: 8,
+              background: "white",
+              borderRadius: 2,
+              position: "absolute",
+            }}
+          />
+        </div>
       </div>
     ),
     {

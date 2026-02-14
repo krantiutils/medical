@@ -11,20 +11,43 @@ export default function AppleIcon() {
     (
       <div
         style={{
-          fontSize: 100,
-          background: "#2563EB",
           width: "100%",
           height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          background: "#2563EB",
           borderRadius: 36,
-          color: "white",
-          fontWeight: 900,
-          fontFamily: "sans-serif",
         }}
       >
-        D
+        {/* Medical cross */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 110,
+              background: "white",
+              borderRadius: 8,
+              position: "absolute",
+            }}
+          />
+          <div
+            style={{
+              width: 110,
+              height: 40,
+              background: "white",
+              borderRadius: 8,
+              position: "absolute",
+            }}
+          />
+        </div>
       </div>
     ),
     {

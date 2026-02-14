@@ -27,7 +27,7 @@ interface Review {
     id: string;
     name: string;
     slug: string;
-  };
+  } | null;
 }
 
 // Star display component
@@ -383,6 +383,7 @@ export default function AdminReviewsPage() {
 
                       {/* Clinic & Doctor */}
                       <div className="mb-3 space-y-1">
+                        {review.clinic && (
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-bold text-foreground/60 uppercase">
                             {translations.clinic}:
@@ -394,6 +395,7 @@ export default function AdminReviewsPage() {
                             {review.clinic.name}
                           </Link>
                         </div>
+                        )}
                         {review.doctor && (
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold text-foreground/60 uppercase">
@@ -490,7 +492,7 @@ export default function AdminReviewsPage() {
                   <div className="space-y-2 text-sm">
                     <p>
                       <span className="font-bold">{translations.clinic}:</span>{" "}
-                      {selectedReview.clinic.name}
+                      {selectedReview.clinic?.name ?? "—"}
                     </p>
                     <p>
                       <span className="font-bold">{translations.doctor}:</span>{" "}

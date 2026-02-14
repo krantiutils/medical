@@ -13,6 +13,13 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon", type: "image/png", sizes: "32x32" },
+    ],
+    apple: "/apple-icon",
+  },
   title: {
     default: "DoctorSewa - Healthcare Directory",
     template: "%s | DoctorSewa",
