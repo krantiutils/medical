@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma, ProfessionalType } from "@swasthya/database";
+
+export const revalidate = 300; // revalidate every 5 minutes
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { setRequestLocale } from "next-intl/server";

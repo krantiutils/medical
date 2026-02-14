@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { prisma, ProfessionalType, Prisma } from "@swasthya/database";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+export const revalidate = 300;
 import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 
