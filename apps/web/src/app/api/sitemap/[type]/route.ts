@@ -4,7 +4,7 @@ import { prisma, ProfessionalType } from "@swasthya/database";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorsewa.org";
 const MAX_URLS_PER_SITEMAP = 1000; // 1k professionals per page (×2 langs = 2k URLs)
 
-const VALID_TYPES = ["static", "clinics", "doctors", "dentists", "pharmacists"] as const;
+const VALID_TYPES = ["static", "clinics", "doctors", "dentists", "pharmacists", "doctor-site"] as const;
 type SitemapType = (typeof VALID_TYPES)[number];
 
 function escapeXml(str: string): string {
@@ -85,6 +85,78 @@ async function buildClinicsSitemap(): Promise<string> {
   return wrapUrlset(entries);
 }
 
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN || "";
+
+/**
+ * Build sitemap for a doctor's subdomain site including profile, blog posts, and custom pages.
+ */
+async function buildDoctorSiteSitemap(subdomain: string): Promise<string> {
+  const doctor = await prisma.professional.findFirst({
+    where: {
+      subdomain,
+      subdomain_enabled: true,
+      verified: true,
+    },
+    select: {
+      updated_at: true,
+      meta: true,
+      blog_posts: {
+        where: { is_published: true },
+        select: { slug: true, updated_at: true },
+        orderBy: { published_at: "desc" },
+      },
+    },
+  });
+
+  if (!doctor) return wrapUrlset([]);
+
+  const entries: string[] = [];
+  const lastmod = doctor.updated_at.toISOString();
+
+  // Helper to build doctor subdomain URLs
+  function doctorUrl(lang: string, path?: string): string {
+    if (BASE_DOMAIN) {
+      const base = `https://${subdomain}.${BASE_DOMAIN}`;
+      const localePart = lang !== "en" ? `/${lang}` : "";
+      const pathPart = path ? `/${path}` : "";
+      return `${base}${localePart}${pathPart}`;
+    }
+    const pathPart = path ? `/${path}` : "";
+    return `${SITE_URL}/${lang}/doctor/${subdomain}${pathPart}`;
+  }
+
+  // Doctor profile page
+  entries.push(urlEntry(doctorUrl("en"), lastmod, "weekly", 1.0));
+  entries.push(urlEntry(doctorUrl("ne"), lastmod, "weekly", 1.0));
+
+  // Blog listing page (if there are posts)
+  if (doctor.blog_posts.length > 0) {
+    entries.push(urlEntry(doctorUrl("en", "blog"), lastmod, "weekly", 0.8));
+    entries.push(urlEntry(doctorUrl("ne", "blog"), lastmod, "weekly", 0.8));
+
+    // Individual blog posts
+    for (const post of doctor.blog_posts) {
+      const postLastmod = post.updated_at.toISOString();
+      entries.push(urlEntry(doctorUrl("en", `blog/${post.slug}`), postLastmod, "monthly", 0.7));
+      entries.push(urlEntry(doctorUrl("ne", `blog/${post.slug}`), postLastmod, "monthly", 0.7));
+    }
+  }
+
+  // Custom pages from page builder
+  const meta = (doctor.meta as Record<string, unknown>) || {};
+  const pageBuilder = meta.pageBuilder as { enabled?: boolean; pages?: Array<{ slug: string; visible: boolean; isHomePage: boolean }> } | undefined;
+
+  if (pageBuilder?.enabled && pageBuilder.pages) {
+    for (const page of pageBuilder.pages) {
+      if (!page.visible || page.isHomePage) continue; // Skip home (already added) and hidden pages
+      entries.push(urlEntry(doctorUrl("en", page.slug), lastmod, "monthly", 0.6));
+      entries.push(urlEntry(doctorUrl("ne", page.slug), lastmod, "monthly", 0.6));
+    }
+  }
+
+  return wrapUrlset(entries);
+}
+
 async function buildProfessionalSitemap(
   type: ProfessionalType,
   pathSegment: string,
@@ -138,6 +210,15 @@ export async function GET(
     case "pharmacists":
       xml = await buildProfessionalSitemap(ProfessionalType.PHARMACIST, "pharmacists", page);
       break;
+    case "doctor-site": {
+      // Per-doctor subdomain sitemap (blog posts, custom pages)
+      const subdomain = request.nextUrl.searchParams.get("subdomain") || "";
+      if (!subdomain) {
+        return NextResponse.json({ error: "subdomain parameter required" }, { status: 400 });
+      }
+      xml = await buildDoctorSiteSitemap(subdomain);
+      break;
+    }
     default:
       return NextResponse.json({ error: "Invalid sitemap type" }, { status: 404 });
   }

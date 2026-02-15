@@ -20,6 +20,8 @@ export async function GET(): Promise<NextResponse> {
   });
   const lastmod = latest?.updated_at?.toISOString() ?? new Date().toISOString();
 
+  const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN || "";
+
   const sitemaps: string[] = [
     `${SITE_URL}/api/sitemap/static`,
     `${SITE_URL}/api/sitemap/clinics`,
@@ -37,6 +39,26 @@ export async function GET(): Promise<NextResponse> {
     const pages = Math.max(1, Math.ceil(count / MAX_URLS_PER_SITEMAP));
     for (let i = 0; i < pages; i++) {
       sitemaps.push(`${SITE_URL}/api/sitemap/${slug}?page=${i}`);
+    }
+  }
+
+  // Doctor subdomain blog sitemaps
+  const doctorsWithSubdomains = await prisma.professional.findMany({
+    where: {
+      subdomain_enabled: true,
+      subdomain: { not: null },
+      verified: true,
+    },
+    select: { subdomain: true },
+  });
+
+  for (const doc of doctorsWithSubdomains) {
+    if (doc.subdomain) {
+      if (BASE_DOMAIN) {
+        sitemaps.push(`https://${doc.subdomain}.${BASE_DOMAIN}/api/sitemap/doctor-site`);
+      } else {
+        sitemaps.push(`${SITE_URL}/api/sitemap/doctor-site?subdomain=${doc.subdomain}`);
+      }
     }
   }
 

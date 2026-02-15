@@ -41,6 +41,31 @@ function extractSubdomain(host: string): string | null {
   return sub;
 }
 
+// Detect if subdomain belongs to clinic or doctor
+async function detectSubdomainType(subdomain: string): Promise<'clinic' | 'doctor' | null> {
+  const { prisma } = await import("@swasthya/database");
+
+  // Check if it's a clinic first (existing functionality)
+  const clinic = await prisma.clinic.findFirst({
+    where: { slug: subdomain, verified: true },
+    select: { id: true }
+  });
+  if (clinic) return 'clinic';
+
+  // Check if it's a doctor subdomain
+  const doctor = await prisma.professional.findFirst({
+    where: {
+      subdomain: subdomain,
+      subdomain_enabled: true,
+      verified: true
+    },
+    select: { id: true }
+  });
+  if (doctor) return 'doctor';
+
+  return null;
+}
+
 /**
  * On a clinic subdomain, parse the locale and remaining path from the URL.
  *
@@ -113,7 +138,7 @@ function migrateSessionCookie(request: NextRequest, response: NextResponse): Nex
   return response;
 }
 
-export default function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get("host") || "";
 
@@ -126,12 +151,22 @@ export default function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-    // Detect double-routing: user visited cityhealth.doctorsewa.org/en/clinic/cityhealth/about
+    // Detect subdomain type (clinic or doctor)
+    const subdomainType = await detectSubdomainType(subdomain);
+
+    if (!subdomainType) {
+      // Subdomain doesn't match any clinic or doctor
+      return NextResponse.next();
+    }
+
+    // Detect double-routing: user visited subdomain.doctorsewa.org/en/clinic/subdomain/about
+    // or subdomain.doctorsewa.org/en/doctor/subdomain/about
     // Redirect to the clean subdomain URL: /about (or /ne/about)
     const pathWithoutLocale = getPathWithoutLocale(pathname);
-    const clinicPrefix = `/clinic/${subdomain}`;
-    if (pathWithoutLocale.startsWith(clinicPrefix)) {
-      const remainder = pathWithoutLocale.slice(clinicPrefix.length); // e.g. "" or "/about"
+    const routePrefix = subdomainType === 'clinic' ? `/clinic/${subdomain}` : `/doctor/${subdomain}`;
+
+    if (pathWithoutLocale.startsWith(routePrefix)) {
+      const remainder = pathWithoutLocale.slice(routePrefix.length); // e.g. "" or "/about"
       // Detect locale in original path to preserve it in redirect
       let redirectLocale = defaultLocale;
       for (const loc of locales) {
@@ -149,14 +184,15 @@ export default function middleware(request: NextRequest) {
     // Parse locale + page slug from the subdomain path
     const { locale, pageSlug } = parseSubdomainPath(pathname);
 
-    // Rewrite to the internal Next.js route: /{locale}/clinic/{subdomain}/{pageSlug?}
+    // Rewrite to the internal Next.js route based on subdomain type
     const rewritePath = pageSlug
-      ? `/${locale}/clinic/${subdomain}/${pageSlug}`
-      : `/${locale}/clinic/${subdomain}`;
+      ? `/${locale}/${subdomainType}/${subdomain}/${pageSlug}`
+      : `/${locale}/${subdomainType}/${subdomain}`;
 
     const rewriteUrl = new URL(rewritePath, request.url);
     const response = NextResponse.rewrite(rewriteUrl);
     response.headers.set("x-subdomain", subdomain);
+    response.headers.set("x-subdomain-type", subdomainType);
     response.headers.set("x-locale", locale);
     return migrateSessionCookie(request, response);
   }

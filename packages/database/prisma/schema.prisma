@@ -199,6 +199,37 @@ model Professional {
   last_synced_at      DateTime?
   meta                Json?
 
+  // Subdomain & Website
+  subdomain           String?  @unique // e.g., "niraj" for niraj.doctorsewa.org
+  subdomain_enabled   Boolean  @default(false) // Toggle to activate/deactivate subdomain
+
+  // Contact & Links
+  email               String? // Professional email
+  phone               String? // Professional phone
+  website             String? // External website URL
+  social_links        Json? // { twitter, linkedin, facebook, instagram, youtube, etc. }
+  custom_links        Json? // Array of { title, url, icon? }
+
+  // Profile Content
+  bio                 String?  @db.Text // Bio in English
+  bio_ne              String?  @db.Text // Bio in Nepali
+  languages           String[] // Languages spoken
+
+  // Professional Details
+  education           Json? // Array of { degree, institution, year, description }
+  experience          Json? // Array of { role, organization, startYear, endYear, description }
+  certifications      Json? // Array of { name, issuer, year, expiryYear? }
+  publications        Json? // Array of { title, journal, year, link, description }
+  awards              Json? // Array of { title, issuer, year, description }
+
+  // Consultation
+  consultation_fee    Decimal? @db.Decimal(10, 2) // In-person fee
+  consultation_duration Int? // Default consultation duration in minutes
+
+  // Settings
+  booking_enabled     Boolean  @default(true) // Allow booking from subdomain
+  show_reviews        Boolean  @default(true) // Show reviews on subdomain
+
   // Telemedicine fields
   telemedicine_enabled Boolean @default(false)
   telemedicine_fee     Decimal? @db.Decimal(10, 2) // Video consultation fee in NPR
@@ -243,10 +274,14 @@ model Professional {
   // Check-in tracking
   check_ins DoctorCheckIn[]
 
+  // Blog posts
+  blog_posts BlogPost[]
+
   @@unique([type, registration_number])
   @@index([slug])
   @@index([type])
   @@index([claimed_by_id])
+  @@index([subdomain])
 }
 
 model VerificationRequest {
@@ -1402,4 +1437,48 @@ model ClinicStaff {
   @@unique([clinic_id, user_id])
   @@index([clinic_id])
   @@index([user_id])
+}
+
+// ============================================================================
+// BLOG POST MODEL (Doctor Subdomain Feature)
+// ============================================================================
+
+model BlogPost {
+  id              String    @id @default(uuid())
+  slug            String    // URL-friendly slug (e.g., "understanding-diabetes")
+  title           String
+  title_ne        String?   // Nepali title
+  excerpt         String?   @db.Text // Short description
+  excerpt_ne      String?   @db.Text
+  content         String    @db.Text // Rich HTML content from CKEditor
+  content_ne      String?   @db.Text // Nepali content
+  cover_image     String?   // Featured image URL
+
+  // SEO
+  meta_description String?
+  meta_keywords    String[]
+
+  // Publishing
+  is_published    Boolean   @default(false)
+  published_at    DateTime?
+
+  // Organization
+  category        String?   // e.g., "Health Tips", "Patient Stories", "Research"
+  tags            String[]  // e.g., ["diabetes", "nutrition", "prevention"]
+
+  // Engagement
+  view_count      Int       @default(0)
+
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  // Relations
+  author_id       String
+  author          Professional @relation(fields: [author_id], references: [id], onDelete: Cascade)
+
+  @@unique([author_id, slug])
+  @@index([author_id, is_published])
+  @@index([author_id])
+  @@index([published_at])
+  @@index([category])
 }
