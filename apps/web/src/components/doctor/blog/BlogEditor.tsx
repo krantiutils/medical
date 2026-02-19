@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { RichTextEditor } from "@/components/page-builder/RichTextEditor";
 
 interface BlogPostData {
   id?: string;
@@ -397,27 +398,21 @@ export function BlogEditor({
             </h2>
           </CardHeader>
           <CardContent>
-            {/* TODO: Replace with CKEditor integration */}
             {activeTab === "en" ? (
-              <textarea
+              <RichTextEditor
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Write your blog post content in HTML..."
-                rows={20}
-                className="w-full px-4 py-3 border-2 border-black focus:outline-none focus:ring-2 focus:ring-primary-blue resize-y font-mono text-sm leading-relaxed"
+                onChange={setContent}
+                placeholder="Write your blog post content..."
+                lang="en"
               />
             ) : (
-              <textarea
+              <RichTextEditor
                 value={contentNe}
-                onChange={(e) => setContentNe(e.target.value)}
-                placeholder="ब्लग पोस्टको सामग्री HTML मा लेख्नुहोस्..."
-                rows={20}
-                className="w-full px-4 py-3 border-2 border-black focus:outline-none focus:ring-2 focus:ring-primary-blue resize-y font-mono text-sm leading-relaxed"
+                onChange={setContentNe}
+                placeholder="ब्लग पोस्टको सामग्री लेख्नुहोस्..."
+                lang="ne"
               />
             )}
-            <p className="mt-2 text-xs text-foreground/50">
-              Supports HTML markup. A rich text editor will be available soon.
-            </p>
           </CardContent>
         </Card>
 
