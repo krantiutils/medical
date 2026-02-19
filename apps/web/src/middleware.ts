@@ -41,29 +41,20 @@ function extractSubdomain(host: string): string | null {
   return sub;
 }
 
-// Detect if subdomain belongs to clinic or doctor
+// Detect if subdomain belongs to clinic or doctor.
+// Uses an internal API fetch because middleware runs in edge runtime
+// where Prisma (native bindings) cannot execute.
+// Fetches via localhost to avoid self-referential issues through the public domain.
 async function detectSubdomainType(subdomain: string): Promise<'clinic' | 'doctor' | null> {
-  const { prisma } = await import("@swasthya/database");
-
-  // Check if it's a clinic first (existing functionality)
-  const clinic = await prisma.clinic.findFirst({
-    where: { slug: subdomain, verified: true },
-    select: { id: true }
-  });
-  if (clinic) return 'clinic';
-
-  // Check if it's a doctor subdomain
-  const doctor = await prisma.professional.findFirst({
-    where: {
-      subdomain: subdomain,
-      subdomain_enabled: true,
-      verified: true
-    },
-    select: { id: true }
-  });
-  if (doctor) return 'doctor';
-
-  return null;
+  try {
+    const port = process.env.PORT || "3000";
+    const res = await fetch(`http://127.0.0.1:${port}/api/subdomain-check?sub=${encodeURIComponent(subdomain)}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.type || null;
+  } catch {
+    return null;
+  }
 }
 
 /**
