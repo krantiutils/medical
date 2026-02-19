@@ -448,7 +448,7 @@ export default function AdminClaimsPage() {
                         >
                           {tr.viewDocuments}
                         </Button>
-                        <Link href={`/${lang}/doctor/${request.professional.slug}`} target="_blank">
+                        <Link href={`/${lang}/${request.professional.type === "DENTIST" ? "dentists" : request.professional.type === "PHARMACIST" ? "pharmacists" : "doctors"}/${request.professional.slug}`} target="_blank">
                           <Button variant="ghost" size="sm">
                             {tr.viewProfile}
                           </Button>

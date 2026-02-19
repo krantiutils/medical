@@ -295,7 +295,7 @@ export default function VerifyClaimPage() {
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   {professional && (
-                    <Link href={`/${lang}/doctor/${professional.slug}`}>
+                    <Link href={`/${lang}/${professional.type === "DENTIST" ? "dentists" : professional.type === "PHARMACIST" ? "pharmacists" : "doctors"}/${professional.slug}`}>
                       <Button variant="primary">{tr.backToProfile}</Button>
                     </Link>
                   )}

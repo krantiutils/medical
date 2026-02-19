@@ -181,7 +181,7 @@ export function BookConsultationButton({
     return (
       <Button
         variant="primary"
-        onClick={() => router.push(`/${lang}/login?callbackUrl=/${lang}/doctor/${doctorId}`)}
+        onClick={() => router.push(`/${lang}/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`)}
         className="w-full"
       >
         <svg

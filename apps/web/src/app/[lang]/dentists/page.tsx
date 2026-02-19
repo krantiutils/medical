@@ -322,7 +322,7 @@ export default async function DentistsPage({ params, searchParams }: DentistsPag
                   </CardContent>
                   <CardFooter>
                     <Link
-                      href={`/${lang}/doctor/${professional.slug}`}
+                      href={`/${lang}/dentists/${professional.slug}`}
                       className="w-full"
                     >
                       <Button variant="outline" size="sm" className="w-full">

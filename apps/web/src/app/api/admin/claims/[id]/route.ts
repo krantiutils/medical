@@ -54,6 +54,7 @@ export async function POST(
             id: true,
             full_name: true,
             slug: true,
+            type: true,
             claimed_by_id: true,
           },
         },
@@ -123,7 +124,8 @@ export async function POST(
         sendVerificationApprovedEmail(
           { email: verificationRequest.user.email, name: verificationRequest.user.name || undefined },
           verificationRequest.professional.slug,
-          "en"
+          "en",
+          verificationRequest.professional.type
         ).catch((err) => {
           console.error("[Admin] Failed to send approval email:", err);
         });

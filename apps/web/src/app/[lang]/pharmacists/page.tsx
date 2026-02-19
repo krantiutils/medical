@@ -319,7 +319,7 @@ export default async function PharmacistsPage({ params, searchParams }: Pharmaci
                     </CardContent>
                     <CardFooter>
                       <Link
-                        href={`/${lang}/doctor/${professional.slug}`}
+                        href={`/${lang}/pharmacists/${professional.slug}`}
                         className="w-full"
                       >
                         <Button variant="outline" size="sm" className="w-full">

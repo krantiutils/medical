@@ -872,7 +872,7 @@ export default function DashboardProfilePage() {
           </div>
           {professional && (
             <Link
-              href={`/${lang}/doctor/${professional.slug}`}
+              href={`/${lang}/${professional.type === "DENTIST" ? "dentists" : professional.type === "PHARMACIST" ? "pharmacists" : "doctors"}/${professional.slug}`}
               className="mt-4 sm:mt-0"
             >
               <Button variant="outline">{tr.viewProfile}</Button>

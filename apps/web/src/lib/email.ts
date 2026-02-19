@@ -487,11 +487,13 @@ export function verificationSubmittedEmail(
 export function verificationApprovedEmail(
   recipient: EmailRecipient,
   professionalSlug: string,
-  lang: Locale = "en"
+  lang: Locale = "en",
+  professionalType: string = "DOCTOR"
 ): { subject: string; html: string } {
   const t = translations[lang].verificationApproved;
   const editUrl = `${SITE_URL}/${lang}/dashboard/profile`;
-  const profileUrl = `${SITE_URL}/${lang}/doctor/${professionalSlug}`;
+  const routePrefix = professionalType === "DENTIST" ? "dentists" : professionalType === "PHARMACIST" ? "pharmacists" : "doctors";
+  const profileUrl = `${SITE_URL}/${lang}/${routePrefix}/${professionalSlug}`;
 
   const content = `
     <!-- Color accent bar - green for success -->
@@ -714,9 +716,10 @@ export async function sendVerificationSubmittedEmail(
 export async function sendVerificationApprovedEmail(
   recipient: EmailRecipient,
   professionalSlug: string,
-  lang: Locale = "en"
+  lang: Locale = "en",
+  professionalType: string = "DOCTOR"
 ): Promise<{ success: boolean; error?: string }> {
-  const { subject, html } = verificationApprovedEmail(recipient, professionalSlug, lang);
+  const { subject, html } = verificationApprovedEmail(recipient, professionalSlug, lang, professionalType);
   return sendEmail(recipient.email, subject, html);
 }
 

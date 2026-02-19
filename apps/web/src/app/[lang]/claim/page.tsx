@@ -295,7 +295,7 @@ function ClaimPageContent() {
                     <Link href={`/${lang}/claim/${professional.id}/verify`}>
                       <Button variant="primary">{tr.startClaimProcess}</Button>
                     </Link>
-                    <Link href={`/${lang}/doctor/${professional.slug}`}>
+                    <Link href={`/${lang}/${professional.type === "DENTIST" ? "dentists" : professional.type === "PHARMACIST" ? "pharmacists" : "doctors"}/${professional.slug}`}>
                       <Button variant="outline">{tr.viewProfile}</Button>
                     </Link>
                   </div>

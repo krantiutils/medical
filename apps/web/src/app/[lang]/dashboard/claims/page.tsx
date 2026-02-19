@@ -333,7 +333,7 @@ export default function DashboardClaimsPage() {
                     <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
                       {tr.viewDocuments}
                     </Button>
-                    <Link href={`/${lang}/doctor/${request.professional.slug}`}>
+                    <Link href={`/${lang}/${request.professional.type === "DENTIST" ? "dentists" : request.professional.type === "PHARMACIST" ? "pharmacists" : "doctors"}/${request.professional.slug}`}>
                       <Button variant="ghost" size="sm">{tr.viewProfile}</Button>
                     </Link>
                     {request.status === "REJECTED" && (

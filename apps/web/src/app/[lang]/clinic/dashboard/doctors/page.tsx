@@ -680,7 +680,7 @@ export default function ClinicDoctorsPage() {
                       {/* Actions */}
                       <div className="flex flex-col gap-2">
                         {doctor.verified && (
-                          <Link href={`/${lang}/doctor/${doctor.slug}`} target="_blank">
+                          <Link href={`/${lang}/doctors/${doctor.slug}`} target="_blank">
                             <Button variant="outline" size="sm">
                               {tr.viewProfile}
                             </Button>
