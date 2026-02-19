@@ -70,22 +70,48 @@ SELECT "type", COUNT(*) FROM "Professional" GROUP BY "type";
 
 ## Environment Variables
 
-All `.env` files are on the server (not in git). Key variables:
+All `.env` files are on the server (not in git). File: `apps/web/.env`
 
-| Variable | Value |
-|----------|-------|
-| `DATABASE_URL` | `postgresql://swasthya:swasthya@localhost:5432/swasthya?schema=public` |
-| `NEXTAUTH_URL` | `https://doctorsewa.org` |
-| `NEXTAUTH_SECRET` | Generated via `openssl rand -base64 32` (stored on server) |
-| `RESEND_API_KEY` | `re_oop9nivU_PikYh9Lztp1k58skjbxprLCW` |
-| `EMAIL_FROM` | `DoctorSewa <noreply@doctorsewa.org>` |
-| `NEXT_PUBLIC_SITE_URL` | `https://doctorsewa.org` |
-| `NEXT_PUBLIC_BASE_DOMAIN` | `doctorsewa.org` |
-| `HMS_ACCESS_KEY` | `6982dbe063cbbe924eef88a6` |
-| `HMS_APP_SECRET` | (stored on server) |
-| `HMS_TEMPLATE_ID` | `6982dc3d970f62489e2aa143` |
+**CRITICAL:** Variables prefixed with `NEXT_PUBLIC_` are baked into the build at compile time. Changing them requires `rm -rf apps/web/.next .turbo node_modules/.cache && pnpm build`. Server-only variables just need `pm2 restart doctorsewa`.
 
-> **Note:** `NEXT_PUBLIC_BASE_DOMAIN` is required for subdomain routing (`niraj.doctorsewa.org`). Without it, `middleware.ts` skips subdomain detection entirely — the main site works fine but subdomains won't resolve to doctor/clinic pages. This is safe to leave unset until the subdomain infrastructure (DNS, Nginx, SSL) is configured.
+### Auth & Core
+
+| Variable | Production Value | Notes |
+|----------|-----------------|-------|
+| `DATABASE_URL` | `postgresql://swasthya:swasthya@localhost:5432/swasthya?schema=public` | Also in `packages/database/.env` |
+| `NEXTAUTH_URL` | `https://doctorsewa.org` | **Must be production URL, NOT localhost.** Google OAuth callback uses this |
+| `NEXTAUTH_SECRET` | *(generated on server)* | Generate with `openssl rand -base64 32`. Changing it invalidates all sessions |
+| `GOOGLE_CLIENT_ID` | *(from Google Console)* | **Currently empty — Google login won't work until set** |
+| `GOOGLE_CLIENT_SECRET` | *(from Google Console)* | Must match the client ID |
+
+### Email & SMS
+
+| Variable | Production Value | Notes |
+|----------|-----------------|-------|
+| `RESEND_API_KEY` | *(stored on server)* | From [resend.com](https://resend.com) |
+| `EMAIL_FROM` | `DoctorSewa <noreply@doctorsewa.org>` | Sender address for transactional emails |
+| `AAKASH_SMS_TOKEN` | *(stored on server)* | Aakash SMS gateway for Nepal |
+
+### Telemedicine (100ms)
+
+| Variable | Production Value | Notes |
+|----------|-----------------|-------|
+| `HMS_ACCESS_KEY` | `6982dbe063cbbe924eef88a6` | From [100ms dashboard](https://dashboard.100ms.live) |
+| `HMS_APP_SECRET` | *(stored on server)* | |
+| `HMS_TEMPLATE_ID` | `6982dc3d970f62489e2aa143` | |
+
+### Build-time Variables (NEXT_PUBLIC_*)
+
+| Variable | Production Value | Notes |
+|----------|-----------------|-------|
+| `NEXT_PUBLIC_SITE_URL` | `https://doctorsewa.org` | Used for OG images, email links. **Must NOT be localhost** |
+| `NEXT_PUBLIC_BASE_DOMAIN` | `doctorsewa.org` | Enables subdomain routing. Without it, subdomains are silently disabled |
+
+### Common Mistakes
+
+- Setting any URL to `http://localhost:3000` — causes OAuth redirects to localhost, OG images pointing to localhost, etc.
+- Changing `NEXT_PUBLIC_*` without rebuilding — the old value stays baked in the JS bundle
+- Changing `NEXTAUTH_SECRET` — invalidates all existing user sessions (they'll need to log in again)
 
 ## SSL Certificate
 
