@@ -239,6 +239,11 @@ pm2 restart doctorsewa
 - `data/` (CSV import files already on server)
 - `.next/` (rebuilt on server via `pnpm build`)
 
+**Canonical .env backup:** `.env.production` in the repo root (gitignored). If the server `.env` is ever lost or corrupted:
+```bash
+scp -i ~/.ssh/monitor.pem .env.production ubuntu@ec2-54-156-88-160.compute-1.amazonaws.com:/home/ubuntu/doctorsewa/apps/web/.env
+```
+
 ### If schema changed (new/modified Prisma models)
 
 ```bash
