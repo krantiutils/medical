@@ -10,6 +10,7 @@ interface NavbarEditorProps {
   lang: string;
   clinicLogoUrl?: string | null;
   onLogoUploaded?: (url: string) => void;
+  logoApiPath?: string;
 }
 
 const COLOR_OPTIONS: { value: DesignToken; label: string; swatch: string }[] = [
@@ -20,7 +21,7 @@ const COLOR_OPTIONS: { value: DesignToken; label: string; swatch: string }[] = [
   { value: "foreground", label: "Dark", swatch: "bg-foreground" },
 ];
 
-export function NavbarEditor({ navbar, onChange, onClose, lang, clinicLogoUrl, onLogoUploaded }: NavbarEditorProps) {
+export function NavbarEditor({ navbar, onChange, onClose, lang, clinicLogoUrl, onLogoUploaded, logoApiPath = "/api/clinic/logo" }: NavbarEditorProps) {
   const isNe = lang === "ne";
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -66,7 +67,7 @@ export function NavbarEditor({ navbar, onChange, onClose, lang, clinicLogoUrl, o
       const formData = new FormData();
       formData.append("logo", file);
 
-      const res = await fetch("/api/clinic/logo", {
+      const res = await fetch(logoApiPath, {
         method: "PUT",
         body: formData,
       });

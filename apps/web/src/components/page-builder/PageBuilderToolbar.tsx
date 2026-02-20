@@ -31,6 +31,7 @@ interface PageBuilderToolbarProps {
   onRenamePage: (id: string, title: string, titleNe: string) => void;
   onUpdatePageSlug: (id: string, slug: string) => void;
   onLogoUploaded?: (url: string) => void;
+  logoApiPath?: string;
 }
 
 export function PageBuilderToolbar({
@@ -58,6 +59,7 @@ export function PageBuilderToolbar({
   onRenamePage,
   onUpdatePageSlug,
   onLogoUploaded,
+  logoApiPath = "/api/clinic/logo",
 }: PageBuilderToolbarProps) {
   const isNe = lang === "ne";
   const [showAddPage, setShowAddPage] = useState(false);
@@ -101,7 +103,7 @@ export function PageBuilderToolbar({
     try {
       const formData = new FormData();
       formData.append("logo", file);
-      const res = await fetch("/api/clinic/logo", { method: "PUT", body: formData });
+      const res = await fetch(logoApiPath, { method: "PUT", body: formData });
       const data = await res.json();
       if (!res.ok) {
         setLogoError(data.error || "Upload failed");

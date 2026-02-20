@@ -19,22 +19,30 @@ interface DoctorsPageProps {
   searchParams: Promise<{
     page?: string;
     q?: string;
+    specialty?: string;
   }>;
 }
 
-async function getDoctors(page: number, query?: string) {
+async function getDoctors(page: number, query?: string, specialty?: string) {
   const skip = (page - 1) * ITEMS_PER_PAGE;
 
-  const where: object = query
-    ? {
-        type: ProfessionalType.DOCTOR,
-        OR: [
-          { full_name: { contains: query, mode: "insensitive" as const } },
-          { degree: { contains: query, mode: "insensitive" as const } },
-          { address: { contains: query, mode: "insensitive" as const } },
-        ],
-      }
-    : { type: ProfessionalType.DOCTOR };
+  const conditions: object[] = [{ type: ProfessionalType.DOCTOR }];
+
+  if (query) {
+    conditions.push({
+      OR: [
+        { full_name: { contains: query, mode: "insensitive" as const } },
+        { degree: { contains: query, mode: "insensitive" as const } },
+        { address: { contains: query, mode: "insensitive" as const } },
+      ],
+    });
+  }
+
+  if (specialty) {
+    conditions.push({ specialties: { has: specialty } });
+  }
+
+  const where = conditions.length === 1 ? conditions[0] : { AND: conditions };
 
   const [professionals, totalCount] = await Promise.all([
     prisma.professional.findMany({
@@ -130,9 +138,10 @@ function generatePageNumbers(currentPage: number, totalPages: number): (number |
   return pages;
 }
 
-function buildPageUrl(lang: string, page: number, q?: string): string {
+function buildPageUrl(lang: string, page: number, q?: string, specialty?: string): string {
   const params = new URLSearchParams();
   if (q) params.set("q", q);
+  if (specialty) params.set("specialty", specialty);
   if (page > 1) params.set("page", String(page));
   const qs = params.toString();
   return `/${lang}/doctors${qs ? `?${qs}` : ""}`;
@@ -140,13 +149,13 @@ function buildPageUrl(lang: string, page: number, q?: string): string {
 
 export default async function DoctorsPage({ params, searchParams }: DoctorsPageProps) {
   const { lang } = await params;
-  const { page: pageStr = "1", q } = await searchParams;
+  const { page: pageStr = "1", q, specialty } = await searchParams;
 
   // Enable static rendering
   setRequestLocale(lang);
 
-  const currentPage = q ? Math.max(1, parseInt(pageStr, 10) || 1) : Math.max(1, parseInt(pageStr, 10) || 1);
-  const { professionals, totalCount, totalPages } = await getDoctors(currentPage, q);
+  const currentPage = Math.max(1, parseInt(pageStr, 10) || 1);
+  const { professionals, totalCount, totalPages } = await getDoctors(currentPage, q, specialty);
 
   // Translations (inline for now, could use next-intl)
   const t = {
@@ -210,9 +219,24 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
           </p>
         </div>
 
+        {/* Active specialty filter */}
+        {specialty && (
+          <div className="mb-4 flex items-center gap-2">
+            <span className="px-3 py-1 bg-primary-blue text-white text-sm font-bold border-2 border-foreground">
+              {specialty}
+            </span>
+            <Link href={`/${lang}/doctors${q ? `?q=${encodeURIComponent(q)}` : ""}`}>
+              <button className="text-sm text-foreground/60 hover:text-primary-red font-medium">
+                ✕ {lang === "ne" ? "फिल्टर हटाउनुहोस्" : "Clear filter"}
+              </button>
+            </Link>
+          </div>
+        )}
+
         {/* Search Bar */}
         <div className="mb-8">
           <form action={`/${lang}/doctors`} method="GET" className="flex gap-2">
+            {specialty && <input type="hidden" name="specialty" value={specialty} />}
             <input
               type="text"
               name="q"
@@ -340,7 +364,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
                 <div className="flex items-center gap-2">
                   {/* Previous button */}
                   {currentPage > 1 ? (
-                    <Link href={buildPageUrl(lang, currentPage - 1, q)}>
+                    <Link href={buildPageUrl(lang, currentPage - 1, q, specialty)}>
                       <Button variant="outline" size="sm">
                         ← {t.previous}
                       </Button>
@@ -363,7 +387,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
                       }
                       const isCurrentPage = pageNum === currentPage;
                       return (
-                        <Link key={pageNum} href={buildPageUrl(lang, pageNum, q)}>
+                        <Link key={pageNum} href={buildPageUrl(lang, pageNum, q, specialty)}>
                           <Button
                             variant={isCurrentPage ? "primary" : "outline"}
                             size="sm"
@@ -378,7 +402,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
 
                   {/* Next button */}
                   {currentPage < totalPages ? (
-                    <Link href={buildPageUrl(lang, currentPage + 1, q)}>
+                    <Link href={buildPageUrl(lang, currentPage + 1, q, specialty)}>
                       <Button variant="outline" size="sm">
                         {t.next} →
                       </Button>

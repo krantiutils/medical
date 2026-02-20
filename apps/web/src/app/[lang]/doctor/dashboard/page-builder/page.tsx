@@ -174,6 +174,7 @@ export default function DoctorPageBuilderPage() {
         onUpdatePageSlug={pb.updatePageSlug}
         clinicLogoUrl={doctorData.logo_url}
         onLogoUploaded={(url) => setDoctorData((prev) => prev ? { ...prev, logo_url: url } : prev)}
+        logoApiPath="/api/doctor/logo"
       />
 
       {/* Main area */}
@@ -220,6 +221,7 @@ export default function DoctorPageBuilderPage() {
             lang={lang}
             clinicLogoUrl={doctorData.logo_url}
             onLogoUploaded={(url) => setDoctorData((prev) => prev ? { ...prev, logo_url: url } : prev)}
+            logoApiPath="/api/doctor/logo"
           />
         ) : rightPanel === "footer" ? (
           <FooterEditor
@@ -235,6 +237,7 @@ export default function DoctorPageBuilderPage() {
             onUpdate={(updates) => pb.updateSection(pb.selectedSectionId!, updates)}
             onUpdateData={(dataUpdates) => pb.updateSectionData(pb.selectedSectionId!, dataUpdates)}
             onClose={() => pb.selectSection(null)}
+            imageApiPath="/api/doctor/page-builder/images"
           />
         ) : null}
       </div>

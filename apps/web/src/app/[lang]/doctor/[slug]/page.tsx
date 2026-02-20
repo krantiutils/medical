@@ -187,6 +187,19 @@ export default async function DoctorPage({ params, searchParams }: DoctorPagePro
 
   // Default doctor profile page
   return (
+    <>
+    {subdomain && (
+      <header className="bg-white border-b-4 border-black px-4 py-3">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <span className="text-lg font-black">{doctor.full_name}</span>
+          <Link href={`/${lang}`} className="flex items-center gap-1.5 text-sm font-bold text-foreground/60 hover:text-primary-blue">
+            <span className="w-3 h-3 rounded-full bg-primary-blue inline-block" />
+            <span className="w-3 h-3 bg-primary-red inline-block" />
+            <span className="ml-0.5">DoctorSewa</span>
+          </Link>
+        </div>
+      </header>
+    )}
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
@@ -517,5 +530,19 @@ export default async function DoctorPage({ params, searchParams }: DoctorPagePro
         </div>
       </div>
     </main>
+    {subdomain && (
+      <footer className="bg-foreground text-white py-6 px-4">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+          <Link href={`/${lang}`} className="flex items-center gap-1.5 font-bold">
+            <span className="w-3 h-3 rounded-full bg-primary-blue inline-block" />
+            <span className="w-3 h-3 bg-primary-red inline-block" />
+            <span className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[10px] border-b-primary-yellow inline-block" />
+            <span className="ml-1 uppercase text-sm tracking-wide">DoctorSewa</span>
+          </Link>
+          <p className="text-sm text-white/60">&copy; {new Date().getFullYear()} Swasthya</p>
+        </div>
+      </footer>
+    )}
+    </>
   );
 }

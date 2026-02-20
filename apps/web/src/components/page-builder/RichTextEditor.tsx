@@ -43,9 +43,10 @@ interface RichTextEditorProps {
   onChange: (html: string) => void;
   placeholder?: string;
   lang?: string;
+  imageApiPath?: string;
 }
 
-export function RichTextEditor({ value, onChange, placeholder, lang = "en" }: RichTextEditorProps) {
+export function RichTextEditor({ value, onChange, placeholder, lang = "en", imageApiPath }: RichTextEditorProps) {
   const isUpdatingRef = useRef(false);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [showImageBrowser, setShowImageBrowser] = useState(false);
@@ -353,6 +354,7 @@ export function RichTextEditor({ value, onChange, placeholder, lang = "en" }: Ri
               lang={lang}
               onSelect={handleImageSelect}
               idSuffix={`rte-${lang}`}
+              apiPath={imageApiPath}
             />
           </div>
         )}

@@ -55,7 +55,10 @@
     "doctorClaims": "चिकित्सक दाबीहरू",
     "clinicVerification": "क्लिनिक प्रमाणीकरण",
     "reviewModeration": "समीक्षा मोडरेसन",
-    "symptomChecker": "लक्षण जाँच"
+    "symptomChecker": "लक्षण जाँच",
+    "more": "थप",
+    "findCare": "सेवा खोज्नुहोस्",
+    "packages": "प्याकेज"
   },
   "footer": {
     "about": "बारेमा",

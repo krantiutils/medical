@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { headers } from "next/headers";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { SessionProvider } from "@/components/providers/session-provider";
@@ -33,15 +34,21 @@ export default async function LangLayout({ children, params }: LangLayoutProps) 
   // Get messages for the current locale
   const messages = await getMessages();
 
+  // Subdomain pages render their own navbar/footer via page builder
+  const headersList = await headers();
+  const isSubdomain = !!headersList.get("x-subdomain");
+
   return (
     <SessionProvider>
       <NextIntlClientProvider messages={messages}>
         <div data-lang={lang} className="min-h-screen flex flex-col">
-          <Suspense>
-            <Header lang={lang} />
-          </Suspense>
+          {!isSubdomain && (
+            <Suspense>
+              <Header lang={lang} />
+            </Suspense>
+          )}
           <main className="flex-1">{children}</main>
-          <Footer lang={lang} />
+          {!isSubdomain && <Footer lang={lang} />}
         </div>
       </NextIntlClientProvider>
     </SessionProvider>

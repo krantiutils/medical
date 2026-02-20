@@ -55,7 +55,10 @@
     "doctorClaims": "Doctor Claims",
     "clinicVerification": "Clinic Verification",
     "reviewModeration": "Review Moderation",
-    "symptomChecker": "Symptom Checker"
+    "symptomChecker": "Symptom Checker",
+    "more": "More",
+    "findCare": "Find Care",
+    "packages": "Packages"
   },
   "footer": {
     "about": "About",

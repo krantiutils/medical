@@ -26,6 +26,7 @@ interface SectionSidebarProps {
   onUpdate: (updates: Partial<PageSection>) => void;
   onUpdateData: (dataUpdates: Record<string, unknown>) => void;
   onClose: () => void;
+  imageApiPath?: string;
 }
 
 const COLOR_OPTIONS: { value: DesignToken; label: string; swatch: string }[] = [
@@ -160,7 +161,7 @@ function VariantPicker({ sectionType, currentVariant, onChange }: { sectionType:
   );
 }
 
-export function SectionSidebar({ section, lang, onUpdate, onUpdateData, onClose }: SectionSidebarProps) {
+export function SectionSidebar({ section, lang, onUpdate, onUpdateData, onClose, imageApiPath }: SectionSidebarProps) {
   const isNe = lang === "ne";
 
   const updateStyle = useCallback((styleUpdates: Partial<SectionStyle>) => {
@@ -194,7 +195,7 @@ export function SectionSidebar({ section, lang, onUpdate, onUpdateData, onClose 
                   </button>
                 </div>
               )}
-              <ImageBrowser lang={lang} onSelect={(url) => onUpdateData({ image: url })} />
+              <ImageBrowser lang={lang} onSelect={(url) => onUpdateData({ image: url })} apiPath={imageApiPath} />
             </div>
           </>
         );
@@ -204,8 +205,8 @@ export function SectionSidebar({ section, lang, onUpdate, onUpdateData, onClose 
           <>
             <div><Label>Heading (EN)</Label><Input value={d.heading as string} onChange={(v) => onUpdateData({ heading: v })} /></div>
             <div><Label>Heading (NE)</Label><Input value={d.headingNe as string} onChange={(v) => onUpdateData({ headingNe: v })} /></div>
-            <div><Label>Body (EN)</Label><RichTextEditor value={d.body as string} onChange={(v) => onUpdateData({ body: v })} placeholder="Write your content..." lang="en" /></div>
-            <div><Label>Body (NE)</Label><RichTextEditor value={d.bodyNe as string} onChange={(v) => onUpdateData({ bodyNe: v })} placeholder="सामग्री लेख्नुहोस्..." lang="ne" /></div>
+            <div><Label>Body (EN)</Label><RichTextEditor value={d.body as string} onChange={(v) => onUpdateData({ body: v })} placeholder="Write your content..." lang="en" imageApiPath={imageApiPath} /></div>
+            <div><Label>Body (NE)</Label><RichTextEditor value={d.bodyNe as string} onChange={(v) => onUpdateData({ bodyNe: v })} placeholder="सामग्री लेख्नुहोस्..." lang="ne" imageApiPath={imageApiPath} /></div>
           </>
         );
 
@@ -386,6 +387,7 @@ export function SectionSidebar({ section, lang, onUpdate, onUpdateData, onClose 
                       ) : (
                         <ImageBrowser
                           lang={lang}
+                          apiPath={imageApiPath}
                           onSelect={(url) => {
                             const updated = [...photos];
                             updated[idx] = { ...updated[idx], url };
@@ -840,7 +842,7 @@ export function SectionSidebar({ section, lang, onUpdate, onUpdateData, onClose 
             {!(d.src as string | null) && (
               <div>
                 <Label>Image</Label>
-                <ImageBrowser lang={lang} onSelect={(url) => onUpdateData({ src: url })} />
+                <ImageBrowser lang={lang} onSelect={(url) => onUpdateData({ src: url })} apiPath={imageApiPath} />
               </div>
             )}
             <div><Label>Alt text (EN)</Label><Input value={d.alt as string} onChange={(v) => onUpdateData({ alt: v })} placeholder="Describe the image" /></div>
@@ -969,7 +971,7 @@ export function SectionSidebar({ section, lang, onUpdate, onUpdateData, onClose 
                   </button>
                 </div>
               )}
-              <ImageBrowser lang={lang} onSelect={(url) => updateStyle({ bgImage: url })} />
+              <ImageBrowser lang={lang} onSelect={(url) => updateStyle({ bgImage: url })} apiPath={imageApiPath} />
             </div>
           </div>
         </div>

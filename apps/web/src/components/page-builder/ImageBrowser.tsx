@@ -6,9 +6,10 @@ interface ImageBrowserProps {
   onSelect: (url: string) => void;
   lang: string;
   idSuffix?: string;
+  apiPath?: string;
 }
 
-export function ImageBrowser({ onSelect, lang, idSuffix = "" }: ImageBrowserProps) {
+export function ImageBrowser({ onSelect, lang, idSuffix = "", apiPath = "/api/clinic/page-builder/images" }: ImageBrowserProps) {
   const isNe = lang === "ne";
   const inputId = `pb-image-upload-inline${idSuffix ? `-${idSuffix}` : ""}`;
   const [images, setImages] = useState<string[]>([]);
@@ -20,7 +21,7 @@ export function ImageBrowser({ onSelect, lang, idSuffix = "" }: ImageBrowserProp
   const loadImages = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/clinic/page-builder/images");
+      const res = await fetch(apiPath);
       if (!res.ok) throw new Error("Failed to load images");
       const data = await res.json();
       setImages(data.images || []);
@@ -30,7 +31,7 @@ export function ImageBrowser({ onSelect, lang, idSuffix = "" }: ImageBrowserProp
     } finally {
       setLoading(false);
     }
-  }, [isNe]);
+  }, [isNe, apiPath]);
 
   useEffect(() => {
     loadImages();
@@ -46,7 +47,7 @@ export function ImageBrowser({ onSelect, lang, idSuffix = "" }: ImageBrowserProp
     try {
       const formData = new FormData();
       formData.append("image", file);
-      const res = await fetch("/api/clinic/page-builder/images", {
+      const res = await fetch(apiPath, {
         method: "POST",
         body: formData,
       });

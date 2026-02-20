@@ -9,7 +9,7 @@ const intlMiddleware = createMiddleware({
 });
 
 // Paths that require authentication (after stripping the locale prefix)
-const protectedPaths = ["/admin", "/clinic/dashboard", "/dashboard"];
+const protectedPaths = ["/admin", "/clinic/dashboard", "/doctor/dashboard", "/dashboard"];
 
 function isProtectedPath(pathWithoutLocale: string): boolean {
   return protectedPaths.some(
