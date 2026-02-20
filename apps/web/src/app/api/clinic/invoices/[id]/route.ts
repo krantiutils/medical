@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma, PaymentStatus } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/invoices/[id] - Get a specific invoice
 export async function GET(
@@ -9,19 +8,19 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireClinicPermission("billing");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const { id } = await params;
 
-    // Get user's clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
+    // Fetch clinic details for the invoice response
+    const clinic = await prisma.clinic.findUnique({
+      where: { id: access.clinicId },
       select: {
         id: true,
         name: true,
@@ -32,18 +31,11 @@ export async function GET(
       },
     });
 
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Get the invoice
     const invoice = await prisma.invoice.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       include: {
         patient: {
@@ -100,9 +92,12 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireClinicPermission("billing");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const { id } = await params;
@@ -118,29 +113,11 @@ export async function PATCH(
       );
     }
 
-    // Get user's clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Verify the invoice belongs to the clinic
     const existingInvoice = await prisma.invoice.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
     });
 

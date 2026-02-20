@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, PaymentMode, PaymentStatus, LabOrderPriority } from "@swasthya/database";
 import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { nextPatientNumber, nextLabOrderNumber, nextInvoiceNumber } from "@/lib/sequence-number";
 
 interface WalkInPatientData {
   full_name: string;
@@ -24,66 +25,6 @@ interface TestInfo {
   name: string;
   short_name: string | null;
   price: number;
-}
-
-/**
- * Generate next patient number for a clinic
- */
-async function generatePatientNumber(clinicId: string): Promise<string> {
-  const count = await prisma.patient.count({
-    where: { clinic_id: clinicId },
-  });
-
-  const nextNumber = count + 1;
-  return `P-${nextNumber.toString().padStart(6, "0")}`;
-}
-
-/**
- * Generate lab order number in format LAB-YYYYMMDD-XXXX
- */
-async function generateLabOrderNumber(clinicId: string): Promise<string> {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  const dateStr = `${year}${month}${day}`;
-
-  // Count orders today for sequential number
-  const todayStart = new Date(today);
-  todayStart.setHours(0, 0, 0, 0);
-  const todayEnd = new Date(today);
-  todayEnd.setHours(23, 59, 59, 999);
-
-  const orderCount = await prisma.labOrder.count({
-    where: {
-      clinic_id: clinicId,
-      created_at: {
-        gte: todayStart,
-        lte: todayEnd,
-      },
-    },
-  });
-
-  return `LAB-${dateStr}-${String(orderCount + 1).padStart(4, "0")}`;
-}
-
-/**
- * Generate invoice number in format INV-YYYY-XXXX
- */
-async function generateInvoiceNumber(clinicId: string): Promise<string> {
-  const year = new Date().getFullYear();
-
-  const invoiceCount = await prisma.invoice.count({
-    where: {
-      clinic_id: clinicId,
-      created_at: {
-        gte: new Date(`${year}-01-01`),
-        lt: new Date(`${year + 1}-01-01`),
-      },
-    },
-  });
-
-  return `INV-${year}-${String(invoiceCount + 1).padStart(4, "0")}`;
 }
 
 // Common lab tests database (for clinics that haven't set up their own)
@@ -303,7 +244,7 @@ export async function POST(request: NextRequest) {
         patient = existingPatient;
       } else {
         // Create new patient
-        const patientNumber = await generatePatientNumber(access.clinicId);
+        const patientNumber = await nextPatientNumber(access.clinicId);
         patient = await prisma.patient.create({
           data: {
             clinic_id: access.clinicId,
@@ -405,7 +346,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate order number
-    const orderNumber = await generateLabOrderNumber(access.clinicId);
+    const orderNumber = await nextLabOrderNumber(access.clinicId);
 
     // Create lab order with results in a transaction
     // For common tests, we need to first create the LabTest entries
@@ -493,7 +434,7 @@ export async function POST(request: NextRequest) {
       });
 
       // Create invoice
-      const invoiceNumber = await generateInvoiceNumber(access.clinicId);
+      const invoiceNumber = await nextInvoiceNumber(access.clinicId);
       const invoiceItems = tests.map((test) => ({
         service_id: testIdMap[test.id],
         name: test.name,

@@ -10,9 +10,7 @@
  * - Saving/publishing and previewing pages
  * - Page slug validation
  *
- * KNOWN LIMITATION: Client-side useSession() hook does not reliably maintain
- * session state after page navigation in Playwright E2E tests. Tests that require
- * authenticated state will gracefully skip when session is not detected.
+ * Uses storageState-based auth via clinicOwnerPage fixture.
  */
 
 import { test, expect, TEST_DATA } from "./fixtures/test-utils";
@@ -26,41 +24,11 @@ const CLINIC_SLUG = TEST_DATA.CLINICS.DASHBOARD_CLINIC.slug;
 // ---------------------------------------------------------------------------
 
 /**
- * Check if the page builder editor has loaded successfully.
- * Returns false if the page shows a login prompt, error, or never loads.
+ * Navigate to the page builder and assert it loaded.
  */
-async function isPageBuilderAccessible(page: Page): Promise<boolean> {
-  // Check for login required message
-  const loginRequired = await page
-    .getByText(/please log in/i)
-    .isVisible({ timeout: 2000 })
-    .catch(() => false);
-  if (loginRequired) return false;
-
-  // Check for loading spinner to disappear and Save button to appear
-  try {
-    await page.getByRole("button", { name: /^Save$/i }).waitFor({ timeout: 30000 });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Navigate to the page builder and verify it loaded.
- * Returns false if the builder cannot be accessed.
- */
-async function navigateToPageBuilder(page: Page): Promise<boolean> {
+async function navigateToPageBuilder(page: Page): Promise<void> {
   await page.goto(PAGE_BUILDER_URL);
-
-  try {
-    await page.waitForSelector("main", { timeout: 20000 });
-  } catch {
-    return false;
-  }
-
-  return isPageBuilderAccessible(page);
+  await expect(page.getByRole("heading", { name: /page builder/i })).toBeVisible({ timeout: 15000 });
 }
 
 /**
@@ -95,7 +63,6 @@ async function openAddPageDropdown(page: Page): Promise<boolean> {
   }
 
   await addPageButton.click();
-  await page.waitForTimeout(300);
   return true;
 }
 
@@ -111,7 +78,6 @@ async function openCustomPageForm(page: Page): Promise<boolean> {
     return false;
   }
   await customPageButton.click();
-  await page.waitForTimeout(300);
   return true;
 }
 
@@ -139,7 +105,11 @@ async function createCustomPage(
   }
 
   await page.getByRole("button", { name: /Create Page/i }).click();
-  await page.waitForTimeout(500);
+
+  // Wait for the new page tab to appear
+  await expect(
+    page.getByRole("button", { name: titleEn })
+  ).toBeVisible({ timeout: 5000 }).catch(() => {});
 
   return true;
 }
@@ -171,11 +141,7 @@ test.describe("Page Builder - Loading & Layout", () => {
   test("page builder loads for authenticated clinic owner", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible - session or clinic issue");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await expect(
       clinicOwnerPage.getByRole("button", { name: /^Save$/i })
@@ -184,11 +150,7 @@ test.describe("Page Builder - Loading & Layout", () => {
   });
 
   test("page builder shows toolbar controls", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await expect(clinicOwnerPage.locator('[title="Undo"]')).toBeVisible();
     await expect(clinicOwnerPage.locator('[title="Redo"]')).toBeVisible();
@@ -210,11 +172,7 @@ test.describe("Page Builder - Loading & Layout", () => {
   test("section type panel lists all 14 section types", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const expectedLabels = [
       "Hero",
@@ -242,11 +200,7 @@ test.describe("Page Builder - Loading & Layout", () => {
   });
 
   test("page tabs row shows home page tab", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await expect(clinicOwnerPage.getByText("(home)")).toBeVisible();
   });
@@ -258,18 +212,15 @@ test.describe("Page Builder - Loading & Layout", () => {
 
 test.describe("Page Builder - Add Sections", () => {
   test("can add a text section", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const countBefore = await getSectionCount(clinicOwnerPage);
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(500);
-    const countAfter = await getSectionCount(clinicOwnerPage);
 
-    expect(countAfter).toBeGreaterThan(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    }).toPass({ timeout: 5000 });
+
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -278,17 +229,15 @@ test.describe("Page Builder - Add Sections", () => {
   test("can add a hero section and sidebar shows heading fields", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const countBefore = await getSectionCount(clinicOwnerPage);
     await addSectionFromPanel(clinicOwnerPage, "Hero");
-    await clinicOwnerPage.waitForTimeout(500);
 
-    expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    }).toPass({ timeout: 5000 });
+
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -299,17 +248,15 @@ test.describe("Page Builder - Add Sections", () => {
   test("can add a FAQ section with add-question button", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const countBefore = await getSectionCount(clinicOwnerPage);
     await addSectionFromPanel(clinicOwnerPage, "FAQ");
-    await clinicOwnerPage.waitForTimeout(500);
 
-    expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    }).toPass({ timeout: 5000 });
+
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -320,33 +267,28 @@ test.describe("Page Builder - Add Sections", () => {
   });
 
   test("can add a divider section", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const countBefore = await getSectionCount(clinicOwnerPage);
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
 
-    expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    }).toPass({ timeout: 5000 });
   });
 
   test("can add a photo gallery section with data source toggle", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const countBefore = await getSectionCount(clinicOwnerPage);
     await addSectionFromPanel(clinicOwnerPage, "Gallery");
-    await clinicOwnerPage.waitForTimeout(500);
 
-    expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    }).toPass({ timeout: 5000 });
+
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -367,14 +309,9 @@ test.describe("Page Builder - TipTap Rich Text Editing", () => {
   test("text section sidebar shows TipTap editor toolbar", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(500);
 
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
@@ -392,14 +329,9 @@ test.describe("Page Builder - TipTap Rich Text Editing", () => {
   });
 
   test("can type text into TipTap editor", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -422,14 +354,9 @@ test.describe("Page Builder - TipTap Rich Text Editing", () => {
   test("bold formatting wraps text in <strong>", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -452,14 +379,9 @@ test.describe("Page Builder - TipTap Rich Text Editing", () => {
   });
 
   test("H2 formatting wraps text in <h2>", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -488,14 +410,9 @@ test.describe("Page Builder - TipTap Rich Text Editing", () => {
 
 test.describe("Page Builder - Section Editing", () => {
   test("can edit hero heading field", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Hero");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -510,14 +427,9 @@ test.describe("Page Builder - Section Editing", () => {
   });
 
   test("can add and fill FAQ items", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "FAQ");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -525,9 +437,8 @@ test.describe("Page Builder - Section Editing", () => {
     await clinicOwnerPage
       .getByRole("button", { name: /\+ Add question/i })
       .click();
-    await clinicOwnerPage.waitForTimeout(300);
 
-    await expect(clinicOwnerPage.getByText("Q1")).toBeVisible();
+    await expect(clinicOwnerPage.getByText("Q1")).toBeVisible({ timeout: 3000 });
 
     const questionInput = clinicOwnerPage.getByPlaceholder("Question (EN)");
     await questionInput.fill("What are your opening hours?");
@@ -541,19 +452,14 @@ test.describe("Page Builder - Section Editing", () => {
   });
 
   test("can toggle section visibility", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
 
     const sectionWrapper = clinicOwnerPage
       .locator('[id^="section-"]')
       .first();
-    await expect(sectionWrapper).toBeVisible();
+    await expect(sectionWrapper).toBeVisible({ timeout: 5000 });
     await sectionWrapper.hover();
 
     const hideButton = clinicOwnerPage.locator('[title="Hide"]').first();
@@ -575,14 +481,9 @@ test.describe("Page Builder - Section Editing", () => {
   test("sidebar shows style editing controls (background, padding, layout)", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -611,14 +512,9 @@ test.describe("Page Builder - Section Editing", () => {
   });
 
   test("section sidebar can be closed", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -645,21 +541,17 @@ test.describe("Page Builder - Section Reordering", () => {
   test("move up/down buttons appear on hover when multiple sections exist", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Hero");
-    await clinicOwnerPage.waitForTimeout(400);
+    await expect(clinicOwnerPage.locator('[id^="section-"]').first()).toBeVisible({ timeout: 5000 });
     await clinicOwnerPage.keyboard.press("Escape");
-    await clinicOwnerPage.waitForTimeout(200);
 
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(400);
+    await expect(async () => {
+      expect(await clinicOwnerPage.locator('[id^="section-"]').count()).toBeGreaterThanOrEqual(2);
+    }).toPass({ timeout: 5000 });
     await clinicOwnerPage.keyboard.press("Escape");
-    await clinicOwnerPage.waitForTimeout(200);
 
     const sections = clinicOwnerPage.locator('[id^="section-"]');
     if ((await sections.count()) < 2) {
@@ -668,32 +560,27 @@ test.describe("Page Builder - Section Reordering", () => {
     }
 
     await sections.nth(1).hover();
-    await clinicOwnerPage.waitForTimeout(300);
 
     const moveUpVisible = await clinicOwnerPage
       .locator('[title="Move up"]')
       .first()
-      .isVisible()
+      .isVisible({ timeout: 3000 })
       .catch(() => false);
     expect(moveUpVisible).toBeTruthy();
   });
 
   test("clicking Move up swaps section order", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Hero");
-    await clinicOwnerPage.waitForTimeout(400);
+    await expect(clinicOwnerPage.locator('[id^="section-"]').first()).toBeVisible({ timeout: 5000 });
     await clinicOwnerPage.keyboard.press("Escape");
-    await clinicOwnerPage.waitForTimeout(200);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(400);
+    await expect(async () => {
+      expect(await clinicOwnerPage.locator('[id^="section-"]').count()).toBeGreaterThanOrEqual(2);
+    }).toPass({ timeout: 5000 });
     await clinicOwnerPage.keyboard.press("Escape");
-    await clinicOwnerPage.waitForTimeout(200);
 
     const sections = clinicOwnerPage.locator('[id^="section-"]');
     if ((await sections.count()) < 2) {
@@ -704,19 +591,19 @@ test.describe("Page Builder - Section Reordering", () => {
     const secondSectionId = await sections.nth(1).getAttribute("id");
 
     await sections.nth(1).hover();
-    await clinicOwnerPage.waitForTimeout(300);
 
     const moveUpButton = clinicOwnerPage.locator('[title="Move up"]').first();
-    if (!(await moveUpButton.isVisible().catch(() => false))) {
+    if (!(await moveUpButton.isVisible({ timeout: 3000 }).catch(() => false))) {
       test.skip(true, "Move up button not visible");
       return;
     }
 
     await moveUpButton.click();
-    await clinicOwnerPage.waitForTimeout(500);
 
-    const newFirstSectionId = await sections.first().getAttribute("id");
-    expect(newFirstSectionId).toBe(secondSectionId);
+    await expect(async () => {
+      const newFirstSectionId = await sections.first().getAttribute("id");
+      expect(newFirstSectionId).toBe(secondSectionId);
+    }).toPass({ timeout: 5000 });
   });
 });
 
@@ -728,34 +615,32 @@ test.describe("Page Builder - Delete Section", () => {
   test("can delete a section via hover action bar", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
+
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(0);
+    }).toPass({ timeout: 5000 });
 
     const countBefore = await getSectionCount(clinicOwnerPage);
-    expect(countBefore).toBeGreaterThan(0);
 
     const sectionWrapper = clinicOwnerPage
       .locator('[id^="section-"]')
       .last();
     await sectionWrapper.hover();
-    await clinicOwnerPage.waitForTimeout(300);
 
     const deleteButton = clinicOwnerPage.locator('[title="Delete"]').first();
-    if (!(await deleteButton.isVisible().catch(() => false))) {
+    if (!(await deleteButton.isVisible({ timeout: 3000 }).catch(() => false))) {
       test.skip(true, "Delete button not visible on hover");
       return;
     }
 
     await deleteButton.click();
-    await clinicOwnerPage.waitForTimeout(500);
 
-    expect(await getSectionCount(clinicOwnerPage)).toBeLessThan(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeLessThan(countBefore);
+    }).toPass({ timeout: 5000 });
   });
 });
 
@@ -765,14 +650,13 @@ test.describe("Page Builder - Delete Section", () => {
 
 test.describe("Page Builder - Duplicate Section", () => {
   test("can duplicate a section", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
+
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(0);
+    }).toPass({ timeout: 5000 });
 
     const countBefore = await getSectionCount(clinicOwnerPage);
 
@@ -780,20 +664,20 @@ test.describe("Page Builder - Duplicate Section", () => {
       .locator('[id^="section-"]')
       .last();
     await sectionWrapper.hover();
-    await clinicOwnerPage.waitForTimeout(300);
 
     const duplicateButton = clinicOwnerPage
       .locator('[title="Duplicate"]')
       .first();
-    if (!(await duplicateButton.isVisible().catch(() => false))) {
+    if (!(await duplicateButton.isVisible({ timeout: 3000 }).catch(() => false))) {
       test.skip(true, "Duplicate button not visible on hover");
       return;
     }
 
     await duplicateButton.click();
-    await clinicOwnerPage.waitForTimeout(500);
 
-    expect(await getSectionCount(clinicOwnerPage)).toBe(countBefore + 1);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBe(countBefore + 1);
+    }).toPass({ timeout: 5000 });
   });
 });
 
@@ -805,11 +689,7 @@ test.describe("Page Builder - Page Management", () => {
   test("Add Page dropdown shows template list", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     if (!(await openAddPageDropdown(clinicOwnerPage))) {
       test.skip(true, "Add page button not found");
@@ -820,11 +700,7 @@ test.describe("Page Builder - Page Management", () => {
   });
 
   test("can add a page from template", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     if (!(await openAddPageDropdown(clinicOwnerPage))) {
       test.skip(true, "Add page button not found");
@@ -848,20 +724,15 @@ test.describe("Page Builder - Page Management", () => {
       }
     }
 
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(
       clinicOwnerPage.getByRole("button", { name: /^Save$/i })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 5000 });
   });
 
   test("can create a custom page with slug and title", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const created = await createCustomPage(
       clinicOwnerPage,
@@ -880,11 +751,7 @@ test.describe("Page Builder - Page Management", () => {
   });
 
   test("can delete a non-home page", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const created = await createCustomPage(
       clinicOwnerPage,
@@ -906,12 +773,10 @@ test.describe("Page Builder - Page Management", () => {
 
     const tabGroup = deleteTab.locator("..");
     await tabGroup.hover();
-    await clinicOwnerPage.waitForTimeout(300);
 
     const deletePageButton = tabGroup.locator('[title="Delete page"]');
-    if (await deletePageButton.isVisible().catch(() => false)) {
+    if (await deletePageButton.isVisible({ timeout: 3000 }).catch(() => false)) {
       await deletePageButton.click();
-      await clinicOwnerPage.waitForTimeout(500);
 
       await expect(
         clinicOwnerPage.getByRole("button", { name: "Delete Me" })
@@ -924,11 +789,7 @@ test.describe("Page Builder - Page Management", () => {
   test("edit popover shows title and slug fields", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const created = await createCustomPage(
       clinicOwnerPage,
@@ -948,18 +809,16 @@ test.describe("Page Builder - Page Management", () => {
 
     const tabGroup = editTab.locator("..");
     await tabGroup.hover();
-    await clinicOwnerPage.waitForTimeout(300);
 
     const editButton = tabGroup.locator('[title="Edit slug & title"]');
-    if (!(await editButton.isVisible().catch(() => false))) {
+    if (!(await editButton.isVisible({ timeout: 3000 }).catch(() => false))) {
       test.skip(true, "Edit button not visible on hover");
       return;
     }
 
     await editButton.click();
-    await clinicOwnerPage.waitForTimeout(300);
 
-    await expect(clinicOwnerPage.getByText("Title (EN)")).toBeVisible();
+    await expect(clinicOwnerPage.getByText("Title (EN)")).toBeVisible({ timeout: 3000 });
     await expect(clinicOwnerPage.getByText("Title (NE)")).toBeVisible();
     await expect(clinicOwnerPage.getByText("URL Slug")).toBeVisible();
 
@@ -971,11 +830,7 @@ test.describe("Page Builder - Page Management", () => {
   test("slug input strips invalid characters (uppercase, spaces, symbols)", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     if (!(await openAddPageDropdown(clinicOwnerPage))) {
       test.skip(true, "Add page button not found");
@@ -999,11 +854,7 @@ test.describe("Page Builder - Page Management", () => {
   test("Create Page button is disabled without both slug and title", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     if (!(await openAddPageDropdown(clinicOwnerPage))) {
       test.skip(true, "Add page button not found");
@@ -1044,14 +895,10 @@ test.describe("Page Builder - Save & Publish", () => {
   test("clicking Save triggers save status indicator", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
+    await expect(clinicOwnerPage.locator('[id^="section-"]').first()).toBeVisible({ timeout: 5000 });
 
     await clinicOwnerPage
       .getByRole("button", { name: /^Save$/i })
@@ -1071,14 +918,10 @@ test.describe("Page Builder - Save & Publish", () => {
   test("Ctrl+S keyboard shortcut triggers save", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
+    await expect(clinicOwnerPage.locator('[id^="section-"]').first()).toBeVisible({ timeout: 5000 });
     await clinicOwnerPage.keyboard.press("Control+s");
 
     try {
@@ -1093,11 +936,7 @@ test.describe("Page Builder - Save & Publish", () => {
   });
 
   test("enable/disable toggle can be toggled", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const enableLabel = clinicOwnerPage.getByText(/Enable/i);
     await expect(enableLabel).toBeVisible();
@@ -1111,9 +950,7 @@ test.describe("Page Builder - Save & Publish", () => {
     }
 
     await toggleSwitch.click();
-    await clinicOwnerPage.waitForTimeout(300);
     await toggleSwitch.click();
-    await clinicOwnerPage.waitForTimeout(300);
 
     await expect(
       clinicOwnerPage.getByRole("button", { name: /^Save$/i })
@@ -1129,63 +966,59 @@ test.describe("Page Builder - Undo/Redo", () => {
   test("undo button reverts a section addition", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const countBefore = await getSectionCount(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
-    expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    }).toPass({ timeout: 5000 });
 
     await clinicOwnerPage.locator('[title="Undo"]').click();
-    await clinicOwnerPage.waitForTimeout(500);
 
-    expect(await getSectionCount(clinicOwnerPage)).toBe(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBe(countBefore);
+    }).toPass({ timeout: 5000 });
   });
 
   test("Ctrl+Z triggers undo", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const countBefore = await getSectionCount(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
-    expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    }).toPass({ timeout: 5000 });
 
     await clinicOwnerPage.keyboard.press("Control+z");
-    await clinicOwnerPage.waitForTimeout(500);
 
-    expect(await getSectionCount(clinicOwnerPage)).toBe(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBe(countBefore);
+    }).toPass({ timeout: 5000 });
   });
 
   test("redo restores an undone action", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const countBefore = await getSectionCount(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Divider");
-    await clinicOwnerPage.waitForTimeout(500);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBeGreaterThan(countBefore);
+    }).toPass({ timeout: 5000 });
     const countAfterAdd = await getSectionCount(clinicOwnerPage);
 
     await clinicOwnerPage.locator('[title="Undo"]').click();
-    await clinicOwnerPage.waitForTimeout(500);
-    expect(await getSectionCount(clinicOwnerPage)).toBe(countBefore);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBe(countBefore);
+    }).toPass({ timeout: 5000 });
 
     await clinicOwnerPage.locator('[title="Redo"]').click();
-    await clinicOwnerPage.waitForTimeout(500);
-    expect(await getSectionCount(clinicOwnerPage)).toBe(countAfterAdd);
+    await expect(async () => {
+      expect(await getSectionCount(clinicOwnerPage)).toBe(countAfterAdd);
+    }).toPass({ timeout: 5000 });
   });
 });
 
@@ -1197,23 +1030,16 @@ test.describe("Page Builder - Templates", () => {
   test("clicking Templates opens the template picker", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await clinicOwnerPage
       .getByRole("button", { name: /Templates/i })
       .click();
-    await clinicOwnerPage.waitForTimeout(500);
 
     // Template picker replaces the canvas; Sections panel is hidden
-    const templateVisible = await clinicOwnerPage
-      .getByText(/template/i)
-      .isVisible()
-      .catch(() => false);
-    expect(templateVisible).toBeTruthy();
+    await expect(
+      clinicOwnerPage.getByText(/template/i)
+    ).toBeVisible({ timeout: 5000 });
   });
 });
 
@@ -1225,17 +1051,12 @@ test.describe("Page Builder - Navbar & Footer Editors", () => {
   test("clicking Navbar opens the navbar editor panel", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await clinicOwnerPage.getByRole("button", { name: /Navbar/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
 
     const rightPanel = clinicOwnerPage.locator(".w-80.flex-shrink-0");
-    if (await rightPanel.isVisible().catch(() => false)) {
+    if (await rightPanel.isVisible({ timeout: 5000 }).catch(() => false)) {
       const hasNavbarContent = await rightPanel
         .getByText(/logo|clinic name|links/i)
         .first()
@@ -1248,17 +1069,12 @@ test.describe("Page Builder - Navbar & Footer Editors", () => {
   test("clicking Footer opens the footer editor panel", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await clinicOwnerPage.getByRole("button", { name: /Footer/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
 
     const rightPanel = clinicOwnerPage.locator(".w-80.flex-shrink-0");
-    if (await rightPanel.isVisible().catch(() => false)) {
+    if (await rightPanel.isVisible({ timeout: 5000 }).catch(() => false)) {
       const hasFooterContent = await rightPanel
         .getByText(/copyright|footer|clinic name/i)
         .first()
@@ -1277,11 +1093,7 @@ test.describe("Page Builder - Style Presets", () => {
   test("style picker dropdown shows preset options", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const styleButton = clinicOwnerPage.getByRole("button", {
       name: /Style:/i,
@@ -1289,12 +1101,11 @@ test.describe("Page Builder - Style Presets", () => {
     await expect(styleButton).toBeVisible();
 
     await styleButton.click();
-    await clinicOwnerPage.waitForTimeout(300);
 
     const dropdown = clinicOwnerPage
       .locator(".z-50")
       .filter({ hasText: /Bauhaus|Minimal|Classic/i });
-    expect(await dropdown.isVisible().catch(() => false)).toBeTruthy();
+    await expect(dropdown).toBeVisible({ timeout: 3000 });
   });
 });
 
@@ -1304,14 +1115,9 @@ test.describe("Page Builder - Style Presets", () => {
 
 test.describe("Page Builder - Photo Gallery Details", () => {
   test("manual mode shows Add photo button", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Gallery");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -1319,24 +1125,18 @@ test.describe("Page Builder - Photo Gallery Details", () => {
     await clinicOwnerPage
       .getByRole("button", { name: "Manual" })
       .click();
-    await clinicOwnerPage.waitForTimeout(300);
 
     await expect(
       clinicOwnerPage.getByRole("button", { name: /\+ Add photo/i })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 3000 });
   });
 
   test("can add a manual photo entry with caption", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Gallery");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -1344,14 +1144,12 @@ test.describe("Page Builder - Photo Gallery Details", () => {
     await clinicOwnerPage
       .getByRole("button", { name: "Manual" })
       .click();
-    await clinicOwnerPage.waitForTimeout(300);
 
     await clinicOwnerPage
       .getByRole("button", { name: /\+ Add photo/i })
       .click();
-    await clinicOwnerPage.waitForTimeout(300);
 
-    await expect(clinicOwnerPage.getByText("#1")).toBeVisible();
+    await expect(clinicOwnerPage.getByText("#1")).toBeVisible({ timeout: 3000 });
     await expect(
       clinicOwnerPage.getByPlaceholder("Caption (EN)")
     ).toBeVisible();
@@ -1368,14 +1166,9 @@ test.describe("Page Builder - Photo Gallery Details", () => {
   });
 
   test("can remove a manual photo entry", async ({ clinicOwnerPage }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Gallery");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
@@ -1383,19 +1176,16 @@ test.describe("Page Builder - Photo Gallery Details", () => {
     await clinicOwnerPage
       .getByRole("button", { name: "Manual" })
       .click();
-    await clinicOwnerPage.waitForTimeout(300);
 
     await clinicOwnerPage
       .getByRole("button", { name: /\+ Add photo/i })
       .click();
-    await clinicOwnerPage.waitForTimeout(300);
-    await expect(clinicOwnerPage.getByText("#1")).toBeVisible();
+    await expect(clinicOwnerPage.getByText("#1")).toBeVisible({ timeout: 3000 });
 
     await clinicOwnerPage
       .getByRole("button", { name: "Remove" })
       .first()
       .click();
-    await clinicOwnerPage.waitForTimeout(300);
 
     await expect(clinicOwnerPage.getByText("#1")).not.toBeVisible({
       timeout: 3000,
@@ -1411,11 +1201,7 @@ test.describe("Page Builder - Preview & Public URL", () => {
   test("View Page link contains clinic slug and preview=true", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const viewPageLink = clinicOwnerPage.getByRole("link", {
       name: /View Page/i,
@@ -1433,14 +1219,7 @@ test.describe("Page Builder - Preview & Public URL", () => {
     const publicUrl = `/en/clinic/${CLINIC_SLUG}`;
     await page.goto(publicUrl);
 
-    try {
-      await page.waitForSelector("main", { timeout: 15000 });
-    } catch {
-      test.skip(true, "Public clinic page did not load");
-      return;
-    }
-
-    await expect(page.locator("main")).toBeVisible();
+    await expect(page.locator("main")).toBeVisible({ timeout: 15000 });
   });
 });
 
@@ -1452,20 +1231,14 @@ test.describe("Page Builder - Keyboard Shortcuts", () => {
   test("Escape deselects the currently selected section", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     await addSectionFromPanel(clinicOwnerPage, "Text");
-    await clinicOwnerPage.waitForTimeout(500);
     await expect(clinicOwnerPage.getByText("Edit Section")).toBeVisible({
       timeout: 5000,
     });
 
     await clinicOwnerPage.keyboard.press("Escape");
-    await clinicOwnerPage.waitForTimeout(300);
 
     await expect(
       clinicOwnerPage.getByText("Edit Section")
@@ -1481,11 +1254,7 @@ test.describe("Page Builder - Empty State", () => {
   test("new empty page shows placeholder message", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const created = await createCustomPage(
       clinicOwnerPage,
@@ -1521,23 +1290,18 @@ test.describe("Page Builder - Logo Upload", () => {
   test("logo picker dropdown shows upload option", async ({
     clinicOwnerPage,
   }) => {
-    const ready = await navigateToPageBuilder(clinicOwnerPage);
-    if (!ready) {
-      test.skip(true, "Page builder not accessible");
-      return;
-    }
+    await navigateToPageBuilder(clinicOwnerPage);
 
     const logoButton = clinicOwnerPage.getByRole("button", {
       name: /Logo/i,
     });
     await expect(logoButton).toBeVisible();
     await logoButton.click();
-    await clinicOwnerPage.waitForTimeout(300);
 
     const uploadLabel = clinicOwnerPage.getByText(
       /Upload Logo|Change Logo/i
     );
-    expect(await uploadLabel.isVisible().catch(() => false)).toBeTruthy();
+    await expect(uploadLabel).toBeVisible({ timeout: 3000 });
   });
 });
 
@@ -1548,33 +1312,12 @@ test.describe("Page Builder - Logo Upload", () => {
 test.describe("Page Builder - Language Support", () => {
   test("page builder loads in Nepali locale", async ({ clinicOwnerPage }) => {
     await clinicOwnerPage.goto("/ne/clinic/dashboard/page-builder");
-
-    try {
-      await clinicOwnerPage.waitForSelector("main", { timeout: 20000 });
-    } catch {
-      test.skip(true, "Page did not load");
-      return;
-    }
+    await expect(clinicOwnerPage.getByRole("heading", { name: /page builder/i })).toBeVisible({ timeout: 15000 });
 
     const nepaliSave = clinicOwnerPage.getByRole("button", {
       name: /सेभ/i,
     });
-    const nepaliLoading = clinicOwnerPage.getByText(/लोड हुँदैछ/i);
-    const loginRequired = clinicOwnerPage.getByText(
-      /please log in|कृपया लगइन/i
-    );
 
-    await clinicOwnerPage.waitForTimeout(5000);
-
-    const hasSave = await nepaliSave.isVisible().catch(() => false);
-    const hasLoading = await nepaliLoading.isVisible().catch(() => false);
-    const hasLogin = await loginRequired.isVisible().catch(() => false);
-
-    if (hasLogin) {
-      test.skip(true, "Session not maintained for Nepali route");
-      return;
-    }
-
-    expect(hasSave || hasLoading).toBeTruthy();
+    await expect(nepaliSave).toBeVisible({ timeout: 15000 });
   });
 });

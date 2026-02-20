@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, ClinicStaffRole } from "@swasthya/database";
-import { getClinicAccess } from "@/lib/require-clinic-access";
-import { hasPermission, ROLE_LABELS } from "@/lib/clinic-permissions";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { ROLE_LABELS } from "@/lib/clinic-permissions";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -11,20 +11,11 @@ interface RouteParams {
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { id: staffId } = await params;
-    const access = await getClinicAccess();
-
+    const access = await requireClinicPermission("staff");
     if (!access.hasAccess) {
       return NextResponse.json(
-        { error: access.message, code: access.reason },
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
         { status: access.reason === "unauthenticated" ? 401 : 403 }
-      );
-    }
-
-    // Check if user has staff permission
-    if (!hasPermission(access.role, "staff")) {
-      return NextResponse.json(
-        { error: "You don't have permission to manage staff" },
-        { status: 403 }
       );
     }
 
@@ -143,20 +134,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id: staffId } = await params;
-    const access = await getClinicAccess();
-
+    const access = await requireClinicPermission("staff");
     if (!access.hasAccess) {
       return NextResponse.json(
-        { error: access.message, code: access.reason },
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
         { status: access.reason === "unauthenticated" ? 401 : 403 }
-      );
-    }
-
-    // Check if user has staff permission
-    if (!hasPermission(access.role, "staff")) {
-      return NextResponse.json(
-        { error: "You don't have permission to manage staff" },
-        { status: 403 }
       );
     }
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@swasthya/database";
 import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { nextSaleNumber } from "@/lib/sequence-number";
 
 interface SaleItem {
   product_id: string;
@@ -94,26 +95,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Generate sale number
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    const lastSale = await prisma.sale.findFirst({
-      where: {
-        clinic_id: access.clinicId,
-        sale_number: { startsWith: `SALE-${year}${month}${day}` },
-      },
-      orderBy: { created_at: "desc" },
-    });
-
-    let saleCounter = 1;
-    if (lastSale) {
-      const lastNumber = parseInt(lastSale.sale_number.split("-").pop() || "0");
-      saleCounter = lastNumber + 1;
-    }
-    const saleNumber = `SALE-${year}${month}${day}-${String(saleCounter).padStart(4, "0")}`;
+    // Generate sale number (atomic counter)
+    const saleNumber = await nextSaleNumber(access.clinicId);
 
     // Create sale and update inventory in a transaction
     const sale = await prisma.$transaction(async (tx) => {

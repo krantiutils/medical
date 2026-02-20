@@ -206,10 +206,6 @@ test.describe("SEO - sitemap.xml", () => {
         content.includes("urlset") ||
         content.includes("sitemapindex");
       expect(isXml).toBe(true);
-    } else {
-      // If sitemap times out due to large dataset, that's acceptable
-      // The sitemap.ts file exists and is properly configured
-      test.skip(true, "Sitemap generation timed out - expected with large dataset");
     }
   });
 
@@ -224,9 +220,6 @@ test.describe("SEO - sitemap.xml", () => {
       const content = await page.content();
       // Should contain URL entries
       expect(content.includes("<loc>") || content.includes("sitemap")).toBe(true);
-    } else {
-      // Skip if the sitemap generation is too slow
-      test.skip(true, "Sitemap generation timed out - expected with large dataset");
     }
   });
 
@@ -323,7 +316,7 @@ test.describe("Accessibility - Form Input Labels", () => {
   test("register form inputs have associated labels", async ({ page }) => {
     await page.goto("/en/register");
 
-    // Register is a multi-step wizard: type → method → input → password
+    // Register is a multi-step wizard: type -> method -> input -> password
     // Step 1: Switch to email method, then click Continue
     await page.getByRole("button", { name: /with email/i }).click();
     await page.getByRole("button", { name: "Continue", exact: true }).click();
@@ -504,8 +497,8 @@ test.describe("Accessibility - Keyboard Navigation", () => {
     await page.keyboard.press("Enter");
 
     // Form should submit (may show error, but that's expected with invalid credentials)
-    // Wait for some response
-    await page.waitForTimeout(1000);
+    // Wait for the form to process the submission
+    await page.waitForLoadState("networkidle");
   });
 
   test("can navigate through category cards with keyboard", async ({ page }) => {
@@ -543,7 +536,7 @@ test.describe("Accessibility - Keyboard Navigation", () => {
     await menuButton.click();
 
     // Wait for menu to be visible
-    await page.waitForTimeout(300);
+    await page.locator("header div.lg\\:hidden nav").waitFor({ state: "visible" });
 
     // Press escape (if implemented)
     await page.keyboard.press("Escape");
@@ -644,7 +637,7 @@ test.describe("Accessibility - Color and Contrast", () => {
     await submitButton.click();
 
     // Wait for potential error display (form validation)
-    await page.waitForTimeout(500);
+    await page.waitForLoadState("networkidle");
 
     // The page should display validation (browser-native or custom)
     // We verify by checking the form still exists (didn't navigate away)

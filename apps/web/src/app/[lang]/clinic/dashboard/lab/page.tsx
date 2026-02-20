@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { printLabLabels } from "@/lib/lab-labels";
 
 interface Patient {
   id: string;
@@ -238,13 +239,30 @@ export default function LabDashboardPage() {
     }
   };
 
-  // Handle collect sample
-  const handleCollectSample = (orderId: string) => {
+  // Print barcode labels for a lab order
+  const handlePrintLabels = async (order: LabOrder) => {
+    const testAbbreviations = order.results
+      .map((r) => r.lab_test.short_name || r.lab_test.name)
+      .join(", ");
+    await printLabLabels({
+      orderNumber: order.order_number,
+      patientName: order.patient.full_name,
+      patientNumber: order.patient.patient_number,
+      tests: testAbbreviations,
+      date: new Date(order.created_at).toLocaleDateString(),
+      priority: order.priority,
+    });
+  };
+
+  // Handle collect sample (auto-prints labels after)
+  const handleCollectSample = async (order: LabOrder) => {
     const sampleId = `SPL-${Date.now().toString(36).toUpperCase()}`;
-    updateOrderStatus(orderId, "SAMPLE_COLLECTED", {
+    await updateOrderStatus(order.id, "SAMPLE_COLLECTED", {
       sample_collected: new Date().toISOString(),
       sample_id: sampleId,
     });
+    // Auto-print labels after sample collection
+    handlePrintLabels(order);
   };
 
   // Handle start processing
@@ -531,7 +549,7 @@ export default function LabDashboardPage() {
                         <Button
                           variant="primary"
                           size="sm"
-                          onClick={() => handleCollectSample(order.id)}
+                          onClick={() => handleCollectSample(order)}
                         >
                           {t.collectSample}
                         </Button>
@@ -543,6 +561,15 @@ export default function LabDashboardPage() {
                           onClick={() => handleStartProcessing(order.id)}
                         >
                           {t.markProcessing}
+                        </Button>
+                      )}
+                      {(order.status === "SAMPLE_COLLECTED" || order.status === "PROCESSING") && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePrintLabels(order)}
+                        >
+                          Print Labels
                         </Button>
                       )}
                       {(order.status === "SAMPLE_COLLECTED" || order.status === "PROCESSING") && (

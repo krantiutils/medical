@@ -1,49 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma, ProfessionalType } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // PATCH: Update a clinic-created (unverified) doctor's info
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
-  }
-
   try {
-    const { id: doctorId } = await params;
-    const body = await request.json();
-
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
+    const access = await requireClinicPermission("doctors");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
+
+    const { id: doctorId } = await params;
+    const body = await request.json();
 
     // Verify the doctor is affiliated with this clinic
     const clinicDoctor = await prisma.clinicDoctor.findUnique({
       where: {
         clinic_id_doctor_id: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           doctor_id: doctorId,
         },
       },
@@ -143,7 +123,7 @@ export async function PATCH(
       await prisma.clinicDoctor.update({
         where: {
           clinic_id_doctor_id: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             doctor_id: doctorId,
           },
         },
@@ -197,7 +177,7 @@ export async function PATCH(
     const updatedCd = await prisma.clinicDoctor.findUnique({
       where: {
         clinic_id_doctor_id: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           doctor_id: doctorId,
         },
       },

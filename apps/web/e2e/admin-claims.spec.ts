@@ -3,85 +3,10 @@
  *
  * Tests for US-044: Verify admin claims management works correctly
  *
- * KNOWN LIMITATION: Client-side useSession() hook does not reliably maintain
- * session state after page navigation in Playwright E2E tests. Tests that require
- * authenticated state will gracefully skip when session is not detected.
+ * Uses storageState-based auth fixtures for reliable authentication.
  */
 
-import { test, expect, Page } from "@playwright/test";
-import { TEST_DATA } from "./fixtures/test-utils";
-
-/**
- * Custom login helper for admin tests
- */
-async function loginAsAdmin(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-  await page.getByLabel(/email/i).fill(TEST_DATA.ADMIN.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.ADMIN.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  // Wait for loading state
-  try {
-    await expect(
-      page.getByRole("button", { name: /signing in/i })
-    ).toBeVisible({
-      timeout: 5000,
-    });
-  } catch {
-    // Button might have already changed
-  }
-
-  // Wait for redirect away from login page
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Login as regular user (non-admin)
- */
-async function loginAsRegularUser(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-  await page.getByLabel(/email/i).fill(TEST_DATA.USER.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.USER.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Check if admin dashboard is accessible (admin is authenticated)
- */
-async function isAdminDashboardAccessible(page: Page): Promise<boolean> {
-  await page.goto("/en/admin/claims");
-
-  // Wait for any content to appear
-  await page.waitForSelector("main h1", { timeout: 15000 });
-
-  // Check for admin dashboard content (the title "Claims Dashboard")
-  const title = page.getByRole("heading", { name: /claims dashboard/i });
-  const pendingClaims = page.getByText(/pending claims/i);
-
-  // Check for either dashboard content or access denied
-  const isDashboard = await title.isVisible().catch(() => false);
-  const hasPendingSection = await pendingClaims.isVisible().catch(() => false);
-
-  return isDashboard && hasPendingSection;
-}
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 test.describe("Admin Dashboard - Access Control", () => {
   test("should redirect non-authenticated users to show login prompt", async ({
@@ -128,57 +53,33 @@ test.describe("Admin Dashboard - Access Control", () => {
   });
 
   test("should show access denied for non-admin authenticated users", async ({
-    page,
+    authenticatedPage: page,
   }) => {
-    const loginSuccess = await loginAsRegularUser(page);
-    if (!loginSuccess) {
-      test.skip(true, "Login failed");
-      return;
-    }
-
     await page.goto("/en/admin/claims");
 
     // Wait for content to load
     await page.waitForSelector("main h1", { timeout: 15000 });
 
-    // Check if we see access denied or login required (session might not be maintained)
+    // Check if we see access denied
     const accessDenied = page.getByText(/access denied/i);
     const noPermission = page.getByText(
       /you do not have permission to access this page/i
     );
-    const loginRequired = page.getByText(/please log in to access this page/i);
 
-    // Should show either access denied or login (if session not maintained)
     const isAccessDenied = await accessDenied.isVisible().catch(() => false);
     const isNoPermission = await noPermission.isVisible().catch(() => false);
-    const isLoginRequired = await loginRequired.isVisible().catch(() => false);
-
-    if (isLoginRequired) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
 
     expect(isAccessDenied || isNoPermission).toBeTruthy();
   });
 
-  test("should show Go Home button for access denied", async ({ page }) => {
-    const loginSuccess = await loginAsRegularUser(page);
-    if (!loginSuccess) {
-      test.skip(true, "Login failed");
-      return;
-    }
-
+  test("should show Go Home button for access denied", async ({
+    authenticatedPage: page,
+  }) => {
     await page.goto("/en/admin/claims");
     await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Check for access denied
-    const accessDenied = page.getByText(/access denied/i);
-    const isAccessDenied = await accessDenied.isVisible().catch(() => false);
-
-    if (!isAccessDenied) {
-      test.skip(true, "Session not maintained or access denied not shown");
-      return;
-    }
+    await expect(page.getByText(/access denied/i)).toBeVisible({ timeout: 10000 });
 
     const goHomeButton = page
       .locator("main")
@@ -188,18 +89,9 @@ test.describe("Admin Dashboard - Access Control", () => {
 });
 
 test.describe("Admin Dashboard - Authenticated Admin", () => {
-  test("admin can access claims dashboard", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained after login");
-      return;
-    }
+  test("admin can access claims dashboard", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Verify dashboard title
     await expect(
@@ -212,52 +104,25 @@ test.describe("Admin Dashboard - Authenticated Admin", () => {
     ).toBeVisible();
   });
 
-  test("pending claims section is visible", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("pending claims section is visible", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     await expect(page.getByText(/pending claims/i)).toBeVisible();
   });
 
-  test("shows claims count badge", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("shows claims count badge", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // The count badge should be visible (even if 0)
     const countBadge = page.locator("span.bg-primary-blue\\/10");
     await expect(countBadge).toBeVisible({ timeout: 10000 });
   });
 
-  test("shows pending claim from seeded test data", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("shows pending claim from seeded test data", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Wait for claims to load (either claims list or "no pending" message)
     await page.waitForSelector("main", { timeout: 10000 });
@@ -281,18 +146,9 @@ test.describe("Admin Dashboard - Authenticated Admin", () => {
     }
   });
 
-  test("claim card shows View Documents button", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("claim card shows View Documents button", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Check for claim card
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
@@ -307,18 +163,9 @@ test.describe("Admin Dashboard - Authenticated Admin", () => {
     await expect(viewDocsButton).toBeVisible();
   });
 
-  test("claim card shows Approve and Reject buttons", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("claim card shows Approve and Reject buttons", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -333,18 +180,9 @@ test.describe("Admin Dashboard - Authenticated Admin", () => {
     await expect(rejectButton).toBeVisible();
   });
 
-  test("claim card shows View Profile link", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("claim card shows View Profile link", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -360,18 +198,9 @@ test.describe("Admin Dashboard - Authenticated Admin", () => {
 });
 
 test.describe("Admin Dashboard - View Documents Modal", () => {
-  test("clicking View Documents opens modal with images", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clicking View Documents opens modal with images", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -393,18 +222,9 @@ test.describe("Admin Dashboard - View Documents Modal", () => {
     await expect(page.getByText(/professional certificate/i)).toBeVisible();
   });
 
-  test("document modal shows user information", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("document modal shows user information", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -427,18 +247,9 @@ test.describe("Admin Dashboard - View Documents Modal", () => {
     ).toBeVisible();
   });
 
-  test("document modal has Close button", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("document modal has Close button", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -459,18 +270,9 @@ test.describe("Admin Dashboard - View Documents Modal", () => {
     await expect(page.locator(".fixed.inset-0.z-50")).not.toBeVisible();
   });
 
-  test("document modal has Approve and Reject buttons", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("document modal has Approve and Reject buttons", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -491,18 +293,9 @@ test.describe("Admin Dashboard - View Documents Modal", () => {
 });
 
 test.describe("Admin Dashboard - Approve Claim Flow", () => {
-  test("clicking Approve shows confirmation dialog", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clicking Approve shows confirmation dialog", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -524,18 +317,9 @@ test.describe("Admin Dashboard - Approve Claim Flow", () => {
     ).toBeVisible();
   });
 
-  test("approval modal shows professional info", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("approval modal shows professional info", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -553,18 +337,9 @@ test.describe("Admin Dashboard - Approve Claim Flow", () => {
     await expect(modal.getByText(/99999/)).toBeVisible();
   });
 
-  test("approval modal has Cancel and Confirm buttons", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("approval modal has Cancel and Confirm buttons", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -581,18 +356,9 @@ test.describe("Admin Dashboard - Approve Claim Flow", () => {
     ).toBeVisible();
   });
 
-  test("Cancel closes approval modal without action", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("Cancel closes approval modal without action", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -616,18 +382,9 @@ test.describe("Admin Dashboard - Approve Claim Flow", () => {
 });
 
 test.describe("Admin Dashboard - Reject Claim Flow", () => {
-  test("clicking Reject shows rejection reason dialog", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clicking Reject shows rejection reason dialog", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -644,18 +401,9 @@ test.describe("Admin Dashboard - Reject Claim Flow", () => {
     ).toBeVisible({ timeout: 5000 });
   });
 
-  test("rejection modal has reason textarea", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("rejection modal has reason textarea", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -674,19 +422,10 @@ test.describe("Admin Dashboard - Reject Claim Flow", () => {
   });
 
   test("confirm rejection button is disabled when reason is empty", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -703,19 +442,10 @@ test.describe("Admin Dashboard - Reject Claim Flow", () => {
   });
 
   test("confirm rejection button is enabled when reason is provided", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -734,18 +464,9 @@ test.describe("Admin Dashboard - Reject Claim Flow", () => {
     await expect(confirmButton).toBeEnabled();
   });
 
-  test("rejection modal shows professional info", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("rejection modal shows professional info", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -760,18 +481,9 @@ test.describe("Admin Dashboard - Reject Claim Flow", () => {
     await expect(modal.getByText(/99999/)).toBeVisible();
   });
 
-  test("Cancel closes rejection modal without action", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("Cancel closes rejection modal without action", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {
@@ -795,24 +507,18 @@ test.describe("Admin Dashboard - Reject Claim Flow", () => {
 });
 
 test.describe("Admin Dashboard - No Pending Claims", () => {
-  test("shows empty state message when no pending claims", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("shows empty state message when no pending claims", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Wait for claims to load
-    await page.waitForTimeout(2000);
+    const noPending = page.getByText(/no pending verification requests/i);
+    const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
+
+    // Wait for either state to appear
+    await expect(noPending.or(claimCard)).toBeVisible({ timeout: 10000 });
 
     // If no pending claims, should show empty state
-    const noPending = page.getByText(/no pending verification requests/i);
     const hasNoPending = await noPending.isVisible().catch(() => false);
 
     if (hasNoPending) {
@@ -856,14 +562,7 @@ test.describe("Admin Dashboard - Language Support", () => {
 });
 
 test.describe("Admin Dashboard - Loading State", () => {
-  test("shows loading animation while fetching claims", async ({ page }) => {
-    // This test tries to catch the loading state before data loads
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
+  test("shows loading animation while fetching claims", async ({ adminPage: page }) => {
     // Navigate and immediately check for loading state
     await page.goto("/en/admin/claims");
 
@@ -882,18 +581,9 @@ test.describe("Admin Dashboard - Loading State", () => {
 });
 
 test.describe("Admin Dashboard - Professional Type Labels", () => {
-  test("shows correct type label for Doctor claims", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("shows correct type label for Doctor claims", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/claims");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const claimCard = page.getByText(/Dr\. Unclaimed Doctor/i);
     if (!(await claimCard.isVisible().catch(() => false))) {

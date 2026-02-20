@@ -7,9 +7,11 @@
  * - Video room creation
  * - Call interface
  * - Instant consultation flow
+ *
+ * Auth is handled via storageState fixtures (authenticatedPage, clinicOwnerPage).
  */
 
-import { test, expect, TEST_DATA, login } from "./fixtures/test-utils";
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 test.describe("Telemedicine - Instant Consultation Page", () => {
   test.describe("Not Authenticated", () => {
@@ -54,100 +56,63 @@ test.describe("Telemedicine - Instant Consultation Page", () => {
   });
 
   test.describe("Authenticated User", () => {
-    test("page loads with title and filters", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-
+    test("page loads with title and filters", async ({ authenticatedPage }) => {
       // Navigate to instant consultation page
-      await page.goto("/en/instant-consultation");
+      await authenticatedPage.goto("/en/instant-consultation");
 
       // Wait for loading to complete (both animate-pulse and content loading)
-      await page.waitForSelector(".animate-pulse, .animate-spin", {
+      await authenticatedPage.waitForSelector(".animate-pulse, .animate-spin", {
         state: "hidden",
         timeout: 15000,
       }).catch(() => {});
 
       // Wait for page content to load
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained (client-side useSession can fail in E2E)
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Verify page title - the title is "Instant Consultation" in the hero section
-      await expect(page.getByRole("heading", { name: /instant consultation/i })).toBeVisible({ timeout: 10000 });
+      await expect(authenticatedPage.getByRole("heading", { name: /instant consultation/i })).toBeVisible({ timeout: 10000 });
     });
 
-    test("shows filter dropdowns or filters section", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/en/instant-consultation");
+    test("shows filter dropdowns or filters section", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/en/instant-consultation");
 
       // Wait for loading to complete
-      await page.waitForSelector(".animate-pulse, .animate-spin", {
+      await authenticatedPage.waitForSelector(".animate-pulse, .animate-spin", {
         state: "hidden",
         timeout: 15000,
       }).catch(() => {});
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Look for type filter or filter text
-      const hasTypeFilter = await page.locator("select").first().isVisible().catch(() => false);
-      const hasFilterLabel = await page.getByText(/filter by type|all types/i).isVisible().catch(() => false);
+      const hasTypeFilter = await authenticatedPage.locator("select").first().isVisible().catch(() => false);
+      const hasFilterLabel = await authenticatedPage.getByText(/filter by type|all types/i).isVisible().catch(() => false);
 
       // At minimum the page should have loaded
-      expect(hasTypeFilter || hasFilterLabel || page.url().includes("instant-consultation")).toBeTruthy();
+      expect(hasTypeFilter || hasFilterLabel || authenticatedPage.url().includes("instant-consultation")).toBeTruthy();
     });
 
-    test("shows available doctors section or empty state", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/en/instant-consultation");
+    test("shows available doctors section or empty state", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/en/instant-consultation");
 
       // Wait for loading to complete
-      await page.waitForSelector(".animate-pulse, .animate-spin", {
+      await authenticatedPage.waitForSelector(".animate-pulse, .animate-spin", {
         state: "hidden",
         timeout: 15000,
       }).catch(() => {});
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Should show either available doctors or "no doctors available" message
-      const hasAvailableDoctors = await page
+      const hasAvailableDoctors = await authenticatedPage
         .getByText(/available doctors/i)
         .isVisible({ timeout: 5000 })
         .catch(() => false);
 
-      const hasNoAvailable = await page
+      const hasNoAvailable = await authenticatedPage
         .getByText(/no.*available|no doctors/i)
         .isVisible()
         .catch(() => false);
 
-      const hasLoadingComplete = await page
+      const hasLoadingComplete = await authenticatedPage
         .locator("section")
         .first()
         .isVisible()
@@ -158,17 +123,16 @@ test.describe("Telemedicine - Instant Consultation Page", () => {
   });
 
   test.describe("Language Support", () => {
-    test("Nepali instant consultation page loads", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/ne/instant-consultation");
+    test("Nepali instant consultation page loads", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/ne/instant-consultation");
 
       // Wait for page to load
-      await page.waitForLoadState("networkidle");
+      await authenticatedPage.waitForLoadState("networkidle");
 
-      // Check for Nepali title or login prompt
+      // Check for Nepali title or content
       const hasNepaliContent =
-        (await page.getByText(/तत्काल परामर्श/i).isVisible().catch(() => false)) ||
-        (await page.getByText(/लगइन/i).isVisible().catch(() => false));
+        (await authenticatedPage.getByText(/तत्काल परामर्श/i).isVisible().catch(() => false)) ||
+        (await authenticatedPage.getByText(/लगइन/i).isVisible().catch(() => false));
 
       expect(hasNepaliContent).toBeTruthy();
     });
@@ -212,68 +176,43 @@ test.describe("Telemedicine - Consultations List Page", () => {
   });
 
   test.describe("Authenticated User", () => {
-    test("consultations page loads successfully", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-
+    test("consultations page loads successfully", async ({ authenticatedPage }) => {
       // Navigate to consultations page
-      await page.goto("/en/dashboard/consultations");
+      await authenticatedPage.goto("/en/dashboard/consultations");
 
       // Wait for loading to complete
-      await page.waitForSelector(".animate-pulse", {
+      await authenticatedPage.waitForSelector(".animate-pulse", {
         state: "hidden",
         timeout: 15000,
       }).catch(() => {});
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Should show either consultations list, empty state, or title
       const pageVisible =
-        (await page
+        (await authenticatedPage
           .getByRole("heading", { name: /video consultation/i })
           .isVisible({ timeout: 10000 })
           .catch(() => false)) ||
-        (await page
+        (await authenticatedPage
           .getByText(/no consultations|book a video consultation/i)
           .isVisible()
           .catch(() => false)) ||
-        (await page.locator("main").isVisible().catch(() => false));
+        (await authenticatedPage.locator("main").isVisible().catch(() => false));
 
       expect(pageVisible).toBeTruthy();
     });
 
-    test("shows filter tabs (All, Upcoming, Past)", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/en/dashboard/consultations");
+    test("shows filter tabs (All, Upcoming, Past)", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/en/dashboard/consultations");
 
       // Wait for loading
-      await page.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Look for filter tabs - they are buttons
-      const allButton = page.getByRole("button", { name: /^all$/i });
-      const upcomingButton = page.getByRole("button", { name: /upcoming/i });
-      const pastButton = page.getByRole("button", { name: /past/i });
+      const allButton = authenticatedPage.getByRole("button", { name: /^all$/i });
+      const upcomingButton = authenticatedPage.getByRole("button", { name: /upcoming/i });
+      const pastButton = authenticatedPage.getByRole("button", { name: /past/i });
 
       // At least one should be visible after page loads
       const hasFilters =
@@ -284,37 +223,25 @@ test.describe("Telemedicine - Consultations List Page", () => {
       expect(hasFilters).toBeTruthy();
     });
 
-    test("shows empty state or consultations list", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/en/dashboard/consultations");
+    test("shows empty state or consultations list", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/en/dashboard/consultations");
 
       // Wait for loading to complete
-      await page.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Either shows empty state with "Find Doctors" button or a list of consultations
-      const emptyState = await page
+      const emptyState = await authenticatedPage
         .getByText(/no consultations/i)
         .isVisible({ timeout: 5000 })
         .catch(() => false);
 
-      const hasList = await page
+      const hasList = await authenticatedPage
         .locator("[class*='space-y']")
         .isVisible()
         .catch(() => false);
 
-      const hasContent = await page
+      const hasContent = await authenticatedPage
         .locator("main")
         .isVisible()
         .catch(() => false);
@@ -324,16 +251,15 @@ test.describe("Telemedicine - Consultations List Page", () => {
   });
 
   test.describe("Language Support", () => {
-    test("Nepali consultations page loads", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/ne/dashboard/consultations");
+    test("Nepali consultations page loads", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/ne/dashboard/consultations");
 
-      await page.waitForLoadState("networkidle");
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Check for Nepali content
       const hasNepaliContent =
-        (await page.getByText(/भिडियो परामर्श/i).isVisible().catch(() => false)) ||
-        (await page.getByText(/लगइन/i).isVisible().catch(() => false));
+        (await authenticatedPage.getByText(/भिडियो परामर्श/i).isVisible().catch(() => false)) ||
+        (await authenticatedPage.getByText(/लगइन/i).isVisible().catch(() => false));
 
       expect(hasNepaliContent).toBeTruthy();
     });
@@ -371,31 +297,28 @@ test.describe("Telemedicine - Video Call Page", () => {
   });
 
   test.describe("Authenticated User - Invalid Consultation", () => {
-    test("shows error for non-existent consultation", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-
+    test("shows error for non-existent consultation", async ({ authenticatedPage }) => {
       // Navigate to a non-existent consultation's call page
-      await page.goto("/en/dashboard/consultations/non-existent-id/call");
+      await authenticatedPage.goto("/en/dashboard/consultations/non-existent-id/call");
 
-      await page.waitForLoadState("networkidle");
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Should show error or not found
       const showsError =
-        (await page.getByText(/not found/i).isVisible().catch(() => false)) ||
-        (await page.getByText(/error/i).isVisible().catch(() => false)) ||
-        (await page.getByText(/consultation/i).isVisible().catch(() => false));
+        (await authenticatedPage.getByText(/not found/i).isVisible().catch(() => false)) ||
+        (await authenticatedPage.getByText(/error/i).isVisible().catch(() => false)) ||
+        (await authenticatedPage.getByText(/consultation/i).isVisible().catch(() => false));
 
       expect(showsError).toBeTruthy();
     });
 
-    test("has back button to consultations list", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/en/dashboard/consultations/fake-id/call");
+    test("has back button to consultations list", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/en/dashboard/consultations/fake-id/call");
 
-      await page.waitForLoadState("networkidle");
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Look for back button or link
-      const backLink = page.getByRole("link", { name: /back/i });
+      const backLink = authenticatedPage.getByRole("link", { name: /back/i });
 
       // If back link is visible, verify it links to consultations
       if (await backLink.isVisible().catch(() => false)) {
@@ -421,29 +344,16 @@ test.describe("Telemedicine - Consultation Detail Page", () => {
   });
 
   test.describe("Authenticated User - Invalid Consultation", () => {
-    test("shows not found for non-existent consultation", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-
-      await page.goto("/en/dashboard/consultations/non-existent-id");
+    test("shows not found for non-existent consultation", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/en/dashboard/consultations/non-existent-id");
 
       // Wait for loading to complete
-      await page.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
+      await authenticatedPage.waitForLoadState("networkidle");
 
       const showsNotFound =
-        (await page.getByText(/not found/i).isVisible().catch(() => false)) ||
-        (await page.getByText(/error/i).isVisible().catch(() => false));
+        (await authenticatedPage.getByText(/not found/i).isVisible().catch(() => false)) ||
+        (await authenticatedPage.getByText(/error/i).isVisible().catch(() => false));
 
       expect(showsNotFound).toBeTruthy();
     });
@@ -485,14 +395,13 @@ test.describe("Telemedicine - Book Consultation Button", () => {
   });
 
   test.describe("Authenticated User", () => {
-    test("can access doctor profile while logged in", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto(`/en/doctors/${TEST_DATA.DOCTORS.DR_RAM_SHARMA}`);
+    test("can access doctor profile while logged in", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto(`/en/doctors/${TEST_DATA.DOCTORS.DR_RAM_SHARMA}`);
 
-      await page.waitForLoadState("networkidle");
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Verify the page loads
-      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await expect(authenticatedPage.getByRole("heading", { level: 1 })).toBeVisible();
     });
   });
 });
@@ -515,21 +424,15 @@ test.describe("Telemedicine - Clinic Dashboard Consultations", () => {
 
   test.describe("Authenticated Clinic Owner", () => {
     test("clinic owner can access clinic consultations page", async ({
-      page,
+      clinicOwnerPage,
     }) => {
-      await login(
-        page,
-        TEST_DATA.CLINIC_OWNER.email,
-        TEST_DATA.CLINIC_OWNER.password
-      );
+      await clinicOwnerPage.goto("/en/clinic/dashboard/consultations");
 
-      await page.goto("/en/clinic/dashboard/consultations");
-
-      await page.waitForLoadState("networkidle");
+      await clinicOwnerPage.waitForLoadState("networkidle");
 
       // Should show consultations page or redirect to clinic selection
       const isOnPage =
-        page.url().includes("clinic") || page.url().includes("dashboard");
+        clinicOwnerPage.url().includes("clinic") || clinicOwnerPage.url().includes("dashboard");
 
       expect(isOnPage).toBeTruthy();
     });
@@ -561,58 +464,34 @@ test.describe("Telemedicine - API Routes", () => {
 
 test.describe("Telemedicine - UI Components", () => {
   test.describe("Instant Consultation Flow States", () => {
-    test("shows hero section with blue background", async ({ page }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/en/instant-consultation");
+    test("shows hero section with blue background", async ({ authenticatedPage }) => {
+      await authenticatedPage.goto("/en/instant-consultation");
 
-      await page.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Check for the hero section with blue background
-      const heroSection = page.locator("section.bg-primary-blue").first();
+      const heroSection = authenticatedPage.locator("section.bg-primary-blue").first();
 
       // Hero might be present
       const hasHero = await heroSection.isVisible().catch(() => false);
 
       // Just verify page loaded
-      expect(page.url()).toContain("instant-consultation");
+      expect(authenticatedPage.url()).toContain("instant-consultation");
     });
   });
 
   test.describe("Consultation Status Display", () => {
     test("consultations page shows status-related UI elements", async ({
-      page,
+      authenticatedPage,
     }) => {
-      await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-      await page.goto("/en/dashboard/consultations");
+      await authenticatedPage.goto("/en/dashboard/consultations");
 
-      await page.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
-      await page.waitForLoadState("networkidle");
-
-      // Check if session is maintained
-      const showsLoginPrompt = await page
-        .getByText(/please log in/i)
-        .isVisible({ timeout: 3000 })
-        .catch(() => false);
-
-      if (showsLoginPrompt) {
-        test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-        return;
-      }
+      await authenticatedPage.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
+      await authenticatedPage.waitForLoadState("networkidle");
 
       // Verify the page structure is correct
-      const mainContent = page.locator("main");
+      const mainContent = authenticatedPage.locator("main");
       await expect(mainContent).toBeVisible();
     });
   });
@@ -620,89 +499,62 @@ test.describe("Telemedicine - UI Components", () => {
 
 test.describe("Telemedicine - Call Interface Elements", () => {
   test("waiting room has proper structure when accessible", async ({
-    page,
+    authenticatedPage,
   }) => {
-    await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-
     // Navigate to a call page (even if consultation doesn't exist)
-    await page.goto("/en/dashboard/consultations/test-id/call");
+    await authenticatedPage.goto("/en/dashboard/consultations/test-id/call");
 
-    await page.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
-    await page.waitForLoadState("networkidle");
-
-    // Check if session is maintained
-    const showsLoginPrompt = await page
-      .getByText(/please log in/i)
-      .isVisible({ timeout: 3000 })
-      .catch(() => false);
-
-    if (showsLoginPrompt) {
-      test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-      return;
-    }
+    await authenticatedPage.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
+    await authenticatedPage.waitForLoadState("networkidle");
 
     // Should show either:
     // 1. Waiting room UI
     // 2. Not found/error message
     // 3. Login prompt
     const pageLoaded =
-      (await page.getByText(/waiting|not found|error|login/i).isVisible().catch(() => false)) ||
-      (await page.locator("main").isVisible().catch(() => false));
+      (await authenticatedPage.getByText(/waiting|not found|error|login/i).isVisible().catch(() => false)) ||
+      (await authenticatedPage.locator("main").isVisible().catch(() => false));
 
     expect(pageLoaded).toBeTruthy();
   });
 
-  test("call page has back navigation", async ({ page }) => {
-    await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/en/dashboard/consultations/test-id/call");
+  test("call page has back navigation", async ({ authenticatedPage }) => {
+    await authenticatedPage.goto("/en/dashboard/consultations/test-id/call");
 
-    await page.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
-    await page.waitForLoadState("networkidle");
-
-    // Check if session is maintained
-    const showsLoginPrompt = await page
-      .getByText(/please log in/i)
-      .isVisible({ timeout: 3000 })
-      .catch(() => false);
-
-    if (showsLoginPrompt) {
-      test.skip(true, "Session not maintained after navigation - known E2E limitation with client-side auth");
-      return;
-    }
+    await authenticatedPage.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
+    await authenticatedPage.waitForLoadState("networkidle");
 
     // Look for back link
-    const backLinks = page.locator('a[href*="consultations"]');
+    const backLinks = authenticatedPage.locator('a[href*="consultations"]');
     const hasBackNav = (await backLinks.count()) > 0;
 
     // Should have some way to navigate back
-    expect(hasBackNav || page.url().includes("login")).toBeTruthy();
+    expect(hasBackNav || authenticatedPage.url().includes("login")).toBeTruthy();
   });
 });
 
 test.describe("Telemedicine - Mobile Responsiveness", () => {
   test.use({ viewport: { width: 375, height: 667 } });
 
-  test("instant consultation page is mobile responsive", async ({ page }) => {
-    await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/en/instant-consultation");
+  test("instant consultation page is mobile responsive", async ({ authenticatedPage }) => {
+    await authenticatedPage.goto("/en/instant-consultation");
 
-    await page.waitForLoadState("networkidle");
+    await authenticatedPage.waitForLoadState("networkidle");
 
     // Verify page renders without horizontal scroll
-    const body = page.locator("body");
+    const body = authenticatedPage.locator("body");
     const boundingBox = await body.boundingBox();
 
     expect(boundingBox?.width).toBeLessThanOrEqual(375);
   });
 
-  test("consultations list is mobile responsive", async ({ page }) => {
-    await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/en/dashboard/consultations");
+  test("consultations list is mobile responsive", async ({ authenticatedPage }) => {
+    await authenticatedPage.goto("/en/dashboard/consultations");
 
-    await page.waitForLoadState("networkidle");
+    await authenticatedPage.waitForLoadState("networkidle");
 
     // Verify page renders without horizontal scroll
-    const body = page.locator("body");
+    const body = authenticatedPage.locator("body");
     const boundingBox = await body.boundingBox();
 
     expect(boundingBox?.width).toBeLessThanOrEqual(375);
@@ -711,45 +563,42 @@ test.describe("Telemedicine - Mobile Responsiveness", () => {
 
 test.describe("Telemedicine - Accessibility", () => {
   test("instant consultation page has proper heading structure", async ({
-    page,
+    authenticatedPage,
   }) => {
-    await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/en/instant-consultation");
+    await authenticatedPage.goto("/en/instant-consultation");
 
-    await page.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
-    await page.waitForLoadState("networkidle");
+    await authenticatedPage.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
+    await authenticatedPage.waitForLoadState("networkidle");
 
     // Check for h1 heading (even unauthenticated page has h1)
-    const h1 = page.locator("h1");
+    const h1 = authenticatedPage.locator("h1");
     const h1Count = await h1.count();
 
     expect(h1Count).toBeGreaterThanOrEqual(1);
   });
 
-  test("consultations page has accessible main content", async ({ page }) => {
-    await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/en/dashboard/consultations");
+  test("consultations page has accessible main content", async ({ authenticatedPage }) => {
+    await authenticatedPage.goto("/en/dashboard/consultations");
 
-    await page.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
-    await page.waitForLoadState("networkidle");
+    await authenticatedPage.waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 }).catch(() => {});
+    await authenticatedPage.waitForLoadState("networkidle");
 
     // Check for main element - the page uses <main> tag even in unauthenticated state
-    const main = page.locator("main").first();
+    const main = authenticatedPage.locator("main").first();
     const hasMain = await main.isVisible({ timeout: 5000 }).catch(() => false);
 
     // The page structure includes a main element regardless of auth state
     expect(hasMain).toBeTruthy();
   });
 
-  test("buttons have accessible names", async ({ page }) => {
-    await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/en/instant-consultation");
+  test("buttons have accessible names", async ({ authenticatedPage }) => {
+    await authenticatedPage.goto("/en/instant-consultation");
 
-    await page.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
-    await page.waitForLoadState("networkidle");
+    await authenticatedPage.waitForSelector(".animate-pulse, .animate-spin", { state: "hidden", timeout: 15000 }).catch(() => {});
+    await authenticatedPage.waitForLoadState("networkidle");
 
     // Get all visible buttons
-    const buttons = page.getByRole("button");
+    const buttons = authenticatedPage.getByRole("button");
     const count = await buttons.count();
 
     // Each button should have accessible text

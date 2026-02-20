@@ -4,84 +4,10 @@
  * Tests for admin review moderation flow: viewing, filtering, publishing,
  * unpublishing, deleting reviews, and access control.
  *
- * KNOWN LIMITATION: Client-side useSession() hook does not reliably maintain
- * session state after page navigation in Playwright E2E tests. Tests that require
- * authenticated state will gracefully skip when session is not detected.
+ * Uses storageState-based auth fixtures for reliable authentication.
  */
 
-import { test, expect, Page } from "@playwright/test";
-import { TEST_DATA } from "./fixtures/test-utils";
-
-/**
- * Custom login helper for admin tests
- */
-async function loginAsAdmin(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-  await page.getByRole("button", { name: /with email/i }).click();
-  await page.getByLabel(/email/i).fill(TEST_DATA.ADMIN.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.ADMIN.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  // Wait for loading state
-  try {
-    await expect(
-      page.getByRole("button", { name: /signing in/i })
-    ).toBeVisible({
-      timeout: 5000,
-    });
-  } catch {
-    // Button might have already changed
-  }
-
-  // Wait for redirect away from login page
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Login as regular user (non-admin)
- */
-async function loginAsRegularUser(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-  await page.getByRole("button", { name: /with email/i }).click();
-  await page.getByLabel(/email/i).fill(TEST_DATA.USER.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.USER.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Check if admin reviews dashboard is accessible (admin is authenticated)
- */
-async function isAdminReviewsDashboardAccessible(page: Page): Promise<boolean> {
-  await page.goto("/en/admin/reviews");
-
-  // Wait for any content to appear
-  await page.waitForSelector("main h1", { timeout: 15000 });
-
-  // Check for admin dashboard content (the title "Reviews Moderation")
-  const title = page.getByRole("heading", { name: /reviews moderation/i });
-
-  const isDashboard = await title.isVisible().catch(() => false);
-
-  return isDashboard;
-}
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 test.describe("Admin Reviews Dashboard - Access Control", () => {
   test("should redirect non-authenticated users to show login prompt", async ({
@@ -128,56 +54,33 @@ test.describe("Admin Reviews Dashboard - Access Control", () => {
   });
 
   test("should show access denied for non-admin authenticated users", async ({
-    page,
+    authenticatedPage: page,
   }) => {
-    const loginSuccess = await loginAsRegularUser(page);
-    if (!loginSuccess) {
-      test.skip(true, "Login failed");
-      return;
-    }
-
     await page.goto("/en/admin/reviews");
 
     // Wait for content to load
     await page.waitForSelector("main", { timeout: 15000 });
 
-    // Check if we see access denied or login required (session might not be maintained)
+    // Check if we see access denied
     const accessDenied = page.getByText(/access denied/i);
     const noPermission = page.getByText(
       /you do not have permission to access this page/i
     );
-    const loginRequired = page.getByText(/please log in to access this page/i);
 
     const isAccessDenied = await accessDenied.isVisible().catch(() => false);
     const isNoPermission = await noPermission.isVisible().catch(() => false);
-    const isLoginRequired = await loginRequired.isVisible().catch(() => false);
-
-    if (isLoginRequired) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
 
     expect(isAccessDenied || isNoPermission).toBeTruthy();
   });
 
-  test("should show Go Home button for access denied", async ({ page }) => {
-    const loginSuccess = await loginAsRegularUser(page);
-    if (!loginSuccess) {
-      test.skip(true, "Login failed");
-      return;
-    }
-
+  test("should show Go Home button for access denied", async ({
+    authenticatedPage: page,
+  }) => {
     await page.goto("/en/admin/reviews");
     await page.waitForSelector("main", { timeout: 15000 });
 
     // Check for access denied
-    const accessDenied = page.getByText(/access denied/i);
-    const isAccessDenied = await accessDenied.isVisible().catch(() => false);
-
-    if (!isAccessDenied) {
-      test.skip(true, "Session not maintained or access denied not shown");
-      return;
-    }
+    await expect(page.getByText(/access denied/i)).toBeVisible({ timeout: 10000 });
 
     const goHomeButton = page
       .locator("main")
@@ -187,18 +90,9 @@ test.describe("Admin Reviews Dashboard - Access Control", () => {
 });
 
 test.describe("Admin Reviews Dashboard - Authenticated Admin", () => {
-  test("admin can access reviews moderation dashboard", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained after login");
-      return;
-    }
+  test("admin can access reviews moderation dashboard", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Verify dashboard title
     await expect(
@@ -212,19 +106,10 @@ test.describe("Admin Reviews Dashboard - Authenticated Admin", () => {
   });
 
   test("shows filter tabs for all, published, and unpublished reviews", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // The three filter buttons should be visible
     await expect(page.getByRole("button", { name: /all reviews/i })).toBeVisible();
@@ -232,61 +117,45 @@ test.describe("Admin Reviews Dashboard - Authenticated Admin", () => {
     await expect(page.getByRole("button", { name: /^unpublished$/i })).toBeVisible();
   });
 
-  test("shows reviews list or empty state", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    // Wait for reviews to load
-    await page.waitForTimeout(2000);
+  test("shows reviews list or empty state", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Should show either review cards or empty state
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    // Wait for either state to appear
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     const hasNoReviews = await noReviews.isVisible().catch(() => false);
 
     if (hasNoReviews) {
       await expect(noReviews).toBeVisible();
     } else {
       // Should have at least one review card with a patient name
-      const patientLabel = page.getByText(/patient:/i);
       await expect(patientLabel.first()).toBeVisible({ timeout: 10000 });
     }
   });
 
   test("review card displays patient name, clinic, and rating", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    // Wait for reviews to load
-    await page.waitForTimeout(2000);
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    // Wait for either state to appear
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test card display");
       return;
     }
 
     // Should show patient label and name
-    const patientLabel = page.getByText(/patient:/i);
     await expect(patientLabel.first()).toBeVisible();
 
     // Should show clinic label and name
@@ -317,24 +186,16 @@ test.describe("Admin Reviews Dashboard - Authenticated Admin", () => {
   });
 
   test("review card shows Published or Unpublished badge", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    // Wait for reviews to load
-    await page.waitForTimeout(2000);
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test badge display");
       return;
@@ -351,24 +212,16 @@ test.describe("Admin Reviews Dashboard - Authenticated Admin", () => {
   });
 
   test("review card has Publish/Unpublish toggle button", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    // Wait for reviews to load
-    await page.waitForTimeout(2000);
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test publish button");
       return;
@@ -384,23 +237,15 @@ test.describe("Admin Reviews Dashboard - Authenticated Admin", () => {
     expect(hasPublish || hasUnpublish).toBeTruthy();
   });
 
-  test("review card has Review Details button", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    // Wait for reviews to load
-    await page.waitForTimeout(2000);
+  test("review card has Review Details button", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test details button");
       return;
@@ -412,23 +257,15 @@ test.describe("Admin Reviews Dashboard - Authenticated Admin", () => {
     await expect(detailsButton.first()).toBeVisible();
   });
 
-  test("review card has Delete button", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    // Wait for reviews to load
-    await page.waitForTimeout(2000);
+  test("review card has Delete button", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test delete button");
       return;
@@ -440,49 +277,25 @@ test.describe("Admin Reviews Dashboard - Authenticated Admin", () => {
 });
 
 test.describe("Admin Reviews Dashboard - Filter Tabs", () => {
-  test("clicking Published filter changes active tab", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clicking Published filter changes active tab", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Click Published filter
     await page.getByRole("button", { name: /^published$/i }).click();
 
-    // Wait for re-fetch
-    await page.waitForTimeout(1000);
-
-    // Page should still be visible (no error)
+    // Wait for re-fetch by waiting for heading to remain visible
     await expect(
       page.getByRole("heading", { name: /reviews moderation/i })
     ).toBeVisible();
   });
 
-  test("clicking Unpublished filter changes active tab", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clicking Unpublished filter changes active tab", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Click Unpublished filter
     await page.getByRole("button", { name: /^unpublished$/i }).click();
-
-    // Wait for re-fetch
-    await page.waitForTimeout(1000);
 
     // Page should still be visible (no error)
     await expect(
@@ -491,25 +304,17 @@ test.describe("Admin Reviews Dashboard - Filter Tabs", () => {
   });
 
   test("clicking All Reviews filter returns to default view", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Click Published first, then All Reviews
     await page.getByRole("button", { name: /^published$/i }).click();
-    await page.waitForTimeout(500);
+    await expect(
+      page.getByRole("heading", { name: /reviews moderation/i })
+    ).toBeVisible();
     await page.getByRole("button", { name: /all reviews/i }).click();
-    await page.waitForTimeout(1000);
 
     // Dashboard title should still be visible
     await expect(
@@ -520,24 +325,16 @@ test.describe("Admin Reviews Dashboard - Filter Tabs", () => {
 
 test.describe("Admin Reviews Dashboard - Review Details Modal", () => {
   test("clicking Review Details opens modal with review info", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    // Wait for reviews to load
-    await page.waitForTimeout(2000);
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test details modal");
       return;
@@ -560,23 +357,16 @@ test.describe("Admin Reviews Dashboard - Review Details Modal", () => {
   });
 
   test("review details modal shows patient, clinic, and doctor info", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    await page.waitForTimeout(2000);
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test details modal info");
       return;
@@ -596,22 +386,15 @@ test.describe("Admin Reviews Dashboard - Review Details Modal", () => {
     await expect(modal.getByText(/patient:/i)).toBeVisible();
   });
 
-  test("review details modal shows rating display", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    await page.waitForTimeout(2000);
+  test("review details modal shows rating display", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test rating display");
       return;
@@ -630,23 +413,16 @@ test.describe("Admin Reviews Dashboard - Review Details Modal", () => {
   });
 
   test("review details modal shows category ratings when present", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    await page.waitForTimeout(2000);
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test category ratings");
       return;
@@ -680,23 +456,16 @@ test.describe("Admin Reviews Dashboard - Review Details Modal", () => {
   });
 
   test("review details modal has Close button that dismisses modal", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    await page.waitForTimeout(2000);
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test close modal");
       return;
@@ -723,22 +492,15 @@ test.describe("Admin Reviews Dashboard - Review Details Modal", () => {
 });
 
 test.describe("Admin Reviews Dashboard - Delete Review Flow", () => {
-  test("clicking Delete shows confirmation dialog", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    await page.waitForTimeout(2000);
+  test("clicking Delete shows confirmation dialog", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test delete flow");
       return;
@@ -759,23 +521,16 @@ test.describe("Admin Reviews Dashboard - Delete Review Flow", () => {
   });
 
   test("delete confirmation modal has Cancel and Delete buttons", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    await page.waitForTimeout(2000);
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test delete modal buttons");
       return;
@@ -794,22 +549,15 @@ test.describe("Admin Reviews Dashboard - Delete Review Flow", () => {
     expect(await deleteButtons.count()).toBeGreaterThanOrEqual(1);
   });
 
-  test("Cancel closes delete modal without action", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
-
-    await page.waitForTimeout(2000);
+  test("Cancel closes delete modal without action", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
+
     if (await noReviews.isVisible().catch(() => false)) {
       test.skip(true, "No reviews to test cancel delete");
       return;
@@ -831,25 +579,19 @@ test.describe("Admin Reviews Dashboard - Delete Review Flow", () => {
 
 test.describe("Admin Reviews Dashboard - Empty State", () => {
   test("shows empty state message when no reviews match filter", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminReviewsDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+    await page.goto("/en/admin/reviews");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Wait for reviews to load
-    await page.waitForTimeout(2000);
+    const noReviews = page.getByText(/no reviews found/i);
+    const patientLabel = page.getByText(/patient:/i);
+
+    // Wait for either state to appear
+    await expect(noReviews.or(patientLabel.first())).toBeVisible({ timeout: 10000 });
 
     // If no reviews, should show empty state
-    const noReviews = page.getByText(/no reviews found/i);
     const hasNoReviews = await noReviews.isVisible().catch(() => false);
 
     if (hasNoReviews) {
@@ -894,13 +636,7 @@ test.describe("Admin Reviews Dashboard - Language Support", () => {
 });
 
 test.describe("Admin Reviews Dashboard - Loading State", () => {
-  test("shows loading animation while fetching reviews", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
+  test("shows loading animation while fetching reviews", async ({ adminPage: page }) => {
     // Navigate and immediately check for loading state
     await page.goto("/en/admin/reviews");
 
@@ -919,13 +655,7 @@ test.describe("Admin Reviews Dashboard - Loading State", () => {
 });
 
 test.describe("Admin Reviews Dashboard - Sidebar Navigation", () => {
-  test("admin sidebar shows Review Moderation link", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
+  test("admin sidebar shows Review Moderation link", async ({ adminPage: page }) => {
     await page.goto("/en/admin/reviews");
     await page.waitForSelector("main", { timeout: 15000 });
 

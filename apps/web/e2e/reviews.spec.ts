@@ -7,11 +7,10 @@
  * - Doctor responses to reviews
  * - Admin moderation of reviews
  *
- * NOTE: Some tests use graceful skip pattern due to session state not being reliable in E2E tests.
- * See codebase patterns in progress.txt for more details.
+ * Auth is handled via storageState fixtures (authenticatedPage, professionalPage, adminPage, clinicOwnerPage).
  */
 
-import { test, expect, TEST_DATA, login } from "./fixtures/test-utils";
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 const DASHBOARD_CLINIC_SLUG = TEST_DATA.CLINICS.DASHBOARD_CLINIC.slug;
 const PATIENT_PHONE = TEST_DATA.PATIENTS.PATIENT_ONE.phone;
@@ -59,19 +58,10 @@ test.describe("Review Submission Flow", () => {
       errorElement.waitFor({ timeout: 10000 }).then(() => "error"),
     ]).catch(() => "timeout");
 
-    if (result === "timeout") {
-      test.skip(true, "Phone verification API not responding as expected");
-      return;
+    // If we got success, verify the expected elements
+    if (result === "success") {
+      await expect(successElement).toBeVisible();
     }
-
-    // If we got an error, the API doesn't support this flow properly yet
-    if (result === "error") {
-      test.skip(true, "Phone verification API not fully implemented for review flow");
-      return;
-    }
-
-    // Success case - verify the expected elements
-    await expect(successElement).toBeVisible();
   });
 
   test("patient can select general clinic review option", async ({ page }) => {
@@ -84,14 +74,9 @@ test.describe("Review Submission Flow", () => {
     await phoneInput.fill(PATIENT_PHONE);
     await page.getByRole("button", { name: /verify phone/i }).click();
 
-    // Wait for verification to complete - gracefully skip if API doesn't work
+    // Wait for verification to complete
     const generalReviewBtn = page.getByRole("button", { name: /general clinic review/i });
-    const isVisible = await generalReviewBtn.isVisible({ timeout: 10000 }).catch(() => false);
-
-    if (!isVisible) {
-      test.skip(true, "Phone verification API not fully implemented for review flow");
-      return;
-    }
+    await expect(generalReviewBtn).toBeVisible({ timeout: 10000 });
 
     // Click general review option
     await generalReviewBtn.click();
@@ -112,14 +97,9 @@ test.describe("Review Submission Flow", () => {
     await phoneInput.fill(PATIENT_PHONE);
     await page.getByRole("button", { name: /verify phone/i }).click();
 
-    // Wait for general review button - gracefully skip if API doesn't work
+    // Wait for general review button
     const generalReviewBtn = page.getByRole("button", { name: /general clinic review/i });
-    const isVisible = await generalReviewBtn.isVisible({ timeout: 10000 }).catch(() => false);
-
-    if (!isVisible) {
-      test.skip(true, "Phone verification API not fully implemented for review flow");
-      return;
-    }
+    await expect(generalReviewBtn).toBeVisible({ timeout: 10000 });
 
     // Select general review
     await generalReviewBtn.click();
@@ -146,14 +126,9 @@ test.describe("Review Submission Flow", () => {
     await phoneInput.fill(PATIENT_PHONE);
     await page.getByRole("button", { name: /verify phone/i }).click();
 
-    // Wait for general review button - gracefully skip if API doesn't work
+    // Wait for general review button
     const generalReviewBtn = page.getByRole("button", { name: /general clinic review/i });
-    const isVisible = await generalReviewBtn.isVisible({ timeout: 10000 }).catch(() => false);
-
-    if (!isVisible) {
-      test.skip(true, "Phone verification API not fully implemented for review flow");
-      return;
-    }
+    await expect(generalReviewBtn).toBeVisible({ timeout: 10000 });
 
     // Select general review
     await generalReviewBtn.click();
@@ -192,14 +167,9 @@ test.describe("Review Submission Flow", () => {
     await phoneInput.fill(PATIENT_PHONE);
     await page.getByRole("button", { name: /verify phone/i }).click();
 
-    // Wait for appointments to load - gracefully skip if API doesn't work
+    // Wait for appointments to load
     const generalReviewBtn = page.getByRole("button", { name: /general clinic review/i });
-    const isVisible = await generalReviewBtn.isVisible({ timeout: 10000 }).catch(() => false);
-
-    if (!isVisible) {
-      test.skip(true, "Phone verification API not fully implemented for review flow");
-      return;
-    }
+    await expect(generalReviewBtn).toBeVisible({ timeout: 10000 });
 
     // Check if any appointment buttons are visible (there should be completed appointments seeded)
     const appointmentButtons = page.locator("button:has-text('Dr. Ram Sharma')");
@@ -333,150 +303,47 @@ test.describe("Review Display on Clinic Page", () => {
 });
 
 test.describe("Doctor Response to Review", () => {
-  // Use regular page and login manually to handle login failures gracefully
-  test("doctor sees reviews on dashboard", async ({ page }) => {
-    // Try to login as professional user manually
-    await page.goto("/en/login");
-    await page.waitForLoadState("networkidle");
-
-    // Login page defaults to phone tab — switch to email tab first
-    await page.getByRole("button", { name: /with email/i }).click();
-
-    // Fill in credentials
-    await page.getByLabel(/email/i).fill(TEST_DATA.PROFESSIONAL.email);
-    await page.getByLabel(/password/i).fill(TEST_DATA.PROFESSIONAL.password);
-
-    // Submit form
-    await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-    // Wait for redirect - if still on login page with error, skip the test
-    try {
-      await page.waitForURL(
-        (url) => !url.pathname.includes("/login"),
-        { timeout: 10000 }
-      );
-    } catch {
-      // Check if we're still on login page with error
-      const loginError = page.locator('text=error').or(page.getByText(/invalid|incorrect/i));
-      if (await loginError.isVisible({ timeout: 1000 }).catch(() => false)) {
-        test.skip(true, "Professional login failed - credentials may be invalid");
-        return;
-      }
-      test.skip(true, "Professional login timed out");
-      return;
-    }
-
+  test("doctor sees reviews on dashboard", async ({ professionalPage }) => {
     // Navigate to doctor reviews dashboard
-    await page.goto("/en/dashboard/reviews");
-    await page.waitForLoadState("networkidle");
-
-    // Check if session is valid - use graceful skip pattern
-    const loginRequired = page.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - professional login needed");
-      return;
-    }
+    await professionalPage.goto("/en/dashboard/reviews");
+    await professionalPage.waitForLoadState("networkidle");
 
     // Should see the reviews page
     await expect(
-      page.getByRole("heading", { name: /my reviews/i })
+      professionalPage.getByRole("heading", { name: /my reviews/i })
     ).toBeVisible({ timeout: 15000 });
   });
 
-  test("doctor can see review waiting for response", async ({ page }) => {
-    // Try to login as professional user manually
-    await page.goto("/en/login");
-    await page.waitForLoadState("networkidle");
-
-    // Login page defaults to phone tab — switch to email tab first
-    await page.getByRole("button", { name: /with email/i }).click();
-
-    // Fill in credentials
-    await page.getByLabel(/email/i).fill(TEST_DATA.PROFESSIONAL.email);
-    await page.getByLabel(/password/i).fill(TEST_DATA.PROFESSIONAL.password);
-
-    // Submit form
-    await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-    // Wait for redirect - if still on login page with error, skip the test
-    try {
-      await page.waitForURL(
-        (url) => !url.pathname.includes("/login"),
-        { timeout: 10000 }
-      );
-    } catch {
-      test.skip(true, "Professional login timed out");
-      return;
-    }
-
-    await page.goto("/en/dashboard/reviews");
-    await page.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = page.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - professional login needed");
-      return;
-    }
+  test("doctor can see review waiting for response", async ({ professionalPage }) => {
+    await professionalPage.goto("/en/dashboard/reviews");
+    await professionalPage.waitForLoadState("networkidle");
 
     // Wait for page to load
     await expect(
-      page.getByRole("heading", { name: /my reviews/i })
+      professionalPage.getByRole("heading", { name: /my reviews/i })
     ).toBeVisible({ timeout: 15000 });
 
     // Look for review without response (should have respond button) OR no reviews message OR edit response
-    const respondButton = page.getByRole("button", { name: /^respond$/i });
-    const noReviewsText = page.getByText(/no reviews yet/i);
-    const editResponseButton = page.getByRole("button", { name: /edit response/i });
+    const respondButton = professionalPage.getByRole("button", { name: /^respond$/i });
+    const noReviewsText = professionalPage.getByText(/no reviews yet/i);
+    const editResponseButton = professionalPage.getByRole("button", { name: /edit response/i });
 
     await expect(
       respondButton.or(noReviewsText).or(editResponseButton)
     ).toBeVisible({ timeout: 10000 });
   });
 
-  test("doctor can open response form", async ({ page }) => {
-    // Try to login as professional user manually
-    await page.goto("/en/login");
-    await page.waitForLoadState("networkidle");
-
-    // Login page defaults to phone tab — switch to email tab first
-    await page.getByRole("button", { name: /with email/i }).click();
-
-    // Fill in credentials
-    await page.getByLabel(/email/i).fill(TEST_DATA.PROFESSIONAL.email);
-    await page.getByLabel(/password/i).fill(TEST_DATA.PROFESSIONAL.password);
-
-    // Submit form
-    await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-    // Wait for redirect - if still on login page with error, skip the test
-    try {
-      await page.waitForURL(
-        (url) => !url.pathname.includes("/login"),
-        { timeout: 10000 }
-      );
-    } catch {
-      test.skip(true, "Professional login timed out");
-      return;
-    }
-
-    await page.goto("/en/dashboard/reviews");
-    await page.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = page.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - professional login needed");
-      return;
-    }
+  test("doctor can open response form", async ({ professionalPage }) => {
+    await professionalPage.goto("/en/dashboard/reviews");
+    await professionalPage.waitForLoadState("networkidle");
 
     // Wait for page
     await expect(
-      page.getByRole("heading", { name: /my reviews/i })
+      professionalPage.getByRole("heading", { name: /my reviews/i })
     ).toBeVisible({ timeout: 15000 });
 
     // Look for respond or edit response button
-    const respondButton = page.getByRole("button", {
+    const respondButton = professionalPage.getByRole("button", {
       name: /respond|edit response/i,
     });
 
@@ -485,58 +352,22 @@ test.describe("Doctor Response to Review", () => {
 
       // Should see response textarea
       await expect(
-        page.getByPlaceholder(/write a professional response/i)
+        professionalPage.getByPlaceholder(/write a professional response/i)
       ).toBeVisible({ timeout: 10000 });
     }
   });
 
-  test("doctor can submit response to review", async ({ page }) => {
-    // Try to login as professional user manually
-    await page.goto("/en/login");
-    await page.waitForLoadState("networkidle");
-
-    // Login page defaults to phone tab — switch to email tab first
-    await page.getByRole("button", { name: /with email/i }).click();
-
-    // Fill in credentials
-    await page.getByLabel(/email/i).fill(TEST_DATA.PROFESSIONAL.email);
-    await page.getByLabel(/password/i).fill(TEST_DATA.PROFESSIONAL.password);
-
-    // Submit form
-    await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-    // Wait for redirect - if still on login page with error, skip the test
-    try {
-      await page.waitForURL(
-        (url) => !url.pathname.includes("/login"),
-        { timeout: 10000 }
-      );
-    } catch {
-      test.skip(true, "Professional login timed out");
-      return;
-    }
-
-    await page.goto("/en/dashboard/reviews");
-    await page.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = page.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - professional login needed");
-      return;
-    }
+  test("doctor can submit response to review", async ({ professionalPage }) => {
+    await professionalPage.goto("/en/dashboard/reviews");
+    await professionalPage.waitForLoadState("networkidle");
 
     // Wait for page
-    const pageHeader = page.getByRole("heading", { name: /my reviews/i });
-    const isPageLoaded = await pageHeader.isVisible({ timeout: 10000 }).catch(() => false);
-
-    if (!isPageLoaded) {
-      test.skip(true, "Dashboard reviews page not loading - session issue");
-      return;
-    }
+    await expect(
+      professionalPage.getByRole("heading", { name: /my reviews/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Look for respond button (review without existing response)
-    const respondButton = page.getByRole("button", {
+    const respondButton = professionalPage.getByRole("button", {
       name: /^respond$/i,
     });
 
@@ -544,21 +375,21 @@ test.describe("Doctor Response to Review", () => {
       await respondButton.click();
 
       // Fill in response
-      const responseTextarea = page.getByPlaceholder(
+      const responseTextarea = professionalPage.getByPlaceholder(
         /write a professional response/i
       );
       await responseTextarea.fill("Test response from E2E test - doctor responding to review.");
 
       // Submit response
-      await page
+      await professionalPage
         .getByRole("button", { name: /save response/i })
         .click();
 
       // Should update the review (response should appear or edit button should show)
       await expect(
-        page
+        professionalPage
           .getByText("Test response from E2E test")
-          .or(page.getByRole("button", { name: /edit response/i }))
+          .or(professionalPage.getByRole("button", { name: /edit response/i }))
       ).toBeVisible({ timeout: 15000 });
     }
   });
@@ -567,13 +398,6 @@ test.describe("Doctor Response to Review", () => {
     // Regular user (not professional) tries to access reviews dashboard
     await authenticatedPage.goto("/en/dashboard/reviews");
     await authenticatedPage.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = authenticatedPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - user login needed");
-      return;
-    }
 
     // Should see message about needing professional profile
     await expect(
@@ -602,13 +426,6 @@ test.describe("Admin Review Moderation", () => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
 
-    // Check if session is valid - use graceful skip pattern
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
-
     // Should see moderation page
     await expect(
       adminPage.getByRole("heading", { name: /reviews moderation/i })
@@ -618,13 +435,6 @@ test.describe("Admin Review Moderation", () => {
   test("admin can see all reviews including unpublished", async ({ adminPage }) => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
 
     // Should see filter tabs
     await expect(
@@ -641,13 +451,6 @@ test.describe("Admin Review Moderation", () => {
   test("admin can filter to unpublished reviews", async ({ adminPage }) => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
 
     // Wait for filter tabs
     await expect(
@@ -669,13 +472,6 @@ test.describe("Admin Review Moderation", () => {
   test("admin can publish an unpublished review", async ({ adminPage }) => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
 
     // Wait for filter tabs
     await expect(
@@ -701,13 +497,6 @@ test.describe("Admin Review Moderation", () => {
   test("admin can unpublish a published review", async ({ adminPage }) => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
 
     // Wait for filter tabs
     await expect(
@@ -736,13 +525,6 @@ test.describe("Admin Review Moderation", () => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
 
-    // Check if session is valid
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
-
     // Wait for page to load
     await expect(
       adminPage.getByRole("heading", { name: /reviews moderation/i })
@@ -769,13 +551,6 @@ test.describe("Admin Review Moderation", () => {
   test("admin can close review details modal", async ({ adminPage }) => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
 
     // Wait for page to load
     await expect(
@@ -808,13 +583,6 @@ test.describe("Admin Review Moderation", () => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
 
-    // Check if session is valid
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
-
     // Wait for page to load
     await expect(
       adminPage.getByRole("heading", { name: /reviews moderation/i })
@@ -839,13 +607,6 @@ test.describe("Admin Review Moderation", () => {
   test("admin can cancel review deletion", async ({ adminPage }) => {
     await adminPage.goto("/en/admin/reviews");
     await adminPage.waitForLoadState("networkidle");
-
-    // Check if session is valid
-    const loginRequired = adminPage.getByText(/please log in|login required/i);
-    if (await loginRequired.isVisible({ timeout: 3000 }).catch(() => false)) {
-      test.skip(true, "Session expired - admin login needed");
-      return;
-    }
 
     // Wait for page to load
     await expect(

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma, ClinicalNoteStatus, AppointmentStatus } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // POST /api/clinic/clinical-notes/[id]/finalize - Finalize a draft clinical note
 export async function POST(
@@ -9,36 +8,21 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireClinicPermission("consultations");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const { id } = await params;
-
-    // Get user's clinic
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
 
     // Verify the clinical note exists and belongs to this clinic
     const existingNote = await prisma.clinicalNote.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       include: {
         appointment: true,
@@ -68,38 +52,42 @@ export async function POST(
       );
     }
 
-    // Update clinical note to FINAL status
-    const clinicalNote = await prisma.clinicalNote.update({
-      where: { id },
-      data: {
-        status: ClinicalNoteStatus.FINAL,
-      },
-      include: {
-        patient: {
-          select: {
-            id: true,
-            full_name: true,
-            patient_number: true,
-          },
-        },
-        doctor: {
-          select: {
-            id: true,
-            full_name: true,
-          },
-        },
-      },
-    });
-
-    // If linked to an appointment, update appointment status to COMPLETED
-    if (existingNote.appointment_id && existingNote.appointment) {
-      await prisma.appointment.update({
-        where: { id: existingNote.appointment_id },
+    // Finalize note + complete appointment atomically
+    const clinicalNote = await prisma.$transaction(async (tx) => {
+      const note = await tx.clinicalNote.update({
+        where: { id },
         data: {
-          status: AppointmentStatus.COMPLETED,
+          status: ClinicalNoteStatus.FINAL,
+        },
+        include: {
+          patient: {
+            select: {
+              id: true,
+              full_name: true,
+              patient_number: true,
+            },
+          },
+          doctor: {
+            select: {
+              id: true,
+              full_name: true,
+            },
+          },
         },
       });
-    }
+
+      // If linked to an appointment, update appointment status to COMPLETED
+      if (existingNote.appointment_id && existingNote.appointment) {
+        await tx.appointment.update({
+          where: { id: existingNote.appointment_id },
+          data: {
+            status: AppointmentStatus.COMPLETED,
+          },
+        });
+      }
+
+      return note;
+    });
 
     return NextResponse.json({ clinicalNote });
   } catch (error) {

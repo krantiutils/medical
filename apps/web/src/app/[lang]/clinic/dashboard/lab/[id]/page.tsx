@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { printLabLabels } from "@/lib/lab-labels";
 
 interface Patient {
   id: string;
@@ -385,9 +386,29 @@ export default function LabOrderDetailPage() {
     }
   };
 
-  // Print report
-  const handlePrintReport = () => {
+  // Print barcode labels
+  const handlePrintLabels = async () => {
     if (!labOrder) return;
+    const testAbbreviations = labOrder.results
+      .map((r) => r.lab_test.short_name || r.lab_test.name)
+      .join(", ");
+    await printLabLabels({
+      orderNumber: labOrder.order_number,
+      patientName: labOrder.patient.full_name,
+      patientNumber: labOrder.patient.patient_number,
+      tests: testAbbreviations,
+      date: new Date(labOrder.created_at).toLocaleDateString(),
+      priority: labOrder.priority,
+    });
+  };
+
+  // Print report
+  const handlePrintReport = async () => {
+    if (!labOrder) return;
+
+    // Generate barcode for the report
+    const { generateBarcodeDataUrl } = await import("@/lib/lab-labels");
+    const barcodeDataUrl = await generateBarcodeDataUrl(labOrder.order_number);
 
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
@@ -487,6 +508,7 @@ export default function LabOrderDetailPage() {
           </div>
           <div class="report-info">
             <div class="order-no">${labOrder.order_number}</div>
+            <img src="${barcodeDataUrl}" style="max-width:180px;height:auto;margin:4px 0;" />
             <div>Order Date: ${orderDate}</div>
             <div>Report Date: ${completedDate}</div>
           </div>
@@ -728,6 +750,11 @@ export default function LabOrderDetailPage() {
             <Link href={`/${lang}/clinic/dashboard/lab`}>
               <Button variant="outline">{t.back}</Button>
             </Link>
+            {labOrder.sample_id && (
+              <Button variant="outline" onClick={handlePrintLabels}>
+                Print Labels
+              </Button>
+            )}
             {labOrder.status === "COMPLETED" && (
               <Button variant="primary" onClick={handlePrintReport}>
                 {t.printReport}
@@ -997,9 +1024,16 @@ export default function LabOrderDetailPage() {
               </div>
             )}
 
-            {/* Print button for completed */}
-            {labOrder.status === "COMPLETED" && (
+            {/* Print buttons */}
+            {labOrder.sample_id && (
               <div className="mt-6 pt-6 border-t-2">
+                <Button variant="outline" className="w-full" onClick={handlePrintLabels}>
+                  Print Labels
+                </Button>
+              </div>
+            )}
+            {labOrder.status === "COMPLETED" && (
+              <div className="mt-4">
                 <Button variant="primary" className="w-full" onClick={handlePrintReport}>
                   {t.printReport}
                 </Button>

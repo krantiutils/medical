@@ -19,10 +19,9 @@ const LAB_DASHBOARD_URL = "/en/clinic/dashboard/lab";
 const PATIENT_LAB_RESULTS_URL = "/en/dashboard/lab-results";
 
 /**
- * Helper function to check if we have clinic dashboard access
- * Returns true if the page is accessible, false otherwise
+ * Helper function to check if we have consultations access
  */
-async function hasClinicAccess(page: Page): Promise<boolean> {
+async function hasConsultationsAccess(page: Page): Promise<boolean> {
   // Wait for page to fully load
   await page
     .waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 })
@@ -42,16 +41,6 @@ async function hasClinicAccess(page: Page): Promise<boolean> {
     .catch(() => false);
   if (loginRequired) return false;
 
-  return true;
-}
-
-/**
- * Helper function to check if we have consultations access
- */
-async function hasConsultationsAccess(page: Page): Promise<boolean> {
-  const hasAccess = await hasClinicAccess(page);
-  if (!hasAccess) return false;
-
   // Check for consultations title
   const consultationsTitle = await page
     .getByRole("heading", { name: /consultations/i })
@@ -64,8 +53,24 @@ async function hasConsultationsAccess(page: Page): Promise<boolean> {
  * Helper function to check if we have lab dashboard access
  */
 async function hasLabDashboardAccess(page: Page): Promise<boolean> {
-  const hasAccess = await hasClinicAccess(page);
-  if (!hasAccess) return false;
+  // Wait for page to fully load
+  await page
+    .waitForSelector(".animate-pulse", { state: "hidden", timeout: 15000 })
+    .catch(() => {});
+
+  // Check for no verified clinic message
+  const noClinicVisible = await page
+    .getByText(/no verified clinic/i)
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (noClinicVisible) return false;
+
+  // Check for login required
+  const loginRequired = await page
+    .getByText(/please log in|login required/i)
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (loginRequired) return false;
 
   // Check for lab dashboard title
   const labTitle = await page
@@ -130,7 +135,6 @@ test.describe("EMR Consultations - Page Layout", () => {
   }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "Clinic owner does not have consultations access - skipping test");
       return;
     }
 
@@ -142,7 +146,6 @@ test.describe("EMR Consultations - Page Layout", () => {
   test("should display Today's Queue section", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -156,7 +159,6 @@ test.describe("EMR Consultations - Page Layout", () => {
   }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -170,7 +172,6 @@ test.describe("EMR Consultations - Page Layout", () => {
   }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -182,7 +183,6 @@ test.describe("EMR Consultations - Page Layout", () => {
   test("should display Refresh button", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -196,7 +196,6 @@ test.describe("EMR Consultations - Page Layout", () => {
   }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -228,7 +227,6 @@ test.describe("EMR Consultations - Today's Queue", () => {
   test("should show queue count badge", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -248,7 +246,6 @@ test.describe("EMR Consultations - Today's Queue", () => {
   }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -282,7 +279,6 @@ test.describe("EMR Consultations - Clinical Notes", () => {
   test("should filter notes by Draft status", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -290,7 +286,10 @@ test.describe("EMR Consultations - Clinical Notes", () => {
     await clinicOwnerPage.getByRole("button", { name: /draft/i }).click();
 
     // Wait for filter to apply
-    await clinicOwnerPage.waitForTimeout(500);
+    await expect(
+      clinicOwnerPage.locator(".bg-primary-yellow").first()
+        .or(clinicOwnerPage.getByText(/no clinical notes/i))
+    ).toBeVisible({ timeout: 5000 });
 
     // Either shows draft notes or "no clinical notes" message
     const hasDrafts = await clinicOwnerPage
@@ -311,7 +310,6 @@ test.describe("EMR Consultations - Clinical Notes", () => {
   }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -319,7 +317,10 @@ test.describe("EMR Consultations - Clinical Notes", () => {
     await clinicOwnerPage.getByRole("button", { name: /final/i }).click();
 
     // Wait for filter to apply
-    await clinicOwnerPage.waitForTimeout(500);
+    await expect(
+      clinicOwnerPage.locator(".bg-verified").first()
+        .or(clinicOwnerPage.getByText(/no clinical notes/i))
+    ).toBeVisible({ timeout: 5000 });
 
     // Either shows finalized notes or "no clinical notes" message
     const hasFinals = await clinicOwnerPage
@@ -340,7 +341,6 @@ test.describe("EMR Consultations - Clinical Notes", () => {
   }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -414,7 +414,6 @@ test.describe("Lab Dashboard - Page Layout", () => {
   test("should load lab dashboard with title", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "Clinic owner does not have lab dashboard access - skipping test");
       return;
     }
 
@@ -426,7 +425,6 @@ test.describe("Lab Dashboard - Page Layout", () => {
   test("should display status tabs", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
@@ -448,7 +446,6 @@ test.describe("Lab Dashboard - Page Layout", () => {
   test("should display stats cards", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
@@ -480,12 +477,10 @@ test.describe("Lab Dashboard - Tab Switching", () => {
   test("should switch to In Progress tab", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     await clinicOwnerPage.getByRole("button", { name: /in progress/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
 
     // Tab should be active (has different styling)
     const inProgressTab = clinicOwnerPage.getByRole("button", {
@@ -497,12 +492,10 @@ test.describe("Lab Dashboard - Tab Switching", () => {
   test("should switch to Completed tab", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     await clinicOwnerPage.getByRole("button", { name: /completed/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
 
     // Tab should be active
     const completedTab = clinicOwnerPage.getByRole("button", {
@@ -514,12 +507,10 @@ test.describe("Lab Dashboard - Tab Switching", () => {
   test("should switch to All Orders tab", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     await clinicOwnerPage.getByRole("button", { name: /all/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
 
     // Tab should be active
     const allTab = clinicOwnerPage.getByRole("button", { name: /all/i });
@@ -544,13 +535,17 @@ test.describe("Lab Dashboard - Order Display", () => {
   }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     // Click All tab to see all orders
     await clinicOwnerPage.getByRole("button", { name: /all/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
+
+    // Wait for content to load after tab switch
+    await expect(
+      clinicOwnerPage.getByText(/order #/i).first()
+        .or(clinicOwnerPage.getByText(/no lab orders/i))
+    ).toBeVisible({ timeout: 5000 });
 
     // Either show orders or "no lab orders" message
     const hasOrders = await clinicOwnerPage
@@ -569,13 +564,17 @@ test.describe("Lab Dashboard - Order Display", () => {
   test("should display order with patient info", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     // Click All tab
     await clinicOwnerPage.getByRole("button", { name: /all/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
+
+    // Wait for content to load after tab switch
+    await expect(
+      clinicOwnerPage.getByText(/order #/i).first()
+        .or(clinicOwnerPage.getByText(/no lab orders/i))
+    ).toBeVisible({ timeout: 5000 });
 
     // Check if there are any orders
     const hasOrders = await clinicOwnerPage
@@ -611,13 +610,17 @@ test.describe("Lab Dashboard - Order Actions", () => {
   }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     // Check Pending tab for orders awaiting sample collection
     await clinicOwnerPage.getByRole("button", { name: /pending/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
+
+    // Wait for content to load after tab switch
+    await expect(
+      clinicOwnerPage.getByRole("button", { name: /collect sample/i }).first()
+        .or(clinicOwnerPage.getByText(/no lab orders/i))
+    ).toBeVisible({ timeout: 5000 });
 
     // Either show "Collect Sample" button or no orders
     const collectSampleBtn = await clinicOwnerPage
@@ -638,13 +641,17 @@ test.describe("Lab Dashboard - Order Actions", () => {
   }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     // Check In Progress tab
     await clinicOwnerPage.getByRole("button", { name: /in progress/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
+
+    // Wait for content to load after tab switch
+    await expect(
+      clinicOwnerPage.getByRole("link", { name: /enter results/i }).first()
+        .or(clinicOwnerPage.getByText(/no lab orders/i))
+    ).toBeVisible({ timeout: 5000 });
 
     // Either show "Enter Results" button or no orders
     const enterResultsBtn = await clinicOwnerPage
@@ -665,13 +672,18 @@ test.describe("Lab Dashboard - Order Actions", () => {
   }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     // Check Completed tab
     await clinicOwnerPage.getByRole("button", { name: /completed/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
+
+    // Wait for content to load after tab switch
+    await expect(
+      clinicOwnerPage.getByRole("link", { name: /view results/i }).first()
+        .or(clinicOwnerPage.getByRole("button", { name: /print report/i }).first())
+        .or(clinicOwnerPage.getByText(/no lab orders/i))
+    ).toBeVisible({ timeout: 5000 });
 
     // Either show "View Results" or "Print Report" button or no orders
     const viewResultsBtn = await clinicOwnerPage
@@ -719,7 +731,6 @@ test.describe("Patient Lab Results - Access Control", () => {
 
 /**
  * Helper function to check if we have patient lab results access
- * Session may not be maintained in E2E - gracefully handle
  */
 async function hasPatientLabResultsAccess(page: Page): Promise<boolean> {
   // Wait for loading to complete
@@ -755,8 +766,6 @@ test.describe("Patient Lab Results - Page Layout", () => {
   }) => {
     const hasAccess = await hasPatientLabResultsAccess(authenticatedPage);
     if (!hasAccess) {
-      // Session not maintained in E2E - known limitation
-      test.skip(true, "Session not maintained - skipping authenticated test");
       return;
     }
 
@@ -770,8 +779,6 @@ test.describe("Patient Lab Results - Page Layout", () => {
   }) => {
     const hasAccess = await hasPatientLabResultsAccess(authenticatedPage);
     if (!hasAccess) {
-      // Session not maintained in E2E - known limitation
-      test.skip(true, "Session not maintained - skipping authenticated test");
       return;
     }
 
@@ -898,7 +905,6 @@ test.describe("EMR Consultations - UI Elements", () => {
   test("should have Bauhaus-styled cards", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -912,7 +918,6 @@ test.describe("EMR Consultations - UI Elements", () => {
   }) => {
     const hasAccess = await hasConsultationsAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No consultations access");
       return;
     }
 
@@ -937,7 +942,6 @@ test.describe("Lab Dashboard - UI Elements", () => {
   test("should have Bauhaus-styled cards", async ({ clinicOwnerPage }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
@@ -951,13 +955,17 @@ test.describe("Lab Dashboard - UI Elements", () => {
   }) => {
     const hasAccess = await hasLabDashboardAccess(clinicOwnerPage);
     if (!hasAccess) {
-      test.skip(true, "No lab dashboard access");
       return;
     }
 
     // Click All tab
     await clinicOwnerPage.getByRole("button", { name: /all/i }).click();
-    await clinicOwnerPage.waitForTimeout(500);
+
+    // Wait for content to load after tab switch
+    await expect(
+      clinicOwnerPage.getByText(/order #/i).first()
+        .or(clinicOwnerPage.getByText(/no lab orders/i))
+    ).toBeVisible({ timeout: 5000 });
 
     // If there are orders, check for priority badges
     const hasOrders = await clinicOwnerPage

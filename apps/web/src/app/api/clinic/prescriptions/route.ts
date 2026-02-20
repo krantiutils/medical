@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@swasthya/database";
 import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { nextPrescriptionNumber } from "@/lib/sequence-number";
 
 // Interface for prescription item
 interface PrescriptionItem {
@@ -165,24 +166,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate prescription number
-    const year = new Date().getFullYear();
-    const lastPrescription = await prisma.prescription.findFirst({
-      where: {
-        clinic_id: clinic.id,
-        prescription_no: { startsWith: `RX-${year}-` },
-      },
-      orderBy: { prescription_no: "desc" },
-    });
-
-    let nextNumber = 1;
-    if (lastPrescription) {
-      const lastNumber = parseInt(
-        lastPrescription.prescription_no.split("-")[2] || "0"
-      );
-      nextNumber = lastNumber + 1;
-    }
-    const prescription_no = `RX-${year}-${nextNumber.toString().padStart(4, "0")}`;
+    // Generate prescription number (atomic counter)
+    const prescription_no = await nextPrescriptionNumber(clinic.id);
 
     // Create prescription
     const prescription = await prisma.prescription.create({

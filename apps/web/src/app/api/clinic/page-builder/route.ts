@@ -1,35 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 import type { PageBuilderConfig, AnyPageBuilderConfig } from "@/types/page-builder";
 import { ensureV2 } from "@/components/page-builder/lib/migrate";
 
-async function getClinicForUser(userId: string) {
-  return prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: userId,
-      verified: true,
-    },
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      meta: true,
-    },
-  });
-}
-
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  const access = await requireClinicPermission("page-builder");
+  if (!access.hasAccess) {
+    return NextResponse.json(
+      { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
+    );
   }
 
   try {
-    const clinic = await getClinicForUser(session.user.id);
+    const clinic = await prisma.clinic.findUnique({
+      where: { id: access.clinicId },
+      select: { id: true, slug: true, name: true, meta: true },
+    });
+
     if (!clinic) {
-      return NextResponse.json({ error: "No verified clinic found", code: "NO_CLINIC" }, { status: 404 });
+      return NextResponse.json({ error: "Clinic not found", code: "NO_CLINIC" }, { status: 404 });
     }
 
     const meta = (clinic.meta as Record<string, unknown>) || {};
@@ -53,15 +44,22 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  const access = await requireClinicPermission("page-builder");
+  if (!access.hasAccess) {
+    return NextResponse.json(
+      { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
+    );
   }
 
   try {
-    const clinic = await getClinicForUser(session.user.id);
+    const clinic = await prisma.clinic.findUnique({
+      where: { id: access.clinicId },
+      select: { id: true, meta: true },
+    });
+
     if (!clinic) {
-      return NextResponse.json({ error: "No verified clinic found", code: "NO_CLINIC" }, { status: 404 });
+      return NextResponse.json({ error: "Clinic not found", code: "NO_CLINIC" }, { status: 404 });
     }
 
     const body = await request.json();
@@ -98,7 +96,7 @@ export async function PUT(request: NextRequest) {
     }));
 
     await prisma.clinic.update({
-      where: { id: clinic.id },
+      where: { id: access.clinicId },
       data: { meta: updatedMeta },
     });
 

@@ -1,30 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
 import { prisma, ClinicStaffRole } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
-import { getClinicAccess } from "@/lib/require-clinic-access";
-import { hasPermission, ROLE_LABELS } from "@/lib/clinic-permissions";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { ROLE_LABELS } from "@/lib/clinic-permissions";
 import { sendStaffInvitationEmail, sendStaffWelcomeEmail } from "@/lib/email";
 
 // GET /api/clinic/staff - Get all staff members for the clinic
 export async function GET() {
   try {
-    const access = await getClinicAccess();
-
+    const access = await requireClinicPermission("staff");
     if (!access.hasAccess) {
       return NextResponse.json(
-        { error: access.message, code: access.reason },
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
         { status: access.reason === "unauthenticated" ? 401 : 403 }
-      );
-    }
-
-    // Check if user has staff permission
-    if (!hasPermission(access.role, "staff")) {
-      return NextResponse.json(
-        { error: "You don't have permission to view staff members" },
-        { status: 403 }
       );
     }
 
@@ -79,20 +68,11 @@ export async function GET() {
 // POST /api/clinic/staff - Invite a new staff member
 export async function POST(request: NextRequest) {
   try {
-    const access = await getClinicAccess();
-
+    const access = await requireClinicPermission("staff");
     if (!access.hasAccess) {
       return NextResponse.json(
-        { error: access.message, code: access.reason },
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
         { status: access.reason === "unauthenticated" ? 401 : 403 }
-      );
-    }
-
-    // Check if user has staff permission
-    if (!hasPermission(access.role, "staff")) {
-      return NextResponse.json(
-        { error: "You don't have permission to manage staff" },
-        { status: 403 }
       );
     }
 
@@ -152,53 +132,57 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the inviter's name for the email
-    const session = await getServerSession(authOptions);
-    const inviterName = session?.user?.name || session?.user?.email || "A clinic administrator";
-
-    // Check if user exists
-    let user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+    const inviter = await prisma.user.findUnique({
+      where: { id: access.userId },
+      select: { name: true, email: true },
     });
+    const inviterName = inviter?.name || inviter?.email || "A clinic administrator";
 
+    // Create user (if needed) + ClinicStaff atomically
     let isNewUser = false;
     let tempPassword: string | null = null;
 
-    if (!user) {
-      // Create new user with temporary password
-      isNewUser = true;
-      tempPassword = randomBytes(8).toString("hex"); // 16 character password
-      const hashedPassword = await bcrypt.hash(tempPassword, 12);
+    // Hash password before transaction to avoid slow bcrypt inside txn
+    tempPassword = randomBytes(8).toString("hex");
+    const hashedPassword = await bcrypt.hash(tempPassword, 12);
 
-      user = await prisma.user.create({
-        data: {
-          email: normalizedEmail,
-          password_hash: hashedPassword,
-          name: normalizedEmail.split("@")[0], // Use email prefix as name
-        },
+    const clinicStaff = await prisma.$transaction(async (tx) => {
+      let user = await tx.user.findUnique({
+        where: { email: normalizedEmail },
       });
-    }
 
-    // Create ClinicStaff record
-    const clinicStaff = await prisma.clinicStaff.create({
-      data: {
-        clinic_id: access.clinicId,
-        user_id: user.id,
-        role: role as ClinicStaffRole,
-        invited_by: access.userId,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            image: true,
+      if (!user) {
+        isNewUser = true;
+        user = await tx.user.create({
+          data: {
+            email: normalizedEmail,
+            password_hash: hashedPassword,
+            name: normalizedEmail.split("@")[0],
+          },
+        });
+      }
+
+      return tx.clinicStaff.create({
+        data: {
+          clinic_id: access.clinicId,
+          user_id: user.id,
+          role: role as ClinicStaffRole,
+          invited_by: access.userId,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+            },
           },
         },
-      },
+      });
     });
 
-    // Send appropriate email
+    // Send email outside transaction (side effect)
     const emailData = {
       clinicName: access.clinic.name,
       clinicSlug: access.clinic.slug,

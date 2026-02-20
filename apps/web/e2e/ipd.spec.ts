@@ -62,13 +62,6 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
 
-      // Check if we have access to IPD
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Should show IPD Management heading
       await expect(
         clinicOwnerPage.getByRole("heading", { name: /IPD Management/i })
@@ -78,12 +71,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     test("shows seeded wards on IPD page", async ({ clinicOwnerPage }) => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Should show the General Ward A
       await expect(
@@ -100,12 +87,6 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
 
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Should show total beds count text
       await expect(clinicOwnerPage.getByText(/beds/i).first()).toBeVisible();
 
@@ -118,12 +99,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     test("can navigate to beds page from ward", async ({ clinicOwnerPage }) => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Click View Beds button on first ward
       await clinicOwnerPage
@@ -143,12 +118,6 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(BEDS_URL);
       await waitForLoading(clinicOwnerPage);
 
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Should show Bed Management heading
       await expect(
         clinicOwnerPage.getByRole("heading", { name: /Bed Management/i })
@@ -158,12 +127,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     test("displays seeded beds", async ({ clinicOwnerPage }) => {
       await clinicOwnerPage.goto(BEDS_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Should show bed A-101
       await expect(
@@ -179,12 +142,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     test("can add a new bed to ward", async ({ clinicOwnerPage }) => {
       await clinicOwnerPage.goto(BEDS_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Click Add Bed button
       await clinicOwnerPage.getByRole("button", { name: /Add Bed/i }).click();
@@ -227,12 +184,6 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(BEDS_URL);
       await waitForLoading(clinicOwnerPage);
 
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Should show Available status badges
       const availableBadges = clinicOwnerPage.getByText("Available", {
         exact: true,
@@ -243,12 +194,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     test("can filter beds by ward", async ({ clinicOwnerPage }) => {
       await clinicOwnerPage.goto(BEDS_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Should show ward filter dropdown with All Wards option
       const wardFilter = clinicOwnerPage.locator("select").first();
@@ -269,12 +214,6 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
 
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Click New Admission button
       await clinicOwnerPage
         .getByRole("link", { name: /New Admission/i })
@@ -289,12 +228,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     }) => {
       await clinicOwnerPage.goto(ADMIT_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Should show all three steps
       await expect(
@@ -312,12 +245,6 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(ADMIT_URL);
       await waitForLoading(clinicOwnerPage);
 
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Should show available beds (e.g., A-101)
       await expect(
         clinicOwnerPage.getByText(TEST_DATA.BEDS.A101.number)
@@ -330,19 +257,13 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(ADMIT_URL);
       await waitForLoading(clinicOwnerPage);
 
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Search for seeded test patient
       const searchInput = clinicOwnerPage.getByPlaceholder(/Type to search/i);
       await expect(searchInput).toBeVisible();
       await searchInput.fill(TEST_DATA.PATIENTS.PATIENT_ONE.name);
 
-      // Wait for search debounce
-      await clinicOwnerPage.waitForTimeout(500);
+      // Wait for search results to appear
+      await expect(clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first()).toBeVisible({ timeout: 5000 });
     });
   });
 
@@ -361,12 +282,6 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
 
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Click View Admissions link
       await clinicOwnerPage
         .getByRole("link", { name: /View Admissions/i })
@@ -384,12 +299,6 @@ test.describe("IPD - Ward and Bed Management", () => {
       await clinicOwnerPage.goto(BEDS_URL);
       await waitForLoading(clinicOwnerPage);
 
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
-
       // Should show Legend section
       await expect(clinicOwnerPage.getByText(/Legend:/i)).toBeVisible();
 
@@ -405,12 +314,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     test("can open add ward modal", async ({ clinicOwnerPage }) => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Click Add Ward button
       await clinicOwnerPage.getByRole("button", { name: /Add Ward/i }).click();
@@ -435,12 +338,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     test("can add a new ward", async ({ clinicOwnerPage }) => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Click Add Ward button
       await clinicOwnerPage.getByRole("button", { name: /Add Ward/i }).click();
@@ -484,12 +381,6 @@ test.describe("IPD - Ward and Bed Management", () => {
     test("can edit existing ward", async ({ clinicOwnerPage }) => {
       await clinicOwnerPage.goto(IPD_DASHBOARD_URL);
       await waitForLoading(clinicOwnerPage);
-
-      const hasAccess = await hasIPDAccess(clinicOwnerPage);
-      if (!hasAccess) {
-        test.skip(true, "No IPD access - skipping test");
-        return;
-      }
 
       // Wait for wards to load
       await expect(

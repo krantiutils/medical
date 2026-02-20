@@ -14,10 +14,11 @@
  * - Register form usable on mobile
  * - Clinic dashboard accessible on mobile (with auth)
  * - Footer renders as stacked layout on mobile
+ *
+ * Auth is handled via storageState fixtures (clinicOwnerPage).
  */
 
-import { test, expect } from "@playwright/test";
-import { TEST_DATA } from "./fixtures/test-utils";
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 // Set mobile viewport for all tests in this file
 test.use({ viewport: { width: 375, height: 667 } });
@@ -390,54 +391,21 @@ test.describe("Mobile - Register Form", () => {
 });
 
 test.describe("Mobile - Clinic Dashboard with Auth", () => {
-  // This test uses a direct login approach rather than the fixture,
-  // because test.use() for viewport is already set at file level
   test("should allow authenticated clinic owner to access dashboard on mobile", async ({
-    page,
+    clinicOwnerPage,
   }) => {
-    // Login as clinic owner
-    await page.goto("/en/login");
-
-    // Switch to email auth
-    const emailTab = page.getByRole("button", { name: /with email/i });
-    await emailTab.click();
-
-    await page.locator("#email").fill(TEST_DATA.CLINIC_OWNER.email);
-    await page.locator("#password").fill(TEST_DATA.CLINIC_OWNER.password);
-    await page.getByRole("button", { name: /sign in/i }).click();
-
-    // Wait for redirect away from login
-    try {
-      await page.waitForURL((url) => !url.pathname.includes("/login"), {
-        timeout: 30000,
-      });
-    } catch {
-      // If login fails (e.g., no seeded data), skip the rest of the test
-      test.skip(true, "Login failed - test data may not be seeded");
-      return;
-    }
-
     // Navigate to clinic dashboard
-    await page.goto("/en/clinic/dashboard");
-
-    // If we get redirected back to login, session was lost
-    const currentUrl = page.url();
-    if (currentUrl.includes("/login")) {
-      test.skip(
-        true,
-        "Session not maintained after navigation - known limitation"
-      );
-      return;
-    }
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await clinicOwnerPage.waitForLoadState("networkidle");
 
     // Dashboard should load without horizontal scroll
-    const hasHorizontalScroll = await page.evaluate(() => {
+    const hasHorizontalScroll = await clinicOwnerPage.evaluate(() => {
       return document.body.scrollWidth > window.innerWidth;
     });
     expect(hasHorizontalScroll).toBe(false);
 
     // Some dashboard content should be visible
-    const bodyText = await page.textContent("body");
+    const bodyText = await clinicOwnerPage.textContent("body");
     expect(bodyText!.length).toBeGreaterThan(0);
   });
 });

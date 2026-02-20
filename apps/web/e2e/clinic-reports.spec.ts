@@ -184,9 +184,6 @@ test.describe("Billing Reports Dashboard", () => {
   test("should show correct totals from seeded data", async ({
     clinicOwnerPage,
   }) => {
-    // Wait for data to load completely
-    await clinicOwnerPage.waitForTimeout(1000);
-
     // Seeded invoices: INV-0001 (500), INV-0002 (1808), INV-0003 (2400)
     // Total invoices should be at least 3
     const totalInvoicesCard = clinicOwnerPage
@@ -350,9 +347,6 @@ test.describe("Pharmacy Reports Dashboard", () => {
       .getByRole("button", { name: /daily sales/i })
       .click();
 
-    // Wait briefly for the tab content to render
-    await clinicOwnerPage.waitForTimeout(500);
-
     // The daily sales view should show a table or a no-data message
     const hasTable =
       (await clinicOwnerPage.locator("table").count()) > 0;
@@ -369,8 +363,6 @@ test.describe("Pharmacy Reports Dashboard", () => {
       .getByRole("button", { name: /product sales/i })
       .click();
 
-    await clinicOwnerPage.waitForTimeout(500);
-
     // Should show product table or no-data
     const hasTable =
       (await clinicOwnerPage.locator("table").count()) > 0;
@@ -386,8 +378,6 @@ test.describe("Pharmacy Reports Dashboard", () => {
     await clinicOwnerPage
       .getByRole("button", { name: /sales history/i })
       .click();
-
-    await clinicOwnerPage.waitForTimeout(500);
 
     // Should show sales history table or no-data
     const hasTable =
@@ -427,9 +417,6 @@ test.describe("Pharmacy Reports Dashboard", () => {
     await clinicOwnerPage
       .getByRole("button", { name: /today/i })
       .click();
-
-    // Wait for data to reload
-    await clinicOwnerPage.waitForTimeout(1000);
 
     // The page should still be functional - title visible
     await expect(

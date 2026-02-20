@@ -3,72 +3,10 @@
  *
  * Tests for US-082: Verify reception and queue works correctly
  *
- * KNOWN LIMITATION: Client-side useSession() hook does not reliably maintain
- * session state after page navigation in Playwright E2E tests. Tests that require
- * authenticated state will gracefully skip when session is not detected.
+ * Uses storageState-based auth via clinicOwnerPage fixture.
  */
 
-import { test, expect, Page } from "@playwright/test";
-import { TEST_DATA } from "./fixtures/test-utils";
-
-/**
- * Login helper for clinic owner
- */
-async function loginAsClinicOwner(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-  // Login page defaults to phone tab — switch to email tab first
-  await page.getByRole("button", { name: /with email/i }).click();
-  await page.getByLabel(/email/i).fill(TEST_DATA.CLINIC_OWNER.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.CLINIC_OWNER.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  // Wait for loading state
-  try {
-    await expect(
-      page.getByRole("button", { name: /signing in/i })
-    ).toBeVisible({
-      timeout: 5000,
-    });
-  } catch {
-    // Button might have already changed
-  }
-
-  // Wait for redirect away from login page
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Check if reception page is accessible (clinic owner is authenticated with verified clinic)
- */
-async function isReceptionAccessible(page: Page): Promise<boolean> {
-  await page.goto("/en/clinic/dashboard/reception");
-
-  // Wait for any content to appear
-  try {
-    await page.waitForSelector("main h1", { timeout: 15000 });
-  } catch {
-    return false;
-  }
-
-  // Check for reception content (the title "Reception Queue")
-  const title = page.getByRole("heading", { name: /reception queue/i });
-  const walkInSection = page.getByRole("heading", {
-    name: /walk-in registration/i,
-  });
-
-  const hasTitle = await title.isVisible().catch(() => false);
-  const hasWalkIn = await walkInSection.isVisible().catch(() => false);
-
-  return hasTitle && hasWalkIn;
-}
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 test.describe("Reception Queue - Access Control", () => {
   test("should redirect non-authenticated users to login", async ({
@@ -115,21 +53,11 @@ test.describe("Reception Queue - Access Control", () => {
 });
 
 test.describe("Reception Queue - Authenticated Clinic Owner", () => {
-  test("clinic owner can access reception page", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(
-        true,
-        "Reception not accessible - session or clinic not found"
-      );
-      return;
-    }
+  test("clinic owner can access reception page", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Reception page should be visible
     await expect(
@@ -138,19 +66,12 @@ test.describe("Reception Queue - Authenticated Clinic Owner", () => {
   });
 
   test("reception page displays walk-in registration form", async ({
-    page,
+    clinicOwnerPage: page,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Check for walk-in registration form elements
     await expect(
@@ -166,19 +87,12 @@ test.describe("Reception Queue - Authenticated Clinic Owner", () => {
   });
 
   test("reception page displays doctor selection dropdown", async ({
-    page,
+    clinicOwnerPage: page,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Check for doctor selection dropdown
     const doctorSelect = page.locator("select").filter({
@@ -187,18 +101,11 @@ test.describe("Reception Queue - Authenticated Clinic Owner", () => {
     await expect(doctorSelect.first()).toBeVisible();
   });
 
-  test("reception page displays today's queue section", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("reception page displays today's queue section", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Check for today's queue section
     await expect(
@@ -206,18 +113,11 @@ test.describe("Reception Queue - Authenticated Clinic Owner", () => {
     ).toBeVisible();
   });
 
-  test("reception page has filter by doctor dropdown", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("reception page has filter by doctor dropdown", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Check for filter dropdown in queue section
     const filterSelect = page.locator("select").filter({
@@ -226,18 +126,11 @@ test.describe("Reception Queue - Authenticated Clinic Owner", () => {
     await expect(filterSelect.first()).toBeVisible();
   });
 
-  test("back to dashboard link is present", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("back to dashboard link is present", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Check for back to dashboard link
     const backLink = page.getByRole("link", { name: /back to dashboard/i });
@@ -249,18 +142,11 @@ test.describe("Reception Queue - Authenticated Clinic Owner", () => {
 });
 
 test.describe("Reception Queue - Walk-in Registration", () => {
-  test("shows validation error for empty patient name", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("shows validation error for empty patient name", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Fill phone but not name
     await page.getByPlaceholder(/98xxxxxxxx/i).fill("9801234567");
@@ -274,18 +160,11 @@ test.describe("Reception Queue - Walk-in Registration", () => {
     });
   });
 
-  test("shows validation error for invalid phone number", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("shows validation error for invalid phone number", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Fill name and invalid phone
     await page
@@ -316,19 +195,12 @@ test.describe("Reception Queue - Walk-in Registration", () => {
   });
 
   test("shows validation error for missing doctor selection", async ({
-    page,
+    clinicOwnerPage: page,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Fill name and phone but not doctor
     await page
@@ -345,18 +217,11 @@ test.describe("Reception Queue - Walk-in Registration", () => {
     });
   });
 
-  test("can register walk-in patient successfully", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("can register walk-in patient successfully", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Generate unique patient name
     const patientName = `E2E Test Patient ${Date.now()}`;
@@ -399,19 +264,12 @@ test.describe("Reception Queue - Walk-in Registration", () => {
   });
 
   test("token is assigned automatically after registration", async ({
-    page,
+    clinicOwnerPage: page,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Generate unique patient name
     const patientName = `Token Test Patient ${Date.now()}`;
@@ -445,18 +303,11 @@ test.describe("Reception Queue - Walk-in Registration", () => {
     await expect(page.getByText(/Token #\d+/i)).toBeVisible({ timeout: 10000 });
   });
 
-  test("patient search by phone works", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("patient search by phone works", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Check for patient search input
     const searchInput = page.getByPlaceholder(
@@ -467,10 +318,13 @@ test.describe("Reception Queue - Walk-in Registration", () => {
     // Enter partial phone number to trigger search
     await searchInput.fill("980");
 
-    // Wait for search results or "no results" message
-    await page.waitForTimeout(500); // Debounce delay
+    // Wait for search results or "no results" message (debounce delay)
+    const searchFeedback = page.getByText(/searching|no patients found/i);
+    const selectButtons = page.locator("button").filter({ hasText: /select/i });
 
     // Either results appear or "searching" / "no results" appears
+    await expect(searchFeedback.or(selectButtons.first())).toBeVisible({ timeout: 5000 }).catch(() => {});
+
     const hasSearchFeedback =
       (await page.getByText(/searching|no patients found/i).isVisible()) ||
       (await page.locator("button").filter({ hasText: /select/i }).count()) > 0;
@@ -483,18 +337,11 @@ test.describe("Reception Queue - Walk-in Registration", () => {
 });
 
 test.describe("Reception Queue - Queue Display and Status Updates", () => {
-  test("queue shows appointments with token numbers", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("queue shows appointments with token numbers", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Today's queue section should be visible
     await expect(
@@ -513,18 +360,11 @@ test.describe("Reception Queue - Queue Display and Status Updates", () => {
     expect(hasAppointments || noAppointments).toBe(true);
   });
 
-  test("queue items show patient information", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("queue items show patient information", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // First, register a patient to ensure queue has entries
     const patientName = `Queue Display Patient ${Date.now()}`;
@@ -560,18 +400,11 @@ test.describe("Reception Queue - Queue Display and Status Updates", () => {
     await expect(page.getByText(patientName)).toBeVisible({ timeout: 5000 });
   });
 
-  test("status buttons are visible for queue items", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("status buttons are visible for queue items", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Register a patient first
     const patientName = `Status Button Test ${Date.now()}`;
@@ -598,7 +431,7 @@ test.describe("Reception Queue - Queue Display and Status Updates", () => {
 
     await page.getByRole("button", { name: /register patient/i }).click();
 
-    // Wait for success and patient to appear in queue
+    // Wait for patient to appear in queue
     await expect(page.getByText(patientName)).toBeVisible({ timeout: 10000 });
 
     // Check for action buttons (Call, Complete, No Show, Print Token)
@@ -612,18 +445,11 @@ test.describe("Reception Queue - Queue Display and Status Updates", () => {
     expect(hasCallButton || hasPrintButton).toBe(true);
   });
 
-  test("can update patient status to In Progress", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("can update patient status to In Progress", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Register a patient first
     const patientName = `Status Update Test ${Date.now()}`;
@@ -667,18 +493,11 @@ test.describe("Reception Queue - Queue Display and Status Updates", () => {
     }
   });
 
-  test("can mark patient as No Show", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("can mark patient as No Show", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Register a patient first
     const patientName = `No Show Test ${Date.now()}`;
@@ -716,25 +535,16 @@ test.describe("Reception Queue - Queue Display and Status Updates", () => {
       await noShowButton.click();
 
       // Should show "No Show" status after clicking
-      await page.waitForTimeout(1000);
       const statusBadge = page.getByText(/no show|उपस्थित नभएको/i);
-      const hasNoShowStatus = await statusBadge.first().isVisible().catch(() => false);
-      expect(hasNoShowStatus).toBe(true);
+      await expect(statusBadge.first()).toBeVisible({ timeout: 5000 });
     }
   });
 
-  test("filter by doctor works", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("filter by doctor works", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Find the filter dropdown
     const filterSelect = page
@@ -756,8 +566,8 @@ test.describe("Reception Queue - Queue Display and Status Updates", () => {
     const doctorOption = options.find((opt) => opt.includes("Dr."));
     if (doctorOption) {
       await filterSelect.selectOption({ label: doctorOption });
-      // The filter should apply (no error)
-      await page.waitForTimeout(500);
+      // The filter should apply (no error) - wait for network to settle
+      await page.waitForLoadState("networkidle");
     }
   });
 });
@@ -845,8 +655,8 @@ test.describe("Queue Display - TV Screen Page", () => {
 
     await page.waitForSelector("main", { timeout: 15000 });
 
-    // Wait for content to load (either loading, now serving, waiting, or no patients)
-    await page.waitForTimeout(2000);
+    // Wait for content to load
+    await page.waitForLoadState("networkidle");
 
     // Check for any queue-related content
     const nowServing = page.getByText(/now serving|अहिले सेवा गर्दै/i);
@@ -873,7 +683,7 @@ test.describe("Queue Display - TV Screen Page", () => {
     await page.waitForSelector("main", { timeout: 15000 });
 
     // Wait for content to load
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState("networkidle");
 
     // Check for any queue-related content
     const waiting = page.getByText(/waiting|प्रतीक्षामा/i);
@@ -906,18 +716,11 @@ test.describe("Queue Display - TV Screen Page", () => {
 });
 
 test.describe("Reception Queue - Print Token", () => {
-  test("print token button is available", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isReceptionAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Reception not accessible");
-      return;
-    }
+  test("print token button is available", async ({ clinicOwnerPage: page }) => {
+    await page.goto("/en/clinic/dashboard/reception");
+    await expect(
+      page.getByRole("heading", { name: /reception queue/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Register a patient first
     const patientName = `Print Token Test ${Date.now()}`;

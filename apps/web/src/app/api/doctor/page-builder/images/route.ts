@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { writeFile, mkdir, readdir, stat } from "fs/promises";
 import path from "path";
-import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { prisma } from "@swasthya/database";
+import { authOptions } from "@/lib/auth";
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+async function getDoctorForUser(userId: string) {
+  return prisma.professional.findFirst({
+    where: {
+      claimed_by_id: userId,
+      verified: true,
+    },
+    select: { id: true },
+  });
+}
 
 function generateUniqueFilename(originalName: string): string {
   const ext = path.extname(originalName);
@@ -14,24 +26,24 @@ function generateUniqueFilename(originalName: string): string {
 }
 
 export async function GET() {
-  const access = await requireClinicPermission("page-builder");
-  if (!access.hasAccess) {
-    return NextResponse.json(
-      { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
-      { status: access.reason === "unauthenticated" ? 401 : 403 }
-    );
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
   try {
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "clinics", access.clinicId, "page-builder");
+    const doctor = await getDoctorForUser(session.user.id);
+    if (!doctor) {
+      return NextResponse.json({ error: "No verified doctor profile found", code: "NO_DOCTOR" }, { status: 404 });
+    }
+
+    const uploadsDir = path.join(process.cwd(), "public", "uploads", "doctors", doctor.id, "page-builder");
 
     let files: string[] = [];
     try {
       const entries = await readdir(uploadsDir);
-      // Filter to image files only and get their info
       const imageFiles = entries.filter((f) => /\.(jpe?g|png|webp)$/i.test(f));
 
-      // Get file stats for sorting by modification time
       const fileInfos = await Promise.all(
         imageFiles.map(async (f) => {
           const fileStat = await stat(path.join(uploadsDir, f));
@@ -39,30 +51,31 @@ export async function GET() {
         })
       );
 
-      // Sort newest first
       fileInfos.sort((a, b) => b.mtime - a.mtime);
-      files = fileInfos.map((f) => `/uploads/clinics/${access.clinicId}/page-builder/${f.name}`);
+      files = fileInfos.map((f) => `/uploads/doctors/${doctor.id}/page-builder/${f.name}`);
     } catch {
       // Directory doesn't exist yet — return empty
     }
 
     return NextResponse.json({ images: files });
   } catch (error) {
-    console.error("Error listing page builder images:", error);
+    console.error("Error listing doctor page builder images:", error);
     return NextResponse.json({ error: "Failed to list images" }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
-  const access = await requireClinicPermission("page-builder");
-  if (!access.hasAccess) {
-    return NextResponse.json(
-      { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
-      { status: access.reason === "unauthenticated" ? 401 : 403 }
-    );
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
   try {
+    const doctor = await getDoctorForUser(session.user.id);
+    if (!doctor) {
+      return NextResponse.json({ error: "No verified doctor profile found", code: "NO_DOCTOR" }, { status: 404 });
+    }
+
     const formData = await request.formData();
     const file = formData.get("image") as File | null;
 
@@ -78,7 +91,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Image file size exceeds 5MB limit" }, { status: 400 });
     }
 
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "clinics", access.clinicId, "page-builder");
+    const uploadsDir = path.join(process.cwd(), "public", "uploads", "doctors", doctor.id, "page-builder");
     await mkdir(uploadsDir, { recursive: true });
 
     const filename = generateUniqueFilename(file.name);
@@ -86,11 +99,11 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(filePath, buffer);
 
-    const imageUrl = `/uploads/clinics/${access.clinicId}/page-builder/${filename}`;
+    const imageUrl = `/uploads/doctors/${doctor.id}/page-builder/${filename}`;
 
     return NextResponse.json({ success: true, url: imageUrl });
   } catch (error) {
-    console.error("Error uploading page builder image:", error);
+    console.error("Error uploading doctor page builder image:", error);
     return NextResponse.json({ error: "Failed to upload image" }, { status: 500 });
   }
 }

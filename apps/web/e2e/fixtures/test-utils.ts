@@ -152,7 +152,9 @@ export const TEST_DATA = {
 };
 
 /**
- * Extended test with custom fixtures
+ * Extended test with custom fixtures.
+ * Auth state is pre-loaded from storageState files created by auth.setup.ts.
+ * Each fixture creates its own browser context so tests are isolated.
  */
 export const test = base.extend<{
   authenticatedPage: Page;
@@ -160,44 +162,40 @@ export const test = base.extend<{
   professionalPage: Page;
   clinicOwnerPage: Page;
 }>({
-  /**
-   * Provides a page with a regular user logged in
-   */
-  authenticatedPage: async ({ page }, use) => {
-    await login(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
+  authenticatedPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: "playwright/.auth/user.json",
+    });
+    const page = await context.newPage();
     await use(page);
+    await context.close();
   },
 
-  /**
-   * Provides a page with an admin user logged in
-   */
-  adminPage: async ({ page }, use) => {
-    await login(page, TEST_DATA.ADMIN.email, TEST_DATA.ADMIN.password);
+  adminPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: "playwright/.auth/admin.json",
+    });
+    const page = await context.newPage();
     await use(page);
+    await context.close();
   },
 
-  /**
-   * Provides a page with a professional user logged in
-   */
-  professionalPage: async ({ page }, use) => {
-    await login(
-      page,
-      TEST_DATA.PROFESSIONAL.email,
-      TEST_DATA.PROFESSIONAL.password
-    );
+  professionalPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: "playwright/.auth/professional.json",
+    });
+    const page = await context.newPage();
     await use(page);
+    await context.close();
   },
 
-  /**
-   * Provides a page with a clinic owner logged in
-   */
-  clinicOwnerPage: async ({ page }, use) => {
-    await login(
-      page,
-      TEST_DATA.CLINIC_OWNER.email,
-      TEST_DATA.CLINIC_OWNER.password
-    );
+  clinicOwnerPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: "playwright/.auth/clinicOwner.json",
+    });
+    const page = await context.newPage();
     await use(page);
+    await context.close();
   },
 });
 

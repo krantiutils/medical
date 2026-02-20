@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 /**
  * GET /api/clinic/patients/[id]
@@ -13,32 +12,20 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: { id: true },
-    });
-
-    if (!clinic) {
+    const access = await requireClinicPermission("patients");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
+
+    const { id } = await params;
 
     const patient = await prisma.patient.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       include: {
         _count: {
@@ -85,33 +72,21 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: { id: true },
-    });
-
-    if (!clinic) {
+    const access = await requireClinicPermission("patients");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
+
+    const { id } = await params;
 
     // Verify patient belongs to this clinic
     const existingPatient = await prisma.patient.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       select: { id: true },
     });
@@ -163,7 +138,7 @@ export async function PUT(
         // Check for duplicate phone in same clinic (excluding current patient)
         const duplicatePatient = await prisma.patient.findFirst({
           where: {
-            clinic_id: clinic.id,
+            clinic_id: access.clinicId,
             phone: cleanPhone,
             id: { not: id },
           },
@@ -276,32 +251,20 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: { id: true },
-    });
-
-    if (!clinic) {
+    const access = await requireClinicPermission("patients");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
+
+    const { id } = await params;
 
     const patient = await prisma.patient.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       include: {
         _count: {
@@ -309,6 +272,9 @@ export async function DELETE(
             appointments: true,
             invoices: true,
             admissions: true,
+            clinical_notes: true,
+            prescriptions: true,
+            lab_orders: true,
           },
         },
       },
@@ -321,16 +287,19 @@ export async function DELETE(
       );
     }
 
-    // Prevent deletion of patients with records
+    // Prevent deletion of patients with any related records
     const totalRecords =
       patient._count.appointments +
       patient._count.invoices +
-      patient._count.admissions;
+      patient._count.admissions +
+      patient._count.clinical_notes +
+      patient._count.prescriptions +
+      patient._count.lab_orders;
 
     if (totalRecords > 0) {
       return NextResponse.json(
         {
-          error: "Cannot delete patient with existing records. This patient has appointments, invoices, or admissions.",
+          error: "Cannot delete patient with existing records.",
           code: "HAS_RECORDS",
           counts: patient._count,
         },

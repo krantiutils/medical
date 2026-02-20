@@ -21,7 +21,7 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
-  // Limit workers to avoid overwhelming dev server with concurrent bcrypt logins
+  // Limit workers on CI; locally use 4 for speed
   workers: process.env.CI ? 1 : 4,
 
   // Reporter to use
@@ -44,26 +44,18 @@ export default defineConfig({
     video: "on-first-retry",
   },
 
-  // Configure projects for major browsers
+  // Configure projects
   projects: [
+    // Auth setup — runs once before all tests, saves storageState for each role
+    {
+      name: "setup",
+      testMatch: /auth\.setup\.ts/,
+    },
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup"],
     },
-    // Add more browsers as needed for comprehensive testing
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-    // Mobile viewport testing
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
   ],
 
   // Run local dev server before starting the tests

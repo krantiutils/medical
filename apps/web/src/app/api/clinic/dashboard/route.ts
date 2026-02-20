@@ -1,76 +1,42 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma, AppointmentStatus } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
+  const access = await requireClinicPermission("dashboard");
+  if (!access.hasAccess) {
     return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
+      { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
     );
   }
 
   try {
-    // Find clinic owned by user via ClinicStaff (primary) or claimed_by_id (fallback)
-    // Do NOT filter by verified - we need to show unverified clinics too
-    const staffMembership = await prisma.clinicStaff.findFirst({
-      where: { user_id: session.user.id },
-      include: {
-        clinic: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            type: true,
-            logo_url: true,
-            verified: true,
-            address: true,
-            phone: true,
-            email: true,
-            website: true,
-            services: true,
-            timings: true,
-            photos: true,
-            admin_review_notes: true,
-            admin_reviewed_at: true,
-          },
-        },
+    // Fetch full clinic details (access.clinic only has basic fields)
+    const clinic = await prisma.clinic.findUnique({
+      where: { id: access.clinicId },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        type: true,
+        logo_url: true,
+        verified: true,
+        address: true,
+        phone: true,
+        email: true,
+        website: true,
+        services: true,
+        timings: true,
+        photos: true,
+        admin_review_notes: true,
+        admin_reviewed_at: true,
       },
-      orderBy: { created_at: "asc" },
     });
-
-    let clinic = staffMembership?.clinic ?? null;
-
-    // Fallback: legacy ownership
-    if (!clinic) {
-      clinic = await prisma.clinic.findFirst({
-        where: { claimed_by_id: session.user.id },
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          type: true,
-          logo_url: true,
-          verified: true,
-          address: true,
-          phone: true,
-          email: true,
-          website: true,
-          services: true,
-          timings: true,
-          photos: true,
-          admin_review_notes: true,
-          admin_reviewed_at: true,
-        },
-      });
-    }
 
     if (!clinic) {
       return NextResponse.json(
-        { error: "No clinic found", code: "NO_CLINIC" },
+        { error: "Clinic not found", code: "NO_CLINIC" },
         { status: 404 }
       );
     }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, AdmissionStatus, BedStatus } from "@swasthya/database";
 import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { nextAdmissionNumber } from "@/lib/sequence-number";
 
 // GET /api/clinic/ipd/admissions - Get all admissions (with filters)
 export async function GET(request: NextRequest) {
@@ -201,27 +202,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate admission number
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-
-    const lastAdmission = await prisma.admission.findFirst({
-      where: {
-        clinic_id: access.clinicId,
-        admission_number: {
-          startsWith: `ADM-${year}${month}-`,
-        },
-      },
-      orderBy: { created_at: "desc" },
-    });
-
-    let seq = 1;
-    if (lastAdmission) {
-      const lastSeq = parseInt(lastAdmission.admission_number.split("-")[2]);
-      seq = lastSeq + 1;
-    }
-    const admissionNumber = `ADM-${year}${month}-${String(seq).padStart(4, "0")}`;
+    // Generate admission number (atomic counter)
+    const admissionNumber = await nextAdmissionNumber(access.clinicId);
 
     // Create admission and update bed status in a transaction
     const result = await prisma.$transaction(async (tx) => {

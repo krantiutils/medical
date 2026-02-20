@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(request: Request) {
   // Check authentication
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -21,26 +21,38 @@ export async function GET() {
   }
 
   try {
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50")));
+
+    const where = { verified: false };
+
     // Fetch unverified clinics with claimed_by user data
-    const clinics = await prisma.clinic.findMany({
-      where: {
-        verified: false,
-      },
-      include: {
-        claimed_by: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
+    const [clinics, total] = await Promise.all([
+      prisma.clinic.findMany({
+        where,
+        include: {
+          claimed_by: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
           },
         },
-      },
-      orderBy: {
-        created_at: "asc", // Oldest first
-      },
-    });
+        orderBy: {
+          created_at: "asc", // Oldest first
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.clinic.count({ where }),
+    ]);
 
-    return NextResponse.json({ clinics });
+    return NextResponse.json({
+      clinics,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    });
   } catch (error) {
     console.error("Error fetching pending clinics:", error);
     return NextResponse.json(

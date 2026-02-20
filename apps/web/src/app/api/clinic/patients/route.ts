@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@swasthya/database";
 import { requireClinicPermission } from "@/lib/require-clinic-access";
-
-/**
- * Generate next patient number for a clinic
- */
-async function generatePatientNumber(clinicId: string): Promise<string> {
-  const count = await prisma.patient.count({
-    where: { clinic_id: clinicId },
-  });
-
-  const nextNumber = count + 1;
-  return `P-${nextNumber.toString().padStart(6, "0")}`;
-}
+import { nextPatientNumber } from "@/lib/sequence-number";
 
 /**
  * GET /api/clinic/patients
@@ -208,8 +197,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate patient number
-    const patientNumber = await generatePatientNumber(access.clinicId);
+    // Generate patient number (atomic counter)
+    const patientNumber = await nextPatientNumber(access.clinicId);
 
     // Create patient
     const patient = await prisma.patient.create({

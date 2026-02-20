@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(request: Request) {
   // Check authentication
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -21,35 +21,47 @@ export async function GET() {
   }
 
   try {
-    // Fetch pending verification requests with user and professional data
-    const requests = await prisma.verificationRequest.findMany({
-      where: {
-        status: "PENDING",
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-          },
-        },
-        professional: {
-          select: {
-            id: true,
-            type: true,
-            registration_number: true,
-            full_name: true,
-            slug: true,
-          },
-        },
-      },
-      orderBy: {
-        submitted_at: "asc", // Oldest first
-      },
-    });
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50")));
 
-    return NextResponse.json({ requests });
+    const where = { status: "PENDING" as const };
+
+    // Fetch pending verification requests with user and professional data
+    const [requests, total] = await Promise.all([
+      prisma.verificationRequest.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
+          professional: {
+            select: {
+              id: true,
+              type: true,
+              registration_number: true,
+              full_name: true,
+              slug: true,
+            },
+          },
+        },
+        orderBy: {
+          submitted_at: "asc", // Oldest first
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.verificationRequest.count({ where }),
+    ]);
+
+    return NextResponse.json({
+      requests,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    });
   } catch (error) {
     console.error("Error fetching pending claims:", error);
     return NextResponse.json(

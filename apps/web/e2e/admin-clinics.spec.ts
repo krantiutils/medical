@@ -3,90 +3,11 @@
  *
  * Tests for US-065: Verify admin clinic verification works correctly
  *
- * KNOWN LIMITATION: Client-side useSession() hook does not reliably maintain
- * session state after page navigation in Playwright E2E tests. Tests that require
- * authenticated state will gracefully skip when session is not detected.
+ * Uses storageState-based auth fixtures for reliable authentication.
  */
 
-import { test, expect, Page } from "@playwright/test";
-import { TEST_DATA } from "./fixtures/test-utils";
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 import { SEED_DATA, TEST_CLINIC_NAME, TEST_HOSPITAL_NAME } from "./fixtures/seed";
-
-/**
- * Custom login helper for admin tests
- */
-async function loginAsAdmin(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-  // Login page defaults to phone tab — switch to email tab first
-  await page.getByRole("button", { name: /with email/i }).click();
-  await page.getByLabel(/email/i).fill(TEST_DATA.ADMIN.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.ADMIN.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  // Wait for loading state
-  try {
-    await expect(
-      page.getByRole("button", { name: /signing in/i })
-    ).toBeVisible({
-      timeout: 5000,
-    });
-  } catch {
-    // Button might have already changed
-  }
-
-  // Wait for redirect away from login page
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Login as regular user (non-admin)
- */
-async function loginAsRegularUser(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-  // Login page defaults to phone tab — switch to email tab first
-  await page.getByRole("button", { name: /with email/i }).click();
-  await page.getByLabel(/email/i).fill(TEST_DATA.USER.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.USER.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Check if admin clinic dashboard is accessible (admin is authenticated)
- */
-async function isAdminClinicDashboardAccessible(page: Page): Promise<boolean> {
-  await page.goto("/en/admin/clinics");
-
-  // Wait for any content to appear
-  await page.waitForSelector("main h1", { timeout: 15000 });
-
-  // Check for admin dashboard content (the title "Clinic Verification")
-  const title = page.getByRole("heading", { name: /clinic verification/i });
-  const pendingClinics = page.getByText(/pending clinics/i);
-
-  // Check for either dashboard content or access denied
-  const isDashboard = await title.isVisible().catch(() => false);
-  const hasPendingSection = await pendingClinics.isVisible().catch(() => false);
-
-  return isDashboard && hasPendingSection;
-}
 
 test.describe("Admin Clinics Dashboard - Access Control", () => {
   test("should redirect non-authenticated users to show login prompt", async ({
@@ -133,57 +54,33 @@ test.describe("Admin Clinics Dashboard - Access Control", () => {
   });
 
   test("should show access denied for non-admin authenticated users", async ({
-    page,
+    authenticatedPage: page,
   }) => {
-    const loginSuccess = await loginAsRegularUser(page);
-    if (!loginSuccess) {
-      test.skip(true, "Login failed");
-      return;
-    }
-
     await page.goto("/en/admin/clinics");
 
     // Wait for content to load
     await page.waitForSelector("main h1", { timeout: 15000 });
 
-    // Check if we see access denied or login required (session might not be maintained)
+    // Check if we see access denied
     const accessDenied = page.getByText(/access denied/i);
     const noPermission = page.getByText(
       /you do not have permission to access this page/i
     );
-    const loginRequired = page.getByText(/please log in to access this page/i);
 
-    // Should show either access denied or login (if session not maintained)
     const isAccessDenied = await accessDenied.isVisible().catch(() => false);
     const isNoPermission = await noPermission.isVisible().catch(() => false);
-    const isLoginRequired = await loginRequired.isVisible().catch(() => false);
-
-    if (isLoginRequired) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
 
     expect(isAccessDenied || isNoPermission).toBeTruthy();
   });
 
-  test("should show Go Home button for access denied", async ({ page }) => {
-    const loginSuccess = await loginAsRegularUser(page);
-    if (!loginSuccess) {
-      test.skip(true, "Login failed");
-      return;
-    }
-
+  test("should show Go Home button for access denied", async ({
+    authenticatedPage: page,
+  }) => {
     await page.goto("/en/admin/clinics");
     await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Check for access denied
-    const accessDenied = page.getByText(/access denied/i);
-    const isAccessDenied = await accessDenied.isVisible().catch(() => false);
-
-    if (!isAccessDenied) {
-      test.skip(true, "Session not maintained or access denied not shown");
-      return;
-    }
+    await expect(page.getByText(/access denied/i)).toBeVisible({ timeout: 10000 });
 
     const goHomeButton = page
       .locator("main")
@@ -193,18 +90,9 @@ test.describe("Admin Clinics Dashboard - Access Control", () => {
 });
 
 test.describe("Admin Clinics Dashboard - Authenticated Admin", () => {
-  test("admin can access clinics dashboard", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained after login");
-      return;
-    }
+  test("admin can access clinics dashboard", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Verify dashboard title
     await expect(
@@ -217,52 +105,25 @@ test.describe("Admin Clinics Dashboard - Authenticated Admin", () => {
     ).toBeVisible();
   });
 
-  test("pending clinics section is visible", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("pending clinics section is visible", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     await expect(page.getByText(/pending clinics/i)).toBeVisible();
   });
 
-  test("shows clinics count badge", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("shows clinics count badge", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // The count badge should be visible (even if 0)
     const countBadge = page.locator("span.bg-primary-blue\\/10");
     await expect(countBadge).toBeVisible({ timeout: 10000 });
   });
 
-  test("shows pending clinic from seeded test data", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("shows pending clinic from seeded test data", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Wait for clinics to load (either clinic list or "no pending" message)
     await page.waitForSelector("main", { timeout: 10000 });
@@ -286,18 +147,9 @@ test.describe("Admin Clinics Dashboard - Authenticated Admin", () => {
     }
   });
 
-  test("clinic card shows View Details button", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clinic card shows View Details button", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Check for clinic card
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
@@ -312,18 +164,9 @@ test.describe("Admin Clinics Dashboard - Authenticated Admin", () => {
     await expect(viewDetailsButton).toBeVisible();
   });
 
-  test("clinic card shows Approve and Reject buttons", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clinic card shows Approve and Reject buttons", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -338,18 +181,9 @@ test.describe("Admin Clinics Dashboard - Authenticated Admin", () => {
     await expect(rejectButton.first()).toBeVisible();
   });
 
-  test("clinic card shows type badge", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clinic card shows type badge", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -364,19 +198,10 @@ test.describe("Admin Clinics Dashboard - Authenticated Admin", () => {
 
 test.describe("Admin Clinics Dashboard - View Details Modal", () => {
   test("clicking View Details opens modal with clinic info", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -398,18 +223,9 @@ test.describe("Admin Clinics Dashboard - View Details Modal", () => {
     await expect(modal.getByText(/Kathmandu, Nepal/i)).toBeVisible();
   });
 
-  test("details modal shows services list", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("details modal shows services list", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -429,18 +245,9 @@ test.describe("Admin Clinics Dashboard - View Details Modal", () => {
     await expect(page.getByText(/General Consultation/i)).toBeVisible();
   });
 
-  test("details modal shows owner information", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("details modal shows owner information", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -461,18 +268,9 @@ test.describe("Admin Clinics Dashboard - View Details Modal", () => {
     await expect(page.getByText(/owner email/i)).toBeVisible();
   });
 
-  test("details modal has Close button", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("details modal has Close button", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -493,18 +291,9 @@ test.describe("Admin Clinics Dashboard - View Details Modal", () => {
     await expect(page.locator(".fixed.inset-0.z-50")).not.toBeVisible();
   });
 
-  test("details modal has Approve and Reject buttons", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("details modal has Approve and Reject buttons", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -525,18 +314,9 @@ test.describe("Admin Clinics Dashboard - View Details Modal", () => {
 });
 
 test.describe("Admin Clinics Dashboard - Approve Clinic Flow", () => {
-  test("clicking Approve shows confirmation dialog", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clicking Approve shows confirmation dialog", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -558,18 +338,9 @@ test.describe("Admin Clinics Dashboard - Approve Clinic Flow", () => {
     ).toBeVisible();
   });
 
-  test("approval modal shows clinic info", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("approval modal shows clinic info", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -587,18 +358,9 @@ test.describe("Admin Clinics Dashboard - Approve Clinic Flow", () => {
     await expect(modal.getByText(/Kathmandu, Nepal/i)).toBeVisible();
   });
 
-  test("approval modal has Cancel and Confirm buttons", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("approval modal has Cancel and Confirm buttons", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -615,18 +377,9 @@ test.describe("Admin Clinics Dashboard - Approve Clinic Flow", () => {
     ).toBeVisible();
   });
 
-  test("Cancel closes approval modal without action", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("Cancel closes approval modal without action", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -648,18 +401,9 @@ test.describe("Admin Clinics Dashboard - Approve Clinic Flow", () => {
     await expect(page.getByText(TEST_CLINIC_NAME)).toBeVisible();
   });
 
-  test("approval modal shows green accent bar", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("approval modal shows green accent bar", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -676,18 +420,9 @@ test.describe("Admin Clinics Dashboard - Approve Clinic Flow", () => {
 });
 
 test.describe("Admin Clinics Dashboard - Reject Clinic Flow", () => {
-  test("clicking Reject shows rejection reason dialog", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("clicking Reject shows rejection reason dialog", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -704,18 +439,9 @@ test.describe("Admin Clinics Dashboard - Reject Clinic Flow", () => {
     ).toBeVisible({ timeout: 5000 });
   });
 
-  test("rejection modal has reason textarea", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("rejection modal has reason textarea", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -734,19 +460,10 @@ test.describe("Admin Clinics Dashboard - Reject Clinic Flow", () => {
   });
 
   test("confirm rejection button is disabled when reason is empty", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -763,19 +480,10 @@ test.describe("Admin Clinics Dashboard - Reject Clinic Flow", () => {
   });
 
   test("confirm rejection button is enabled when reason is provided", async ({
-    page,
+    adminPage: page,
   }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -794,18 +502,9 @@ test.describe("Admin Clinics Dashboard - Reject Clinic Flow", () => {
     await expect(confirmButton).toBeEnabled();
   });
 
-  test("rejection modal shows clinic info", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("rejection modal shows clinic info", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -820,18 +519,9 @@ test.describe("Admin Clinics Dashboard - Reject Clinic Flow", () => {
     await expect(modal.getByText(/Kathmandu, Nepal/i)).toBeVisible();
   });
 
-  test("Cancel closes rejection modal without action", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("Cancel closes rejection modal without action", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -853,18 +543,9 @@ test.describe("Admin Clinics Dashboard - Reject Clinic Flow", () => {
     await expect(page.getByText(TEST_CLINIC_NAME)).toBeVisible();
   });
 
-  test("rejection modal shows red accent bar", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("rejection modal shows red accent bar", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
     if (!(await clinicCard.isVisible().catch(() => false))) {
@@ -881,24 +562,18 @@ test.describe("Admin Clinics Dashboard - Reject Clinic Flow", () => {
 });
 
 test.describe("Admin Clinics Dashboard - No Pending Clinics", () => {
-  test("shows empty state message when no pending clinics", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("shows empty state message when no pending clinics", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Wait for clinics to load
-    await page.waitForTimeout(2000);
+    const noPending = page.getByText(/no pending clinic registrations/i);
+    const clinicCard = page.getByText(TEST_CLINIC_NAME);
+
+    // Wait for either state to appear
+    await expect(noPending.or(clinicCard)).toBeVisible({ timeout: 10000 });
 
     // If no pending clinics, should show empty state
-    const noPending = page.getByText(/no pending clinic registrations/i);
     const hasNoPending = await noPending.isVisible().catch(() => false);
 
     if (hasNoPending) {
@@ -941,18 +616,9 @@ test.describe("Admin Clinics Dashboard - Language Support", () => {
 });
 
 test.describe("Admin Clinics Dashboard - Multiple Clinic Types", () => {
-  test("shows hospital with correct type badge", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("shows hospital with correct type badge", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Check for hospital
     const hospitalCard = page.getByText(TEST_HOSPITAL_NAME);
@@ -965,18 +631,9 @@ test.describe("Admin Clinics Dashboard - Multiple Clinic Types", () => {
     await expect(page.getByText("Hospital", { exact: true }).first()).toBeVisible();
   });
 
-  test("different clinic types have different badge colors", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
-    const isAccessible = await isAdminClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Admin session not maintained");
-      return;
-    }
+  test("different clinic types have different badge colors", async ({ adminPage: page }) => {
+    await page.goto("/en/admin/clinics");
+    await page.waitForSelector("main h1", { timeout: 15000 });
 
     // Check for both clinic types
     const clinicCard = page.getByText(TEST_CLINIC_NAME);
@@ -1005,13 +662,7 @@ test.describe("Admin Clinics Dashboard - Multiple Clinic Types", () => {
 });
 
 test.describe("Admin Clinics Dashboard - Loading State", () => {
-  test("shows loading animation while fetching clinics", async ({ page }) => {
-    const loginSuccess = await loginAsAdmin(page);
-    if (!loginSuccess) {
-      test.skip(true, "Admin login failed");
-      return;
-    }
-
+  test("shows loading animation while fetching clinics", async ({ adminPage: page }) => {
     // Navigate and immediately check for loading state
     await page.goto("/en/admin/clinics");
 

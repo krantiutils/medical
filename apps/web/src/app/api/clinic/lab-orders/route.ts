@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, LabOrderStatus, LabOrderPriority } from "@swasthya/database";
 import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { nextLabOrderNumber } from "@/lib/sequence-number";
 
 // GET /api/clinic/lab-orders - List lab orders for a clinic
 export async function GET(request: NextRequest) {
@@ -131,26 +132,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate order number
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    // Count orders today for sequential number
-    const todayStart = new Date(today.setHours(0, 0, 0, 0));
-    const todayEnd = new Date(today.setHours(23, 59, 59, 999));
-    const orderCount = await prisma.labOrder.count({
-      where: {
-        clinic_id: access.clinicId,
-        created_at: {
-          gte: todayStart,
-          lte: todayEnd,
-        },
-      },
-    });
-
-    const orderNumber = `LAB-${year}${month}${day}-${String(orderCount + 1).padStart(4, "0")}`;
+    // Generate order number (atomic counter)
+    const orderNumber = await nextLabOrderNumber(access.clinicId);
 
     // Create lab order with results
     const labOrder = await prisma.labOrder.create({

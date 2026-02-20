@@ -1,41 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma, LabOrderStatus } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET /api/clinic/lab-orders/[id] - Get a specific lab order
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { id } = await params;
-
-  // Find user's verified clinic
-  const clinic = await prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: session.user.id,
-      verified: true,
-    },
-  });
-
-  if (!clinic) {
-    return NextResponse.json(
-      { error: "No verified clinic found", code: "NO_CLINIC" },
-      { status: 404 }
-    );
-  }
-
   try {
+    const access = await requireClinicPermission("lab");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
+    const { id } = await params;
+
     const labOrder = await prisma.labOrder.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       include: {
         patient: {
@@ -99,30 +85,16 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { id } = await params;
-
-  // Find user's verified clinic
-  const clinic = await prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: session.user.id,
-      verified: true,
-    },
-  });
-
-  if (!clinic) {
-    return NextResponse.json(
-      { error: "No verified clinic found", code: "NO_CLINIC" },
-      { status: 404 }
-    );
-  }
-
   try {
+    const access = await requireClinicPermission("lab");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
+    const { id } = await params;
     const body = await request.json();
     const { status, sample_collected, sample_id, clinical_notes } = body;
 
@@ -130,7 +102,7 @@ export async function PATCH(
     const existing = await prisma.labOrder.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
     });
 
@@ -207,35 +179,22 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { id } = await params;
-
-  // Find user's verified clinic
-  const clinic = await prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: session.user.id,
-      verified: true,
-    },
-  });
-
-  if (!clinic) {
-    return NextResponse.json(
-      { error: "No verified clinic found", code: "NO_CLINIC" },
-      { status: 404 }
-    );
-  }
-
   try {
+    const access = await requireClinicPermission("lab");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
+    }
+
+    const { id } = await params;
+
     // Verify order belongs to clinic and is not completed
     const existing = await prisma.labOrder.findFirst({
       where: {
         id,
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
     });
 

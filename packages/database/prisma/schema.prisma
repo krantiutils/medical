@@ -408,6 +408,9 @@ model Clinic {
   // Medical records (patient document uploads)
   medical_records MedicalRecord[]
 
+  // Atomic sequence counters for race-condition-free numbering
+  counters ClinicCounter[]
+
   @@index([type])
   @@index([claimed_by_id])
 }
@@ -1481,4 +1484,18 @@ model BlogPost {
   @@index([author_id])
   @@index([published_at])
   @@index([category])
+}
+
+model ClinicCounter {
+  id         String   @id @default(uuid())
+  entity     String   // "patient", "invoice", "lab_order", "sale", "admission", "prescription", "token"
+  scope      String   @default("global") // "global", "2026", "20260220"
+  value      Int      @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  clinic_id  String
+  clinic     Clinic   @relation(fields: [clinic_id], references: [id], onDelete: Cascade)
+
+  @@unique([clinic_id, entity, scope])
 }

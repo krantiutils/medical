@@ -3,108 +3,12 @@
  *
  * Tests for US-071: Verify clinic dashboard and scheduling works correctly
  *
- * KNOWN LIMITATION: Client-side useSession() hook does not reliably maintain
- * session state after page navigation in Playwright E2E tests. Tests that require
- * authenticated state will gracefully skip when session is not detected.
+ * Auth is pre-loaded via storageState fixtures from auth.setup.ts.
+ * clinicOwnerPage = authenticated clinic owner with verified clinic.
+ * authenticatedPage = regular user (no verified clinic).
  */
 
-import { test, expect, Page } from "@playwright/test";
-import { TEST_DATA } from "./fixtures/test-utils";
-
-/**
- * Login helper for clinic owner
- */
-async function loginAsClinicOwner(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-
-  // Login page defaults to phone tab — switch to email tab first
-  await page.getByRole("button", { name: /with email/i }).click();
-
-  await page.getByLabel(/email/i).fill(TEST_DATA.CLINIC_OWNER.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.CLINIC_OWNER.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  // Wait for redirect away from login page
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 30000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Login helper for regular user (no clinic)
- */
-async function loginAsRegularUser(page: Page): Promise<boolean> {
-  await page.goto("/en/login");
-
-  // Login page defaults to phone tab — switch to email tab first
-  await page.getByRole("button", { name: /with email/i }).click();
-
-  await page.getByLabel(/email/i).fill(TEST_DATA.USER.email);
-  await page.getByLabel(/password/i).fill(TEST_DATA.USER.password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  try {
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
-    });
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Navigate to a dashboard page and wait for content to stream in.
- * Returns false if redirected away from dashboard.
- */
-async function gotoDashboardPage(
-  page: Page,
-  path: string
-): Promise<boolean> {
-  await page.goto(path, { waitUntil: "domcontentloaded" });
-
-  // Check if redirected to login or register
-  if (page.url().includes("/login") || page.url().includes("/register")) {
-    return false;
-  }
-
-  // Wait for dashboard sidebar to render
-  try {
-    await page.waitForSelector('h2:has-text("Clinic Dashboard")', {
-      timeout: 20000,
-    });
-  } catch {
-    return false;
-  }
-
-  // Wait for streaming SSR content to render
-  await page.waitForLoadState("networkidle", { timeout: 30000 }).catch(() => {});
-
-  return true;
-}
-
-/**
- * Check if clinic dashboard is accessible (clinic owner is authenticated with verified clinic)
- */
-async function isClinicDashboardAccessible(page: Page): Promise<boolean> {
-  const loaded = await gotoDashboardPage(page, "/en/clinic/dashboard");
-  if (!loaded) return false;
-
-  // Sidebar presence (h2 "Clinic Dashboard" with nav links) confirms authenticated access
-  const hasOverviewLink = await page
-    .getByRole("link", { name: "Overview" })
-    .isVisible()
-    .catch(() => false);
-
-  return hasOverviewLink;
-}
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 test.describe("Clinic Dashboard - Access Control", () => {
   test("should redirect non-authenticated users to login page", async ({
@@ -142,72 +46,31 @@ test.describe("Clinic Dashboard - Access Control", () => {
   });
 
   test("should show no clinic message for user without verified clinic", async ({
-    page,
+    authenticatedPage,
   }) => {
-    const loginSuccess = await loginAsRegularUser(page);
-    if (!loginSuccess) {
-      test.skip(true, "Login failed");
-      return;
-    }
+    await authenticatedPage.goto("/en/clinic/dashboard", { waitUntil: "domcontentloaded" });
 
-    const loaded = await gotoDashboardPage(page, "/en/clinic/dashboard");
-    if (!loaded) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    // Wait for dashboard sidebar to render
+    await expect(
+      authenticatedPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    // Check if we see "no clinic" message or a dashboard
-    // (regular user may own a verified clinic in seed data)
-    const noClinic = page.getByText(/no verified clinic/i);
-    const welcomeBack = page.getByText(/welcome back/i);
-
-    const isNoClinic = await noClinic.isVisible().catch(() => false);
-    const hasDashboard = await welcomeBack.isVisible().catch(() => false);
-
-    if (hasDashboard) {
-      // Regular user owns a verified clinic in seed data — test premise doesn't apply
-      test.skip(true, "Regular user has a verified clinic in seed data");
-      return;
-    }
-
-    if (!isNoClinic) {
-      // Dashboard sidebar rendered but main content may still be streaming
-      // or user has a clinic with different dashboard layout
-      test.skip(true, "Dashboard rendered but expected 'no verified clinic' message not visible");
-      return;
-    }
-
-    expect(isNoClinic).toBeTruthy();
+    // Regular user does NOT own a verified clinic — should see "no verified clinic" message
+    await expect(authenticatedPage.getByText(/no verified clinic/i)).toBeVisible();
   });
 
   test("should show Register Clinic button for user without clinic", async ({
-    page,
+    authenticatedPage,
   }) => {
-    const loginSuccess = await loginAsRegularUser(page);
-    if (!loginSuccess) {
-      test.skip(true, "Login failed");
-      return;
-    }
+    await authenticatedPage.goto("/en/clinic/dashboard", { waitUntil: "domcontentloaded" });
 
-    await page.goto("/en/clinic/dashboard", { waitUntil: "domcontentloaded" });
+    await expect(
+      authenticatedPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const isOnLogin = page.url().includes("/login") || page.url().includes("/register");
-    if (isOnLogin) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    await expect(authenticatedPage.getByText(/no verified clinic/i)).toBeVisible();
 
-    await page.waitForSelector('h2:has-text("Clinic Dashboard")', { timeout: 20000 });
-
-    const noClinic = page.getByText(/no verified clinic/i);
-    const isNoClinic = await noClinic.isVisible().catch(() => false);
-
-    if (!isNoClinic) {
-      test.skip(true, "Session not maintained or no clinic message not shown");
-      return;
-    }
-
-    const registerButton = page
+    const registerButton = authenticatedPage
       .locator("main")
       .getByRole("link", { name: /register clinic/i });
     await expect(registerButton).toBeVisible();
@@ -215,121 +78,83 @@ test.describe("Clinic Dashboard - Access Control", () => {
 });
 
 test.describe("Clinic Dashboard - Authenticated Clinic Owner", () => {
-  test.slow(); // Triple timeout - login + page compilation is slow on dev server
+  test.slow(); // Triple timeout - page compilation is slow on dev server
 
-  test("clinic owner can access dashboard", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(
-        true,
-        "Dashboard not accessible - session or clinic not found"
-      );
-      return;
-    }
+  test("clinic owner can access dashboard", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Dashboard should show the clinic name as heading
     await expect(
-      page.getByRole("heading", { name: TEST_DATA.CLINICS.DASHBOARD_CLINIC.name })
+      clinicOwnerPage.getByRole("heading", { name: TEST_DATA.CLINICS.DASHBOARD_CLINIC.name })
     ).toBeVisible();
   });
 
-  test("dashboard shows clinic name and type badge", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Dashboard not accessible");
-      return;
-    }
+  test("dashboard shows clinic name and type badge", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Should show clinic name
     await expect(
-      page.getByText(TEST_DATA.CLINICS.DASHBOARD_CLINIC.name)
+      clinicOwnerPage.getByText(TEST_DATA.CLINICS.DASHBOARD_CLINIC.name)
     ).toBeVisible();
   });
 
-  test("dashboard shows statistics cards", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Dashboard not accessible");
-      return;
-    }
+  test("dashboard shows statistics cards", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Check for stat cards (use exact match to avoid ambiguity with quick actions descriptions)
-    await expect(page.getByText("Today's Appointments", { exact: true })).toBeVisible();
-    await expect(page.getByText("Patients in Queue", { exact: true })).toBeVisible();
-    await expect(page.getByText("Total Patients", { exact: true })).toBeVisible();
-    await expect(page.getByText("Clinic Doctors", { exact: true })).toBeVisible();
+    await expect(clinicOwnerPage.getByText("Today's Appointments", { exact: true })).toBeVisible();
+    await expect(clinicOwnerPage.getByText("Patients in Queue", { exact: true })).toBeVisible();
+    await expect(clinicOwnerPage.getByText("Total Patients", { exact: true })).toBeVisible();
+    await expect(clinicOwnerPage.getByText("Clinic Doctors", { exact: true })).toBeVisible();
   });
 
-  test("dashboard shows quick action buttons", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Dashboard not accessible");
-      return;
-    }
+  test("dashboard shows quick action buttons", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Check for quick action buttons
-    await expect(page.getByText(/quick actions/i)).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/quick actions/i)).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /add patient/i })
+      clinicOwnerPage.getByRole("link", { name: /add patient/i })
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: /view queue/i })).toBeVisible();
+    await expect(clinicOwnerPage.getByRole("link", { name: /view queue/i })).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /manage schedules/i })
+      clinicOwnerPage.getByRole("link", { name: /manage schedules/i })
     ).toBeVisible();
   });
 
-  test("manage doctors button navigates to doctors page", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("manage doctors button navigates to doctors page", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const isAccessible = await isClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Dashboard not accessible");
-      return;
-    }
-
-    const manageDoctorsLink = page.getByRole("link", {
+    const manageDoctorsLink = clinicOwnerPage.getByRole("link", {
       name: /manage doctors/i,
     });
     await expect(manageDoctorsLink).toBeVisible();
     await manageDoctorsLink.click();
 
-    await page.waitForURL(/\/clinic\/dashboard\/doctors/, { timeout: 30000 });
+    await clinicOwnerPage.waitForURL(/\/clinic\/dashboard\/doctors/, { timeout: 30000 });
     await expect(
-      page.getByRole("heading", { name: /manage doctors/i })
+      clinicOwnerPage.getByRole("heading", { name: /manage doctors/i })
     ).toBeVisible({ timeout: 15000 });
   });
 });
 
 test.describe("Clinic Dashboard - Manage Doctors", () => {
-  test.slow(); // Triple timeout - login + page compilation is slow on dev server
+  test.slow(); // Triple timeout - page compilation is slow on dev server
 
   test("doctors page requires authentication", async ({ page }) => {
     await page.goto("/en/clinic/dashboard/doctors");
@@ -339,57 +164,27 @@ test.describe("Clinic Dashboard - Manage Doctors", () => {
     await expect(page).toHaveURL(/\/en\/login/);
   });
 
-  test("doctors page shows current affiliated doctors", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/doctors");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    // Check for authenticated content (Current Doctors section)
-    const currentDoctors = page.getByText(/current doctors/i);
-    const isAuthenticated = await currentDoctors.isVisible().catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained - doctors list not visible");
-      return;
-    }
+  test("doctors page shows current affiliated doctors", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/doctors");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Should show current doctors section
-    await expect(page.getByText(/current doctors/i)).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/current doctors/i)).toBeVisible();
   });
 
-  test("doctors page shows seeded test doctors", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("doctors page shows seeded test doctors", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/doctors");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/doctors");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    // Check for authenticated content (Current Doctors section) not just heading
-    const currentDoctors = page.getByText(/current doctors/i);
-    const isAuthenticated = await currentDoctors.isVisible().catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained - doctors list not visible");
-      return;
-    }
+    await expect(clinicOwnerPage.getByText(/current doctors/i)).toBeVisible();
 
     // Should show seeded test doctors (Dr. Ram Sharma and Dr. Sita Thapa)
-    const drRam = page.getByText(/Dr\. Ram Sharma/);
-    const drSita = page.getByText(/Dr\. Sita Thapa/);
+    const drRam = clinicOwnerPage.getByText(/Dr\. Ram Sharma/);
+    const drSita = clinicOwnerPage.getByText(/Dr\. Sita Thapa/);
 
     const hasDrRam = await drRam.isVisible().catch(() => false);
     const hasDrSita = await drSita.isVisible().catch(() => false);
@@ -397,57 +192,29 @@ test.describe("Clinic Dashboard - Manage Doctors", () => {
     expect(hasDrRam || hasDrSita).toBeTruthy();
   });
 
-  test("doctors page shows Add Doctor button", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("doctors page shows Add Doctor button", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/doctors");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/doctors");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
+    await expect(clinicOwnerPage.getByText(/current doctors/i)).toBeVisible();
 
-    // Check for authenticated content not just heading
-    const currentDoctors = page.getByText(/current doctors/i);
-    const isAuthenticated = await currentDoctors.isVisible().catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained - doctors list not visible");
-      return;
-    }
-
-    const addButton = page.getByRole("button", { name: /add doctor/i });
+    const addButton = clinicOwnerPage.getByRole("button", { name: /add doctor/i });
     await expect(addButton).toBeVisible();
   });
 
-  test("doctors page shows role badges", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("doctors page shows role badges", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/doctors");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/doctors");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    // Check for authenticated content not just heading
-    const currentDoctors = page.getByText(/current doctors/i);
-    const isAuthenticated = await currentDoctors.isVisible().catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained - doctors list not visible");
-      return;
-    }
+    await expect(clinicOwnerPage.getByText(/current doctors/i)).toBeVisible();
 
     // Check for role badges (permanent or visiting)
-    const permanentBadge = page.getByText(/permanent/i);
-    const visitingBadge = page.getByText(/visiting/i);
+    const permanentBadge = clinicOwnerPage.getByText(/permanent/i);
+    const visitingBadge = clinicOwnerPage.getByText(/visiting/i);
 
     const hasPermanent = await permanentBadge.isVisible().catch(() => false);
     const hasVisiting = await visitingBadge.isVisible().catch(() => false);
@@ -455,40 +222,26 @@ test.describe("Clinic Dashboard - Manage Doctors", () => {
     expect(hasPermanent || hasVisiting).toBeTruthy();
   });
 
-  test("clicking Add Doctor opens modal", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("clicking Add Doctor opens modal", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/doctors");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/doctors");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
+    await expect(clinicOwnerPage.getByText(/current doctors/i)).toBeVisible();
 
-    // Check for authenticated content not just heading
-    const currentDoctors = page.getByText(/current doctors/i);
-    const isAuthenticated = await currentDoctors.isVisible().catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained - doctors list not visible");
-      return;
-    }
-
-    await page.getByRole("button", { name: /add doctor/i }).click();
+    await clinicOwnerPage.getByRole("button", { name: /add doctor/i }).click();
 
     // Add doctor panel should appear with search input
-    await expect(page.getByRole("heading", { name: /add a doctor/i })).toBeVisible({ timeout: 10000 });
+    await expect(clinicOwnerPage.getByRole("heading", { name: /add a doctor/i })).toBeVisible({ timeout: 10000 });
     await expect(
-      page.getByPlaceholder(/search by name or registration/i)
+      clinicOwnerPage.getByPlaceholder(/search by name or registration/i)
     ).toBeVisible();
   });
 });
 
 test.describe("Clinic Dashboard - Doctor Schedules", () => {
-  test.slow(); // Triple timeout - login + page compilation is slow on dev server
+  test.slow(); // Triple timeout - page compilation is slow on dev server
 
   test("schedules page requires authentication", async ({ page }) => {
     await page.goto("/en/clinic/dashboard/schedules");
@@ -498,22 +251,15 @@ test.describe("Clinic Dashboard - Doctor Schedules", () => {
     await expect(page).toHaveURL(/\/en\/login/);
   });
 
-  test("schedules page shows doctor selection", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
+  test("schedules page shows doctor selection", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Check for authenticated content - should show "Select a Doctor" heading or doctor cards
-    const selectDoctor = page.getByRole("heading", { name: /select a doctor/i }).first();
-    const noDoctors = page.getByText(/no doctors affiliated/i);
+    const selectDoctor = clinicOwnerPage.getByRole("heading", { name: /select a doctor/i }).first();
+    const noDoctors = clinicOwnerPage.getByText(/no doctors affiliated/i);
 
     const hasSelect = await selectDoctor.isVisible().catch(() => false);
     const hasNoDoctors = await noDoctors.isVisible().catch(() => false);
@@ -523,89 +269,54 @@ test.describe("Clinic Dashboard - Doctor Schedules", () => {
   });
 
   test("schedules page shows affiliated doctors in dropdown", async ({
-    page,
+    clinicOwnerPage,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    const title = page.getByRole("heading", { name: /doctor schedules/i });
-    const isVisible = await title.isVisible().catch(() => false);
-
-    if (!isVisible) {
-      test.skip(true, "Session not maintained");
-      return;
-    }
+    await expect(
+      clinicOwnerPage.getByRole("heading", { name: /doctor schedules/i })
+    ).toBeVisible();
 
     // Find doctor selection buttons (each doctor card is a button element)
-    const doctorButton = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    const doctorButton = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
     const hasDoctorButton = await doctorButton.isVisible().catch(() => false);
 
     expect(hasDoctorButton).toBeTruthy();
   });
 
-  test("selecting a doctor shows weekly schedule grid", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
+  test("selecting a doctor shows weekly schedule grid", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Click on first available doctor card
-    const doctorCard = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
-    const hasDoctorCard = await doctorCard.isVisible().catch(() => false);
-
-    if (!hasDoctorCard) {
-      test.skip(true, "No doctors available to select");
-      return;
-    }
+    const doctorCard = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    await expect(doctorCard).toBeVisible({ timeout: 15000 });
 
     await doctorCard.click();
 
     // Should show weekly schedule heading
-    await expect(page.getByText(/weekly schedule/i)).toBeVisible({
+    await expect(clinicOwnerPage.getByText(/weekly schedule/i)).toBeVisible({
       timeout: 10000,
     });
   });
 
-  test("weekly schedule shows all days of the week", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
+  test("weekly schedule shows all days of the week", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Select first doctor
-    const doctorCard = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
-    const hasDoctorCard = await doctorCard.isVisible().catch(() => false);
-
-    if (!hasDoctorCard) {
-      test.skip(true, "No doctors available");
-      return;
-    }
+    const doctorCard = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    await expect(doctorCard).toBeVisible({ timeout: 15000 });
 
     await doctorCard.click();
-    await page.waitForSelector("text=Weekly Schedule", { timeout: 10000 });
+    await expect(clinicOwnerPage.getByText("Weekly Schedule")).toBeVisible({ timeout: 10000 });
 
     // Check for days of the week
     const days = [
@@ -618,179 +329,119 @@ test.describe("Clinic Dashboard - Doctor Schedules", () => {
       "Saturday",
     ];
     for (const day of days) {
-      await expect(page.getByText(day)).toBeVisible();
+      await expect(clinicOwnerPage.getByText(day)).toBeVisible();
     }
   });
 
   test("schedule shows time inputs and slot configuration", async ({
-    page,
+    clinicOwnerPage,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    const doctorCard = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
-    if (!(await doctorCard.isVisible().catch(() => false))) {
-      test.skip(true, "No doctors available");
-      return;
-    }
+    const doctorCard = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    await expect(doctorCard).toBeVisible({ timeout: 15000 });
 
     await doctorCard.click();
-    await page.waitForSelector("text=Weekly Schedule", { timeout: 10000 });
+    await expect(clinicOwnerPage.getByText("Weekly Schedule")).toBeVisible({ timeout: 10000 });
 
     // Should show start time, end time labels
-    await expect(page.getByText(/start time/i).first()).toBeVisible();
-    await expect(page.getByText(/end time/i).first()).toBeVisible();
-    await expect(page.getByText(/slot duration/i).first()).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/start time/i).first()).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/end time/i).first()).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/slot duration/i).first()).toBeVisible();
   });
 
-  test("schedule shows save button", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("schedule shows save button", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    const doctorCard = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
-    if (!(await doctorCard.isVisible().catch(() => false))) {
-      test.skip(true, "No doctors available");
-      return;
-    }
+    const doctorCard = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    await expect(doctorCard).toBeVisible({ timeout: 15000 });
 
     await doctorCard.click();
-    await page.waitForSelector("text=Weekly Schedule", { timeout: 10000 });
+    await expect(clinicOwnerPage.getByText("Weekly Schedule")).toBeVisible({ timeout: 10000 });
 
-    const saveButton = page.getByRole("button", { name: /save schedule/i });
+    const saveButton = clinicOwnerPage.getByRole("button", { name: /save schedule/i });
     await expect(saveButton).toBeVisible();
   });
 });
 
 test.describe("Clinic Dashboard - Doctor Leave Management", () => {
-  test.slow(); // Triple timeout - login + page compilation is slow on dev server
+  test.slow(); // Triple timeout - page compilation is slow on dev server
 
   test("leave management section visible on schedules page", async ({
-    page,
+    clinicOwnerPage,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    const doctorCard = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
-    if (!(await doctorCard.isVisible().catch(() => false))) {
-      test.skip(true, "No doctors available");
-      return;
-    }
+    const doctorCard = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    await expect(doctorCard).toBeVisible({ timeout: 15000 });
 
     await doctorCard.click();
-    await page.waitForSelector("text=Weekly Schedule", { timeout: 10000 });
+    await expect(clinicOwnerPage.getByText("Weekly Schedule")).toBeVisible({ timeout: 10000 });
 
     // Leave management section should be visible
-    await expect(page.getByText(/leave management/i)).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/leave management/i)).toBeVisible();
   });
 
   test("leave form shows date, full day toggle, and reason fields", async ({
-    page,
+    clinicOwnerPage,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    const doctorCard = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
-    if (!(await doctorCard.isVisible().catch(() => false))) {
-      test.skip(true, "No doctors available");
-      return;
-    }
+    const doctorCard = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    await expect(doctorCard).toBeVisible({ timeout: 15000 });
 
     await doctorCard.click();
-    await page.waitForSelector("text=Leave Management", { timeout: 10000 });
+    await expect(clinicOwnerPage.getByText("Leave Management")).toBeVisible({ timeout: 10000 });
 
     // Check for leave form fields (labels may include asterisk for required fields, e.g. "Date *")
-    await expect(page.getByText(/^date/i).first()).toBeVisible();
-    await expect(page.getByText(/full day/i).first()).toBeVisible();
-    await expect(page.getByText(/^reason/i).first()).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/^date/i).first()).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/full day/i).first()).toBeVisible();
+    await expect(clinicOwnerPage.getByText(/^reason/i).first()).toBeVisible();
   });
 
-  test("leave form shows Add Leave button", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("leave form shows Add Leave button", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    const doctorCard = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
-    if (!(await doctorCard.isVisible().catch(() => false))) {
-      test.skip(true, "No doctors available");
-      return;
-    }
+    const doctorCard = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    await expect(doctorCard).toBeVisible({ timeout: 15000 });
 
     await doctorCard.click();
-    await page.waitForSelector("text=Leave Management", { timeout: 10000 });
+    await expect(clinicOwnerPage.getByText("Leave Management")).toBeVisible({ timeout: 10000 });
 
-    const addLeaveButton = page.getByRole("button", { name: /add leave/i });
+    const addLeaveButton = clinicOwnerPage.getByRole("button", { name: /add leave/i });
     await expect(addLeaveButton).toBeVisible();
   });
 
-  test("upcoming leaves section visible", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("upcoming leaves section visible", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/schedules");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/schedules");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    const doctorCard = page.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
-    if (!(await doctorCard.isVisible().catch(() => false))) {
-      test.skip(true, "No doctors available");
-      return;
-    }
+    const doctorCard = clinicOwnerPage.locator("button").filter({ hasText: /Doctor|Dentist/ }).first();
+    await expect(doctorCard).toBeVisible({ timeout: 15000 });
 
     await doctorCard.click();
-    await page.waitForSelector("text=Leave Management", { timeout: 10000 });
+    await expect(clinicOwnerPage.getByText("Leave Management")).toBeVisible({ timeout: 10000 });
 
     // Should show upcoming leaves section (even if empty)
     // Use heading role to avoid matching "No upcoming leaves scheduled" text
-    await expect(page.getByRole("heading", { name: /upcoming leaves/i })).toBeVisible();
+    await expect(clinicOwnerPage.getByRole("heading", { name: /upcoming leaves/i })).toBeVisible();
   });
 });
 
@@ -826,162 +477,98 @@ test.describe("Clinic Dashboard - Language Support", () => {
 test.describe("Clinic Dashboard - Loading States", () => {
   test.slow(); // Triple timeout for authenticated tests
 
-  test("dashboard shows loading state initially", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    // Navigate and check for loading state quickly
-    const loaded = await gotoDashboardPage(page, "/en/clinic/dashboard");
-    if (!loaded) {
-      test.skip(true, "Dashboard not accessible");
-      return;
-    }
+  test("dashboard shows loading state initially", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // At least the sidebar should render; this test mainly ensures the page doesn't crash
-    const hasOverview = await page.getByRole("link", { name: "Overview" }).isVisible().catch(() => false);
-    expect(hasOverview).toBeTruthy();
+    await expect(clinicOwnerPage.getByRole("link", { name: "Overview" })).toBeVisible();
   });
 });
 
 test.describe("Clinic Dashboard - Error Handling", () => {
   test.slow(); // Triple timeout for authenticated tests
 
-  test("dashboard handles API errors gracefully", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    // Navigate to dashboard
-    const loaded = await gotoDashboardPage(page, "/en/clinic/dashboard");
-    if (!loaded) {
-      test.skip(true, "Dashboard not accessible");
-      return;
-    }
+  test("dashboard handles API errors gracefully", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
     // Page should load without crashing - sidebar renders with navigation
-    const hasOverview = await page.getByRole("link", { name: "Overview" }).isVisible().catch(() => false);
-    expect(hasOverview).toBeTruthy();
+    await expect(clinicOwnerPage.getByRole("link", { name: "Overview" })).toBeVisible();
   });
 });
 
 test.describe("Clinic Dashboard - Navigation", () => {
   test.slow(); // Triple timeout for authenticated tests
 
-  test("can navigate from dashboard to doctors page", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Dashboard not accessible");
-      return;
-    }
+  test("can navigate from dashboard to doctors page", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
+    await expect(clinicOwnerPage.getByRole("link", { name: "Overview" })).toBeVisible();
 
     // Click on Manage Doctors
-    const manageDoctorsLink = page.getByRole("link", {
+    const manageDoctorsLink = clinicOwnerPage.getByRole("link", {
       name: /manage doctors/i,
     });
     await expect(manageDoctorsLink).toBeVisible();
     await manageDoctorsLink.click();
 
-    await page.waitForURL(/\/clinic\/dashboard\/doctors/, { timeout: 30000 });
+    await clinicOwnerPage.waitForURL(/\/clinic\/dashboard\/doctors/, { timeout: 30000 });
   });
 
-  test("can navigate from dashboard to schedules page", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
-
-    const isAccessible = await isClinicDashboardAccessible(page);
-    if (!isAccessible) {
-      test.skip(true, "Dashboard not accessible");
-      return;
-    }
+  test("can navigate from dashboard to schedules page", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
+    await expect(clinicOwnerPage.getByRole("link", { name: "Overview" })).toBeVisible();
 
     // Click on Manage Schedules
-    const manageSchedulesLink = page.getByRole("link", {
+    const manageSchedulesLink = clinicOwnerPage.getByRole("link", {
       name: /manage schedules/i,
     });
     await expect(manageSchedulesLink).toBeVisible();
     await manageSchedulesLink.click();
 
-    await page.waitForURL(/\/clinic\/dashboard\/schedules/, { timeout: 30000 });
+    await clinicOwnerPage.waitForURL(/\/clinic\/dashboard\/schedules/, { timeout: 30000 });
   });
 
-  test("can navigate back to dashboard from doctors page", async ({ page }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+  test("can navigate back to dashboard from doctors page", async ({ clinicOwnerPage }) => {
+    await clinicOwnerPage.goto("/en/clinic/dashboard/doctors");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/doctors");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    // Check for authenticated content
-    const currentDoctors = page.getByText(/current doctors/i);
-    const isAuthenticated = await currentDoctors.isVisible().catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained - doctors list not visible");
-      return;
-    }
+    await expect(clinicOwnerPage.getByText(/current doctors/i)).toBeVisible();
 
     // Click back to dashboard
-    const backLink = page.getByRole("link", { name: /back to dashboard/i });
+    const backLink = clinicOwnerPage.getByRole("link", { name: /back to dashboard/i });
     await expect(backLink).toBeVisible();
     await backLink.click();
 
-    await page.waitForURL(/\/clinic\/dashboard$/, { timeout: 30000 });
+    await clinicOwnerPage.waitForURL(/\/clinic\/dashboard$/, { timeout: 30000 });
   });
 
   test("can navigate from doctors to schedules via button", async ({
-    page,
+    clinicOwnerPage,
   }) => {
-    const loginSuccess = await loginAsClinicOwner(page);
-    if (!loginSuccess) {
-      test.skip(true, "Clinic owner login failed");
-      return;
-    }
+    await clinicOwnerPage.goto("/en/clinic/dashboard/doctors");
+    await expect(
+      clinicOwnerPage.locator('h2:has-text("Clinic Dashboard")')
+    ).toBeVisible({ timeout: 20000 });
 
-    const dashboardLoaded = await gotoDashboardPage(page, "/en/clinic/dashboard/doctors");
-    if (!dashboardLoaded) {
-      test.skip(true, "Session not maintained - redirected away from dashboard");
-      return;
-    }
-
-    // Check for authenticated content
-    const currentDoctors = page.getByText(/current doctors/i);
-    const isAuthenticated = await currentDoctors.isVisible().catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained - doctors list not visible");
-      return;
-    }
+    await expect(clinicOwnerPage.getByText(/current doctors/i)).toBeVisible();
 
     // Check if there's a schedules link for a doctor
-    const schedulesLink = page.getByRole("link", { name: /schedules/i }).first();
-    const hasSchedulesLink = await schedulesLink.isVisible().catch(() => false);
-
-    if (hasSchedulesLink) {
-      await schedulesLink.click();
-      await page.waitForURL(/\/clinic\/dashboard\/schedules/);
-    } else {
-      // Skip if no schedules link (might not be visible if no doctors)
-      test.skip(true, "No schedules link visible");
-    }
+    const schedulesLink = clinicOwnerPage.getByRole("link", { name: /schedules/i }).first();
+    await expect(schedulesLink).toBeVisible();
+    await schedulesLink.click();
+    await clinicOwnerPage.waitForURL(/\/clinic\/dashboard\/schedules/);
   });
 });

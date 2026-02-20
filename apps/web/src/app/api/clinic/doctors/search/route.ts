@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET: Search verified professionals by name or registration number
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
+  const access = await requireClinicPermission("doctors");
+  if (!access.hasAccess) {
     return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
+      { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
     );
   }
 
@@ -25,28 +23,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Get IDs of doctors already affiliated with this clinic
     const existingDoctorIds = await prisma.clinicDoctor.findMany({
       where: {
-        clinic_id: clinic.id,
+        clinic_id: access.clinicId,
       },
       select: {
         doctor_id: true,

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma, AppointmentStatus } from "@swasthya/database";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -17,10 +16,12 @@ interface RouteParams {
  */
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const access = await requireClinicPermission("appointments");
+    if (!access.hasAccess) {
+      return NextResponse.json(
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
+      );
     }
 
     const { id: appointmentId } = await params;
@@ -36,13 +37,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Find the appointment
-    const appointment = await prisma.appointment.findUnique({
-      where: { id: appointmentId },
-      include: {
-        clinic: {
-          select: { claimed_by_id: true },
-        },
+    // Find the appointment and verify it belongs to this clinic
+    const appointment = await prisma.appointment.findFirst({
+      where: {
+        id: appointmentId,
+        clinic_id: access.clinicId,
       },
     });
 
@@ -50,14 +49,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json(
         { error: "Appointment not found" },
         { status: 404 }
-      );
-    }
-
-    // Verify user owns the clinic
-    if (appointment.clinic.claimed_by_id !== session.user.id) {
-      return NextResponse.json(
-        { error: "Not authorized to update this appointment" },
-        { status: 403 }
       );
     }
 

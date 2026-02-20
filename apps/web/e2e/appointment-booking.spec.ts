@@ -119,17 +119,14 @@ test.describe("Appointment Booking - Available Slots", () => {
     const dateSelect = page.locator("#date-select");
     await dateSelect.selectOption({ index: 1 });
 
-    // Wait for slots to load
-    await page.waitForTimeout(2000);
+    // Wait for slots to load - wait for loading spinner to disappear
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     // Should see "Select Time Slot" label or a message about no slots
     const timeSlotLabel = page.getByText("Select Time Slot", { exact: true });
     const noScheduleMessage = page.getByText(/no schedule/i);
     const noSlotsMessage = page.getByText(/No time slots/i);
-    const loadingIndicator = page.locator(".animate-spin");
-
-    // Wait for loading to finish
-    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     // One of these should be visible
     const hasTimeSlotLabel = await timeSlotLabel.isVisible().catch(() => false);
@@ -151,7 +148,9 @@ test.describe("Appointment Booking - Available Slots", () => {
     const found = await selectDateByPattern(page, /Sunday/);
 
     if (found) {
-      await page.waitForTimeout(2000);
+      // Wait for slots to load
+      const loadingIndicator = page.locator(".animate-spin");
+      await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
       // Should show no schedule message
       await expect(page.getByText(/no schedule/i)).toBeVisible();
@@ -177,7 +176,8 @@ test.describe("Appointment Booking - Available Slots", () => {
     }
 
     // Wait for slots to load
-    await page.waitForTimeout(2000);
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     // Look for time slot buttons (format like "09:00")
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
@@ -209,7 +209,9 @@ test.describe("Appointment Booking - Available Slots", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     // Select slot
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
@@ -226,7 +228,7 @@ test.describe("Appointment Booking - Booking Form Page", () => {
   test("should show back button on booking page", async ({ page }) => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}/book`);
 
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     // Either we see the back button in the form, or View Clinic on error page
     const backLink = page.getByRole("link", { name: /Back/i });
@@ -241,7 +243,7 @@ test.describe("Appointment Booking - Booking Form Page", () => {
   test("should show invalid params message when params missing", async ({ page }) => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}/book`);
 
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     // Should show invalid parameters message
     await expect(page.getByText(/Invalid booking parameters/i)).toBeVisible();
@@ -260,7 +262,9 @@ test.describe("Appointment Booking - Booking Form Page", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
     if ((await slotButtons.count()) > 0) {
@@ -273,8 +277,7 @@ test.describe("Appointment Booking - Booking Form Page", () => {
       await expect(page).toHaveURL(/\/book\?/);
 
       // Should see the booking form
-      await page.waitForTimeout(1000);
-      await expect(page.getByRole("heading", { name: /Book Appointment/i })).toBeVisible();
+      await expect(page.getByRole("heading", { name: /Book Appointment/i })).toBeVisible({ timeout: 10000 });
     }
   });
 });
@@ -293,7 +296,9 @@ test.describe("Appointment Booking - Form Validation", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
     if ((await slotButtons.count()) > 0) {
@@ -302,17 +307,14 @@ test.describe("Appointment Booking - Form Validation", () => {
       const continueLink = page.getByRole("link", { name: /Continue Booking/i });
       if (await continueLink.isVisible()) {
         await continueLink.click();
-        await page.waitForTimeout(1000);
+        await page.waitForLoadState("networkidle");
       }
     }
   });
 
   test("should show error for empty full name", async ({ page }) => {
     const nameInput = page.getByLabel(/Full Name/i);
-    if (!(await nameInput.isVisible().catch(() => false))) {
-      test.skip(true, "Booking form not visible");
-      return;
-    }
+    await expect(nameInput).toBeVisible();
 
     // Fill only phone
     await page.getByLabel(/Phone/i).fill("9812345678");
@@ -326,10 +328,7 @@ test.describe("Appointment Booking - Form Validation", () => {
 
   test("should show error for invalid phone number", async ({ page }) => {
     const nameInput = page.getByLabel(/Full Name/i);
-    if (!(await nameInput.isVisible().catch(() => false))) {
-      test.skip(true, "Booking form not visible");
-      return;
-    }
+    await expect(nameInput).toBeVisible();
 
     await nameInput.fill("Test Patient");
     await page.getByLabel(/Phone/i).fill("1234567890"); // Invalid
@@ -341,10 +340,7 @@ test.describe("Appointment Booking - Form Validation", () => {
 
   test("should show error for invalid email format", async ({ page }) => {
     const nameInput = page.getByLabel(/Full Name/i);
-    if (!(await nameInput.isVisible().catch(() => false))) {
-      test.skip(true, "Booking form not visible");
-      return;
-    }
+    await expect(nameInput).toBeVisible();
 
     await nameInput.fill("Test Patient");
     await page.getByLabel(/Phone/i).fill("9812345678");
@@ -352,11 +348,8 @@ test.describe("Appointment Booking - Form Validation", () => {
 
     await page.getByRole("button", { name: /Confirm Booking/i }).click();
 
-    // Wait for validation error to appear
-    await page.waitForTimeout(1000);
-
     // Check for email error message (contains "valid email address")
-    await expect(page.getByText(/valid email address/i)).toBeVisible();
+    await expect(page.getByText(/valid email address/i)).toBeVisible({ timeout: 5000 });
   });
 });
 
@@ -375,7 +368,9 @@ test.describe("Appointment Booking - Successful Booking", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     // Select slot
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
@@ -393,14 +388,11 @@ test.describe("Appointment Booking - Successful Booking", () => {
       return;
     }
     await continueLink.click();
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     // Fill form
     const nameInput = page.getByLabel(/Full Name/i);
-    if (!(await nameInput.isVisible().catch(() => false))) {
-      test.skip(true, "Booking form not visible");
-      return;
-    }
+    await expect(nameInput).toBeVisible();
 
     const uniquePhone = `98${Date.now().toString().slice(-8)}`;
     await nameInput.fill("E2E Test Patient");
@@ -410,13 +402,13 @@ test.describe("Appointment Booking - Successful Booking", () => {
     await page.getByRole("button", { name: /Confirm Booking/i }).click();
 
     // Wait for result
-    await page.waitForTimeout(3000);
-
-    // Check for success or error
     const successHeading = page.getByText(/Booking Confirmed/i);
     const tokenDisplay = page.getByText(/Token Number/i);
     const errorMessage = page.getByText(/something went wrong|slot unavailable/i);
 
+    await expect(successHeading.or(tokenDisplay).or(errorMessage)).toBeVisible({ timeout: 15000 });
+
+    // Check for success or error
     const isSuccess = await successHeading.isVisible().catch(() => false);
     const hasToken = await tokenDisplay.isVisible().catch(() => false);
     const hasError = await errorMessage.isVisible().catch(() => false);
@@ -437,7 +429,9 @@ test.describe("Appointment Booking - Successful Booking", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
     if ((await slotButtons.count()) > 1) {
@@ -455,23 +449,23 @@ test.describe("Appointment Booking - Successful Booking", () => {
       return;
     }
     await continueLink.click();
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     const nameInput = page.getByLabel(/Full Name/i);
-    if (!(await nameInput.isVisible().catch(() => false))) {
-      test.skip(true, "Booking form not visible");
-      return;
-    }
+    await expect(nameInput).toBeVisible();
 
     const uniquePhone = `98${Date.now().toString().slice(-8)}`;
     await nameInput.fill("E2E Test Details Patient");
     await page.getByLabel(/Phone/i).fill(uniquePhone);
 
     await page.getByRole("button", { name: /Confirm Booking/i }).click();
-    await page.waitForTimeout(3000);
+
+    // Wait for result
+    const detailsHeading = page.getByText(/Appointment Details/i);
+    const errorMessage = page.getByText(/something went wrong|slot unavailable/i);
+    await expect(detailsHeading.or(errorMessage)).toBeVisible({ timeout: 15000 });
 
     // Check for appointment details
-    const detailsHeading = page.getByText(/Appointment Details/i);
     if (await detailsHeading.isVisible().catch(() => false)) {
       await expect(page.getByText(/Patient/i).first()).toBeVisible();
       await expect(page.getByText(/Doctor/i).first()).toBeVisible();
@@ -490,7 +484,9 @@ test.describe("Appointment Booking - Successful Booking", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
     if ((await slotButtons.count()) > 2) {
@@ -508,20 +504,21 @@ test.describe("Appointment Booking - Successful Booking", () => {
       return;
     }
     await continueLink.click();
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     const nameInput = page.getByLabel(/Full Name/i);
-    if (!(await nameInput.isVisible().catch(() => false))) {
-      test.skip(true, "Booking form not visible");
-      return;
-    }
+    await expect(nameInput).toBeVisible();
 
     const uniquePhone = `97${Date.now().toString().slice(-8)}`;
     await nameInput.fill("E2E Calendar Test");
     await page.getByLabel(/Phone/i).fill(uniquePhone);
 
     await page.getByRole("button", { name: /Confirm Booking/i }).click();
-    await page.waitForTimeout(3000);
+
+    // Wait for result
+    const successHeading = page.getByText(/Booking Confirmed/i);
+    const errorMessage = page.getByText(/something went wrong|slot unavailable/i);
+    await expect(successHeading.or(errorMessage)).toBeVisible({ timeout: 15000 });
 
     // If booking succeeded, check for calendar button
     const calendarButton = page.getByRole("button", { name: /Add to Calendar/i });
@@ -543,7 +540,9 @@ test.describe("Appointment Booking - Slot Availability", () => {
     let found = await selectDateByPattern(page, /Monday|Wednesday|Friday/);
 
     if (found) {
-      await page.waitForTimeout(2000);
+      // Wait for slots to load
+      const loadingIndicator = page.locator(".animate-spin");
+      await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
       // Check for slot buttons or no schedule message
       const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
@@ -568,7 +567,9 @@ test.describe("Appointment Booking - Slot Availability", () => {
     const dateSelect = page.locator("#date-select");
     await dateSelect.selectOption({ index: 1 }); // First actual date
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     // If there are any unavailable slots, they should be disabled
     const disabledSlots = page.locator("button[disabled]").filter({ hasText: /^\d{2}:\d{2}$/ });
@@ -622,7 +623,9 @@ test.describe("Appointment Booking - Navigation", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
     if ((await slotButtons.count()) > 0) {
@@ -631,7 +634,7 @@ test.describe("Appointment Booking - Navigation", () => {
       const continueLink = page.getByRole("link", { name: /Continue Booking/i });
       if (await continueLink.isVisible()) {
         await continueLink.click();
-        await page.waitForTimeout(1000);
+        await page.waitForLoadState("networkidle");
 
         // Click back button
         const backLink = page.getByRole("link", { name: /Back/i });
@@ -659,7 +662,9 @@ test.describe("Appointment Booking - Navigation", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
     if ((await slotButtons.count()) > 3) {
@@ -677,20 +682,21 @@ test.describe("Appointment Booking - Navigation", () => {
       return;
     }
     await continueLink.click();
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     const nameInput = page.getByLabel(/Full Name/i);
-    if (!(await nameInput.isVisible().catch(() => false))) {
-      test.skip(true, "Booking form not visible");
-      return;
-    }
+    await expect(nameInput).toBeVisible();
 
     const uniquePhone = `97${Date.now().toString().slice(-8)}`;
     await nameInput.fill("E2E Book Another Test");
     await page.getByLabel(/Phone/i).fill(uniquePhone);
 
     await page.getByRole("button", { name: /Confirm Booking/i }).click();
-    await page.waitForTimeout(3000);
+
+    // Wait for result
+    const successHeading = page.getByText(/Booking Confirmed/i);
+    const errorMessage = page.getByText(/something went wrong|slot unavailable/i);
+    await expect(successHeading.or(errorMessage)).toBeVisible({ timeout: 15000 });
 
     // Check for "Book Another" link
     const bookAnotherLink = page.getByRole("link", { name: /Book Another/i });
@@ -704,7 +710,7 @@ test.describe("Appointment Booking - Error Handling", () => {
   test("should show error for invalid booking parameters", async ({ page }) => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}/book`);
 
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     await expect(page.getByText(/Invalid booking parameters/i)).toBeVisible();
   });
@@ -712,7 +718,7 @@ test.describe("Appointment Booking - Error Handling", () => {
   test("should show View Clinic button on error page", async ({ page }) => {
     await page.goto(`/en/clinic/${TEST_CLINIC.slug}/book`);
 
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     const viewClinicLink = page.getByRole("link", { name: /View Clinic/i });
     await expect(viewClinicLink).toBeVisible();
@@ -732,7 +738,9 @@ test.describe("Appointment Booking - What's Next Section", () => {
       await dateSelect.selectOption({ index: 1 });
     }
 
-    await page.waitForTimeout(2000);
+    // Wait for slots to load
+    const loadingIndicator = page.locator(".animate-spin");
+    await loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
 
     const slotButtons = page.locator("button").filter({ hasText: /^\d{2}:\d{2}$/ });
     if ((await slotButtons.count()) > 4) {
@@ -750,20 +758,21 @@ test.describe("Appointment Booking - What's Next Section", () => {
       return;
     }
     await continueLink.click();
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState("networkidle");
 
     const nameInput = page.getByLabel(/Full Name/i);
-    if (!(await nameInput.isVisible().catch(() => false))) {
-      test.skip(true, "Booking form not visible");
-      return;
-    }
+    await expect(nameInput).toBeVisible();
 
     const uniquePhone = `98${Date.now().toString().slice(-8)}`;
     await nameInput.fill("E2E Next Steps Test");
     await page.getByLabel(/Phone/i).fill(uniquePhone);
 
     await page.getByRole("button", { name: /Confirm Booking/i }).click();
-    await page.waitForTimeout(3000);
+
+    // Wait for result
+    const successHeading = page.getByText(/Booking Confirmed/i);
+    const errorMessage = page.getByText(/something went wrong|slot unavailable/i);
+    await expect(successHeading.or(errorMessage)).toBeVisible({ timeout: 15000 });
 
     // Check for "What's Next" section
     const whatsNextHeading = page.getByText(/What's Next/i);

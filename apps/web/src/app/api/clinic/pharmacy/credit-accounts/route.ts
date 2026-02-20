@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
     const accounts = await prisma.creditAccount.findMany({
       where,
       orderBy: { customer_name: "asc" },
+      take: 200,
       select: {
         id: true,
         customer_name: true,

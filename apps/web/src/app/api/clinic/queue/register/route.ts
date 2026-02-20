@@ -1,33 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma, AppointmentStatus, AppointmentSource, AppointmentType } from "@swasthya/database";
-
-/**
- * Generate next patient number for a clinic
- */
-async function generatePatientNumber(clinicId: string): Promise<string> {
-  const count = await prisma.patient.count({
-    where: { clinic_id: clinicId },
-  });
-
-  const nextNumber = count + 1;
-  return `P-${nextNumber.toString().padStart(6, "0")}`;
-}
-
-/**
- * Generate token number for a date at a clinic
- */
-async function generateTokenNumber(clinicId: string, date: Date): Promise<number> {
-  const count = await prisma.appointment.count({
-    where: {
-      clinic_id: clinicId,
-      appointment_date: date,
-    },
-  });
-
-  return count + 1;
-}
+import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { nextPatientNumber, nextTokenNumber } from "@/lib/sequence-number";
 
 /**
  * POST /api/clinic/queue/register
@@ -46,12 +20,6 @@ async function generateTokenNumber(clinicId: string, date: Date): Promise<number
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const body = await request.json();
 
     const {
@@ -102,20 +70,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify clinic exists and is owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        id: clinicId,
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: { id: true, name: true },
-    });
-
-    if (!clinic) {
+    // Verify user has reception permission for this clinic
+    const access = await requireClinicPermission("reception", clinicId);
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "Clinic not found or not authorized" },
-        { status: 404 }
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
 
@@ -157,81 +117,82 @@ export async function POST(request: NextRequest) {
     const slotEndMinutes = endMinutes % 60;
     const endTime = `${endHours.toString().padStart(2, "0")}:${slotEndMinutes.toString().padStart(2, "0")}`;
 
-    // Find or create patient
-    let patient;
+    // Pre-generate atomic sequence numbers (safe outside transaction)
+    const newPatientNumber = (!existingPatientId)
+      ? await nextPatientNumber(clinicId)
+      : null;
+    const tokenNumber = await nextTokenNumber(clinicId, today);
 
-    if (existingPatientId) {
-      // Use existing patient
-      patient = await prisma.patient.findFirst({
-        where: {
-          id: existingPatientId,
-          clinic_id: clinicId,
-        },
-      });
+    // Find or create patient + create appointment atomically
+    const appointment = await prisma.$transaction(async (tx) => {
+      let patient;
 
-      if (!patient) {
-        return NextResponse.json(
-          { error: "Patient not found" },
-          { status: 404 }
-        );
-      }
-    } else {
-      // Find by phone or create new
-      patient = await prisma.patient.findFirst({
-        where: {
-          clinic_id: clinicId,
-          phone: cleanPhone,
-        },
-      });
-
-      if (!patient) {
-        // Create new patient
-        const patientNumber = await generatePatientNumber(clinicId);
-        patient = await prisma.patient.create({
-          data: {
+      if (existingPatientId) {
+        // Use existing patient
+        patient = await tx.patient.findFirst({
+          where: {
+            id: existingPatientId,
             clinic_id: clinicId,
-            patient_number: patientNumber,
-            full_name: patientName.trim(),
+          },
+        });
+
+        if (!patient) {
+          throw new Error("PATIENT_NOT_FOUND");
+        }
+      } else {
+        // Find by phone or create new
+        patient = await tx.patient.findFirst({
+          where: {
+            clinic_id: clinicId,
             phone: cleanPhone,
           },
         });
-      } else {
-        // Update patient name if provided
-        patient = await prisma.patient.update({
-          where: { id: patient.id },
-          data: {
-            full_name: patientName.trim(),
-          },
-        });
+
+        if (!patient) {
+          // Create new patient
+          patient = await tx.patient.create({
+            data: {
+              clinic_id: clinicId,
+              patient_number: newPatientNumber!,
+              full_name: patientName.trim(),
+              phone: cleanPhone,
+            },
+          });
+        } else {
+          // Update patient name if provided
+          patient = await tx.patient.update({
+            where: { id: patient.id },
+            data: {
+              full_name: patientName.trim(),
+            },
+          });
+        }
       }
-    }
 
-    // Generate token number
-    const tokenNumber = await generateTokenNumber(clinicId, today);
-
-    // Create appointment
-    const appointment = await prisma.appointment.create({
-      data: {
-        clinic_id: clinicId,
-        doctor_id: doctorId,
-        patient_id: patient.id,
-        appointment_date: today,
-        time_slot_start: currentTime,
-        time_slot_end: endTime,
-        status: AppointmentStatus.CHECKED_IN, // Walk-in patients are automatically checked in
-        type: AppointmentType.NEW,
-        source: AppointmentSource.WALK_IN,
-        token_number: tokenNumber,
-        chief_complaint: chiefComplaint?.trim() || null,
-      },
-      include: {
-        doctor: {
-          select: { full_name: true },
+      // Create appointment
+      return tx.appointment.create({
+        data: {
+          clinic_id: clinicId,
+          doctor_id: doctorId,
+          patient_id: patient.id,
+          appointment_date: today,
+          time_slot_start: currentTime,
+          time_slot_end: endTime,
+          status: AppointmentStatus.CHECKED_IN, // Walk-in patients are automatically checked in
+          type: AppointmentType.NEW,
+          source: AppointmentSource.WALK_IN,
+          token_number: tokenNumber,
+          chief_complaint: chiefComplaint?.trim() || null,
         },
-        patient: {
-          select: { full_name: true, patient_number: true, phone: true },
+        include: {
+          doctor: {
+            select: { full_name: true },
+          },
+          patient: {
+            select: { full_name: true, patient_number: true, phone: true },
+          },
         },
-      },
+      });
     });
 
     return NextResponse.json({
@@ -244,6 +205,12 @@ export async function POST(request: NextRequest) {
       timeSlot: `${currentTime}-${endTime}`,
     });
   } catch (error) {
+    if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") {
+      return NextResponse.json(
+        { error: "Patient not found" },
+        { status: 404 }
+      );
+    }
     console.error("Error registering walk-in:", error);
     return NextResponse.json(
       { error: "Failed to register patient" },

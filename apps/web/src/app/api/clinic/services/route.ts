@@ -13,12 +13,13 @@ export async function GET() {
       );
     }
 
-    // Get all services for the clinic
+    // Get all services for the clinic (capped at 200)
     const services = await prisma.service.findMany({
       where: {
         clinic_id: access.clinicId,
       },
       orderBy: [{ category: "asc" }, { name: "asc" }],
+      take: 200,
     });
 
     return NextResponse.json({ services });

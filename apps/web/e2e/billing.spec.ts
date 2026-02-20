@@ -147,9 +147,6 @@ test.describe("Billing Page - Patient Selection", () => {
     const searchInput = clinicOwnerPage.getByPlaceholder(/search patient/i);
     await searchInput.fill(TEST_DATA.PATIENTS.PATIENT_ONE.phone);
 
-    // Wait for search results
-    await clinicOwnerPage.waitForTimeout(500); // Debounce delay
-
     // Patient should appear in results
     await expect(clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name)).toBeVisible({ timeout: 5000 });
   });
@@ -157,9 +154,6 @@ test.describe("Billing Page - Patient Selection", () => {
   test("should search and find patient by name", async ({ clinicOwnerPage }) => {
     const searchInput = clinicOwnerPage.getByPlaceholder(/search patient/i);
     await searchInput.fill("Test Patient");
-
-    // Wait for search results
-    await clinicOwnerPage.waitForTimeout(500);
 
     // Patients should appear
     await expect(clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name)).toBeVisible({ timeout: 5000 });
@@ -169,7 +163,8 @@ test.describe("Billing Page - Patient Selection", () => {
     const searchInput = clinicOwnerPage.getByPlaceholder(/search patient/i);
     await searchInput.fill(TEST_DATA.PATIENTS.PATIENT_ONE.phone);
 
-    await clinicOwnerPage.waitForTimeout(500);
+    // Wait for search results to appear
+    await expect(clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first()).toBeVisible({ timeout: 5000 });
 
     // Click on patient result
     await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first().click();
@@ -183,7 +178,7 @@ test.describe("Billing Page - Patient Selection", () => {
     const searchInput = clinicOwnerPage.getByPlaceholder(/search patient/i);
     await searchInput.fill(TEST_DATA.PATIENTS.PATIENT_ONE.phone);
 
-    await clinicOwnerPage.waitForTimeout(500);
+    await expect(clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first()).toBeVisible({ timeout: 5000 });
     await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first().click();
 
     await expect(clinicOwnerPage.getByRole("button", { name: /change patient/i })).toBeVisible();
@@ -198,7 +193,7 @@ test.describe("Billing Page - Invoice Creation", () => {
     // Select a patient first
     const searchInput = clinicOwnerPage.getByPlaceholder(/search patient/i);
     await searchInput.fill(TEST_DATA.PATIENTS.PATIENT_ONE.phone);
-    await clinicOwnerPage.waitForTimeout(500);
+    await expect(clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first()).toBeVisible({ timeout: 5000 });
     await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_ONE.name).first().click();
     await expect(clinicOwnerPage.getByText(/patient information/i)).toBeVisible();
   });
@@ -363,9 +358,6 @@ test.describe("Reports Page", () => {
 
   test("should show correct totals from seeded data", async ({ clinicOwnerPage }) => {
     // Seeded invoices total: 500 + 1808 + 2400 = 4708
-    // Wait for data to load
-    await clinicOwnerPage.waitForTimeout(1000);
-
     // Total invoices should be at least 3 (seeded)
     const totalInvoicesCard = clinicOwnerPage.locator("text=Total Invoices").locator("..").locator("p.text-2xl");
     await expect(totalInvoicesCard).toContainText(/[3-9]|\d{2,}/);
@@ -416,7 +408,7 @@ test.describe("Billing Flow - End to End", () => {
     // 2. Select patient
     const searchInput = clinicOwnerPage.getByPlaceholder(/search patient/i);
     await searchInput.fill(TEST_DATA.PATIENTS.PATIENT_TWO.phone);
-    await clinicOwnerPage.waitForTimeout(500);
+    await expect(clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_TWO.name)).toBeVisible({ timeout: 5000 });
     await clinicOwnerPage.getByText(TEST_DATA.PATIENTS.PATIENT_TWO.name).click();
     await expect(clinicOwnerPage.getByText(/patient information/i)).toBeVisible();
 

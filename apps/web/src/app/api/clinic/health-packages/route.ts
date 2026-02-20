@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy: [{ is_featured: "desc" }, { category: "asc" }, { name: "asc" }],
+      take: 100,
     });
 
     // Get distinct categories

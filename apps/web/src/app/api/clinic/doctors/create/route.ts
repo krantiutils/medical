@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 function generateSlug(name: string): string {
   const slugified = name
@@ -17,12 +16,11 @@ function generateSlug(name: string): string {
 
 // POST: Create a new professional and affiliate with the clinic
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
+  const access = await requireClinicPermission("doctors");
+  if (!access.hasAccess) {
     return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
+      { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+      { status: access.reason === "unauthenticated" ? 401 : 403 }
     );
   }
 
@@ -53,28 +51,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find verified clinic owned by user
-    const clinic = await prisma.clinic.findFirst({
-      where: {
-        claimed_by_id: session.user.id,
-        verified: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!clinic) {
-      return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
-      );
-    }
-
     // Generate a registration number if not provided
     // For clinic-created doctors, prefix with CLINIC- to distinguish from NMC numbers
     const regNumber = registration_number?.trim()
-      || `CLINIC-${clinic.id.substring(0, 8)}-${Date.now().toString(36)}`;
+      || `CLINIC-${access.clinicId.substring(0, 8)}-${Date.now().toString(36)}`;
 
     // Check for existing professional with same type + registration_number
     const existing = await prisma.professional.findUnique({
@@ -149,7 +129,7 @@ export async function POST(request: NextRequest) {
 
       const clinicDoctor = await tx.clinicDoctor.create({
         data: {
-          clinic_id: clinic.id,
+          clinic_id: access.clinicId,
           doctor_id: professional.id,
           role: role || null,
         },

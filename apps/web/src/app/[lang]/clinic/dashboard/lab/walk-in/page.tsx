@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { printLabLabels } from "@/lib/lab-labels";
 
 interface Patient {
   id: string;
@@ -613,6 +614,25 @@ export default function LabWalkInPage() {
             <CardFooter className="flex gap-4">
               <Button variant="primary" onClick={handlePrint} className="flex-1">
                 {t.printReceipt}
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  if (!receipt) return;
+                  const testAbbreviations = receipt.tests
+                    .map((t) => t.short_name || t.name)
+                    .join(", ");
+                  printLabLabels({
+                    orderNumber: receipt.order_number,
+                    patientName: receipt.patient_name,
+                    patientNumber: receipt.patient_number,
+                    tests: testAbbreviations,
+                    date: new Date(receipt.created_at).toLocaleDateString(),
+                  });
+                }}
+              >
+                Print Labels
               </Button>
               <Button variant="outline" onClick={handleNewOrder} className="flex-1">
                 {t.newOrder}

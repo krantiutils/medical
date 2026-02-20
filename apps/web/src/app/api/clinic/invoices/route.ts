@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, PaymentMode, PaymentStatus } from "@swasthya/database";
 import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { nextInvoiceNumber } from "@/lib/sequence-number";
 
 // Invoice item type
 interface InvoiceItem {
@@ -206,18 +207,8 @@ export async function POST(request: NextRequest) {
     const taxAmount = Number(tax) || 0;
     const total = subtotal - discountAmount + taxAmount;
 
-    // Generate invoice number
-    const year = new Date().getFullYear();
-    const invoiceCount = await prisma.invoice.count({
-      where: {
-        clinic_id: access.clinicId,
-        created_at: {
-          gte: new Date(`${year}-01-01`),
-          lt: new Date(`${year + 1}-01-01`),
-        },
-      },
-    });
-    const invoiceNumber = `INV-${year}-${String(invoiceCount + 1).padStart(4, "0")}`;
+    // Generate invoice number (atomic counter)
+    const invoiceNumber = await nextInvoiceNumber(access.clinicId);
 
     // Validate payment mode and status
     const validPaymentModes = Object.values(PaymentMode);

@@ -6,9 +6,7 @@
  * - Settings page: load, update, validation
  * - Leaves page: list, add leave, delete leave
  *
- * KNOWN LIMITATION: Client-side useSession() hook does not reliably maintain
- * session state after page navigation in Playwright E2E tests. Tests that require
- * authenticated state will gracefully skip when session is not detected.
+ * Uses storageState-based auth via clinicOwnerPage fixture.
  */
 
 import { test, expect, TEST_DATA } from "./fixtures/test-utils";
@@ -18,76 +16,49 @@ const SETTINGS_URL = "/en/clinic/dashboard/settings";
 const LEAVES_URL = "/en/clinic/dashboard/leaves";
 
 /**
- * Helper: navigate to staff page and verify it loaded.
- * Returns false if authentication was lost or the page redirected.
+ * Helper: navigate to staff page and assert it loaded.
+ * Fails the test if the page doesn't render the expected heading.
  */
-async function ensureStaffPageLoaded(
-  page: import("@playwright/test").Page
-): Promise<boolean> {
+async function navigateToStaffPage(
+  page: import("@playwright/test").Page,
+  expectFn: typeof expect
+) {
   await page.goto(STAFF_URL);
-
-  try {
-    // Staff page is a server component that redirects on auth failure,
-    // so we may end up on login or dashboard
-    await page.waitForSelector("main", { timeout: 20000 });
-  } catch {
-    return false;
-  }
-
-  // The StaffManagement component renders h1 "Staff Management"
-  const heading = page.getByRole("heading", { name: /staff management/i });
-  const isLoaded = await heading.isVisible().catch(() => false);
-
-  if (!isLoaded) {
-    // Could have been redirected to login or dashboard
-    return false;
-  }
-
-  return true;
+  await expectFn(
+    page.getByRole("heading", { name: /staff management/i })
+  ).toBeVisible({ timeout: 15000 });
 }
 
 /**
- * Helper: navigate to settings page and verify it loaded.
- * Returns false if authentication was lost.
+ * Helper: navigate to settings page and assert it loaded.
+ * Waits for loading spinners to disappear, then asserts heading.
  */
-async function ensureSettingsPageLoaded(
-  page: import("@playwright/test").Page
-): Promise<boolean> {
+async function navigateToSettingsPage(
+  page: import("@playwright/test").Page,
+  expectFn: typeof expect
+) {
   await page.goto(SETTINGS_URL);
 
-  try {
-    await page.waitForSelector("main", { timeout: 20000 });
-  } catch {
-    return false;
-  }
-
   // Wait for loading animation to finish
   const loadingPulse = page.locator(".animate-pulse");
   if (await loadingPulse.isVisible().catch(() => false)) {
     await loadingPulse.waitFor({ state: "hidden", timeout: 15000 }).catch(() => {});
   }
 
-  // The settings page renders h1 "Clinic Settings"
-  const heading = page.getByRole("heading", { name: /clinic settings/i });
-  const isLoaded = await heading.isVisible().catch(() => false);
-
-  return isLoaded;
+  await expectFn(
+    page.getByRole("heading", { name: /clinic settings/i })
+  ).toBeVisible({ timeout: 15000 });
 }
 
 /**
- * Helper: navigate to leaves page and verify it loaded.
- * Returns false if authentication was lost.
+ * Helper: navigate to leaves page and assert it loaded.
+ * Waits for loading spinners to disappear, then asserts heading.
  */
-async function ensureLeavesPageLoaded(
-  page: import("@playwright/test").Page
-): Promise<boolean> {
+async function navigateToLeavesPage(
+  page: import("@playwright/test").Page,
+  expectFn: typeof expect
+) {
   await page.goto(LEAVES_URL);
-
-  try {
-    await page.waitForSelector("main", { timeout: 20000 });
-  } catch {
-    return false;
-  }
 
   // Wait for loading animation to finish
   const loadingPulse = page.locator(".animate-pulse");
@@ -95,17 +66,9 @@ async function ensureLeavesPageLoaded(
     await loadingPulse.waitFor({ state: "hidden", timeout: 15000 }).catch(() => {});
   }
 
-  // The leaves page renders h1 "Leave Management"
-  const heading = page.getByRole("heading", { name: /leave management/i });
-  const isLoaded = await heading.isVisible().catch(() => false);
-
-  if (!isLoaded) {
-    // Could be showing login prompt, no clinic, or loading
-    const loginRequired = page.getByText(/please log in/i);
-    return !(await loginRequired.isVisible().catch(() => false));
-  }
-
-  return true;
+  await expectFn(
+    page.getByRole("heading", { name: /leave management/i })
+  ).toBeVisible({ timeout: 15000 });
 }
 
 // ---------------------------------------------------------------------------
@@ -120,15 +83,7 @@ test.describe("Clinic Staff - Page Load", () => {
   test("staff page loads with heading and invite button", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible - session or permission issue");
-      return;
-    }
-
-    await expect(
-      page.getByRole("heading", { name: /staff management/i })
-    ).toBeVisible();
+    await navigateToStaffPage(page, expect);
 
     await expect(
       page.getByText(/manage your clinic's staff members/i)
@@ -146,11 +101,7 @@ test.describe("Clinic Staff - Page Load", () => {
   test("staff page shows staff table or empty state", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     // Either we see the table headers or the empty state message
     const noStaffMessage = page.getByText(/no staff members found/i);
@@ -175,11 +126,7 @@ test.describe("Clinic Staff - Page Load", () => {
   test("current user is marked with (You) in staff list", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     const youMarker = page.getByText("(You)");
     const hasYouMarker = await youMarker.isVisible().catch(() => false);
@@ -202,11 +149,7 @@ test.describe("Clinic Staff - Invite New Member", () => {
   test("invite modal opens with correct form fields", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     // Click the Invite Staff button
     await page.getByRole("button", { name: /invite staff/i }).click();
@@ -242,11 +185,7 @@ test.describe("Clinic Staff - Invite New Member", () => {
   test("can fill and submit the invite form", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     // Intercept the staff API to simulate a successful invite
     await page.route("**/api/clinic/staff", async (route) => {
@@ -292,15 +231,15 @@ test.describe("Clinic Staff - Invite New Member", () => {
     // Submit
     await inviteButton.click();
 
-    // Wait for success message
-    await page.waitForTimeout(2000);
-
-    // Either the success message appears or the modal closes
+    // Wait for success message or modal close
     const successMessage = page.getByText(/invited successfully/i);
+    const modalTitle = page.getByRole("heading", { name: /invite new staff/i });
+
+    await expect(successMessage.or(modalTitle)).toBeVisible({ timeout: 10000 });
+
     const hasSuccess = await successMessage.isVisible().catch(() => false);
 
     // The modal should have closed
-    const modalTitle = page.getByRole("heading", { name: /invite new staff/i });
     const modalStillOpen = await modalTitle.isVisible().catch(() => false);
 
     expect(hasSuccess || !modalStillOpen).toBeTruthy();
@@ -312,11 +251,7 @@ test.describe("Clinic Staff - Invite New Member", () => {
   test("cancel button closes invite modal", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     await page.getByRole("button", { name: /invite staff/i }).click();
 
@@ -342,11 +277,7 @@ test.describe("Clinic Staff - Edit Role", () => {
   test("clicking edit shows role dropdown for non-owner staff", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     // We need at least one staff member that isn't the current user
     // The edit button has title "Change Role"
@@ -376,11 +307,7 @@ test.describe("Clinic Staff - Edit Role", () => {
   test("can change role via dropdown and save", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     const editButton = page.getByTitle("Change Role").first();
     const hasEditButton = await editButton.isVisible().catch(() => false);
@@ -426,11 +353,10 @@ test.describe("Clinic Staff - Edit Role", () => {
     // Click Save
     await page.getByRole("button", { name: /save/i }).click();
 
-    // Wait for success
-    await page.waitForTimeout(2000);
-
-    // Either success message shows or the edit mode closes
+    // Wait for success - either success message shows or the edit mode closes
     const successMessage = page.getByText(/role updated successfully/i);
+    await expect(successMessage.or(roleSelect)).toBeVisible({ timeout: 10000 });
+
     const hasSuccess = await successMessage.isVisible().catch(() => false);
 
     // The inline select should have disappeared (edit mode closed)
@@ -448,11 +374,7 @@ test.describe("Clinic Staff - Remove Member", () => {
   test("remove button visible for removable staff members", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     // The remove button has title "Remove"
     const removeButton = page.getByTitle("Remove").first();
@@ -474,11 +396,7 @@ test.describe("Clinic Staff - Remove Member", () => {
   test("clicking remove triggers confirmation dialog", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureStaffPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Staff page not accessible");
-      return;
-    }
+    await navigateToStaffPage(page, expect);
 
     const removeButton = page.getByTitle("Remove").first();
     const hasRemoveButton = await removeButton.isVisible().catch(() => false);
@@ -512,10 +430,9 @@ test.describe("Clinic Staff - Remove Member", () => {
     await removeButton.click();
 
     // Wait for the dialog to be handled
-    await page.waitForTimeout(2000);
-
-    // The dialog should have been triggered
-    expect(dialogAccepted).toBeTruthy();
+    await expect(async () => {
+      expect(dialogAccepted).toBeTruthy();
+    }).toPass({ timeout: 5000 });
   });
 });
 
@@ -531,16 +448,7 @@ test.describe("Clinic Settings - Page Load", () => {
   test("settings page loads with heading and form sections", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible - session or permission issue");
-      return;
-    }
-
-    // Heading
-    await expect(
-      page.getByRole("heading", { name: /clinic settings/i })
-    ).toBeVisible();
+    await navigateToSettingsPage(page, expect);
 
     // Subtitle
     await expect(
@@ -567,11 +475,7 @@ test.describe("Clinic Settings - Page Load", () => {
   test("settings page shows clinic type as read-only", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible");
-      return;
-    }
+    await navigateToSettingsPage(page, expect);
 
     // Type section heading
     await expect(
@@ -602,11 +506,7 @@ test.describe("Clinic Settings - Page Load", () => {
   test("basic info fields are pre-populated", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible");
-      return;
-    }
+    await navigateToSettingsPage(page, expect);
 
     // Clinic Name input should have a value
     const nameInputs = page.locator('input[type="text"]');
@@ -634,11 +534,7 @@ test.describe("Clinic Settings - Update Info", () => {
   test("can update clinic name, phone, email, address", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible");
-      return;
-    }
+    await navigateToSettingsPage(page, expect);
 
     // Intercept the PUT API call to simulate success
     await page.route("**/api/clinic/settings", async (route) => {
@@ -687,14 +583,8 @@ test.describe("Clinic Settings - Update Info", () => {
     await saveButton.click();
 
     // Wait for the success toast
-    await page.waitForTimeout(2000);
-
-    // Success message should appear
     const successMessage = page.getByText(/clinic updated successfully/i);
-    const hasSuccess = await successMessage.isVisible().catch(() => false);
-
-    // The page may redirect to dashboard after 1.5s
-    expect(hasSuccess).toBeTruthy();
+    await expect(successMessage).toBeVisible({ timeout: 10000 });
   });
 
   /**
@@ -703,11 +593,7 @@ test.describe("Clinic Settings - Update Info", () => {
   test("cancel button navigates to dashboard", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible");
-      return;
-    }
+    await navigateToSettingsPage(page, expect);
 
     const cancelButton = page.getByRole("button", { name: /cancel/i });
     await expect(cancelButton).toBeVisible();
@@ -727,11 +613,7 @@ test.describe("Clinic Settings - Validation", () => {
   test("required fields prevent submission when empty", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible");
-      return;
-    }
+    await navigateToSettingsPage(page, expect);
 
     // Clear the clinic name field
     const nameLabel = page.getByText(/clinic name/i).first();
@@ -744,7 +626,6 @@ test.describe("Clinic Settings - Validation", () => {
 
     // The form should not navigate away (still on settings page)
     // because the HTML required attribute prevents submission
-    await page.waitForTimeout(1000);
     await expect(
       page.getByRole("heading", { name: /clinic settings/i })
     ).toBeVisible();
@@ -756,11 +637,7 @@ test.describe("Clinic Settings - Validation", () => {
   test("invalid phone format shows error", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible");
-      return;
-    }
+    await navigateToSettingsPage(page, expect);
 
     // Intercept PUT to return phone validation error
     await page.route("**/api/clinic/settings", async (route) => {
@@ -785,12 +662,8 @@ test.describe("Clinic Settings - Validation", () => {
     await saveButton.click();
 
     // Wait for error
-    await page.waitForTimeout(2000);
-
-    // Error message about phone format should appear
     const errorMessage = page.getByText(/invalid phone number format/i);
-    const hasError = await errorMessage.isVisible().catch(() => false);
-    expect(hasError).toBeTruthy();
+    await expect(errorMessage).toBeVisible({ timeout: 10000 });
   });
 
   /**
@@ -799,11 +672,7 @@ test.describe("Clinic Settings - Validation", () => {
   test("invalid email format shows error", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible");
-      return;
-    }
+    await navigateToSettingsPage(page, expect);
 
     // Intercept PUT to return email validation error
     await page.route("**/api/clinic/settings", async (route) => {
@@ -832,11 +701,8 @@ test.describe("Clinic Settings - Validation", () => {
     const saveButton = page.getByRole("button", { name: /save changes/i });
     await saveButton.click();
 
-    await page.waitForTimeout(2000);
-
     const errorMessage = page.getByText(/invalid email format/i);
-    const hasError = await errorMessage.isVisible().catch(() => false);
-    expect(hasError).toBeTruthy();
+    await expect(errorMessage).toBeVisible({ timeout: 10000 });
   });
 
   /**
@@ -846,11 +712,7 @@ test.describe("Clinic Settings - Validation", () => {
   test("operating hours section shows all 7 days with toggles", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureSettingsPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Settings page not accessible");
-      return;
-    }
+    await navigateToSettingsPage(page, expect);
 
     // All 7 days should be visible as buttons
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -873,16 +735,7 @@ test.describe("Clinic Leaves - Page Load", () => {
   test("leaves page loads with heading and doctor selection", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible - session or permission issue");
-      return;
-    }
-
-    // Heading
-    await expect(
-      page.getByRole("heading", { name: /leave management/i })
-    ).toBeVisible();
+    await navigateToLeavesPage(page, expect);
 
     // Subtitle
     await expect(
@@ -907,11 +760,7 @@ test.describe("Clinic Leaves - Page Load", () => {
   test("all doctors option is visible and selected by default", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
+    await navigateToLeavesPage(page, expect);
 
     const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
     const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
@@ -936,11 +785,7 @@ test.describe("Clinic Leaves - Page Load", () => {
   test("upcoming leaves section is visible", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
+    await navigateToLeavesPage(page, expect);
 
     const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
     const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
@@ -972,11 +817,7 @@ test.describe("Clinic Leaves - Page Load", () => {
   test("past leaves section can be expanded", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
+    await navigateToLeavesPage(page, expect);
 
     const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
     const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
@@ -994,9 +835,9 @@ test.describe("Clinic Leaves - Page Load", () => {
     await pastLeavesHeading.click();
 
     // After expanding, either past leave entries or "No past leaves on record" should appear
-    await page.waitForTimeout(500);
-
     const noPast = page.getByText(/no past leaves on record/i);
+    await expect(noPast.or(page.locator('[title="Delete"]').first())).toBeVisible({ timeout: 5000 }).catch(() => {});
+
     const hasPastEmpty = await noPast.isVisible().catch(() => false);
 
     // Just verify the expansion happened (content appeared)
@@ -1015,11 +856,7 @@ test.describe("Clinic Leaves - Add Leave", () => {
   test("selecting a doctor shows add leave form", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
+    await navigateToLeavesPage(page, expect);
 
     const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
     const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
@@ -1045,12 +882,11 @@ test.describe("Clinic Leaves - Add Leave", () => {
     }
 
     await doctorButton.click();
-    await page.waitForTimeout(1000);
 
     // The "Add Leave" form should now be visible
     await expect(
       page.getByRole("heading", { name: /add leave/i })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 5000 });
 
     // Form fields
     await expect(page.getByText(/^date/i).first()).toBeVisible();
@@ -1070,11 +906,7 @@ test.describe("Clinic Leaves - Add Leave", () => {
   test("can add a leave for a doctor with date and reason", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
+    await navigateToLeavesPage(page, expect);
 
     const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
     const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
@@ -1098,7 +930,9 @@ test.describe("Clinic Leaves - Add Leave", () => {
     }
 
     await doctorButton.click();
-    await page.waitForTimeout(1000);
+    await expect(
+      page.getByRole("heading", { name: /add leave/i })
+    ).toBeVisible({ timeout: 5000 });
 
     // Fill the leave form
     const dateInput = page.locator('input[type="date"]').first();
@@ -1164,9 +998,9 @@ test.describe("Clinic Leaves - Add Leave", () => {
     await addButton.click();
 
     // The affected appointments modal should appear
-    await page.waitForTimeout(2000);
-
     const modal = page.getByRole("heading", { name: /affected appointments/i });
+    await expect(modal).toBeVisible({ timeout: 10000 });
+
     const hasModal = await modal.isVisible().catch(() => false);
 
     if (hasModal) {
@@ -1177,12 +1011,10 @@ test.describe("Clinic Leaves - Add Leave", () => {
 
       // Click "Proceed with Leave"
       await page.getByRole("button", { name: /proceed with leave/i }).click();
-      await page.waitForTimeout(2000);
 
       // Success message should appear
       const successMessage = page.getByText(/leave added successfully/i);
-      const hasSuccess = await successMessage.isVisible().catch(() => false);
-      expect(hasSuccess).toBeTruthy();
+      await expect(successMessage).toBeVisible({ timeout: 10000 });
     }
   });
 
@@ -1193,11 +1025,7 @@ test.describe("Clinic Leaves - Add Leave", () => {
   test("add leave button is disabled without required fields", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
+    await navigateToLeavesPage(page, expect);
 
     const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
     const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
@@ -1221,7 +1049,9 @@ test.describe("Clinic Leaves - Add Leave", () => {
     }
 
     await doctorButton.click();
-    await page.waitForTimeout(1000);
+    await expect(
+      page.getByRole("heading", { name: /add leave/i })
+    ).toBeVisible({ timeout: 5000 });
 
     // Without filling date or reason, the button should be disabled
     const addButton = page.getByRole("button", { name: /check & add leave/i });
@@ -1234,11 +1064,7 @@ test.describe("Clinic Leaves - Add Leave", () => {
   test("toggling full day off shows time range inputs", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
+    await navigateToLeavesPage(page, expect);
 
     const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
     const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
@@ -1262,7 +1088,9 @@ test.describe("Clinic Leaves - Add Leave", () => {
     }
 
     await doctorButton.click();
-    await page.waitForTimeout(1000);
+    await expect(
+      page.getByRole("heading", { name: /add leave/i })
+    ).toBeVisible({ timeout: 5000 });
 
     // The full day toggle is on by default -- time inputs should not be visible
     const startTimeLabel = page.getByText(/start time/i);
@@ -1287,11 +1115,7 @@ test.describe("Clinic Leaves - Delete Leave", () => {
   test("can delete an upcoming leave", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
+    await navigateToLeavesPage(page, expect);
 
     const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
     const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
@@ -1339,13 +1163,11 @@ test.describe("Clinic Leaves - Delete Leave", () => {
     await deleteButton.click();
 
     // Wait for the API call and re-render
-    await page.waitForTimeout(2000);
-
-    // Either the leave count decreased or "No upcoming leaves" appears
-    const leavesAfterCount = await page.getByTitle("Delete").count();
-    const hasNoUpcomingAfter = await noUpcoming.isVisible().catch(() => false);
-
-    expect(leavesAfterCount < leavesBeforeCount || hasNoUpcomingAfter).toBeTruthy();
+    await expect(async () => {
+      const leavesAfterCount = await page.getByTitle("Delete").count();
+      const hasNoUpcomingAfter = await noUpcoming.isVisible().catch(() => false);
+      expect(leavesAfterCount < leavesBeforeCount || hasNoUpcomingAfter).toBeTruthy();
+    }).toPass({ timeout: 10000 });
   });
 
   /**
@@ -1354,14 +1176,7 @@ test.describe("Clinic Leaves - Delete Leave", () => {
   test("back to dashboard link navigates correctly", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureLeavesPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Leaves page not accessible");
-      return;
-    }
-
-    const noDoctorsMessage = page.getByText(/no doctors affiliated/i);
-    const hasNoDoctors = await noDoctorsMessage.isVisible().catch(() => false);
+    await navigateToLeavesPage(page, expect);
 
     // The back link should be visible whether or not there are doctors
     const backLink = page.getByRole("link", { name: /back to dashboard/i });

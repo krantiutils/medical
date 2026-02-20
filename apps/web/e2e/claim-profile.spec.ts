@@ -4,65 +4,7 @@
  * Tests for US-043: Verify the profile claim flow works correctly
  */
 
-import { test, expect, Page } from "@playwright/test";
-import { TEST_DATA } from "./fixtures/test-utils";
-
-/**
- * Custom login helper that works with the claim page tests
- */
-async function loginUser(
-  page: Page,
-  email: string,
-  password: string
-): Promise<void> {
-  await page.goto("/en/login");
-  await page.getByLabel(/email/i).fill(email);
-  await page.getByLabel(/password/i).fill(password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-
-  // Wait for loading state
-  await expect(page.getByRole("button", { name: /signing in/i })).toBeVisible({
-    timeout: 5000,
-  });
-
-  // Wait for redirect away from login page
-  await page.waitForURL((url) => !url.pathname.includes("/login"), {
-    timeout: 15000,
-  });
-
-  // Verify we're on the homepage
-  await expect(page).toHaveURL(/\/(en|ne)\/?$/);
-
-  // Wait for the page to fully load
-  await expect(
-    page.getByRole("heading", { name: /find your doctor/i })
-  ).toBeVisible({ timeout: 10000 });
-}
-
-/**
- * Helper to navigate to claim page and wait for authenticated content
- */
-async function goToClaimPageAuthenticated(page: Page): Promise<void> {
-  await page.goto("/en/claim");
-
-  // Wait for either authenticated content OR login prompt
-  // Then verify which state we're in
-  const registrationInput = page.locator("#registration");
-  const loginPrompt = page.getByText(/please log in to claim a profile/i);
-
-  // Wait for either to be visible
-  await Promise.race([
-    expect(registrationInput).toBeVisible({ timeout: 20000 }),
-    expect(loginPrompt).toBeVisible({ timeout: 20000 }),
-  ]).catch(() => {});
-
-  // If we see login prompt, session wasn't maintained - throw helpful error
-  if (await loginPrompt.isVisible()) {
-    throw new Error(
-      "Session was not maintained after login. This is a known issue with client-side auth in E2E tests."
-    );
-  }
-}
+import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 test.describe("Claim Page - Not Authenticated", () => {
   test("should show login required message when not authenticated", async ({
@@ -136,80 +78,71 @@ test.describe("Verification Form - Not Authenticated", () => {
 
 test.describe("Claim Page - Authenticated - Single Test Flow", () => {
   test("complete claim flow: login, search, navigate to verification form", async ({
-    page,
+    authenticatedPage,
   }) => {
-    // Test 1: Login
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
+    // Navigate to claim page and verify authenticated content
+    await authenticatedPage.goto("/en/claim");
 
-    // Test 2: Navigate to claim page and verify authenticated content
-    await page.goto("/en/claim");
-
-    // Wait for page to load - either authenticated or not
-    await page.waitForSelector("main h1", { timeout: 10000 });
+    // Wait for page to load
+    await authenticatedPage.waitForSelector("main h1", { timeout: 10000 });
 
     // Check if we're authenticated by looking for the registration input
-    const registrationInput = page.locator("#registration");
-    const isAuthenticated = await registrationInput.isVisible().catch(() => false);
+    const registrationInput = authenticatedPage.locator("#registration");
+    await expect(registrationInput).toBeVisible();
 
-    if (!isAuthenticated) {
-      // If not authenticated, skip the rest of the test
-      test.skip(true, "Session not maintained after login - client-side auth issue");
-      return;
-    }
-
-    // Test 3: Verify page elements when authenticated
-    const heading = page.getByRole("heading", { level: 1 });
+    // Verify page elements when authenticated
+    const heading = authenticatedPage.getByRole("heading", { level: 1 });
     await expect(heading).toContainText("Claim Your Profile");
 
-    // Test 4: Search for an unclaimed professional
+    // Search for an unclaimed professional
     await registrationInput.fill(TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED);
-    await page.getByRole("button", { name: /search/i }).click();
+    await authenticatedPage.getByRole("button", { name: /search/i }).click();
 
-    // Test 5: Verify search results
-    await expect(page.getByText(/Dr\. Unclaimed Doctor/i)).toBeVisible({
+    // Verify search results
+    await expect(authenticatedPage.getByText(/Dr\. Unclaimed Doctor/i)).toBeVisible({
       timeout: 15000,
     });
     await expect(
-      page.getByText(TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED)
+      authenticatedPage.getByText(TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED)
     ).toBeVisible();
-    await expect(page.getByText(/MBBS/i)).toBeVisible();
-    await expect(page.getByText(/Pokhara/i)).toBeVisible();
+    await expect(authenticatedPage.getByText(/MBBS/i)).toBeVisible();
+    await expect(authenticatedPage.getByText(/Pokhara/i)).toBeVisible();
 
-    // Test 6: Verify Start Claim Process button is visible
-    const claimButton = page.getByRole("link", {
+    // Verify Start Claim Process button is visible
+    const claimButton = authenticatedPage.getByRole("link", {
       name: /start claim process/i,
     });
     await expect(claimButton).toBeVisible();
 
-    // Test 7: Navigate to verification form
+    // Navigate to verification form
     await claimButton.click();
-    await page.waitForURL(/\/claim\/[^/]+\/verify/, { timeout: 15000 });
+    await authenticatedPage.waitForURL(/\/claim\/[^/]+\/verify/, { timeout: 15000 });
 
-    // Test 8: Verify verification form elements
+    // Verify verification form elements
     await expect(
-      page.getByRole("heading", { name: /verify your identity/i })
+      authenticatedPage.getByRole("heading", { name: /verify your identity/i })
     ).toBeVisible({ timeout: 20000 });
-    await expect(page.getByText(/government id/i).first()).toBeVisible();
+    await expect(authenticatedPage.getByText(/government id/i).first()).toBeVisible();
     await expect(
-      page.getByText(/professional certificate/i).first()
+      authenticatedPage.getByText(/professional certificate/i).first()
     ).toBeVisible();
-    await expect(page.getByText(/Dr\. Unclaimed Doctor/i)).toBeVisible();
+    await expect(authenticatedPage.getByText(/Dr\. Unclaimed Doctor/i)).toBeVisible();
 
-    // Test 9: Verify submit button is disabled without files
-    const submitButton = page.getByRole("button", {
+    // Verify submit button is disabled without files
+    const submitButton = authenticatedPage.getByRole("button", {
       name: /submit verification request/i,
     });
     await expect(submitButton).toBeDisabled();
 
-    // Test 10: Upload files and verify submit becomes enabled
-    const governmentIdInput = page.locator('input[type="file"]').first();
+    // Upload files and verify submit becomes enabled
+    const governmentIdInput = authenticatedPage.locator('input[type="file"]').first();
     await governmentIdInput.setInputFiles({
       name: "gov-id.jpg",
       mimeType: "image/jpeg",
       buffer: Buffer.from("fake content"),
     });
 
-    const certificateInput = page.locator('input[type="file"]').nth(1);
+    const certificateInput = authenticatedPage.locator('input[type="file"]').nth(1);
     await certificateInput.setInputFiles({
       name: "certificate.pdf",
       mimeType: "application/pdf",
@@ -218,131 +151,98 @@ test.describe("Claim Page - Authenticated - Single Test Flow", () => {
 
     await expect(submitButton).toBeEnabled();
 
-    // Test 11: Test cancel button
-    const cancelButton = page.getByRole("link", { name: /cancel/i });
+    // Test cancel button
+    const cancelButton = authenticatedPage.getByRole("link", { name: /cancel/i });
     await expect(cancelButton).toBeVisible();
   });
 
   test("search shows 'not found' for invalid registration number", async ({
-    page,
+    authenticatedPage,
   }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/en/claim");
+    await authenticatedPage.goto("/en/claim");
 
     // Check if authenticated
-    const registrationInput = page.locator("#registration");
-    const isAuthenticated = await registrationInput
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    const registrationInput = authenticatedPage.locator("#registration");
+    await expect(registrationInput).toBeVisible({ timeout: 10000 });
 
     await registrationInput.fill(TEST_DATA.REGISTRATION_NUMBERS.INVALID);
-    await page.getByRole("button", { name: /search/i }).click();
+    await authenticatedPage.getByRole("button", { name: /search/i }).click();
 
     await expect(
-      page.getByText(/no professional found with this registration number/i)
+      authenticatedPage.getByText(/no professional found with this registration number/i)
     ).toBeVisible({ timeout: 15000 });
   });
 
   test("shows 'already claimed' message for claimed profile", async ({
-    page,
+    authenticatedPage,
   }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/en/claim");
+    await authenticatedPage.goto("/en/claim");
 
     // Check if authenticated
-    const registrationInput = page.locator("#registration");
-    const isAuthenticated = await registrationInput
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    const registrationInput = authenticatedPage.locator("#registration");
+    await expect(registrationInput).toBeVisible({ timeout: 10000 });
 
     // Registration 88888 is claimed by professional user in seed data
     await registrationInput.fill("88888");
-    await page.getByRole("button", { name: /search/i }).click();
+    await authenticatedPage.getByRole("button", { name: /search/i }).click();
 
     await expect(
-      page.getByText(/this profile has already been claimed/i)
+      authenticatedPage.getByText(/this profile has already been claimed/i)
     ).toBeVisible({ timeout: 15000 });
 
     // Should NOT have Start Claim Process button
-    const claimButton = page.getByRole("link", {
+    const claimButton = authenticatedPage.getByRole("link", {
       name: /start claim process/i,
     });
     await expect(claimButton).not.toBeVisible();
   });
 
   test("auto-search on initial load with registration param", async ({
-    page,
+    authenticatedPage,
   }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto(
+    await authenticatedPage.goto(
       `/en/claim?registration=${TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED}`
     );
 
     // Check if authenticated by looking for the registration input
-    const registrationInput = page.locator("#registration");
-    const isAuthenticated = await registrationInput
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    const registrationInput = authenticatedPage.locator("#registration");
+    await expect(registrationInput).toBeVisible({ timeout: 10000 });
 
     // Should auto-search and display results
-    await expect(page.getByText(/Dr\. Unclaimed Doctor/i)).toBeVisible({
+    await expect(authenticatedPage.getByText(/Dr\. Unclaimed Doctor/i)).toBeVisible({
       timeout: 20000,
     });
   });
 
   test("shows correct type labels for different professional types", async ({
-    page,
+    authenticatedPage,
   }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-
     // Test Doctor type
-    await page.goto(
+    await authenticatedPage.goto(
       `/en/claim?registration=${TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED}`
     );
 
     // Check if authenticated
-    const registrationInput = page.locator("#registration");
-    const isAuthenticated = await registrationInput
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
+    const registrationInput = authenticatedPage.locator("#registration");
+    await expect(registrationInput).toBeVisible({ timeout: 10000 });
 
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
-
-    await expect(page.getByText("Doctor", { exact: true })).toBeVisible({
+    await expect(authenticatedPage.getByText("Doctor", { exact: true })).toBeVisible({
       timeout: 20000,
     });
 
     // Test Dentist type
-    await page.goto(
+    await authenticatedPage.goto(
       `/en/claim?registration=${TEST_DATA.REGISTRATION_NUMBERS.DENTIST}`
     );
-    await expect(page.getByText("Dentist", { exact: true })).toBeVisible({
+    await expect(authenticatedPage.getByText("Dentist", { exact: true })).toBeVisible({
       timeout: 20000,
     });
 
     // Test Pharmacist type
-    await page.goto(
+    await authenticatedPage.goto(
       `/en/claim?registration=${TEST_DATA.REGISTRATION_NUMBERS.PHARMACIST}`
     );
-    await expect(page.getByText("Pharmacist", { exact: true })).toBeVisible({
+    await expect(authenticatedPage.getByText("Pharmacist", { exact: true })).toBeVisible({
       timeout: 20000,
     });
   });
@@ -350,47 +250,33 @@ test.describe("Claim Page - Authenticated - Single Test Flow", () => {
 
 test.describe("Claim Flow - Language Support", () => {
   test("should load claim page in Nepali when authenticated", async ({
-    page,
+    authenticatedPage,
   }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto("/ne/claim");
+    await authenticatedPage.goto("/ne/claim");
 
     // Check if authenticated by looking for registration input
-    const registrationInput = page.locator("#registration");
-    const isAuthenticated = await registrationInput
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    const registrationInput = authenticatedPage.locator("#registration");
+    await expect(registrationInput).toBeVisible({ timeout: 10000 });
 
     // Check for Nepali heading (only shown when authenticated)
     await expect(
-      page.getByText(/आफ्नो प्रोफाइल दाबी गर्नुहोस्/)
+      authenticatedPage.getByText(/आफ्नो प्रोफाइल दाबी गर्नुहोस्/)
     ).toBeVisible({ timeout: 10000 });
   });
 
-  test("should show Nepali search results", async ({ page }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto(
+  test("should show Nepali search results", async ({
+    authenticatedPage,
+  }) => {
+    await authenticatedPage.goto(
       `/ne/claim?registration=${TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED}`
     );
 
     // Check if authenticated
-    const registrationInput = page.locator("#registration");
-    const isAuthenticated = await registrationInput
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
-
-    if (!isAuthenticated) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    const registrationInput = authenticatedPage.locator("#registration");
+    await expect(registrationInput).toBeVisible({ timeout: 10000 });
 
     // Should show Nepali name
-    await expect(page.getByText(/डा\. अनक्लेम्ड डक्टर/i)).toBeVisible({
+    await expect(authenticatedPage.getByText(/डा\. अनक्लेम्ड डक्टर/i)).toBeVisible({
       timeout: 20000,
     });
   });
@@ -407,108 +293,97 @@ test.describe("Claim Flow - Language Support", () => {
 });
 
 test.describe("Verification Form - File Upload", () => {
-  test("should accept and display uploaded files", async ({ page }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto(
+  test("should accept and display uploaded files", async ({
+    authenticatedPage,
+  }) => {
+    await authenticatedPage.goto(
       `/en/claim?registration=${TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED}`
     );
 
     // Wait for claim button
-    const claimButton = page.getByRole("link", {
+    const claimButton = authenticatedPage.getByRole("link", {
       name: /start claim process/i,
     });
-
-    if (!(await claimButton.isVisible({ timeout: 10000 }).catch(() => false))) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    await expect(claimButton).toBeVisible({ timeout: 10000 });
 
     await claimButton.click();
-    await page.waitForURL(/\/claim\/[^/]+\/verify/, { timeout: 15000 });
+    await authenticatedPage.waitForURL(/\/claim\/[^/]+\/verify/, { timeout: 15000 });
 
     // Test JPG upload for government ID
-    const governmentIdInput = page.locator('input[type="file"]').first();
+    const governmentIdInput = authenticatedPage.locator('input[type="file"]').first();
     await governmentIdInput.setInputFiles({
       name: "test-government-id.jpg",
       mimeType: "image/jpeg",
       buffer: Buffer.from("fake image content"),
     });
 
-    await expect(page.getByText(/selected file/i).first()).toBeVisible();
-    await expect(page.getByText(/test-government-id\.jpg/i)).toBeVisible();
+    await expect(authenticatedPage.getByText(/selected file/i).first()).toBeVisible();
+    await expect(authenticatedPage.getByText(/test-government-id\.jpg/i)).toBeVisible();
 
     // Test PDF upload for certificate
-    const certificateInput = page.locator('input[type="file"]').nth(1);
+    const certificateInput = authenticatedPage.locator('input[type="file"]').nth(1);
     await certificateInput.setInputFiles({
       name: "test-certificate.pdf",
       mimeType: "application/pdf",
       buffer: Buffer.from("fake pdf content"),
     });
 
-    await expect(page.getByText(/test-certificate\.pdf/i)).toBeVisible();
+    await expect(authenticatedPage.getByText(/test-certificate\.pdf/i)).toBeVisible();
 
     // Test removing file
-    const removeButton = page.getByRole("button", { name: /remove/i }).first();
+    const removeButton = authenticatedPage.getByRole("button", { name: /remove/i }).first();
     await removeButton.click();
-    await expect(page.getByText(/test-government-id\.jpg/i)).not.toBeVisible();
-    await expect(page.getByText(/drag and drop/i).first()).toBeVisible();
+    await expect(authenticatedPage.getByText(/test-government-id\.jpg/i)).not.toBeVisible();
+    await expect(authenticatedPage.getByText(/drag and drop/i).first()).toBeVisible();
   });
 
-  test("should show file size and format requirements", async ({ page }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto(
+  test("should show file size and format requirements", async ({
+    authenticatedPage,
+  }) => {
+    await authenticatedPage.goto(
       `/en/claim?registration=${TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED}`
     );
 
-    const claimButton = page.getByRole("link", {
+    const claimButton = authenticatedPage.getByRole("link", {
       name: /start claim process/i,
     });
-
-    if (!(await claimButton.isVisible({ timeout: 10000 }).catch(() => false))) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    await expect(claimButton).toBeVisible({ timeout: 10000 });
 
     await claimButton.click();
-    await page.waitForURL(/\/claim\/[^/]+\/verify/, { timeout: 15000 });
+    await authenticatedPage.waitForURL(/\/claim\/[^/]+\/verify/, { timeout: 15000 });
 
     await expect(
-      page.getByText(/maximum file size: 10mb/i).first()
+      authenticatedPage.getByText(/maximum file size: 10mb/i).first()
     ).toBeVisible();
-    await expect(page.getByText(/jpg, png, pdf/i).first()).toBeVisible();
+    await expect(authenticatedPage.getByText(/jpg, png, pdf/i).first()).toBeVisible();
   });
 });
 
 test.describe("Verification Form - Submission", () => {
   test("should show success or pending message after submission", async ({
-    page,
+    authenticatedPage,
   }) => {
-    await loginUser(page, TEST_DATA.USER.email, TEST_DATA.USER.password);
-    await page.goto(
+    await authenticatedPage.goto(
       `/en/claim?registration=${TEST_DATA.REGISTRATION_NUMBERS.UNCLAIMED}`
     );
 
-    const claimButton = page.getByRole("link", {
+    const claimButton = authenticatedPage.getByRole("link", {
       name: /start claim process/i,
     });
-
-    if (!(await claimButton.isVisible({ timeout: 10000 }).catch(() => false))) {
-      test.skip(true, "Session not maintained after login");
-      return;
-    }
+    await expect(claimButton).toBeVisible({ timeout: 10000 });
 
     await claimButton.click();
-    await page.waitForURL(/\/claim\/[^/]+\/verify/, { timeout: 15000 });
+    await authenticatedPage.waitForURL(/\/claim\/[^/]+\/verify/, { timeout: 15000 });
 
     // Upload both files
-    const governmentIdInput = page.locator('input[type="file"]').first();
+    const governmentIdInput = authenticatedPage.locator('input[type="file"]').first();
     await governmentIdInput.setInputFiles({
       name: "gov-id.jpg",
       mimeType: "image/jpeg",
       buffer: Buffer.from("fake content"),
     });
 
-    const certificateInput = page.locator('input[type="file"]').nth(1);
+    const certificateInput = authenticatedPage.locator('input[type="file"]').nth(1);
     await certificateInput.setInputFiles({
       name: "certificate.pdf",
       mimeType: "application/pdf",
@@ -516,13 +391,13 @@ test.describe("Verification Form - Submission", () => {
     });
 
     // Submit
-    await page
+    await authenticatedPage
       .getByRole("button", { name: /submit verification request/i })
       .click();
 
     // Should show success or already pending message
-    const successMessage = page.getByText(/verification request submitted/i);
-    const pendingMessage = page.getByText(
+    const successMessage = authenticatedPage.getByText(/verification request submitted/i);
+    const pendingMessage = authenticatedPage.getByText(
       /already have a pending verification request/i
     );
 

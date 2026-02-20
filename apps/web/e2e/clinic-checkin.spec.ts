@@ -5,48 +5,12 @@
  * Covers page loading, check-in/check-out actions, form validation,
  * status indicators, and the recent check-ins table.
  *
- * KNOWN LIMITATION: Client-side useSession() hook does not reliably maintain
- * session state after page navigation in Playwright E2E tests. Tests that require
- * authenticated state will gracefully skip when session is not detected.
+ * Uses storageState-based auth via clinicOwnerPage fixture.
  */
 
 import { test, expect, TEST_DATA } from "./fixtures/test-utils";
 
 const CHECK_IN_URL = "/en/clinic/dashboard/check-in";
-
-/**
- * Helper: navigate to check-in page and verify it loaded properly.
- * Returns false if authentication was lost or page failed to load.
- */
-async function ensureCheckInPageLoaded(
-  page: import("@playwright/test").Page
-): Promise<boolean> {
-  await page.goto(CHECK_IN_URL);
-
-  // Wait for either the page heading or an error/loading state to resolve
-  try {
-    await page.waitForSelector("h1", { timeout: 20000 });
-  } catch {
-    return false;
-  }
-
-  // The page heading should be "Doctor Check-In"
-  const heading = page.getByRole("heading", { name: /doctor check-in/i });
-  const isLoaded = await heading.isVisible().catch(() => false);
-
-  if (!isLoaded) {
-    // Might have been redirected to login or shown an error
-    const loginRedirect = page.getByText(/please log in/i);
-    const hasLoginRedirect = await loginRedirect.isVisible().catch(() => false);
-    if (hasLoginRedirect) return false;
-
-    // Might be loading still -- wait a bit more
-    await page.waitForTimeout(2000);
-    return await heading.isVisible().catch(() => false);
-  }
-
-  return true;
-}
 
 test.describe("Clinic Check-In - Page Load", () => {
   /**
@@ -56,16 +20,10 @@ test.describe("Clinic Check-In - Page Load", () => {
   test("check-in page loads with heading and summary cards", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible - session or clinic not found");
-      return;
-    }
-
-    // Heading
+    await page.goto(CHECK_IN_URL);
     await expect(
       page.getByRole("heading", { name: /doctor check-in/i })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 15000 });
 
     // Summary cards: "Total Doctors", "Checked In", "Checked Out"
     await expect(page.getByText("Total Doctors")).toBeVisible();
@@ -79,11 +37,10 @@ test.describe("Clinic Check-In - Page Load", () => {
   test("check-in page shows date picker defaulting to today", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     const datePicker = page.locator('input[type="date"]');
     await expect(datePicker).toBeVisible();
@@ -100,11 +57,10 @@ test.describe("Clinic Check-In - Page Load", () => {
   test("check-in page shows affiliated doctors list or empty state", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Either we see doctor entries or the empty state
     const noAffiliatedDoctors = page.getByText(/no affiliated doctors/i);
@@ -138,11 +94,10 @@ test.describe("Clinic Check-In - Check In a Doctor", () => {
   test("can check in a doctor and see status change", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     const noAffiliatedDoctors = page.getByText(/no affiliated doctors/i);
     const hasEmptyState = await noAffiliatedDoctors.isVisible().catch(() => false);
@@ -164,8 +119,10 @@ test.describe("Clinic Check-In - Check In a Doctor", () => {
     await checkInButton.click();
 
     // Wait for the state to refresh - either a "Check Out" button or "Done" should appear
-    // The check-in flow calls fetchData() after success, so the list re-renders
-    await page.waitForTimeout(2000);
+    await expect(
+      page.getByRole("button", { name: /^check out$/i }).first()
+        .or(page.getByText(/^done$/i).first())
+    ).toBeVisible({ timeout: 10000 });
 
     // After check-in, the "Checked In" count should be >= 1
     const checkedInCard = page.locator("text=Checked In").locator("..");
@@ -190,11 +147,10 @@ test.describe("Clinic Check-In - Check In a Doctor", () => {
   test("can check out a doctor after check-in", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     // Look for a "Check Out" button (doctor already checked in but not checked out)
     let checkOutButton = page.getByRole("button", { name: /^check out$/i }).first();
@@ -211,9 +167,10 @@ test.describe("Clinic Check-In - Check In a Doctor", () => {
       }
 
       await checkInButton.click();
-      await page.waitForTimeout(2000);
 
+      // Wait for Check Out button to appear after check-in
       checkOutButton = page.getByRole("button", { name: /^check out$/i }).first();
+      await expect(checkOutButton).toBeVisible({ timeout: 10000 }).catch(() => {});
       hasCheckOutButton = await checkOutButton.isVisible().catch(() => false);
 
       if (!hasCheckOutButton) {
@@ -226,11 +183,11 @@ test.describe("Clinic Check-In - Check In a Doctor", () => {
     await checkOutButton.click();
 
     // Wait for the state to refresh
-    await page.waitForTimeout(2000);
-
     // After check-out, "Done" text should appear and "Out:" timestamp
     const doneLabel = page.getByText(/^done$/i).first();
     const outTimestamp = page.getByText(/^out:/i).first();
+
+    await expect(doneLabel.or(outTimestamp)).toBeVisible({ timeout: 10000 });
 
     const hasDone = await doneLabel.isVisible().catch(() => false);
     const hasOutTimestamp = await outTimestamp.isVisible().catch(() => false);
@@ -247,11 +204,10 @@ test.describe("Clinic Check-In - Form Validation", () => {
   test("check-in button shows loading state during action", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     const checkInButton = page.getByRole("button", { name: /^check in$/i }).first();
     const hasCheckInButton = await checkInButton.isVisible().catch(() => false);
@@ -275,13 +231,10 @@ test.describe("Clinic Check-In - Form Validation", () => {
     const hasLoadingState = await loadingButton.isVisible().catch(() => false);
 
     // Whether or not we caught the loading state, the API should resolve
-    // so wait for it
-    await page.waitForTimeout(2000);
-
-    // At minimum, the action should not have crashed the page
+    // so wait for the heading to still be visible
     await expect(
       page.getByRole("heading", { name: /doctor check-in/i })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 10000 });
   });
 
   /**
@@ -292,11 +245,10 @@ test.describe("Clinic Check-In - Form Validation", () => {
   test("changing date hides action buttons for non-today dates", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     const datePicker = page.locator('input[type="date"]');
     await expect(datePicker).toBeVisible();
@@ -309,7 +261,7 @@ test.describe("Clinic Check-In - Form Validation", () => {
     await datePicker.fill(yesterdayStr);
 
     // Wait for the data to reload
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState("networkidle");
 
     // For non-today dates, Check In and Check Out buttons should not be visible
     // The page conditionally renders action buttons only when isToday is true
@@ -333,11 +285,10 @@ test.describe("Clinic Check-In - Recent Check-Ins Table", () => {
   test("doctor entries show name, specialty, and status indicator", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     const noAffiliatedDoctors = page.getByText(/no affiliated doctors/i);
     const hasEmptyState = await noAffiliatedDoctors.isVisible().catch(() => false);
@@ -374,11 +325,10 @@ test.describe("Clinic Check-In - Recent Check-Ins Table", () => {
   test("timestamps display for checked-in/out doctors", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     const noAffiliatedDoctors = page.getByText(/no affiliated doctors/i);
     const hasEmptyState = await noAffiliatedDoctors.isVisible().catch(() => false);
@@ -407,7 +357,10 @@ test.describe("Clinic Check-In - Recent Check-Ins Table", () => {
       }
 
       await checkInButton.click();
-      await page.waitForTimeout(2000);
+      // Wait for the check-in to complete
+      await expect(
+        page.getByText(/^in:/i).first()
+      ).toBeVisible({ timeout: 10000 });
     }
 
     // Now verify the "In:" timestamp is visible for at least one doctor
@@ -425,11 +378,10 @@ test.describe("Clinic Check-In - Status Updates", () => {
   test("summary cards reflect correct counts", async ({
     clinicOwnerPage: page,
   }) => {
-    const loaded = await ensureCheckInPageLoaded(page);
-    if (!loaded) {
-      test.skip(true, "Check-in page not accessible");
-      return;
-    }
+    await page.goto(CHECK_IN_URL);
+    await expect(
+      page.getByRole("heading", { name: /doctor check-in/i })
+    ).toBeVisible({ timeout: 15000 });
 
     const noAffiliatedDoctors = page.getByText(/no affiliated doctors/i);
     const hasEmptyState = await noAffiliatedDoctors.isVisible().catch(() => false);
@@ -485,17 +437,9 @@ test.describe("Clinic Check-In - Status Updates", () => {
 
     await page.goto(CHECK_IN_URL);
 
-    // Wait for the error state to appear
+    // Wait for the error state to appear - with auth this page should load
     const retryButton = page.getByRole("button", { name: /retry/i });
-    const hasRetry = await retryButton.isVisible({ timeout: 15000 }).catch(() => false);
-
-    if (!hasRetry) {
-      // Might have been redirected to login instead
-      test.skip(true, "Error state not shown - possibly redirected to login");
-      return;
-    }
-
-    await expect(retryButton).toBeVisible();
+    await expect(retryButton).toBeVisible({ timeout: 15000 });
 
     // Remove the route interception so retry works
     await page.unroute("**/api/clinic/checkin*");
@@ -504,13 +448,11 @@ test.describe("Clinic Check-In - Status Updates", () => {
     await retryButton.click();
 
     // After retry, the page should either load successfully or show a different state
-    await page.waitForTimeout(3000);
-
-    // The retry button should be gone if data loaded, or still visible if still failing
     const heading = page.getByRole("heading", { name: /doctor check-in/i });
-    const headingVisible = await heading.isVisible().catch(() => false);
+    await expect(heading.or(retryButton)).toBeVisible({ timeout: 10000 });
 
     // At minimum, the page should not have crashed
+    const headingVisible = await heading.isVisible().catch(() => false);
     expect(headingVisible || await retryButton.isVisible().catch(() => false)).toBeTruthy();
   });
 });
