@@ -1,33 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
-import { authOptions } from "@/lib/auth";
-
-async function getClinicForUser(userId: string) {
-  return prisma.clinic.findFirst({
-    where: {
-      claimed_by_id: userId,
-      verified: true,
-    },
-    select: { id: true },
-  });
-}
+import { requireClinicPermission } from "@/lib/require-clinic-access";
 
 // GET: List today's check-ins for the clinic (with doctor info)
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
   try {
-    const clinic = await getClinicForUser(session.user.id);
-    if (!clinic) {
+    const access = await requireClinicPermission("check-in");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
+
+    const clinic = { id: access.clinicId };
 
     const { searchParams } = new URL(request.url);
     const dateParam = searchParams.get("date");
@@ -97,19 +83,16 @@ export async function GET(request: NextRequest) {
 
 // POST: Check in a doctor
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
   try {
-    const clinic = await getClinicForUser(session.user.id);
-    if (!clinic) {
+    const access = await requireClinicPermission("check-in");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
+
+    const clinic = { id: access.clinicId };
 
     const body = await request.json();
     const { doctorId, notes } = body;
@@ -185,19 +168,16 @@ export async function POST(request: NextRequest) {
 
 // PATCH: Check out a doctor (set checked_out timestamp)
 export async function PATCH(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
   try {
-    const clinic = await getClinicForUser(session.user.id);
-    if (!clinic) {
+    const access = await requireClinicPermission("check-in");
+    if (!access.hasAccess) {
       return NextResponse.json(
-        { error: "No verified clinic found", code: "NO_CLINIC" },
-        { status: 404 }
+        { error: access.message, code: access.reason === "unauthenticated" ? "UNAUTHENTICATED" : "NO_CLINIC" },
+        { status: access.reason === "unauthenticated" ? 401 : 403 }
       );
     }
+
+    const clinic = { id: access.clinicId };
 
     const body = await request.json();
     const { checkInId } = body;
