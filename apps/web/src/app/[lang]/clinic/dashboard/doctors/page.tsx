@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getDisplayName } from "@/lib/professional-display";
 
 interface Professional {
   id: string;
@@ -661,8 +662,7 @@ export default function ClinicDoctorsPage() {
                           )}
                         </div>
                         <h3 className="font-bold text-foreground truncate">
-                          {(doctor.type === "DOCTOR" || doctor.type === "DENTIST") && !doctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                          {doctor.full_name}
+                          {getDisplayName(doctor)}
                         </h3>
                         {!doctor.registration_number.startsWith("CLINIC-") && (
                           <p className="text-sm text-foreground/60">{doctor.registration_number}</p>
@@ -783,8 +783,7 @@ export default function ClinicDoctorsPage() {
                               {getTypeLabel(selectedDoctor.type)}
                             </span>
                             <h4 className="font-bold text-foreground">
-                              {(selectedDoctor.type === "DOCTOR" || selectedDoctor.type === "DENTIST") && !selectedDoctor.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                              {selectedDoctor.full_name}
+                              {getDisplayName(selectedDoctor)}
                             </h4>
                             <p className="text-sm text-foreground/60">{selectedDoctor.registration_number}</p>
                           </div>
@@ -859,8 +858,7 @@ export default function ClinicDoctorsPage() {
                                   )}
                                 </div>
                                 <h4 className="font-bold text-foreground truncate">
-                                  {(professional.type === "DOCTOR" || professional.type === "DENTIST") && !professional.full_name.startsWith("Dr.") ? "Dr. " : ""}
-                                  {professional.full_name}
+                                  {getDisplayName(professional)}
                                 </h4>
                                 <p className="text-sm text-foreground/60">{professional.registration_number}</p>
                                 {professional.degree && (

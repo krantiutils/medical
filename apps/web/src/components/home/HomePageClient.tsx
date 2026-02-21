@@ -288,8 +288,8 @@ export function HomePageClient({ lang }: HomePageClientProps) {
               </h3>
               <p className="text-white/60 text-sm">
                 {lang === "ne"
-                  ? "विशेषज्ञता, स्थान, वा अस्पताल अनुसार खोज्नुहोस्। २७,०००+ दर्ता डाक्टरहरू।"
-                  : "Search by specialty, location, or hospital. 27,000+ registered doctors."}
+                  ? "विशेषज्ञता, स्थान, वा अस्पताल अनुसार खोज्नुहोस्। ३८,०००+ दर्ता डाक्टरहरू।"
+                  : "Search by specialty, location, or hospital. 38,000+ registered doctors."}
               </p>
             </div>
           </div>
@@ -776,7 +776,7 @@ export function HomePageClient({ lang }: HomePageClientProps) {
             </div>
           </div>
           <div className="bg-primary-red/5 border-2 border-foreground/10 p-4 text-center">
-            <div className="text-3xl font-black text-primary-red">500+</div>
+            <div className="text-3xl font-black text-primary-red">900+</div>
             <div className="text-xs uppercase tracking-wider text-foreground/60 mt-1">
               {lang === "ne" ? "डाक्टरहरू" : "Doctors"}
             </div>
