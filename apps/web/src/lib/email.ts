@@ -1602,3 +1602,87 @@ export async function sendEmailVerification(
   const { subject, html } = emailVerificationEmail(userInfo, token, lang);
   return sendEmail(email, subject, html);
 }
+
+// ─── New Review Notification ──────────────────────────────────────────
+
+function newReviewEmail(
+  doctorInfo: { name: string },
+  reviewInfo: { reviewerName: string; rating: number; text: string | null },
+  dashboardUrl: string,
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const isNe = lang === "ne";
+  const subject = isNe
+    ? `नयाँ समीक्षा प्राप्त भयो — DoctorSewa`
+    : `New review on your profile — DoctorSewa`;
+  const heading = isNe ? "नयाँ समीक्षा" : "New Review";
+  const greeting = isNe
+    ? `नमस्ते ${doctorInfo.name},`
+    : `Hello ${doctorInfo.name},`;
+  const bodyText = isNe
+    ? "तपाईंको प्रोफाइलमा नयाँ समीक्षा प्राप्त भएको छ।"
+    : "You have received a new review on your profile.";
+  const fromLabel = isNe ? "बाट" : "From";
+  const ratingLabel = isNe ? "मूल्याङ्कन" : "Rating";
+  const buttonText = isNe ? "समीक्षा हेर्नुहोस्" : "View Review";
+
+  const stars = "★".repeat(reviewInfo.rating) + "☆".repeat(5 - reviewInfo.rating);
+  const snippet = reviewInfo.text
+    ? reviewInfo.text.length > 200
+      ? reviewInfo.text.substring(0, 200) + "..."
+      : reviewInfo.text
+    : "";
+
+  const content = `
+    <!-- Accent bar -->
+    <tr>
+      <td style="background-color: ${colors.primaryYellow}; height: 6px;"></td>
+    </tr>
+    <!-- Content -->
+    <tr>
+      <td style="background-color: ${colors.white}; padding: 40px 30px;">
+        <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 20px; color: ${colors.foreground};">
+          ${heading}
+        </h2>
+        <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">
+          ${greeting}
+        </p>
+        <p style="font-size: 15px; color: ${colors.foreground}; margin: 0 0 25px; line-height: 1.6;">
+          ${bodyText}
+        </p>
+
+        <!-- Review box -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="border: 2px solid ${colors.foreground}; margin: 0 0 25px;">
+          <tr>
+            <td style="padding: 20px;">
+              <p style="font-size: 14px; color: #666; margin: 0 0 8px;">
+                <strong>${fromLabel}:</strong> ${reviewInfo.reviewerName}
+              </p>
+              <p style="font-size: 24px; color: ${colors.primaryYellow}; margin: 0 0 8px; letter-spacing: 2px;">
+                ${stars}
+              </p>
+              ${snippet ? `<p style="font-size: 14px; color: ${colors.foreground}; margin: 0; line-height: 1.5; font-style: italic;">"${snippet}"</p>` : ""}
+            </td>
+          </tr>
+        </table>
+
+        <div style="text-align: center; margin: 30px 0;">
+          ${emailButton(buttonText, dashboardUrl)}
+        </div>
+      </td>
+    </tr>
+  `;
+
+  return { subject, html: baseTemplate(content, lang) };
+}
+
+export async function sendNewReviewEmail(
+  doctorEmail: string,
+  doctorInfo: { name: string },
+  reviewInfo: { reviewerName: string; rating: number; text: string | null },
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const dashboardUrl = `${SITE_URL}/en/dashboard/reviews`;
+  const { subject, html } = newReviewEmail(doctorInfo, reviewInfo, dashboardUrl, lang);
+  return sendEmail(doctorEmail, subject, html);
+}

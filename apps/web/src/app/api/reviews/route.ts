@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
+import { sendNewReviewEmail } from "@/lib/email";
 
 // GET /api/reviews - Get reviews for a clinic or doctor
 export async function GET(request: NextRequest) {
@@ -183,6 +184,34 @@ export async function POST(request: NextRequest) {
         },
       });
 
+      // Send notification email to doctor if review is for a specific doctor
+      if (doctorId) {
+        const reviewedDoctor = await prisma.professional.findUnique({
+          where: { id: doctorId },
+          select: { full_name: true, claimed_by_id: true },
+        });
+        if (reviewedDoctor?.claimed_by_id) {
+          const claimUser = await prisma.user.findUnique({
+            where: { id: reviewedDoctor.claimed_by_id },
+            select: { email: true },
+          });
+          if (claimUser?.email) {
+            sendNewReviewEmail(
+              claimUser.email,
+              { name: reviewedDoctor.full_name },
+              {
+                reviewerName: review.patient?.full_name || "A patient",
+                rating,
+                text: reviewText || null,
+              },
+              "en"
+            ).catch((err) => {
+              console.error("[Reviews] Failed to send review notification:", err);
+            });
+          }
+        }
+      }
+
       return NextResponse.json({ success: true, review });
     }
 
@@ -214,6 +243,7 @@ export async function POST(request: NextRequest) {
       // Verify the doctor exists
       const doctor = await prisma.professional.findUnique({
         where: { id: doctorId },
+        select: { id: true, full_name: true, claimed_by_id: true },
       });
 
       if (!doctor) {
@@ -236,6 +266,28 @@ export async function POST(request: NextRequest) {
           doctor: { select: { full_name: true } },
         },
       });
+
+      // Send notification email to doctor if profile is claimed
+      if (doctor.claimed_by_id) {
+        const claimUser = await prisma.user.findUnique({
+          where: { id: doctor.claimed_by_id },
+          select: { email: true },
+        });
+        if (claimUser?.email) {
+          sendNewReviewEmail(
+            claimUser.email,
+            { name: doctor.full_name },
+            {
+              reviewerName: review.user?.name || "Anonymous",
+              rating,
+              text: reviewText || null,
+            },
+            "en"
+          ).catch((err) => {
+            console.error("[Reviews] Failed to send review notification:", err);
+          });
+        }
+      }
 
       return NextResponse.json({ success: true, review });
     }
