@@ -14,9 +14,9 @@ type ProfessionalLike = {
   type: string;
 };
 
-/** Check if a name starts with any variant of "Dr" prefix */
+/** Strip any variant of "Dr" prefix: "Dr.", "Dr ", "DR.", "Dr," etc. */
 function stripDrPrefix(name: string): string {
-  return name.replace(/^dr\.?\s*/i, "").trim();
+  return name.replace(/^dr[.,]?\s*/i, "").trim();
 }
 
 /** Convert ALL CAPS name to Title Case: "AABHARNA REGMI" → "Aabharna Regmi" */
