@@ -560,6 +560,10 @@ model Appointment {
   // Lab order linked to this appointment (optional)
   lab_order LabOrder?
 
+  // Email tracking flags
+  reminder_sent  Boolean @default(false)
+  followup_sent  Boolean @default(false)
+
   @@index([clinic_id, appointment_date, doctor_id])
   @@index([clinic_id])
   @@index([patient_id])

@@ -1686,3 +1686,262 @@ export async function sendNewReviewEmail(
   const { subject, html } = newReviewEmail(doctorInfo, reviewInfo, dashboardUrl, lang);
   return sendEmail(doctorEmail, subject, html);
 }
+
+// ─── Appointment Emails ───────────────────────────────────────────────
+
+interface AppointmentEmailData {
+  patientName: string;
+  doctorName: string;
+  doctorType: string;
+  clinicName: string;
+  clinicAddress: string | null;
+  date: string;
+  timeSlot: string;
+  tokenNumber: number;
+}
+
+function formatAppointmentDetails(data: AppointmentEmailData, lang: Locale): string {
+  const isNe = lang === "ne";
+  return `
+    <table width="100%" cellpadding="0" cellspacing="0" style="border: 2px solid ${colors.foreground}; margin: 0 0 25px;">
+      <tr>
+        <td style="padding: 20px;">
+          <table width="100%" cellpadding="4" cellspacing="0">
+            <tr>
+              <td style="font-size: 13px; color: #666; width: 100px;">${isNe ? "डाक्टर" : "Doctor"}</td>
+              <td style="font-size: 14px; font-weight: 700; color: ${colors.foreground};">${data.doctorName}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 13px; color: #666;">${isNe ? "मिति" : "Date"}</td>
+              <td style="font-size: 14px; font-weight: 700; color: ${colors.foreground};">${data.date}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 13px; color: #666;">${isNe ? "समय" : "Time"}</td>
+              <td style="font-size: 14px; font-weight: 700; color: ${colors.foreground};">${data.timeSlot}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 13px; color: #666;">${isNe ? "टोकन" : "Token"}</td>
+              <td style="font-size: 14px; font-weight: 700; color: ${colors.foreground};">#${data.tokenNumber}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 13px; color: #666;">${isNe ? "क्लिनिक" : "Clinic"}</td>
+              <td style="font-size: 14px; color: ${colors.foreground};">${data.clinicName}${data.clinicAddress ? `<br><span style="font-size: 12px; color: #999;">${data.clinicAddress}</span>` : ""}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  `;
+}
+
+// 1. Appointment Confirmation
+function appointmentConfirmationEmail(
+  data: AppointmentEmailData,
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const isNe = lang === "ne";
+  const subject = isNe
+    ? `अपोइन्टमेन्ट पुष्टि — ${data.doctorName}`
+    : `Appointment confirmed with ${data.doctorName}`;
+  const heading = isNe ? "अपोइन्टमेन्ट पुष्टि भयो" : "Appointment Confirmed";
+  const greeting = isNe ? `नमस्ते ${data.patientName},` : `Hello ${data.patientName},`;
+  const bodyText = isNe
+    ? "तपाईंको अपोइन्टमेन्ट पुष्टि भएको छ।"
+    : "Your appointment has been confirmed.";
+
+  const content = `
+    <tr><td style="background-color: #22C55E; height: 6px;"></td></tr>
+    <tr>
+      <td style="background-color: ${colors.white}; padding: 40px 30px;">
+        <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 20px; color: ${colors.foreground};">${heading}</h2>
+        <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">${greeting}</p>
+        <p style="font-size: 15px; color: ${colors.foreground}; margin: 0 0 25px; line-height: 1.6;">${bodyText}</p>
+        ${formatAppointmentDetails(data, lang)}
+      </td>
+    </tr>
+  `;
+
+  return { subject, html: baseTemplate(content, lang) };
+}
+
+export async function sendAppointmentConfirmationEmail(
+  patientEmail: string,
+  data: AppointmentEmailData,
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = appointmentConfirmationEmail(data, lang);
+  return sendEmail(patientEmail, subject, html);
+}
+
+// 2. Appointment Reminder (24h before)
+function appointmentReminderEmail(
+  data: AppointmentEmailData,
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const isNe = lang === "ne";
+  const subject = isNe
+    ? `भोलिको अपोइन्टमेन्ट सम्झना — ${data.doctorName}`
+    : `Reminder: appointment tomorrow with ${data.doctorName}`;
+  const heading = isNe ? "भोलिको अपोइन्टमेन्ट" : "Appointment Tomorrow";
+  const greeting = isNe ? `नमस्ते ${data.patientName},` : `Hello ${data.patientName},`;
+  const bodyText = isNe
+    ? "तपाईंको अपोइन्टमेन्ट भोलि छ। कृपया समयमा पुग्नुहोस्।"
+    : "Your appointment is tomorrow. Please arrive on time.";
+
+  const content = `
+    <tr><td style="background-color: ${colors.primaryBlue}; height: 6px;"></td></tr>
+    <tr>
+      <td style="background-color: ${colors.white}; padding: 40px 30px;">
+        <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 20px; color: ${colors.foreground};">${heading}</h2>
+        <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">${greeting}</p>
+        <p style="font-size: 15px; color: ${colors.foreground}; margin: 0 0 25px; line-height: 1.6;">${bodyText}</p>
+        ${formatAppointmentDetails(data, lang)}
+      </td>
+    </tr>
+  `;
+
+  return { subject, html: baseTemplate(content, lang) };
+}
+
+export async function sendAppointmentReminderEmail(
+  patientEmail: string,
+  data: AppointmentEmailData,
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = appointmentReminderEmail(data, lang);
+  return sendEmail(patientEmail, subject, html);
+}
+
+// 3. Appointment Cancellation
+function appointmentCancellationEmail(
+  data: AppointmentEmailData & { cancelledBy: string; reason?: string },
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const isNe = lang === "ne";
+  const subject = isNe
+    ? `अपोइन्टमेन्ट रद्द भयो — ${data.doctorName}`
+    : `Appointment cancelled — ${data.doctorName}`;
+  const heading = isNe ? "अपोइन्टमेन्ट रद्द" : "Appointment Cancelled";
+  const greeting = isNe ? `नमस्ते ${data.patientName},` : `Hello ${data.patientName},`;
+  const bodyText = isNe
+    ? `तपाईंको अपोइन्टमेन्ट ${data.cancelledBy} द्वारा रद्द गरिएको छ।`
+    : `Your appointment has been cancelled by ${data.cancelledBy}.`;
+  const buttonText = isNe ? "नयाँ अपोइन्टमेन्ट बुक गर्नुहोस्" : "Book New Appointment";
+
+  const reasonHtml = data.reason
+    ? `<p style="font-size: 14px; color: #666; margin: 0 0 20px; padding: 12px; background: #FEF9C3; border: 1px solid #FDE047;"><strong>${isNe ? "कारण" : "Reason"}:</strong> ${data.reason}</p>`
+    : "";
+
+  const content = `
+    <tr><td style="background-color: ${colors.primaryRed}; height: 6px;"></td></tr>
+    <tr>
+      <td style="background-color: ${colors.white}; padding: 40px 30px;">
+        <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 20px; color: ${colors.foreground};">${heading}</h2>
+        <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">${greeting}</p>
+        <p style="font-size: 15px; color: ${colors.foreground}; margin: 0 0 25px; line-height: 1.6;">${bodyText}</p>
+        ${reasonHtml}
+        ${formatAppointmentDetails(data, lang)}
+        <div style="text-align: center; margin: 30px 0;">
+          ${emailButton(buttonText, SITE_URL)}
+        </div>
+      </td>
+    </tr>
+  `;
+
+  return { subject, html: baseTemplate(content, lang) };
+}
+
+export async function sendAppointmentCancellationEmail(
+  recipientEmail: string,
+  data: AppointmentEmailData & { cancelledBy: string; reason?: string },
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = appointmentCancellationEmail(data, lang);
+  return sendEmail(recipientEmail, subject, html);
+}
+
+// 4. Appointment Rescheduled
+function appointmentRescheduledEmail(
+  data: AppointmentEmailData & { oldDate: string; oldTimeSlot: string },
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const isNe = lang === "ne";
+  const subject = isNe
+    ? `अपोइन्टमेन्ट पुनःनिर्धारित — ${data.doctorName}`
+    : `Appointment rescheduled — ${data.doctorName}`;
+  const heading = isNe ? "अपोइन्टमेन्ट पुनःनिर्धारित" : "Appointment Rescheduled";
+  const greeting = isNe ? `नमस्ते ${data.patientName},` : `Hello ${data.patientName},`;
+  const bodyText = isNe
+    ? "तपाईंको अपोइन्टमेन्ट पुनःनिर्धारित गरिएको छ।"
+    : "Your appointment has been rescheduled.";
+
+  const content = `
+    <tr><td style="background-color: ${colors.primaryYellow}; height: 6px;"></td></tr>
+    <tr>
+      <td style="background-color: ${colors.white}; padding: 40px 30px;">
+        <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 20px; color: ${colors.foreground};">${heading}</h2>
+        <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">${greeting}</p>
+        <p style="font-size: 15px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">${bodyText}</p>
+        <p style="font-size: 14px; color: #999; margin: 0 0 20px;">
+          <span style="text-decoration: line-through;">${data.oldDate} ${data.oldTimeSlot}</span>
+          → <strong style="color: ${colors.foreground};">${data.date} ${data.timeSlot}</strong>
+        </p>
+        ${formatAppointmentDetails(data, lang)}
+      </td>
+    </tr>
+  `;
+
+  return { subject, html: baseTemplate(content, lang) };
+}
+
+export async function sendAppointmentRescheduledEmail(
+  patientEmail: string,
+  data: AppointmentEmailData & { oldDate: string; oldTimeSlot: string },
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = appointmentRescheduledEmail(data, lang);
+  return sendEmail(patientEmail, subject, html);
+}
+
+// 5. Post-visit Follow-up
+function postVisitFollowUpEmail(
+  data: { patientName: string; doctorName: string; doctorSlug: string },
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const isNe = lang === "ne";
+  const subject = isNe
+    ? `तपाईंको भ्रमण कस्तो भयो? — DoctorSewa`
+    : `How was your visit with ${data.doctorName}?`;
+  const heading = isNe ? "तपाईंको भ्रमण कस्तो भयो?" : "How Was Your Visit?";
+  const greeting = isNe ? `नमस्ते ${data.patientName},` : `Hello ${data.patientName},`;
+  const bodyText = isNe
+    ? `${data.doctorName} संगको तपाईंको भ्रमण कस्तो भयो? तपाईंको प्रतिक्रिया अरू बिरामीहरूलाई सही डाक्टर खोज्न मद्दत गर्छ।`
+    : `How was your visit with ${data.doctorName}? Your feedback helps other patients find the right doctor.`;
+  const buttonText = isNe ? "समीक्षा लेख्नुहोस्" : "Leave a Review";
+  const reviewUrl = `${SITE_URL}/en/doctors/${data.doctorSlug}#reviews`;
+
+  const content = `
+    <tr><td style="background-color: ${colors.primaryBlue}; height: 6px;"></td></tr>
+    <tr>
+      <td style="background-color: ${colors.white}; padding: 40px 30px;">
+        <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 20px; color: ${colors.foreground};">${heading}</h2>
+        <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">${greeting}</p>
+        <p style="font-size: 15px; color: ${colors.foreground}; margin: 0 0 25px; line-height: 1.6;">${bodyText}</p>
+        <div style="text-align: center; margin: 30px 0;">
+          ${emailButton(buttonText, reviewUrl)}
+        </div>
+      </td>
+    </tr>
+  `;
+
+  return { subject, html: baseTemplate(content, lang) };
+}
+
+export async function sendPostVisitFollowUpEmail(
+  patientEmail: string,
+  data: { patientName: string; doctorName: string; doctorSlug: string },
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = postVisitFollowUpEmail(data, lang);
+  return sendEmail(patientEmail, subject, html);
+}

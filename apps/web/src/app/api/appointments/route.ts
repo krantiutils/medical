@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma, AppointmentStatus, AppointmentSource, AppointmentType } from "@swasthya/database";
 import { authOptions } from "@/lib/auth";
+import { sendAppointmentConfirmationEmail } from "@/lib/email";
 
 /**
  * Helper function to parse "HH:MM" time string to minutes since midnight
@@ -536,6 +537,35 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // Send confirmation email to patient if they have an email
+    const emailForNotification = body.patientEmail?.trim() || patient.email;
+    if (emailForNotification) {
+      const dateFormatted = new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "Asia/Kathmandu",
+      }).format(appointmentDate);
+
+      sendAppointmentConfirmationEmail(
+        emailForNotification,
+        {
+          patientName: appointment.patient.full_name,
+          doctorName: appointment.doctor.full_name,
+          doctorType: appointment.doctor.type,
+          clinicName: appointment.clinic.name,
+          clinicAddress: appointment.clinic.address,
+          date: dateFormatted,
+          timeSlot: `${timeSlotStart} - ${timeSlotEnd}`,
+          tokenNumber: appointment.token_number,
+        },
+        "en"
+      ).catch((err) => {
+        console.error("[Appointments] Failed to send confirmation email:", err);
+      });
+    }
 
     return NextResponse.json({
       success: true,

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, AppointmentStatus } from "@swasthya/database";
 import { requireClinicPermission } from "@/lib/require-clinic-access";
+import { sendAppointmentCancellationEmail } from "@/lib/email";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -67,6 +68,68 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         },
       },
     });
+
+    // Send cancellation email if status is CANCELLED
+    if (status === "CANCELLED") {
+      const fullAppointment = await prisma.appointment.findUnique({
+        where: { id: appointmentId },
+        include: {
+          patient: { select: { full_name: true, email: true } },
+          doctor: { select: { full_name: true, type: true, claimed_by_id: true } },
+          clinic: { select: { name: true, address: true } },
+        },
+      });
+
+      if (fullAppointment) {
+        const dateFormatted = new Intl.DateTimeFormat("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          timeZone: "Asia/Kathmandu",
+        }).format(fullAppointment.appointment_date);
+
+        const emailData = {
+          patientName: fullAppointment.patient.full_name,
+          doctorName: fullAppointment.doctor.full_name,
+          doctorType: fullAppointment.doctor.type,
+          clinicName: fullAppointment.clinic.name,
+          clinicAddress: fullAppointment.clinic.address,
+          date: dateFormatted,
+          timeSlot: `${fullAppointment.time_slot_start} - ${fullAppointment.time_slot_end}`,
+          tokenNumber: fullAppointment.token_number,
+          cancelledBy: "the clinic",
+        };
+
+        // Email patient
+        if (fullAppointment.patient.email) {
+          sendAppointmentCancellationEmail(
+            fullAppointment.patient.email,
+            emailData,
+            "en"
+          ).catch((err) => {
+            console.error("[Queue] Failed to send cancellation email to patient:", err);
+          });
+        }
+
+        // Email doctor if claimed
+        if (fullAppointment.doctor.claimed_by_id) {
+          const doctorUser = await prisma.user.findUnique({
+            where: { id: fullAppointment.doctor.claimed_by_id },
+            select: { email: true },
+          });
+          if (doctorUser?.email) {
+            sendAppointmentCancellationEmail(
+              doctorUser.email,
+              emailData,
+              "en"
+            ).catch((err) => {
+              console.error("[Queue] Failed to send cancellation email to doctor:", err);
+            });
+          }
+        }
+      }
+    }
 
     return NextResponse.json({
       success: true,
