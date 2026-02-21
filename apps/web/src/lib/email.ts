@@ -1529,3 +1529,76 @@ export async function sendPasswordResetEmail(
   const { subject, html } = passwordResetEmail(userInfo, token, lang);
   return sendEmail(email, subject, html);
 }
+
+// ─── Email Verification ───────────────────────────────────────────────
+
+function emailVerificationEmail(
+  userInfo: { name: string },
+  token: string,
+  lang: Locale = "en"
+): { subject: string; html: string } {
+  const isNe = lang === "ne";
+  const subject = isNe
+    ? "तपाईंको इमेल प्रमाणित गर्नुहोस् — DoctorSewa"
+    : "Verify your email — DoctorSewa";
+  const heading = isNe ? "इमेल प्रमाणीकरण" : "Verify Your Email";
+  const greeting = isNe
+    ? `नमस्ते ${userInfo.name},`
+    : `Hello ${userInfo.name},`;
+  const bodyText = isNe
+    ? "DoctorSewa मा दर्ता गर्नुभएकोमा धन्यवाद। कृपया तलको बटनमा क्लिक गरेर आफ्नो इमेल ठेगाना प्रमाणित गर्नुहोस्।"
+    : "Thank you for registering on DoctorSewa. Please click the button below to verify your email address.";
+  const expiryText = isNe
+    ? "यो लिंक २४ घण्टामा समाप्त हुनेछ।"
+    : "This link expires in 24 hours.";
+  const ignoreText = isNe
+    ? "यदि तपाईंले यो खाता बनाउनुभएको छैन भने, यो इमेल बेवास्ता गर्नुहोस्।"
+    : "If you did not create this account, please ignore this email.";
+  const buttonText = isNe ? "इमेल प्रमाणित गर्नुहोस्" : "Verify Email";
+
+  const verifyUrl = `${SITE_URL}/en/verify-email?token=${token}`;
+
+  const content = `
+    <!-- Accent bar -->
+    <tr>
+      <td style="background-color: ${colors.primaryBlue}; height: 6px;"></td>
+    </tr>
+    <!-- Content -->
+    <tr>
+      <td style="background-color: ${colors.white}; padding: 40px 30px;">
+        <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 20px; color: ${colors.foreground};">
+          ${heading}
+        </h2>
+        <p style="font-size: 16px; color: ${colors.foreground}; margin: 0 0 15px; line-height: 1.6;">
+          ${greeting}
+        </p>
+        <p style="font-size: 15px; color: ${colors.foreground}; margin: 0 0 25px; line-height: 1.6;">
+          ${bodyText}
+        </p>
+
+        <div style="text-align: center; margin: 30px 0;">
+          ${emailButton(buttonText, verifyUrl)}
+        </div>
+
+        <p style="font-size: 13px; color: #666; margin: 20px 0 5px; line-height: 1.5;">
+          ${expiryText}
+        </p>
+        <p style="font-size: 13px; color: #999; margin: 0; line-height: 1.5;">
+          ${ignoreText}
+        </p>
+      </td>
+    </tr>
+  `;
+
+  return { subject, html: baseTemplate(content, lang) };
+}
+
+export async function sendEmailVerification(
+  email: string,
+  userInfo: { name: string },
+  token: string,
+  lang: Locale = "en"
+): Promise<{ success: boolean; error?: string }> {
+  const { subject, html } = emailVerificationEmail(userInfo, token, lang);
+  return sendEmail(email, subject, html);
+}

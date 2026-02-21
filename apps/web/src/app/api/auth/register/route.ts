@@ -1,9 +1,11 @@
 import { hash } from "bcryptjs";
+import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, UserRole } from "@swasthya/database";
 import { consumeVerifiedToken } from "../otp/verify/route";
 import { normalizePhone } from "@/lib/sms";
 import { RateLimiter, rateLimitedResponse } from "@/lib/rate-limit";
+import { sendEmailVerification } from "@/lib/email";
 
 // 5 registration attempts per IP per 15 minutes
 const limiter = new RateLimiter({ windowMs: 15 * 60 * 1000, maxRequests: 5 });
@@ -168,6 +170,28 @@ export async function POST(request: NextRequest) {
           name: true,
           role: true,
         },
+      });
+
+      // Generate email verification token
+      const verifyToken = randomBytes(32).toString("hex");
+      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      await prisma.verificationToken.create({
+        data: {
+          identifier: `verify:${email}`,
+          token: verifyToken,
+          expires,
+        },
+      });
+
+      // Send verification email (non-blocking)
+      sendEmailVerification(
+        email,
+        { name: name?.trim() || email },
+        verifyToken,
+        "en"
+      ).catch((err) => {
+        console.error("[Register] Failed to send verification email:", err);
       });
 
       return NextResponse.json(
