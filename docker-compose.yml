@@ -1,4 +1,6 @@
-version: "3.8"
+# docker-compose.yml
+# Local development: PostgreSQL only
+# For production, use docker-compose.prod.yml
 
 services:
   postgres:
