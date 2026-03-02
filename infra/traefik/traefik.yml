@@ -1,0 +1,53 @@
+# infra/traefik/traefik.yml
+# Traefik v3 static configuration
+
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+    http:
+      tls: {}
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: traefik-proxy
+  file:
+    directory: "/etc/traefik/configs"
+    watch: true
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "admin@doctorsewa.org"
+      storage: "/etc/traefik/certs/acme.json"
+      httpChallenge:
+        entryPoint: web
+  letsencrypt-dns:
+    acme:
+      email: "admin@doctorsewa.org"
+      storage: "/etc/traefik/certs/acme-dns.json"
+      dnsChallenge:
+        provider: porkbun
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+
+log:
+  level: "INFO"
+  filePath: "/var/log/traefik/traefik.log"
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  bufferingSize: 100

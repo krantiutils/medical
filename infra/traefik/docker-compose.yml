@@ -1,0 +1,29 @@
+# infra/traefik/docker-compose.yml
+# Shared reverse proxy for all apps on this EC2 instance
+# Deploy to /home/ubuntu/traefik/ on the server
+
+services:
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - PORKBUN_API_KEY=${PORKBUN_API_KEY:?Set PORKBUN_API_KEY}
+      - PORKBUN_SECRET_API_KEY=${PORKBUN_SECRET_API_KEY:?Set PORKBUN_SECRET_API_KEY}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./configs:/etc/traefik/configs:ro
+      - ./certs:/etc/traefik/certs
+      - ./logs:/var/log/traefik
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: traefik-proxy

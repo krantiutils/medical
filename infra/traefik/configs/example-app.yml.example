@@ -1,0 +1,19 @@
+# infra/traefik/configs/example-app.yml.example
+# Template: Route a non-Docker app running on the host to Traefik
+# Copy to <app-name>.yml and adjust host/port
+# Files in this directory are hot-reloaded — no Traefik restart needed
+
+http:
+  routers:
+    example-app:
+      rule: "Host(`example-app.com`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: example-app
+  services:
+    example-app:
+      loadBalancer:
+        servers:
+          - url: "http://172.17.0.1:4000"
