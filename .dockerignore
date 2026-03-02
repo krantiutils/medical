@@ -1,0 +1,13 @@
+node_modules
+.next
+.turbo
+.git
+.github
+test-results
+playwright-report
+e2e
+*.md
+.env
+.env.*
+data/
+.playwright-mcp/
