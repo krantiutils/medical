@@ -36,6 +36,7 @@ services:
       POSTGRES_DB: swasthya
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - backups:/backups
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U swasthya"]
       interval: 5s
@@ -47,6 +48,7 @@ services:
 volumes:
   postgres_data:
   uploads:
+  backups:
 
 networks:
   traefik-proxy:
