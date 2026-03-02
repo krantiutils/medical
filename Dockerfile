@@ -38,6 +38,8 @@ COPY . .
 
 # Generate Prisma client
 RUN pnpm db:generate
+# Debug: show where Prisma client was generated
+RUN find /app -path "*/\.prisma/client" -type d 2>/dev/null | head -5 || true
 
 # Build-time env vars (baked into the JS bundle)
 ARG NEXT_PUBLIC_SITE_URL=https://doctorsewa.org
@@ -68,8 +70,8 @@ COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 # Copy public assets
 COPY --from=builder /app/apps/web/public ./apps/web/public
-# Copy Prisma engine binaries (not always traced by standalone output)
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+# Copy Prisma engine binaries (pnpm stores these under packages/database/)
+COPY --from=builder /app/packages/database/node_modules/.prisma ./node_modules/.prisma
 
 # Set ownership for uploads directory (writable at runtime)
 RUN mkdir -p ./apps/web/public/uploads && chown -R nextjs:nodejs ./apps/web/public/uploads
