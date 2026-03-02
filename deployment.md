@@ -13,7 +13,77 @@
 | Domain | `doctorsewa.org` |
 | SSH | `ssh -i ~/.ssh/monitor.pem ubuntu@ec2-54-156-88-160.compute-1.amazonaws.com` |
 
-## Architecture
+## Docker Deployment (Current)
+
+### Architecture
+
+```
+Internet → Traefik (443/80, auto-SSL) → Docker containers
+              ├── doctorsewa.org      → doctorsewa-web (Next.js :3000)
+              ├── *.doctorsewa.org    → doctorsewa-web (wildcard subdomains)
+              └── other-apps          → file provider routes to host ports
+
+doctorsewa-web → doctorsewa-postgres (PostgreSQL :5432, internal network)
+```
+
+### Deploy a Code Change
+
+Pushes to `main` trigger the CI/CD pipeline automatically:
+1. GitHub Actions builds multi-stage Docker image
+2. Pushes to `ghcr.io/krantiutils/doctorsewa:latest`
+3. SSHs into server and runs `docker compose pull && up -d`
+
+Manual deploy (if CI is down):
+```bash
+ssh -i ~/.ssh/monitor.pem ubuntu@54.156.88.160
+cd /home/ubuntu/doctorsewa
+docker compose -f docker-compose.prod.yml pull web
+docker compose -f docker-compose.prod.yml up -d
+```
+
+### Useful Docker Commands
+
+```bash
+# Check container status
+docker compose -f docker-compose.prod.yml ps
+
+# View logs
+docker compose -f docker-compose.prod.yml logs -f web
+docker compose -f docker-compose.prod.yml logs -f postgres
+
+# Restart the app
+docker compose -f docker-compose.prod.yml restart web
+
+# Access Postgres
+docker compose -f docker-compose.prod.yml exec postgres psql -U swasthya -d swasthya
+
+# Traefik dashboard (via SSH tunnel)
+# From local: ssh -L 8080:localhost:8080 -i ~/.ssh/monitor.pem ubuntu@54.156.88.160
+# Then visit http://localhost:8080
+
+# Clean up old images
+docker image prune -f
+```
+
+### Traefik Management
+
+Traefik config lives at `/home/ubuntu/traefik/` on the server. Reference configs are in `infra/traefik/` in this repo.
+
+```bash
+# Add a new non-Docker app route
+# Create a .yml file in /home/ubuntu/traefik/configs/ (hot-reloaded, no restart needed)
+# See infra/traefik/configs/example-app.yml.example for template
+
+# Check Traefik logs
+docker logs traefik --tail 50 -f
+
+# Restart Traefik
+cd /home/ubuntu/traefik && docker compose restart
+```
+
+## Legacy Architecture (Pre-Docker)
+
+> **Note:** This section documents the old manual deployment. See "Docker Deployment" above for the current workflow.
 
 ```
 Internet → Nginx (443/80 + TLSv1.3) → Next.js (localhost:3000) → PostgreSQL (localhost:5432)
