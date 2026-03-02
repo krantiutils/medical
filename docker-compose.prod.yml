@@ -1,0 +1,55 @@
+# docker-compose.prod.yml
+# DoctorSewa production stack: Next.js app + PostgreSQL
+# Traefik (shared proxy) is managed separately at /home/ubuntu/traefik/
+
+services:
+  web:
+    image: ghcr.io/krantiutils/doctorsewa:latest
+    container_name: doctorsewa-web
+    restart: unless-stopped
+    env_file: .env.docker
+    volumes:
+      - uploads:/app/apps/web/public/uploads
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.doctorsewa.rule=Host(`doctorsewa.org`) || HostRegexp(`.+\\.doctorsewa\\.org`)"
+      - "traefik.http.routers.doctorsewa.entrypoints=websecure"
+      - "traefik.http.routers.doctorsewa.tls=true"
+      - "traefik.http.routers.doctorsewa.tls.certresolver=letsencrypt-dns"
+      - "traefik.http.routers.doctorsewa.tls.domains[0].main=doctorsewa.org"
+      - "traefik.http.routers.doctorsewa.tls.domains[0].sans=*.doctorsewa.org"
+      - "traefik.http.services.doctorsewa.loadbalancer.server.port=3000"
+    networks:
+      - traefik-proxy
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: doctorsewa-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: swasthya
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.docker}
+      POSTGRES_DB: swasthya
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U swasthya"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+  uploads:
+
+networks:
+  traefik-proxy:
+    external: true
+    name: traefik-proxy
+  internal:
