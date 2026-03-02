@@ -6,7 +6,7 @@
 # ============================================================
 FROM node:20-alpine AS base
 RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 
 # ============================================================
 # Stage 2: Install dependencies
@@ -38,8 +38,11 @@ COPY . .
 
 # Generate Prisma client
 RUN pnpm db:generate
-# Debug: show where Prisma client was generated
-RUN find /app -path "*/\.prisma/client" -type d 2>/dev/null | head -5 || true
+
+# Copy Prisma engine to a known location for the runner stage
+# pnpm stores it deep in the virtual store — normalize the path
+RUN mkdir -p /prisma-engines && \
+    cp -r $(find /app/node_modules/.pnpm -path "*/.prisma/client" -type d | head -1) /prisma-engines/
 
 # Build-time env vars (baked into the JS bundle)
 ARG NEXT_PUBLIC_SITE_URL=https://doctorsewa.org
@@ -57,6 +60,8 @@ RUN pnpm --filter @swasthya/web build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
+RUN apk add --no-cache openssl
+
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
@@ -64,14 +69,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy standalone server output
+# Copy standalone server output (includes traced dependencies)
 COPY --from=builder /app/apps/web/.next/standalone ./
 # Copy static assets
 COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 # Copy public assets
 COPY --from=builder /app/apps/web/public ./apps/web/public
-# Copy Prisma engine binaries (pnpm stores these under packages/database/)
-COPY --from=builder /app/packages/database/node_modules/.prisma ./node_modules/.prisma
+# Copy Prisma engine binaries from normalized location
+COPY --from=builder /prisma-engines/client ./node_modules/.prisma/client
 
 # Set ownership for uploads directory (writable at runtime)
 RUN mkdir -p ./apps/web/public/uploads && chown -R nextjs:nodejs ./apps/web/public/uploads
