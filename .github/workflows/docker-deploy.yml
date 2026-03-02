@@ -69,5 +69,7 @@ jobs:
           script: |
             cd /home/ubuntu/doctorsewa
             docker compose -f docker-compose.prod.yml pull web
+            # Apply any pending database schema changes
+            docker compose -f docker-compose.prod.yml run --rm web npx prisma db push --skip-generate
             docker compose -f docker-compose.prod.yml up -d
             docker image prune -f

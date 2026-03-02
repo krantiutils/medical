@@ -68,6 +68,8 @@ COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 # Copy public assets
 COPY --from=builder /app/apps/web/public ./apps/web/public
+# Copy Prisma engine binaries (not always traced by standalone output)
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Set ownership for uploads directory (writable at runtime)
 RUN mkdir -p ./apps/web/public/uploads && chown -R nextjs:nodejs ./apps/web/public/uploads
