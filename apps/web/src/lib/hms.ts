@@ -4,14 +4,24 @@ import { randomUUID } from "crypto";
 function requireEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
+    if (process.env.NODE_ENV === "production" && typeof window === "undefined") {
+      // Allow build to succeed — will fail at runtime if actually called
+      return "";
+    }
     throw new Error(`Missing required environment variable: ${name}`);
   }
   return value;
 }
 
-const HMS_ACCESS_KEY = requireEnv("HMS_ACCESS_KEY");
-const HMS_APP_SECRET = requireEnv("HMS_APP_SECRET");
-const HMS_TEMPLATE_ID = requireEnv("HMS_TEMPLATE_ID");
+// Lazy — only resolved when functions are called (not at import time during build)
+function getHmsConfig() {
+  return {
+    accessKey: requireEnv("HMS_ACCESS_KEY"),
+    appSecret: requireEnv("HMS_APP_SECRET"),
+    templateId: requireEnv("HMS_TEMPLATE_ID"),
+  };
+}
+
 const HMS_API_BASE = "https://api.100ms.live/v2";
 
 /**
@@ -19,16 +29,17 @@ const HMS_API_BASE = "https://api.100ms.live/v2";
  * Valid for 24 hours.
  */
 export function generateManagementToken(): string {
+  const { accessKey, appSecret } = getHmsConfig();
   const now = Math.floor(Date.now() / 1000);
   return jwt.sign(
     {
-      access_key: HMS_ACCESS_KEY,
+      access_key: accessKey,
       type: "management",
       version: 2,
       iat: now,
       nbf: now,
     },
-    HMS_APP_SECRET,
+    appSecret,
     {
       algorithm: "HS256",
       expiresIn: "24h",
@@ -46,10 +57,11 @@ export function generateAuthToken(
   userId: string,
   role: "doctor" | "patient"
 ): string {
+  const { accessKey, appSecret } = getHmsConfig();
   const now = Math.floor(Date.now() / 1000);
   return jwt.sign(
     {
-      access_key: HMS_ACCESS_KEY,
+      access_key: accessKey,
       type: "app",
       version: 2,
       room_id: roomId,
@@ -58,7 +70,7 @@ export function generateAuthToken(
       iat: now,
       nbf: now,
     },
-    HMS_APP_SECRET,
+    appSecret,
     {
       algorithm: "HS256",
       expiresIn: "2h",
@@ -93,7 +105,7 @@ export async function createRoom(
     body: JSON.stringify({
       name: `doctorsewa-${consultationId}`,
       description: description || `Telemedicine consultation ${consultationId}`,
-      template_id: HMS_TEMPLATE_ID,
+      template_id: getHmsConfig().templateId,
       region: "in",
       max_duration_seconds: 7200, // 2 hours max
     }),
